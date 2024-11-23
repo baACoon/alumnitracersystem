@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background:linear-gradient(#C31D3C,#5D0E1D);
+}
+
+/* Admin Logo Styling */
+.admin-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.admin-logo img {
+    height: 100px;
+    margin: 0 10px;
+}
+
+.admin-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.admin-title h1 {
+    font-weight:bolder;
+    font-size: 2.5rem;
+    color: white;
+}
+
+.admin-title h2 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: white;
+}
+
+.admin-title h5 {
+    font-size: 1rem;
+    font-weight: lighter;
+    color: white;
+    letter-spacing: 2px;
+    margin-top: 10px;
+}
+
+/* Login Form Container */
+.login_container {
+    background-color: none;
+    padding: 15px 40px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Form Elements */
+.login_form h4 {
+    text-align: left;
+    font-size: 1rem;
+    font-weight: lighter;
+    color: white;
+    margin-bottom: 4px;
+}
+
+.login_form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.login_form input::placeholder{
+    font-family: 'Montserrat', sans-serif;
+}
+
+.login_form .login-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+/* Proceed Button */
+.login-button {
+    font-family: 'Montserrat', sans-serif;
+    text-decoration: none;
+    background-color: #C31D3C;
+    color: white;
+    border: none;
+    padding: 5px 20px;
+    font-size: 0.8rem;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: auto; /* This ensures it aligns to the right edge */
+}
+
+.login-button:hover {
+    background-color: #5D0E1D;
+}
+
+/* Forgot Password Link */
+.forgotpassword {
+    font-size: 0.8rem;
+    color: white;
+    text-decoration: none;
+    margin-right: auto; /* Align the link to the left */
+}
+
+.forgotpassword span {
+    color: white;
+    font-weight: 900;
+}
+
+.forgotpassword:hover span {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .login_container {
+        padding: 20px;
+        width: 90%;
+    }
+
+    .admin-title h1 {
+        font-size: 2rem;
+    }
+
+    .admin-title h2 {
+        font-size: 1.2rem;
+    }
+
+    .admin-title h5 {
+        font-size: 0.9rem;
+    }
+
+    .admin-logo img {
+        height: 80px;
+    }
+} 
