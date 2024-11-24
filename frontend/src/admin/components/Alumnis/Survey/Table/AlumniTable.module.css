@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+.tableSection {
+    background: #c4bdbd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    width: fit-content;
+    position: relative;
+    left: 80px;
+  }
+  
+  .tableControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+  }
+  
+  .deleteButton {
+    background: none;
+    border: none;
+    color: #C31D3C;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+  }
+  
+  .deleteButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .deleteButton:hover:not(:disabled),
+  .deleteButton:focus:not(:disabled) {
+    background-color: #FEE6E6;
+  }
+  
+  .searchContainer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .searchLabel {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #000000;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .searchInput {
+    padding: 0.5rem 1rem;
+    border: 1px solid #818181;
+    border-radius: 5px;
+    font-size: 1rem;
+    min-width: 200px;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .tableWrapper {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  
+  .alumniTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+  
+  .alumniTable th {
+    background-color: #C31D3C;
+    color: #FFFFFF;
+    padding: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .alumniTable td {
+    padding: 1rem;
+    border-bottom: 1px solid #EEEEEE;
+  }
+  
+  .alumniTable tbody tr:nth-child(even) {
+    background-color: #F0F0F0;
+  }
+  
+  .selectedRow {
+    background-color: #FEE6E6 !important;
+  }
+  
+  .alumniTable input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+  }
+
+  .hiddenDropdown {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 100%;
+  }
+  
+  
+  @media (max-width: 991px) {
+    .tableControls {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    
+    .searchContainer {
+      width: 100%;
+    }
+    
+    .searchInput {
+      flex-grow: 1;
+    }
+  }
