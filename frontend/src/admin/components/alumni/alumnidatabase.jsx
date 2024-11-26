@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./alumnidatabase.css"; // Adjust the path if necessary
-import AdminHeader from "../header/header";
+import AdminHeader from "../Header/Header";
 
 const AlumniDatabase = () => {
   const [activeTab, setActiveTab] = useState("registeredAlumni"); // Tracks active tab
