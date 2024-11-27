@@ -31,8 +31,35 @@ const initialAlumniData = [
 export function AlumniTable() {
   const [alumniData, setAlumniData] = useState(initialAlumniData);
   const [selectedAlumni, setSelectedAlumni] = useState(new Set());
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStudentDetails, setSelectedStudentDetails] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(''); 
+  
+  const selectedStudentDetails = {
+    profileImage: 'https://via.placeholder.com/150',
+    college: 'College of Engineering',
+    course: 'Bachelor of Science in Civil Engineering',
+    graduationYear: '2015',
+    lastName: 'Choi',
+    firstName: 'Seung-cheol',
+    middleName: null,
+    suffix: null,
+    address: 'Daegu, South Korea',
+    birthday: 'August 8, 1995',
+    email: 'seungcheolpogi@gmail.com',
+    contactNumber: '09123456789',
+    employmentHistory: [
+      { company: 'Elephant', years: 2 },
+      { company: 'Horse', years: 1 },
+      { company: 'Tiger', years: 4 },
+      { company: 'Lion', years: 3 },
+      { company: 'Jaguar', years: 5 },
+    ],
+    surveys: [
+      { title: 'Tracer Survey Form (2020)', dateReceived: 'July 29, 2020', dateSubmitted: 'July 31, 2020' },
+      { title: 'Material: Subject Alignment', dateReceived: 'July 29, 2020', dateSubmitted: 'July 31, 2020' },
+      { title: 'Masters or Comfortability?', dateReceived: 'July 29, 2018', dateSubmitted: 'July 31, 2018' },
+    ],
+  };
+  
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -65,6 +92,8 @@ export function AlumniTable() {
   const closeStudentDetails = () => {
     setSelectedStudentDetails(null);
   };
+
+ 
 
   return (
     <section className={styles.tableSection} aria-label="Alumni data">
@@ -144,51 +173,94 @@ export function AlumniTable() {
       </div>
 
       {/* Student Details Modal */}
-      {selectedStudentDetails && (
-        <div className={styles.modalOverlay} onClick={closeStudentDetails}>
-          <div 
-            className={styles.modalContent} 
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button 
-              className={styles.closeButton} 
-              onClick={closeStudentDetails}
+        {selectedStudentDetails && (
+          <div className={styles.modalOverlay} onClick={closeStudentDetails}>
+            <div
+              className={styles.modalContent}
+              onClick={(e) => e.stopPropagation()}
             >
-              ×
-            </button>
-            <h2>Student Details</h2>
-            <div className={styles.studentDetailsGrid}>
-              <div>
-                <strong>TUP-ID:</strong> {selectedStudentDetails.id}
+              <button
+                className={styles.closeButton}
+                onClick={closeStudentDetails}
+              >
+                ×
+              </button>
+
+              {/* Student Profile Section */}
+              <div className={styles.studentProfile}>
+                <img
+                  src={selectedStudentDetails.profileImage || 'https://via.placeholder.com/150'}
+                  alt="Profile"
+                  className={styles.profileImage}
+                />
+                <div className={styles.profileInfo}>
+                  <div><strong>College:</strong> {selectedStudentDetails.college}</div>
+                  <div><strong>Course:</strong> {selectedStudentDetails.course}</div>
+                  <div><strong>Graduation Year:</strong> {selectedStudentDetails.graduationYear}</div>
+                  <div><strong>Last Name:</strong> {selectedStudentDetails.lastName}</div>
+                  <div><strong>First Name:</strong> {selectedStudentDetails.firstName}</div>
+                  <div><strong>Middle Name:</strong> {selectedStudentDetails.middleName || 'N/A'}</div>
+                  <div><strong>Suffix:</strong> {selectedStudentDetails.suffix || 'N/A'}</div>
+                  <div><strong>Address:</strong> {selectedStudentDetails.address}</div>
+                  <div><strong>Birthday:</strong> {selectedStudentDetails.birthday}</div>
+                  <div><strong>Email:</strong> {selectedStudentDetails.email}</div>
+                  <div><strong>Contact No:</strong> {selectedStudentDetails.contactNumber}</div>
+                </div>
               </div>
-              <div>
-                <strong>Name:</strong> {`${selectedStudentDetails.firstName} ${selectedStudentDetails.lastName}`}
+
+              <hr className={styles.sectionDivider} />
+
+              {/* Employment History Section */}
+              <div className={styles.employmentHistory}>
+                <h3>Alumni's Employment History</h3>
+                <table className={styles.employmentTable}>
+                  <thead>
+                    <tr>
+                      <th>Company</th>
+                      <th>Years of Employment</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedStudentDetails.employmentHistory.map((job, index) => (
+                      <tr key={index}>
+                        <td>{job.company}</td>
+                        <td>{job.years}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <div>
-                <strong>College:</strong> {selectedStudentDetails.college}
-              </div>
-              <div>
-                <strong>Department:</strong> {selectedStudentDetails.department}
-              </div>
-              <div>
-                <strong>Course:</strong> {selectedStudentDetails.course}
-              </div>
-              <div>
-                <strong>Graduation Year:</strong> {selectedStudentDetails.graduationYear}
-              </div>
-              <div>
-                <strong>Email:</strong> {selectedStudentDetails.email}
-              </div>
-              <div>
-                <strong>Contact Number:</strong> {selectedStudentDetails.contactNumber}
-              </div>
-              <div>
-                <strong>Address:</strong> {selectedStudentDetails.address}
+
+              <hr className={styles.sectionDivider} />
+
+              {/* Submitted Surveys Section */}
+              <div className={styles.submittedSurveys}>
+                <h3>Submitted Surveys</h3>
+                <table className={styles.surveysTable}>
+                  <thead>
+                    <tr>
+                      <th>No.</th>
+                      <th>Title</th>
+                      <th>Date Survey Received</th>
+                      <th>Date Survey Submitted</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedStudentDetails.surveys.map((survey, index) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{survey.title}</td>
+                        <td>{survey.dateReceived}</td>
+                        <td>{survey.dateSubmitted}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
     </section>
   );
 }

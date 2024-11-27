@@ -4,7 +4,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom"
 import Home from './client/home';
 import Login from './admin/components/login/login'
 import AlumniPage from './admin/components/Alumnis/Page/AlumniPage'
-import Alumni from './admin/components/alumni/alumnidatabase'
+import AlumniProfile from './admin/components/AlumniProfile'
 
 function App() {
   return (
@@ -14,11 +14,14 @@ function App() {
         <Route path='/Home' element ={<Home/>} />
         <Route path='/Login' element ={<Login/>}/>
         <Route path='/AlumniPage' element ={<AlumniPage/>}/>
-        <Route path='/Alumni' element ={<Alumni/>}/>
+        <Route path='/AlumniProfile' element ={<AlumniProfile/>}/>
       </Routes>
       </BrowserRouter>
+      
     </div>
+    
   );
+  
 }
 
 export default App;
