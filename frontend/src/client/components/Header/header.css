@@ -1,31 +1,41 @@
 .header-container{
-    background-color: white;
-        
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Ensure full width */
+    background-color: white; /* Background color for header */
+    padding: 0;
 }
 
 .header-logo {
-
+    margin-top: 0.5em;
+    margin-left: 1em;
+    height: 50%; /* Maintain aspect ratio */
 }
 
 .header-logo-1 img{
-    width: 100px; /* Adjust the width of the logo */
-    height: auto; /* Maintain aspect ratio */
-    position: relative;
-    margin: 0 auto; /* Center the image */
-    margin-top: 60em;
+    width: 50px; /* Adjust the width of the logo */
+    height: 50%; /* Maintain aspect ratio */
+    position: relative; /* Add position to enable z-index */
     z-index: 2; /* Higher value makes it appear on top */
 }
 .header-logo-2 img {
-    width: 100px; /* Adjust the width of the logo */
-    height: auto; /* Maintain aspect ratio */
+    margin-top: 5em;
+    width: 50px; /* Adjust the width of the logo */
+    height: 50%; /* Maintain aspect ratio */
     display: block; /* Ensures the image behaves properly within its container */
-    margin: 0 auto; /* Center the image */
     z-index: 1; /* Lower value so it's below logo 1 */
 }
 
 .header-banner h1  {
-    font-size: 30px;
+    font-size: 25px;
+    margin-left: 10em;
 }
+
+.header-banner i{
+    font-size: 20px;
+    margin-left: 4em;
+}
+
 
 /* NAVBAR */
 

@@ -1,17 +1,56 @@
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../../components/Styles/popup.css';
+import '../Header/header.css';
+import '../../components/Styles/footer.css';
+import './home.css'
+import Header from '../Header/header'
 
-function Home(){
-    const navigate = useNavigate();
-    const navigatehome = () => {
-        navigate('/Home');
+
+function Home() {
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
+
+  useEffect(() => {
+    // Mock session data (replace with actual logic to fetch session data in production)
+    const session = {
+      show_popup: true,
+      success: 'You are now registered!',
+      tup_id: '123456',
     };
 
-    return(
-        <div>
-            <h1>HOLAAAA </h1>
-        </div>
-    )
+    if (session.show_popup) {
+      setShowPopup(true);
+      if (session.success) {
+        setPopupMessage(session.success);
+      } else if (session.tup_id) {
+        setPopupMessage(`Welcome, ${session.tup_id}!`);
+      }
+    }
+  }, []);
 
+  const closePopup = () => {
+    setShowPopup(false);
+  };
+
+  return (
+    <div className={showPopup ? 'popup-visible' : ''}>
+      <Header />
+      {showPopup && <Popup message={popupMessage} onClose={closePopup} />}
+    </div>
+  );
+
+  function Popup({ message, onClose }) {
+    return (
+      <div className="pop-background" id="popBackground">
+        <div className="popup" id="welcomePopup">
+          <p>{message}</p>
+          <button className="popbutton" onClick={onClose}>OK</button>
+        </div>
+      </div>
+    );
+  }
 }
 
-export default Home
+
+export default Home;

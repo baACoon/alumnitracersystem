@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../components/Styles/popup.css';
-import '../../components/Styles/header.css';
+import '../Header/header.css';
 import '../../components/Styles/footer.css';
 import Tuplogo from '../../components/image/Tuplogo.png'
 import Alumnilogo from '../../components/image/alumniassoc_logo.png'
