@@ -1,0 +1,65 @@
+.header-container{
+    background-color: white;
+        
+}
+
+.header-logo {
+
+}
+
+.header-logo-1 img{
+    width: 100px; /* Adjust the width of the logo */
+    height: auto; /* Maintain aspect ratio */
+    position: relative;
+    margin: 0 auto; /* Center the image */
+    margin-top: 60em;
+    z-index: 2; /* Higher value makes it appear on top */
+}
+.header-logo-2 img {
+    width: 100px; /* Adjust the width of the logo */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Ensures the image behaves properly within its container */
+    margin: 0 auto; /* Center the image */
+    z-index: 1; /* Lower value so it's below logo 1 */
+}
+
+.header-banner h1  {
+    font-size: 30px;
+}
+
+/* NAVBAR */
+
+
+#navbar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-between; /* Distributes space evenly */
+    align-items: center; /* Vertically centers items */
+    position: relative;
+}
+
+#navbar ul li {
+    margin: 0 1em; /* Adjusted spacing between items */
+}
+
+#navbar ul li a {
+    text-decoration: none;
+    color: white;
+    padding: 10px 20px;
+    display: block;
+    font-size: 1em;
+    font-weight: 500; /* Fixed font-style to font-weight */
+}
+
+#navbar ul li a:hover {
+    background-color: #5D0E1D; /* Darker maroon on hover */
+    border-radius: 5px; /* Added subtle rounded effect */
+}
+
+#navbar .profile-btn {
+    margin-left: auto; /* Pushes profile to the right */
+    position: relative; /* Changed from absolute to relative */
+    padding-right: 1em; /* Adds some spacing on the right */
+}

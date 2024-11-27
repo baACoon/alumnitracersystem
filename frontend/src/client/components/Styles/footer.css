@@ -1,0 +1,84 @@
+/*FOOTER */
+footer{
+    background-color: #ECECEC; 
+    color: white;
+    padding: 20px;
+    position: relative;
+    margin-top: 20em;
+    height: 318px;
+    box-shadow:  -5px 5px 7px #ccc9c9,
+    5px -5px 7px #ffffff;
+    z-index: 999;
+}
+
+.footer-logo img{
+    height: 200px;
+    margin-left: 2em;
+}
+
+.footer-logo-2 img{
+    height: 200px;
+    position: absolute;
+    top: 35px;
+    left: 1100px;
+}
+
+.footer-title{
+    color: rgba(0, 0, 0, 1);
+    position: absolute;
+    top: 49px;
+    left: 430px;
+    font-size: 15px;
+    font-weight: 200;
+    text-align: center;
+}
+
+.footer-p{
+    width: 580px;
+    color: rgba(0, 0, 0, 1);
+    position: absolute;
+    top: 91px;
+    left: 430px;
+    font-weight: 300;
+    font-size: 18px;
+    margin-top: 5px;
+    text-align: left;
+}
+
+.socmed-title h1{
+    color: rgba(0, 0, 0, 1);
+    position: absolute;
+    left: 430px;
+    font-weight: 300;
+    font-size: 18px;
+    text-align: center;
+    top: 10em;
+}
+
+.footer-container{
+    width: 100%;
+    height: 40px;
+    background: rgba(0, 0, 0, 1);
+    position: absolute;
+    top: 318px;
+    left: 0px;
+    overflow: hidden;
+}
+
+.footer-container h1{
+    color: rgba(255, 255, 255, 1);
+    position: absolute;
+    left: 610px;
+    font-weight: 200;
+    font-size: 16px;
+    text-align: center; 
+}
+
+.footer-container h2{
+    color: rgba(255, 255, 255, 1);
+    position: absolute;
+    left: 1150px;
+    font-weight: 200;
+    font-size: 16px;
+    text-align: center;
+}
