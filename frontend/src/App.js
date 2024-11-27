@@ -28,6 +28,8 @@ function App() {
       <Routes>
         <Route path='/Home' element ={<Home/>} />
         <Route path='/Login' element ={<Login/>}/>
+        <Route path='/AlumniPage' element ={<AlumniPage/>}/>
+        <Route path='/AlumniProfile' element ={<AlumniProfile/>}/>
       </Routes>
       </BrowserRouter>
       
