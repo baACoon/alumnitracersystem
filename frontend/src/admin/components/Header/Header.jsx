@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import styles from './Header.module.css';
 
 export function Header() {
@@ -7,14 +8,51 @@ export function Header() {
       <div className={styles.headerContent}>
         <h1 className={styles.logo}>TUPATS</h1>
         <nav className={styles.navigation} role="navigation">
-          <a href="#dashboard" className={styles.navLink}>DASHBOARD</a>
-          <a href="#alumni" className={styles.navLinkActive} aria-current="page">ALUMNI</a>
-          <a href="#surveys" className={styles.navLink}>SURVEYS</a>
-          <a href="#events" className={styles.navLink}>EVENTS</a>
-          <a href="#opportunities" className={styles.navLink}>OPPORTUNITIES</a>
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              isActive ? styles.navLinkActive : styles.navLink
+            }
+          >
+            DASHBOARD
+          </NavLink>
+          <NavLink
+            to="/AlumniPage"
+            className={({ isActive }) =>
+              isActive ? styles.navLinkActive : styles.navLink
+            }
+          >
+            ALUMNI
+          </NavLink>
+          <NavLink
+            to="/SurveyContent"
+            className={({ isActive }) =>
+              isActive ? styles.navLinkActive : styles.navLink
+            }
+          >
+            SURVEYS
+          </NavLink>
+          <NavLink
+            to="/events"
+            className={({ isActive }) =>
+              isActive ? styles.navLinkActive : styles.navLink
+            }
+          >
+            EVENTS
+          </NavLink>
+          <NavLink
+            to="/opportunities"
+            className={({ isActive }) =>
+              isActive ? styles.navLinkActive : styles.navLink
+            }
+          >
+            OPPORTUNITIES
+          </NavLink>
         </nav>
       </div>
-      <button className={styles.userProfile} aria-label="User profile">GARCIA, J</button>
+      <button className={styles.userProfile} aria-label="User profile">
+        GARCIA, J
+      </button>
     </header>
   );
 }
