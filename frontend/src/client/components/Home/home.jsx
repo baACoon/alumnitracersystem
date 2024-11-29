@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../components/Styles/popup.css';
-import '../Header/header.css';
-import '../../components/Styles/footer.css';
 import './home.css'
 import Header from '../Header/header'
+import Footer from '../../../admin/components/Footer/Footer';
 
 
 function Home() {
@@ -37,6 +35,7 @@ function Home() {
     <div className={showPopup ? 'popup-visible' : ''}>
       <Header />
       {showPopup && <Popup message={popupMessage} onClose={closePopup} />}
+      <Footer/>
     </div>
   );
 

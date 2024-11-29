@@ -17,6 +17,23 @@ function Header() {
       navigate('/Survey');
     };
 
+    const goToEvents = () => {
+      navigate('/Events');
+    };
+
+    const goToJob = () => {
+      navigate('/Opportunities');
+    };
+
+    const goToContact = () => {
+      navigate('/Contact');
+    };
+
+    const goToProfile = () => {
+      navigate('/Profile');
+    };
+
+
   return (
 
     <div className="header-container">
@@ -59,23 +76,23 @@ function Header() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="events.php">
+              <a onClick={goToEvents} className="nav-link">
                 EVENTS
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="opportunities.php">
+              <a onClick={goToJob} className="nav-link">
                 OPPORTUNITIES
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="contact.php">
+              <a onClick={goToContact} className="nav-link">
                 CONTACT US
               </a>
             </li>
           </ul>
           <div className="d-flex">
-            <a className="btn btn-outline-light" href="profile.php">
+            <a onClick={goToProfile} className="btn btn-outline-light">
               PROFILE
             </a>
           </div>

@@ -35,7 +35,7 @@ function App() {
         <Route path='/Home' element ={<Home/>} />
         <Route path='/Survey' element ={<Survey/>}/>
         <Route path='/Events' element ={<Events/>}/>
-        <Route path='/JobPage' element ={<JobPage/>}/>
+        <Route path='/Opportunities' element ={<JobPage/>}/>
         <Route path='/Contact' element ={<Contact/>}/>
         <Route path='/Profile' element ={<Profile/>}/>
 
@@ -43,7 +43,7 @@ function App() {
         {/* for Admin path */}
         <Route path='/AlumniPage' element ={<AlumniPage/>}/>
         <Route path='/Login' element ={<Login/>}/>
-        
+
       </Routes>
       </BrowserRouter>
       
