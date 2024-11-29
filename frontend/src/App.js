@@ -34,8 +34,7 @@ function App() {
         {/* for Admin path */}
         <Route path='/AlumniPage' element ={<AlumniPage/>}/>
         <Route path='/Login' element ={<Login/>}/>
-        <Route path='/AlumniPage' element ={<AlumniPage/>}/>
-
+        
       </Routes>
       </BrowserRouter>
       
