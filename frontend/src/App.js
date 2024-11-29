@@ -5,7 +5,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom"
 
 {/* for Client path */}
 import FrontPage from './client/components/Frontpage/frontpage';
-import Home from './client/components/Home/home';
+import Home from './client/components/Home/home'
 import LoginPage from './client/components/Login_client/Login_client';
 import RegisterPage from './client/components/Register_client/Register_client';
 import Survey from './client/components/Survey/survey'
@@ -35,7 +35,7 @@ function App() {
         <Route path='/AlumniPage' element ={<AlumniPage/>}/>
         <Route path='/Login' element ={<Login/>}/>
         <Route path='/AlumniPage' element ={<AlumniPage/>}/>
-        <Route path='/AlumniProfile' element ={<AlumniProfile/>}/>
+
       </Routes>
       </BrowserRouter>
       

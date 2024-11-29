@@ -42,13 +42,18 @@
     height: auto;
 }
 
-.system-title h1 {
+.frontpg-container .system-title {
+    text-align: center; /* Center-aligns the text */
+    margin-top: 20px; /* Adjust spacing as needed */
+}
+
+.frontpg-container .system-title .system-title-1 {
     font-weight: 800;
     font-size: 35px;
     margin: 10px 0;
 }
 
-.system-title h2 {
+.frontpg-container .system-title .system-title-2 {
     font-weight: 400;
     font-size: 20px;
 }
