@@ -2,9 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../components/Styles/popup.css';
 import '../Header/header.css';
+import './contact.css'
 import '../../components/Styles/footer.css';
 import Tuplogo from '../../components/image/Tuplogo.png'
 import Alumnilogo from '../../components/image/alumniassoc_logo.png'
+
+function Contact() {
+  return (
+    <div>
+      <Header />
+      <Footer />
+    </div>
+  );
+}
 
 function Header() {
     const navigate = useNavigate();
@@ -12,7 +22,7 @@ function Header() {
     const goToHome = () => {
       navigate('/Home');
     };
-  
+
     const goToSurveys = () => {
       navigate('/Survey');
     };
@@ -24,13 +34,13 @@ function Header() {
     const goToJobPage = () => {
       navigate('/JobPage');
     };
- 
-    const goToContact = () => {
-      navigate('/Contact');
-    };
 
-    const goToProfile = () => {
-      navigate('/Profile');
+    const goToContact = () => {
+        navigate('/Contact');
+      };
+    
+      const goToProfile = () => {
+        navigate('/Profile');
     };
   return (
 
@@ -87,7 +97,7 @@ function Header() {
                 </a>
               </li>
               <li className="nav-item">
-               <a onClick={goToContact} className="nav-link">
+                <a onClick={goToContact} className="nav-link">
                   CONTACT US
                 </a>
               </li>
@@ -104,4 +114,39 @@ function Header() {
   );
 }
 
-export default Header
+
+function Footer() {
+  return (
+    <footer>
+      <div className="footer-logo">
+        <img src="../image/alumniassoc_logo.png" alt="Alumni Association Logo" />
+      </div>
+
+      <span className="footer-title">
+        <h1>TUP-Manila Alumni Association</h1>
+      </span>
+
+      <span className="footer-p">
+        <p>
+          Bulwagang Alumni, Technological University of the Philippines, 
+          Ayala Blvd. Ermita, Manila, Philippines
+        </p>
+      </span>
+
+      <span className="socmed-title">
+        <h1><i>Visit Us @ facebook.com/TUPManilaAlumni</i></h1>
+      </span>
+
+      <div className="footer-logo-2">
+        <img src="../image/Tuplogo.png" alt="TUP Logo" />
+      </div>
+
+      <section className="footer-container">
+        <h1>2024 TUP-Manila</h1>
+        <h2><i>Designs by: GGPR</i></h2>
+      </section>
+    </footer>
+  );
+}
+
+export default Contact;
