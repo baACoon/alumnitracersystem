@@ -37,54 +37,54 @@ function Header() {
 
       {/* Navbar Section */}
       <nav className="navbar navbar-expand-lg navbar-dark bg-danger" id="navbar">
-        <div className="container-fluid">
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <a onClick={goToHome} className="nav-link active" aria-current="page">
-                  HOME
-                </a>
-              </li>
-              <li className="nav-item">
-                <a onClick={goToSurveys} className="nav-link">
-                  SURVEYS
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="events.php">
-                  EVENTS
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="opportunities.php">
-                  OPPORTUNITIES
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="contact.php">
-                  CONTACT US
-                </a>
-              </li>
-            </ul>
-            <div className="d-flex">
-              <a className="btn btn-outline-light" href="profile.php">
-                PROFILE
+      <div className="container-fluid">
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <a onClick={goToHome} className="nav-link active" aria-current="page">
+                HOME
               </a>
-            </div>
+            </li>
+            <li className="nav-item">
+              <a onClick={goToSurveys} className="nav-link">
+                SURVEYS
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="events.php">
+                EVENTS
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="opportunities.php">
+                OPPORTUNITIES
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="contact.php">
+                CONTACT US
+              </a>
+            </li>
+          </ul>
+          <div className="d-flex">
+            <a className="btn btn-outline-light" href="profile.php">
+              PROFILE
+            </a>
           </div>
         </div>
-      </nav>
+      </div>
+    </nav>
   </div>
   );
 }
