@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../components/Styles/popup.css';
-import '../Header/header.css';
 import '../../components/Styles/footer.css';
 import Tuplogo from '../../components/image/Tuplogo.png'
 import Alumnilogo from '../../components/image/alumniassoc_logo.png'
 import Home from '../Home/home';
+import Header from '../Header/header';
+import Footer from '../../../admin/components/Footer/Footer';
 
 
 function Survey() {
-
   return (
     <div>
       <Home/>
       <SurveyPage/>
+      <Header/>
+      <Footer/>
     </div>
   );
 }
-
 
 function SurveyPage() {
   return (
@@ -50,5 +51,7 @@ function SurveyPage() {
     
   );
 }
+
+
 
 export default Survey;

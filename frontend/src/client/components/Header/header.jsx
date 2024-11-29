@@ -20,23 +20,20 @@ function Header() {
   return (
 
     <div className="header-container">
-      <div className="header-logo-banner">
-        {/* Logo Section */}
-        <div className="header-logo">
-          <img src={Tuplogo} alt="TUP Logo" className="header-logo-1" />
-          <img src={Alumnilogo} alt="Alumni Logo" className="header-logo-2" />
-        </div>
+    {/* Logo Section */}
+    <div className="header-logo">
+      <img src={Tuplogo} alt="TUP Logo" className='header-logo-1'/>
+      <img src={Alumnilogo} alt="Alumni Logo" className='header-logo-2' />
+    </div>
 
-        {/* Banner Section */}
-        <div className="header-banner">
-          <h1>The Technological University of the Philippines - Alumni Tracer System</h1>
-          <h2>Your Journey, Our Legacy</h2>
-        </div>
-      </div>
+    {/* Banner Section */}
+    <div className="header-banner">
+      <h1>The Technological University of the Philippines - Alumni Tracer System</h1>
+      <h2><i>Your Journey, Our Legacy</i></h2>
+    </div>
 
-
-      {/* Navbar Section */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-danger" id="navbar">
+    {/* Navbar Section */}
+    <nav className="navbar navbar-expand-lg navbar-dark bg-danger" id="navbar">
       <div className="container-fluid">
         <button
           className="navbar-toggler"

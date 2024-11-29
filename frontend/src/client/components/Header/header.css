@@ -56,6 +56,10 @@
 
 
 /* NAVBAR */
+
+#navbar{
+    height: 40px;
+}
 #navbar ul {
     list-style: none;
     padding: 0;
