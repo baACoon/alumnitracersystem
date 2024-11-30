@@ -22,7 +22,7 @@ function Header() {
     };
 
     const goToJob = () => {
-      navigate('/Opportunities');
+      navigate('/JobPage');
     };
 
     const goToContact = () => {

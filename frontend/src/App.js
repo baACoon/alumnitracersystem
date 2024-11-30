@@ -11,6 +11,9 @@ import RegisterPage from './client/components/Register_client/Register_client';
 import Survey from './client/components/Survey/survey';
 import Events from './client/components/Events/events';
 import JobPage from './client/components/JobPage/jobpage';
+import JobPageGive from './client/components/JobPageGive/jobpagegive';
+import AddJobForm from './client/components/JobPageGive/addjobForm';
+import JobPageList from './client/components/JobPageList/jobpagelist';
 import Contact from './client/components/Contact/contact';
 import Profile from './client/components/Profile/profile';
 import SurveyForm from './client/components/SurveyForm/SurveyForm';
@@ -36,11 +39,15 @@ function App() {
         <Route path='/Home' element ={<Home/>} />
         <Route path='/Survey' element ={<Survey/>}/>
         <Route path='/Events' element ={<Events/>}/>
-        <Route path='/Opportunities' element ={<JobPage/>}/>
+        <Route path='/JobPage' element ={<JobPage/>}/>
+        <Route path='/JobPageGive' element ={<JobPageGive/>}/>
+        <Route path='/JobPageGive/addjobform' element ={<AddJobForm/>}/>
+        <Route path='/JobPageList' element ={<JobPageList/>}/>
         <Route path='/Contact' element ={<Contact/>}/>
         <Route path='/Profile' element ={<Profile/>}/>
         <Route path='/SurveyForm' element ={<SurveyForm/>}/>
         <Route path='/CompletedForm' element ={<CompletedForm/>}/>
+        
 
         {/* for Admin path */}
         <Route path='/AlumniPage' element ={<AlumniPage/>}/>
