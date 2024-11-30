@@ -1,0 +1,89 @@
+  /* Table Styles */
+  .survey-table-container {
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 13em; /* Adjust to account for header */
+    margin-left: 270px; /* Sidebar width */
+    position: absolute;
+    width: calc(100% - 270px); /* Account for sidebar width */
+    transition: margin-left 0.3s ease; /* Smooth transition when sidebar is toggled */
+  }
+  
+  .survey-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 3px;
+  }
+  
+  .survey-table th,
+  .survey-table td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #dddddd;
+    cursor: pointer;
+  }
+  
+  .survey-table tr {
+    background: #faf9f9;
+    border-bottom: 1px solid #000000;
+  }
+  
+  .survey-table th {
+    background-color: #c31d3c;
+    text-align: center;
+    color: white;
+    font-weight: 300;
+  }
+  
+  /* Mobile Sidebar Toggle Button */
+  .sidebar-toggle-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: #c31d3c;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    z-index: 999;
+  }
+  
+  /* Media Queries for responsiveness */
+  @media (max-width: 768px) {
+    /* Sidebar adjustments for mobile */
+    .sidebar {
+      position: fixed;
+      left: -250px; /* Initially hidden off-screen */
+      top: 0;
+      height: 100%; /* Full height */
+      width: 250px;
+      transition: transform 0.3s ease; /* Slide-in animation */
+    }
+  
+    .sidebar.show {
+      transform: translateX(250px); /* Slide in the sidebar */
+    }
+  
+    /* Main Content (Survey Table) */
+    .survey-table-container {
+      margin-left: 0; /* No margin on smaller screens */
+      margin-top: 3em; /* Adjust for header height */
+      width: 100%;
+    }
+  
+    /* Table adjustments for mobile */
+    .survey-table th,
+    .survey-table td {
+      padding: 6px; /* Smaller padding for smaller screens */
+    }
+  
+    .survey-table {
+      font-size: 14px; /* Adjust font size for readability */
+    }
+  
+    /* Sidebar toggle button */
+    .sidebar-toggle-btn {
+      display: block; /* Ensure the toggle button is visible */
+    }
+  }

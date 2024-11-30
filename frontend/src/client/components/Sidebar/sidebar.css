@@ -1,0 +1,74 @@
+/* Sidebar Styles */
+.sidebar {
+    width: 250px; /* Fixed sidebar width */
+    height: calc(100vh - 100px); /* Sidebar height minus header height */
+    position:fixed;
+    top: 178px; /* Positioned below the header */
+    left: 0;
+    background-color: #D9D9D9;
+    transition: transform 0.3s ease;
+    z-index: 100; /* Ensure sidebar is above the content */
+  }
+  
+  /* Sidebar links */
+.sidebar a {
+  cursor: pointer;
+    color: black;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sidebar a:hover,
+  .sidebar a:focus {
+    font-weight: bolder;
+    background-color: #5f5f5f;
+    color: rgb(0, 0, 0);
+  }
+  
+  /* Active link style */
+  .sidebar a.active {
+    background-color: #5f5f5f;
+    color: white;
+  }
+
+  /* Media Queries for responsiveness */
+  @media (max-width: 768px) {
+    /* Sidebar adjustments for mobile */
+    .sidebar {
+      position: fixed;
+      left: -250px; /* Initially hidden off-screen */
+      top: 0;
+      height: 100%; /* Full height */
+      width: 250px;
+      transition: transform 0.3s ease; /* Slide-in animation */
+    }
+  
+    .sidebar.show {
+      transform: translateX(250px); /* Slide in the sidebar */
+    }
+  
+    /* Main Content (Survey Table) */
+    .survey-table-container {
+      margin-left: 0; /* No margin on smaller screens */
+      margin-top: 3em; /* Adjust for header height */
+      width: 100%;
+    }
+  
+    /* Table adjustments for mobile */
+    .survey-table th,
+    .survey-table td {
+      padding: 6px; /* Smaller padding for smaller screens */
+    }
+  
+    .survey-table {
+      font-size: 14px; /* Adjust font size for readability */
+    }
+  
+    /* Sidebar toggle button */
+    .sidebar-toggle-btn {
+      display: block; /* Ensure the toggle button is visible */
+    }
+  }

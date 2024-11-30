@@ -13,7 +13,8 @@ import Events from './client/components/Events/events';
 import JobPage from './client/components/JobPage/jobpage';
 import Contact from './client/components/Contact/contact';
 import Profile from './client/components/Profile/profile';
-
+import SurveyForm from './client/components/SurveyForm/SurveyForm';
+import CompletedForm from './client/components/CompletedForm/CompletedForm';
 
 {/* for Admin path */}
 import Login from './admin/components/login/login'
@@ -38,7 +39,8 @@ function App() {
         <Route path='/Opportunities' element ={<JobPage/>}/>
         <Route path='/Contact' element ={<Contact/>}/>
         <Route path='/Profile' element ={<Profile/>}/>
-
+        <Route path='/SurveyForm' element ={<SurveyForm/>}/>
+        <Route path='/CompletedForm' element ={<CompletedForm/>}/>
 
         {/* for Admin path */}
         <Route path='/AlumniPage' element ={<AlumniPage/>}/>

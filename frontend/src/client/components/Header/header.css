@@ -4,19 +4,25 @@
     width: 100%; /* Ensure full width */
     background-color: rgb(255, 255, 255); /* Background color for header */
     padding: 0;
+    position: fixed; /* Fixes header at the top */
+    top: 0;
+    left: 0;
+    height: 105px; /* Fixed height for header */
+    z-index: 1;
 }
 
 .header-logo-banner {
     display: flex; /* Flexbox for horizontal alignment */
     align-items: center; /* Vertically align items */
     padding: 1em; /* Adjust padding for spacing */
-    height: 100px;
 }
 
 .header-logo {
+    margin-bottom: 15px;
+    margin-top: 9px;
     position: relative; /* Allows positioning of child elements */
     display: inline-block;
-    margin-right: 1em; /* Spacing between logo and banner */
+    margin-left: 2em; /* Spacing between logo and banner */
 }
 
 .header-logo-1 {
@@ -25,17 +31,20 @@
 }
 
 .header-logo-2 {
-    width: 45px; /* Alumni logo is 3/4 the size of the TUP logo */
+    width: 55px; /* Alumni logo is 3/4 the size of the TUP logo */
     height: auto; /* Maintain aspect ratio */
     position: absolute; /* Position relative to the TUP logo */
-    bottom: 0; /* Align to the bottom */
-    left: 0; /* Align to the left */
+    bottom: -15px; /* Align to the bottom */
+    left: -15px; /* Align to the left */
 }
 
-.header-banner {
+.header-container .header-banner {
+    position: absolute;
+    margin-top: 2em;
+    margin-left: 15em;
     display: flex;
     flex-direction: column; /* Stack h1 and h2 vertically */
-    justify-content: center; /* Vertically align content */
+    justify-items: center; /* Vertically align content */
     height: 100px; /* Matches the height of the TUP logo */
 }
 
@@ -56,6 +65,9 @@
 
 
 /* NAVBAR */
+#navbar {
+    background-color: #C31D3C !important; /* Updated background color */
+}
 #navbar ul {
     list-style: none;
     padding: 0;
@@ -77,6 +89,7 @@
     display: block;
     font-size: 1em;
     font-weight: 500; /* Fixed font-style to font-weight */
+    cursor: pointer;
 }
 
 #navbar ul li a:hover {
