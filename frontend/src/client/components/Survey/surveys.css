@@ -25,6 +25,32 @@
     border: 1px solid #dddddd;
     cursor: pointer;
   }
+
+  .survey-table-container .survey-table a:hover{
+    color: blue;
+  }
+
+  .survey-table-container .survey-table a{
+    text-decoration: underline;
+  }
+
+  /* Adjust the width of specific columns */
+  .survey-table th:first-child, /* No. column */
+  .survey-table td:first-child {
+    width: 5%; /* Make No. column thinner */
+    text-align: center; /* Center-align content */
+  }
+
+  .survey-table th:nth-child(2), /* Title column */
+  .survey-table td:nth-child(2) {
+    width: 60%; /* Adjust Title column width */
+  }
+
+  .survey-table th:last-child, /* Date Survey Received column */
+  .survey-table td:last-child {
+    width: 25%; /* Adjust Date column width */
+    text-align: center; /* Center-align content */
+  }
   
   .survey-table tr {
     background: #faf9f9;
@@ -36,6 +62,7 @@
     text-align: center;
     color: white;
     font-weight: 300;
+    padding: -50px;
   }
   
   /* Mobile Sidebar Toggle Button */
