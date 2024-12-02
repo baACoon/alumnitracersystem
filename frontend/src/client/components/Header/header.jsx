@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../components/Styles/popup.css';
 import '../Header/header.css';
-import '../../components/Styles/footer.css';
 import Tuplogo from '../../components/image/Tuplogo.png'
 import Alumnilogo from '../../components/image/alumniassoc_logo.png'
 
@@ -92,7 +91,7 @@ function Header() {
             </li>
           </ul>
           <div className="d-flex">
-            <a onClick={goToProfile} className="btn btn-outline-light">
+            <a onClick={goToProfile} className="nav-link">
               PROFILE
             </a>
           </div>

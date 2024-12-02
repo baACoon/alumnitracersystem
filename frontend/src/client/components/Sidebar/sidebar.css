@@ -3,7 +3,7 @@
     width: 250px; /* Fixed sidebar width */
     height: calc(100vh - 100px); /* Sidebar height minus header height */
     position:fixed;
-    top: 178px; /* Positioned below the header */
+    top: 164px; /* Positioned below the header */
     left: 0;
     background-color: #D9D9D9;
     transition: transform 0.3s ease;
