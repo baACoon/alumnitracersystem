@@ -1,4 +1,7 @@
   /* Table Styles */
+  .survey-body {
+    background-color: #F0F0F0;
+  }
   .survey-table-container {
     padding: 20px;
     border-radius: 8px;

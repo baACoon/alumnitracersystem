@@ -1,1 +1,141 @@
+.home-bg{
+    background: url('../image/grad3.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    height: 130vh;
+}
+
+.home-percentage{
+    color: whitesmoke;
+    margin-top: 33em;
+    margin-left: 7.5em;
+    position: absolute;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    width: 80%;
+    word-spacing: 7px;
+    gap: 5em;
     
+}
+
+.home-percentage .percent-1,
+.home-percentage .percent-2 {
+    text-align: center;
+    flex: 1;
+}
+
+.home-percentage .percent-1 h1,
+.home-percentage .percent-2 h1 {
+    font-size: 120px;
+    font-weight: 750;
+    margin: 0;
+}
+
+.home-percentage .percent-1 h2,
+.home-percentage .percent-2 h2 {
+    font-size: 30px;
+    margin-top: -10px;
+}
+
+
+/* Specific color for percent-1 */
+.home-percentage .percent-1 h1 {
+    color: #FF4040;
+}
+
+/* tupats container */
+.TUPATS-container{
+    background-color: #C31D3C;
+    width: 100%;
+    position: absolute;
+    left: 0px;
+    overflow: hidden;
+    margin-top: -5em;
+}
+
+.TUPATS-container h1{
+    color: white;
+    text-align: center;
+}
+
+.TUPATS-container p{
+    color: white;
+    width: 70%;
+    text-align: center;
+    margin-left: 12em;
+    line-height: 1.5;
+}
+
+
+/* second container */
+.slanted-container{
+    background-color: #f4f4f4;
+    padding: 20px;
+    margin-top: 5em;
+    
+}
+
+.slanted-box {
+    background-color: white;
+    color: black;
+    padding: 20px;
+    margin: 20px 0;
+    margin-top: 2em;
+    position: relative;
+    transform: skew(-15deg); /* Adds the slanted effect */
+    border-radius: 0px;
+    background: linear-gradient(225deg, #ffffff, #e3dfdf);
+    box-shadow:  -9px 9px 7px #929090,
+                 9px -9px 0px #C31D3C;
+    
+  }
+  
+  .slanted-box h2 {
+    transform: skew(5deg); /* Undo the skew for text */
+    font-size: 1.5em;
+  }
+  
+  .slanted-box p {
+    transform: skew(5deg); /* Undo the skew for text */
+    font-size: 1em;
+    color: gray;
+  }
+  
+  .slanted-box:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -10px;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    transform: skew(5deg);
+  }
+
+
+    /*ARTICLE*/
+    .section-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%; /* Ensure the content is centered within the container */
+    }
+    
+    .section-title h1 {
+        font-weight: bold;
+        margin: 0 50px; /* Spacing between the title and lines */
+        white-space: nowrap; /* Prevent text from wrapping */
+    }
+    
+    .section-title hr {
+        flex-grow: 1; /* Line will take up remaining space */
+        height: 2px; /* Thickness of the line */
+        background-color: #000000; /* Line color */
+        border: none; /* Removes default border */
+        margin: 50px; /* Removes margin */
+        width: 20%; /* Adjust this to control line length */
+        
+    }
