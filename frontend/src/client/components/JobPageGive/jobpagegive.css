@@ -1,0 +1,156 @@
+/* Container styling */
+.givecontainer {
+    padding: 200px 20px 100px; /* Account for the fixed header */
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  /* Back button styling */
+  .back-button {
+    display: inline-block;
+    margin-bottom: 15px;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  
+  .back-button:hover {
+    text-decoration: underline;
+  }
+  
+  /* Title styling */
+
+  .title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .give-title {
+    margin-bottom: 5px;
+    font-size: 24px;
+    font-weight: 800;
+    color: #333;
+  }
+
+  .add-button {
+    background-color: #27a543; /* Blue background */
+    color: #fff; /* White text */
+    font-size: 14px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .add-button:hover {
+    background-color: #1db83f; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+  }
+  
+  .add-button:active {
+    transform: scale(0.95); /* Slight shrink effect on click */
+  }
+
+  td {
+    border-width: 2px;
+    border-color: #929292;
+    width: 800px;
+    padding-top: 10px;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+  }
+  
+  /* Individual option box styling */
+  .giveoption {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9;
+    border: 2px solid #c31d3c70; /* Add border to distinguish it */
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    position: relative; /* Allows better positioning of elements */
+  }
+
+  .giveoption-pending {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9;
+    border: 2px solid #8b8b8b; /* Add border to distinguish it */
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    position: relative; /* Allows better positioning of elements */
+  }
+  
+  .giveoption:hover, .giveoption-pending:hover {
+    background-color: #e6f7ff; /* Lighter blue on hover */
+    transform: scale(1.02); /* Slight zoom effect */
+    box-shadow: 0 8px 12px rgba(0, 123, 255, 0.2);
+  }
+  
+  /* Status styling */
+  .give-status {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+  }
+
+  .give-status-pending {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    background-color: #aaaaaa;
+    color: #fff;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+  }
+
+  
+  /* Details styling */
+  .give-details {
+    margin-top: 30px;
+  }
+  .give-details h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .give-details h5 {
+    margin: 2px 0;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* Trash icon styling */
+  .JobPageGiveIcon {
+    color: #ff4d4d; /* Red trash icon for "delete" */
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .JobPageGiveIcon:hover {
+    color: #ff0000; /* Bright red on hover */
+    transform: rotate(-15deg); /* Adds a playful hover effect */
+  }

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './login.css'; // Ensure CSS is correctly imported
+import './login.css'; 
+import '../Modal/modal.css'
 
 
-function LoginPage() {
+function LoginPage({ modalType}) {
   const [tup_id, setTupId] = useState('');
   const [password, setPassword] = useState('');
   const [birthdate, setBirthdate] = useState('');
@@ -16,6 +17,7 @@ function LoginPage() {
     document.body.style.overflow = ''; // Restore background scrolling
     setShowModal(false); // Close the modal
   };
+
 
   // Optional: If you want to open the modal based on a specific event, you can handle it here
   useEffect(() => {
@@ -57,7 +59,7 @@ function LoginPage() {
     <div>
       {/* Modal */}
       {showModal && (
-        <div className="modal-overlay" >
+        <div className="modal-overlay">
           <div className="modal-content"       
         onClick={(e) => e.stopPropagation()} >
             {/* Close Button */}

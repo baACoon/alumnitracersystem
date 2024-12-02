@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../components/Styles/popup.css';
 import '../Header/header.css';
-import '../../components/Styles/footer.css';
 import Tuplogo from '../../components/image/Tuplogo.png'
 import Alumnilogo from '../../components/image/alumniassoc_logo.png'
 
@@ -16,6 +15,23 @@ function Header() {
     const goToSurveys = () => {
       navigate('/Survey');
     };
+
+    const goToEvents = () => {
+      navigate('/Events');
+    };
+
+    const goToJob = () => {
+      navigate('/JobPage');
+    };
+
+    const goToContact = () => {
+      navigate('/Contact');
+    };
+
+    const goToProfile = () => {
+      navigate('/Profile');
+    };
+
 
   return (
 
@@ -59,23 +75,23 @@ function Header() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="events.php">
+              <a onClick={goToEvents} className="nav-link">
                 EVENTS
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="opportunities.php">
+              <a onClick={goToJob} className="nav-link">
                 OPPORTUNITIES
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="contact.php">
+              <a onClick={goToContact} className="nav-link">
                 CONTACT US
               </a>
             </li>
           </ul>
           <div className="d-flex">
-            <a className="btn btn-outline-light" href="profile.php">
+            <a onClick={goToProfile} className="nav-link">
               PROFILE
             </a>
           </div>

@@ -26,8 +26,8 @@ function FrontPage() {
       </div>
 
       <div className="system-title">
-        <h1>TUPATS</h1>
-        <h2>The Technological University of the Philippines Alumni Tracer System</h2>
+        <h3 className='system-title-1'>TUPATS</h3>
+        <h4 className='system-title-2'>The Technological University of the Philippines Alumni Tracer System</h4>
       </div>
 
       <div className="btn">
