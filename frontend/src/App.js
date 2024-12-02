@@ -22,7 +22,7 @@ import CompletedForm from './client/components/CompletedForm/CompletedForm';
 {/* for Admin path */}
 import Login from './admin/components/login/login'
 import AlumniPage from './admin/components/Alumnis/Page/AlumniPage'
-import SurveyContent from './admin/components/AdminSurvey/Content/SurveyContent'
+
 
 
 
@@ -52,7 +52,6 @@ function App() {
         {/* for Admin path */}
         <Route path='/Login' element ={<Login/>}/>
         <Route path='/AlumniPage' element ={<AlumniPage/>}/>
-        <Route path='/AlumniProfile' element ={<AlumniProfile/>}/>
       </Routes>
       </BrowserRouter>
       
