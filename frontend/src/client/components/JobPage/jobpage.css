@@ -1,0 +1,56 @@
+/* Container styling */
+.JobPageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 700px; /* Centers the boxes vertically */
+    gap: 40px; /* Space between the two boxes */
+  }
+  
+  /* Common box styling */
+  .JobPageBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    height: 175px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+  }
+  
+  /* Hover effect */
+  .JobPageBox:hover {
+    background-color: #C31D3C; /* Change background color */
+    transform: translateY(-10px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Icon styling */
+  .JobPageIcon {
+    font-size: 35px;
+    color: #242424; /* Default icon color */
+    transition: color 0.3s ease; /* Smooth color transition */
+  }
+  
+  /* Text styling */
+  .JobPageBox h3 {
+    padding-top: 20px;
+    font-size: 15px;
+    color: #333; /* Default text color */
+    transition: color 0.3s ease; /* Smooth color transition */
+  }
+  
+  /* Change icon and text color on hover */
+  .JobPageBox:hover .JobPageIcon {
+    color: #ffffff; /* Icon color on hover */
+  }
+  
+  .JobPageBox:hover h3 {
+    color: #ffffff; /* Text color on hover */
+  }
+  

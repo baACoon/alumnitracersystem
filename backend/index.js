@@ -30,7 +30,7 @@ app.get("/users", (req, res)=>{
 })
 
 
-app.post("/users", (req, res)=>{
+app.post("/", (req, res)=>{
     const q = "INSERT INTO users (id, college, course, tup_id, email, password, birthdate, created_at ) VALUES(?)";
     const values = [
         req.body.id,

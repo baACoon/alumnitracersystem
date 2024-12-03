@@ -17,6 +17,7 @@ function Modal({ modalType, closeModal }) {
       </div>
    
   );
+  
 }
 
 export default Modal;
