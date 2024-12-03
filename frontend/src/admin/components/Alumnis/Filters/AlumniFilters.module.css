@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 .filterControls {
   display: flex;
-  gap: 1rem;
+  /*gap: 1rem;
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
   width: fit-content;
-  margin-left: 10px;
+  margin-left: 10px;*/
 }
 .databaseTitle {
   position: relative;
@@ -34,6 +34,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+  width: 90%;
 }
 
 .filterButton {

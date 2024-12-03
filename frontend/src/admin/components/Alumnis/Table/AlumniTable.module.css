@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 .tableSection {
-    background: #c4bdbd;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
@@ -50,6 +49,7 @@
     font-weight: 400;
     color: #000000;
     font-family: 'Poppins', sans-serif;
+    width: 50%;
   }
   
   .searchInput {
@@ -57,7 +57,6 @@
     border: 1px solid #818181;
     border-radius: 5px;
     font-size: 1rem;
-    min-width: 200px;
     font-family: 'Poppins', sans-serif;
   }
   

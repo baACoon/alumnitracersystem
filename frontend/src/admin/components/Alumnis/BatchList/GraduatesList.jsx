@@ -145,7 +145,7 @@ export function GraduatesList() {
               className={styles.addBatchButton}
               onClick={handleAddBatch}
             >
-              + ADD NEW BATCH
+              + 
             </button>
           </div>
         </div>
@@ -158,7 +158,7 @@ export function GraduatesList() {
               className={styles.backButton}
               onClick={() => setSelectedBatch(null)}
             >
-              ← Back to Batch List
+              ← 
             </button>
             <button
               className={styles.deleteBatchButton}

@@ -33,7 +33,7 @@ export function Header() {
             SURVEYS
           </NavLink>
           <NavLink
-            to="/events"
+            to="/EventTabs"
             className={({ isActive }) =>
               isActive ? styles.navLinkActive : styles.navLink
             }

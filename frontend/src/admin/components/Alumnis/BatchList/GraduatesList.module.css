@@ -1,13 +1,16 @@
 .graduatesContainer {
-  padding: 20px;
-  background-color: #f4f4f4;
-  
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  top: 50px;
 }
 
 .batchesContainer {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
+  flex-direction: column-reverse;
+  gap: 20px;
+  width: 75%;
 }
 
 .batchButtonsContainer {
@@ -18,7 +21,7 @@
 }
 
 .batchButton, .addBatchButton {
-  padding: 15px;
+  display: flex;
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -37,6 +40,8 @@
   background-color: #c31d3c;
   color: white;
   border: none;
+  width: 50%;
+  justify-content: center;
 }
 
 .newBatchForm {
@@ -86,6 +91,7 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  width: 80%;
 }
 
 .backButton {
@@ -96,10 +102,17 @@
   margin-bottom: 15px;
   font-weight: bold;
 }
+.deleteBatchButton{
+  background-color: #080808;
+  font-size: small;
+  position: absolute;
+  right: 170px;
+}
 
 .importForm {
   display: grid;
   gap: 15px;
+  
 }
 
 .formGroup {
@@ -119,7 +132,7 @@
 }
 
 .fileInputButton {
-  background-color: #2196F3;
+  background-color: #f3cd21;
   color: white;
   border: none;
   padding: 10px 15px;
