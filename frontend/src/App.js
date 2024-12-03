@@ -22,7 +22,8 @@ import CompletedForm from './client/components/CompletedForm/CompletedForm';
 {/* for Admin path */}
 import Login from './admin/components/login/login'
 import AlumniPage from './admin/components/Alumnis/Page/AlumniPage'
-
+import SurveyContent from './admin/components/AdminSurvey/Content/SurveyContent'
+import EvenTabs from './admin/components/Event/EventTabs';
 
 
 
@@ -52,6 +53,8 @@ function App() {
         {/* for Admin path */}
         <Route path='/Login' element ={<Login/>}/>
         <Route path='/AlumniPage' element ={<AlumniPage/>}/>
+        <Route path='/SurveyContent' element ={<SurveyContent/>}/>
+        <Route path='/EventTabs' element ={<EvenTabs/>}/>
       </Routes>
       </BrowserRouter>
       
