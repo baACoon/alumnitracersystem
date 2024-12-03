@@ -1,0 +1,89 @@
+.profile-container{ 
+    background-color: #EAE6E7 ;
+    margin-top: 10em;
+}
+
+.underline{
+    border-bottom: 2px solid;
+}
+
+.personal-info{ 
+    width: 80%;
+    margin: 20px auto;
+    padding: 60px;
+
+}
+
+.profile-section{
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.personal-info h2{
+    font-weight: bolder;
+    color: black;
+    margin-top: -1em;
+}
+
+.profile-pic img {
+    width: 350px;
+    height: 350px;
+    border-radius: 5%;
+    display: block;
+    margin: 0 0;
+  }
+
+  .personal-info, .employment-status {
+    margin-top: 20px;
+  }
+  
+  .details p {
+    margin: 10px 0;
+    font-size: 16px;
+  }
+
+  .details {
+    flex: 1;
+  }
+  
+  .row-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 50px; /* Adds spacing between columns */
+    margin-bottom: 10px;
+ 
+  }
+  
+  .row-group .row {
+    flex: 1; /* Ensures both fields take equal width */
+  }
+  
+  .row-group .row label {
+    display: block; /* Ensures labels are aligned above inputs */
+  }
+  
+  .details .row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  
+  .details label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .details input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .details input::placeholder {
+    color: #888;
+    font-style: italic;
+  }
+  

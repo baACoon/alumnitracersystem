@@ -94,7 +94,15 @@
 
 #navbar ul li a:hover {
     background-color: #5D0E1D; /* Darker maroon on hover */
-    border-radius: 5px; /* Added subtle rounded effect */
+    border-radius: 5px; 
+}
+
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link:focus {
+  background-color: #5D0E1D; /* Darker maroon for active state */
+  border-radius: 5px;
+  color: white !important; /* Ensure the text color stays white */
+  text-decoration: none; /* Remove underline if present */
 }
 
 #navbar .profile-btn {
@@ -115,3 +123,4 @@
     border-radius: 5px;
 
 }
+
