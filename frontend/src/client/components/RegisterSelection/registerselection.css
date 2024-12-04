@@ -69,21 +69,36 @@
     animation: bounceUp 1s ease; /* Trigger the bounce animation */
 }
 
-.registerselection-btn button {
+.btn-NoAlumniID, .btn-WithAlumniID{
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
     width: 250px;
     height: 50px;
     border-radius: 10px;
     border: none;
     background-color: #C12542;
+    transition: background-color 0.3s ease;
+}
+
+.regselect-back{
+    border: none;
     color: white;
+    margin-top: 10px;
+    background: transparent;
     font-weight: 600;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    
+    width: 250px;
+    height: 50px;
 }
 
-.registerselection-btn button:hover {
+.regselect-back:hover{
+  color: #C12542;
+}
+
+.btn-NoAlumniID:hover, .btn-WithAlumniID:hover {
     background-color: #220107;
 }
 

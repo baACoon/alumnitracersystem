@@ -40,8 +40,8 @@ const RegisterSelection = () => {
 
         <h2>Select Registration Type</h2>
         <div className="registerselection-btn">
-            <button onClick={openRegister_NewAlumniModal}>No Alumni ID</button>
-            <button onClick={openRegister_OldAlumniModal}>With Alumni ID</button>
+            <button className="btn-NoAlumniID" onClick={openRegister_NewAlumniModal}>No Alumni ID</button>
+            <button className="btn-WithAlumniID" onClick={openRegister_OldAlumniModal}>With Alumni ID</button>
     
             {/* Conditional Rendering Based on Selected Option */}
             {showRegister_NewAlumniModal && <Register_NewAlumni closeModal={closeModal} />}

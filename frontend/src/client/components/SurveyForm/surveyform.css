@@ -75,11 +75,11 @@
     align-items: center;
 }
 
-.button-container {
+.survey-form-button-container {
     text-align: right;
 }
 
-button {
+.surveyform-btn {
     background-color: #c8102e;
     color: white;
     padding: 10px 20px;
@@ -89,6 +89,6 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.surveyform-btn:hover {
     background-color: #a30d25;
 }

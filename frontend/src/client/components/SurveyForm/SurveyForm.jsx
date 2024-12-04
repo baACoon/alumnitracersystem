@@ -116,8 +116,8 @@ function SurveyFormPage () {
             </div>
           </div>
   
-          <div className="button-container">
-            <button type="submit">Save</button>
+          <div className="survey-form-button-container">
+            <button className="surveyform-btn"type="submit">Save</button>
           </div>
         </form>
       </div>

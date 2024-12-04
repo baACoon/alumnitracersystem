@@ -28,14 +28,14 @@
     top: 10px;
     right: 10px;
     font-size: 24px;
-    color: #aaa;
+    color: #ffffff;
     background: transparent;
     border: none;
     cursor: pointer;
 }
 
 .close-btn-old-alumni:hover {
-    color: #ff0000;
+    color: #db4040;
 }
 
 /* Modal title for old alumni */
@@ -55,6 +55,8 @@
 /* Input fields and select elements for old alumni */
 .input-field-old-alumni {
     width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
     border-radius: 6px;
     border: 1px solid #ddd;
     font-size: 11px;
@@ -62,8 +64,10 @@
 
 /* Submit button for old alumni */
 .submit-btn-old-alumni {
+    width: 50%;
+    align-self: center;
     padding: 12px;
-    background-color: #4CAF50;
+    background-color: #C12542;
     color: white;
     border: none;
     border-radius: 6px;
@@ -73,7 +77,7 @@
 }
 
 .submit-btn-old-alumni:hover {
-    background-color: #45a049;
+    background-color: #350e15;
 }
 
 /* Responsive design for old alumni modal */
