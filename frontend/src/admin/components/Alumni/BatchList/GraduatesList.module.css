@@ -1,0 +1,208 @@
+.graduatesContainer {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  top: 50px;
+}
+
+.batchesContainer {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 20px;
+  width: 75%;
+}
+
+.batchButtonsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  
+}
+
+.batchButton, .addBatchButton {
+  display: flex;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: rgb(32, 32, 32);
+}
+
+.batchButton:hover, .addBatchButton:hover {
+  background-color: #be9393;
+  transform: scale(1.02);
+  color: black;
+}
+
+.addBatchButton {
+  background-color: #c31d3c;
+  color: white;
+  border: none;
+  width: 50%;
+  justify-content: center;
+}
+
+.newBatchForm {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.inputField {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  gap: 1rem;
+  flex: 1;
+}
+
+
+.newBatchButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.saveButton, .cancelButton {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.saveButton {
+  background-color:#c31d3c;
+  color: white;
+}
+
+.cancelButton {
+  background-color: #080808;
+  color: white;
+}
+
+.batchDetails {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  width: 80%;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: #161616;
+  cursor: pointer;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+.deleteBatchButton{
+  background-color: #080808;
+  font-size: small;
+  position: absolute;
+  right: 170px;
+}
+
+.importForm {
+  display: grid;
+  gap: 15px;
+  
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fileInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileInputButton {
+  background-color: #f3cd21;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.graduateListStats {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-radius: 4px;
+  
+}
+
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.statLabel {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.statValue {
+  font-weight: bold;
+}
+
+.formActions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.viewListButton {
+  background-color: #9E9E9E;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+}
+
+.viewListButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.uploadedList {
+  margin-top: 20px;
+}
+
+.graduatesTable {
+  width: 100%;
+  border-collapse: collapse;
+  
+}
+
+.graduatesTable thead {
+  background-color: #f4f4f4;
+}
+
+.graduatesTable th, .graduatesTable td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.emptyRow {
+  text-align: center;
+  color: #888;
+}

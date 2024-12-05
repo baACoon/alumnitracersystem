@@ -1,0 +1,38 @@
+.PendingSurvey {
+    position: relative;
+    left: 80px;
+    width: 90%;
+    margin-top: 20px;
+  }
+  
+  .pending-table {
+    width: 100%;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    text-align: left;
+    
+    background-color: blue;
+  }
+  
+  .pending-table th {
+    background-color: #900c3f; /* Red header color */
+    color: white;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .pending-table td {
+    vertical-align: middle;
+  }
+  
+  .edit-button {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .publish-button {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  

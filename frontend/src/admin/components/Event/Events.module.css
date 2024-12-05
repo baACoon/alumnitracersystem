@@ -1,0 +1,77 @@
+.eventTabsContainer{
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+.title{
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 20px;
+}
+.tabControls{
+    display: flex;
+    margin-bottom: 20px;
+}
+.tabButton{
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    background-color: #e0e0e0;
+    color: #000;
+}
+.tabButton:hover{
+    background-color: #d0d0d0;
+}
+.active{
+    background-color: #900c3f;
+    color: #fff;
+}
+.tabContent{
+    padding: 20px;
+    background:white;
+    border-radius: 5px;
+}
+.listOfEvents{
+    position: relative;
+}
+.deleteButton{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background-color: #900c3f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.eventTable{
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.eventsTable th, .eventTable td{
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+.eventsTable th {
+    background-color: #900c3f;
+    color: white;
+}
+.eventsDescription h2 {
+    font-size: 18px;
+    margin: 10px 0;
+}
+.createEvent{
+    padding: 20px;
+}
+.buttons{
+    display: flex;
+    justify-content: space-between;
+}

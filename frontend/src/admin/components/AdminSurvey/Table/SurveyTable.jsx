@@ -1,6 +1,8 @@
 import React from 'react';
 import styles from './SurveyTable.module.css';
 
+{/**  ganito dapat pero gagawing dynamic 
+ 
 const surveys = [
   {
     id: 1,
@@ -39,6 +41,15 @@ const surveys = [
     responses: 267
   }
 ];
+  
+*/}
+
+
+const surveys = [
+  <div>
+    <p style={{ color: 'gray', textAlign: 'center' }}>Pending content will go here.</p>
+  </div>
+];
 
 export const SurveyTable = () => {
   return (
@@ -66,7 +77,8 @@ export const SurveyTable = () => {
               <td className={styles.cell}>{survey.datePublished}</td>
               <td className={styles.cell}>{survey.responses}</td>
               <td className={styles.actionCell}>
-                <button 
+                {/*<button    ----dapat lalabas tong view and Download kapag 
+                                  may may laman na. 
                   className={`${styles.actionButton} ${styles.viewButton}`}
                   aria-label={`View ${survey.title}`}
                 >
@@ -77,7 +89,7 @@ export const SurveyTable = () => {
                   aria-label={`Download ${survey.title}`}
                 >
                   DOWNLOAD
-                </button>
+                </button>*/}
               </td>
             </tr>
           ))}

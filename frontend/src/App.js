@@ -19,8 +19,12 @@ import SurveyForm from './client/components/SurveyForm/SurveyForm';
 import CompletedForm from './client/components/CompletedForm/CompletedForm';
 
 {/* for Admin path */}
-import Login from './admin/components/login/login'
-import AlumniPage from './admin/components/Alumnis/Page/AlumniPage'
+import AlumniPage from './admin/components/Alumni/Page/AlumniPage'
+import SurveyContent from './admin/components/AdminSurvey/Content/SurveyContent'
+import EvenTabs from './admin/components/Event/EventTabs';
+import Navbar from './admin/components/Navbar';
+import Login from './admin/Pages/Login';
+import Register from './admin/Pages/Register'
 
 
 
@@ -48,8 +52,12 @@ function App() {
         
 
         {/* for Admin path */}
-        <Route path='/Login' element ={<Login/>}/>
         <Route path='/AlumniPage' element ={<AlumniPage/>}/>
+        <Route path='/SurveyContent' element ={<SurveyContent/>}/>
+        <Route path='/EventTabs' element ={<EvenTabs/>}/>
+        <Route path='/Navbar' element ={<Navbar/>}/>
+        <Route path='/Login' element ={<Login/>}/>
+        <Route path='/Register' element ={<Register/>}/>
       </Routes>
       </BrowserRouter>
       

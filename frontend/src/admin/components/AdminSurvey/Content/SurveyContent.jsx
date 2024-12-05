@@ -13,9 +13,7 @@ export const SurveyContent = () => {
       <main className={styles.mainContent} role="main">
       <h1 className={styles.pageTitle}>SURVEY MANAGEMENT</h1>
       <SurveyFilters />
-      <SurveyTable />
     </main>
-      <Footer />
     </div>
     
   );
