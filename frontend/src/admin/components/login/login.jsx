@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./login.css"; // Adjust the import based on your file structure
 
 const Login = () => {
   // State management for form inputs
