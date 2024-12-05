@@ -16,7 +16,7 @@ export async function connectToDatabase() {
   try {
     if (!dbInstance) {
       await client.connect();
-      dbInstance = client.db('alumni'); // Replace with your actual database name
+      dbInstance = client.db('Alumni'); // Replace with your actual database name
       console.log("Connected to MongoDB Atlas");
     }
     return dbInstance;
