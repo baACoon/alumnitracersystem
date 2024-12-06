@@ -13,7 +13,7 @@ const RegisterSelection = () => {
   const [showRegister_OldAlumniModal, setShowRegister_OldAlumniModal] = useState(false);
   const navigate = useNavigate();  // Initialize the navigate function
 
-  const handleLoginBackClick = () => navigate('../testfrontpage');  // Redirect to RegisterSelection page
+  const handleLoginBackClick = () => navigate('../frontpage');  // Redirect to RegisterSelection page
 
   // Function to open the No Alumni ID modal
   const openRegister_NewAlumniModal = () => setShowRegister_NewAlumniModal(true);

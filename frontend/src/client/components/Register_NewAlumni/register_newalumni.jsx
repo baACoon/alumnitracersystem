@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './register_newalumni.css'
+import './register_newalumni.css';
 
 const Register_NewAlumni = ({ closeModal }) => {
     const [college, setCollege] = useState('');
@@ -29,22 +29,53 @@ const Register_NewAlumni = ({ closeModal }) => {
         setCourse(e.target.value);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validate password match
         if (password !== confirmPassword) {
             alert("Passwords don't match");
             return;
         }
-        console.log({
-            firstName,
-            lastName,
-            middleName,
-            birthday,
+
+        // Prepare the data to be sent to the backend
+        const formData = {
+            alumniID: null, // No alumniID since this is a registration without it
             college,
             course,
+            firstName,
+            middleName,
+            lastName,
+            birthday,
             password,
-        });
-        closeModal();  // Close modal after submission
+            confirmPassword,
+        };
+
+        // Send data to backend using fetch
+        try {
+            const response = await fetch('http://localhost:5050/record/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Handle successful registration (you can show a success message or redirect)
+                alert('Registration successful!');
+                console.log('Registered user:', data);
+                closeModal();  // Close modal after successful submission
+            } else {
+                // Handle errors from backend
+                alert(`Error: ${data.error || 'Registration failed'}`);
+            }
+        } catch (error) {
+            console.error('Error submitting registration:', error);
+            alert('There was an error with the registration request.');
+        }
     };
 
     return (
@@ -66,7 +97,6 @@ const Register_NewAlumni = ({ closeModal }) => {
                     </select>
 
                     {/* Course Selection */}
-                    
                     <select value={course} onChange={handleCourseChange} required className="input-field-new-alumni">
                         <option value="">-- SELECT COURSE --</option>
                         {coursesByCollege[college]?.map((courseOption) => (
@@ -75,7 +105,6 @@ const Register_NewAlumni = ({ closeModal }) => {
                             </option>
                         ))}
                     </select>
-                    
                     
                     {/* Name Fields */}
                     <input
