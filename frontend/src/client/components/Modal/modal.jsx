@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Login_client from '../Login_client/Login_client'; // Path to Login Component
-import Register_client from '../Register_client/Register_client' // Path to Register Component
+
 import './modal.css';
 
 function Modal({ modalType, closeModal }) {

@@ -1,0 +1,95 @@
+/* Modal overlay */
+.modal-overlay-new-alumni {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+/* Modal content */
+.modal-content-new-alumni {
+    background-color: #5D0E1D;
+    border-radius: 8px;
+    padding: 30px;
+    width: 450px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Close button */
+.close-btn-new-alumni {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: #aaa;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.close-btn-new-alumni:hover {
+    color: #523737;
+}
+
+/* Modal title */
+.modal-title-new-alumni {
+    font-size: 24px;
+    color: #ffffff;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Form styling */
+.register-form-new-alumni {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Input fields and select elements */
+.input-field-new-alumni {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 11px;
+}
+
+/* Button */
+.submit-btn-new-alumni {
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn-new-alumni:hover {
+    background-color: #45a049;
+}
+
+/* Responsive design */
+@media (max-width: 500px) {
+    .modal-content-new-alumni {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .input-field-new-alumni {
+        padding: 10px;
+    }
+
+    .submit-btn-new-alumni {
+        padding: 10px;
+    }
+}

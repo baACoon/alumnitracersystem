@@ -14,7 +14,7 @@ function Home() {
     // Mock session data (replace with actual logic to fetch session data in production)
     const session = {
       show_popup: true,
-      success: 'You are now registered!',
+      success: 'Welcome to TUPATS!',
       tup_id: '123456',
     };
 

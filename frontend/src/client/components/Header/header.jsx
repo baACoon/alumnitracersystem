@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation} from 'react-router-dom';
 import '../../components/Styles/popup.css';
 import '../Header/header.css';
 import Tuplogo from '../../components/image/Tuplogo.png'
@@ -8,29 +8,8 @@ import Alumnilogo from '../../components/image/alumniassoc_logo.png'
 function Header() {
     const navigate = useNavigate();
 
-    const goToHome = () => {
-      navigate('/Home');
-    };
-  
-    const goToSurveys = () => {
-      navigate('/Survey');
-    };
-
-    const goToEvents = () => {
-      navigate('/Events');
-    };
-
-    const goToJob = () => {
-      navigate('/JobPage');
-    };
-
-    const goToContact = () => {
-      navigate('/Contact');
-    };
-
-    const goToProfile = () => {
-      navigate('/Profile');
-    };
+    const location = useLocation();
+    const isActive = (path) => location.pathname === path;
 
 
   return (
@@ -65,33 +44,40 @@ function Header() {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a onClick={goToHome} className="nav-link active" aria-current="page">
+              <a onClick={() => navigate("/Home")}
+                  className={`nav-link ${isActive("/Home") ? "active" : ""}`} aria-current="page">
                 HOME
               </a>
             </li>
             <li className="nav-item">
-              <a onClick={goToSurveys} className="nav-link">
+              <a onClick={() => navigate("/Survey")}
+                  className={`nav-link ${isActive("/Survey") ? "active" : ""}`}>
                 SURVEYS
               </a>
             </li>
             <li className="nav-item">
-              <a onClick={goToEvents} className="nav-link">
+              <a onClick={() => navigate("/Events")}
+                  className={`nav-link ${isActive("/Events") ? "active" : ""}`}>
                 EVENTS
               </a>
             </li>
             <li className="nav-item">
-              <a onClick={goToJob} className="nav-link">
+              <a onClick={() => navigate("/JobPage")}
+                  className={`nav-link ${isActive("/JobPage") ? "active" : ""}`}>
                 OPPORTUNITIES
               </a>
             </li>
             <li className="nav-item">
-              <a onClick={goToContact} className="nav-link">
+              <a onClick={() => navigate("/Contact")}
+                  className={`nav-link ${isActive("/Contact") ? "active" : ""}`}>
                 CONTACT US
               </a>
             </li>
           </ul>
+          
           <div className="d-flex">
-            <a onClick={goToProfile} className="nav-link">
+            <a onClick={() => navigate("/Profile")}
+                className={`nav-link ${isActive("/Profile") ? "active" : ""}`}>
               PROFILE
             </a>
           </div>

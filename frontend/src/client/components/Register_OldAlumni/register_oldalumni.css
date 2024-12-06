@@ -1,0 +1,93 @@
+/* Modal overlay for old alumni */
+.modal-overlay-old-alumni {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+/* Modal content for old alumni */
+.modal-content-old-alumni {
+    background-color: #5D0E1D;
+    border-radius: 8px;
+    padding: 30px;
+    width: 450px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Close button */
+.close-btn-old-alumni {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: #aaa;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.close-btn-old-alumni:hover {
+    color: #ff0000;
+}
+
+/* Modal title for old alumni */
+.modal-title-old-alumni {
+    font-size: 24px;
+    color: #ffffff;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Form styling for old alumni */
+.register-form-old-alumni {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Input fields and select elements for old alumni */
+.input-field-old-alumni {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 11px;
+}
+
+/* Submit button for old alumni */
+.submit-btn-old-alumni {
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn-old-alumni:hover {
+    background-color: #45a049;
+}
+
+/* Responsive design for old alumni modal */
+@media (max-width: 500px) {
+    .modal-content-old-alumni {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .input-field-old-alumni {
+        padding: 10px;
+    }
+
+    .submit-btn-old-alumni {
+        padding: 10px;
+    }
+}
