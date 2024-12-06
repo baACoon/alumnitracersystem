@@ -76,6 +76,7 @@
 
 /* Submit button for login */
 .submit-btn-login {
+    align-self: center;
     padding: 12px;
     background-color: #C12542;
     color: white;
@@ -88,7 +89,7 @@
 }
 
 .submit-btn-login:hover {
-    background-color: #45a049;
+    background-color: #220107;
 }
 
 /* Responsive design for login modal */
