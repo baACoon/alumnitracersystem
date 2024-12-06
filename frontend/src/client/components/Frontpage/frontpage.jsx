@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './testfrontpage.css'
+import './frontpage.css'
 import { useNavigate } from 'react-router-dom';  // Importing useNavigate for redirection
 import TestLoginForm from '../test_login/testLoginForm';  // Login Form Modal
 import Tuplogo from '../../components/image/Tuplogo.png'

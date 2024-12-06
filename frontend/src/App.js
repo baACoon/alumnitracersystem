@@ -4,7 +4,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import {BrowserRouter, Routes, Route} from "react-router-dom"
 
 {/* for Client path */}
-import TestFrontPage from './client/components/testfrontpage/testfrontpage';
+import FrontPage from './client/components/Frontpage/frontpage';
 import RegisterSelection from './client/components/RegisterSelection/registerselection';
 import Home from './client/components/Home/home'
 import Survey from './client/components/Survey/survey';
@@ -35,8 +35,8 @@ function App() {
       <BrowserRouter>
       <Routes>
         {/* for CLIENT path */}
-        <Route index element ={<TestFrontPage/>} />
-        <Route path='/testfrontpage' element ={<TestFrontPage/>}/>
+        <Route index element ={<FrontPage/>} />
+        <Route path='/Frontpage' element ={<FrontPage/>}/>
         <Route path='/registerselection' element ={<RegisterSelection/>}/>
         <Route path='/Home' element ={<Home/>} />
         <Route path='/Survey' element ={<Survey/>}/>
