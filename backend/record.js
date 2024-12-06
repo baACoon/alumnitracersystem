@@ -1,5 +1,5 @@
 import express from "express";
-import { connectToDatabase } from "../backend/db/connection.js";
+import { connectToDatabase } from "./db/connection.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 

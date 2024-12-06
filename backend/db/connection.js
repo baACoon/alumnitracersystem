@@ -1,13 +1,13 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import pkg from 'mongodb';
+const { MongoClient, ServerApiVersion } = pkg;
 
 const uri = "mongodb+srv://alumnitracer:pj3Nrrn4k32LKdEq@cluster0.cn3yf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
+const client = new MongoClient(uri, { 
+  serverApi: { 
+    version: ServerApiVersion.v1, 
+    strict: true, 
+    deprecationErrors: true, 
+  } 
 });
 
 let dbInstance;
@@ -16,7 +16,7 @@ export async function connectToDatabase() {
   try {
     if (!dbInstance) {
       await client.connect();
-      dbInstance = client.db('Alumni'); // Replace with your actual database name
+      dbInstance = client.db('alumni');
       console.log("Connected to MongoDB Atlas");
     }
     return dbInstance;
