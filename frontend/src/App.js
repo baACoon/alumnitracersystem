@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
 import {BrowserRouter, Routes, Route} from "react-router-dom"
 
+
 {/* for Client path */}
 import FrontPage from './client/components/Frontpage/frontpage';
 import RegisterSelection from './client/components/RegisterSelection/registerselection';

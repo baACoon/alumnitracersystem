@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import './jobpagegive.css';
+
 import Header from '../Header/header';
 import Footer from '../../../admin/components/Footer/Footer';
+
 
 function JobPageGive() {
   return (
