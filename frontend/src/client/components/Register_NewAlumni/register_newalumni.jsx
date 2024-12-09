@@ -71,6 +71,7 @@ const Register_NewAlumni = ({ closeModal }) => {
             'Bachelor of Technology in Print Media Technology'
         ]
     };
+    
 
     const handleCollegeChange = (e) => {
         setCollege(e.target.value);
