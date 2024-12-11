@@ -1,0 +1,101 @@
+/* Sidebar Container */
+.sidebar {
+    background-color: #C31D3C; /* Sidebar background color */
+    width: 250px; /* Fixed width for the sidebar */
+    height: 100vh; /* Full viewport height */
+    position: fixed; /* Make it fixed on the left side */
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    color: #FFFFFF; /* Text color */
+    
+  }
+  
+  /* Logo Section */
+  .logoContainer {
+    margin-bottom: 20px;
+  }
+  
+  .logo {
+    font-size: 2rem;
+    font-weight: 900;
+    font-style: italic;
+    color: #FFFFFF;
+  }
+  
+  /* Navigation Links */
+  .navigation {
+    display: flex;
+    flex-direction: column; /* Stack links vertically */
+    gap: 15px; /* Add spacing between links */
+    width: 100%; /* Ensure links take full width */
+  }
+  
+  .navLink {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 10px 15px;
+    transition: background-color 0.2s, transform 0.2s;
+    border-radius: 5px;
+    width: 100%;
+    
+  }
+  
+  .navLinkActive {
+    background-color: #5D0E1D; /* Active link background */
+    text-decoration: none;
+    color: white;
+    padding: 10px 15px;
+    font-weight: 800;
+  }
+  
+  .navLink:hover {
+    background-color: #5D0E1D;
+    transform: translateX(5px); /* Add slight movement for hover effect */
+  }
+  
+  /* User Profile Button */
+  .userProfile {
+    margin-top: auto; /* Push it to the bottom */
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+  
+  .userProfile:hover {
+    background-color: #5D0E1D;
+    transform: translateX(5px);
+  }
+  
+  /* Responsive Design: Adjust for smaller screens */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 200px;
+    }
+  
+    .logo {
+      font-size: 1.5rem;
+    }
+  
+    .navLink {
+      font-size: 0.9rem;
+    }
+  
+    .userProfile {
+      font-size: 0.9rem;
+    }
+  }
+  

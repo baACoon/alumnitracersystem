@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+
+.layout {
+    display: flex; /* Flexbox layout to position sidebar and main content */
+    font-family: 'Montserrat', sans-serif; /* Apply font to the entire layout */
+  }
+  
+  .sidebar {
+    flex: 0 0 250px; /* Sidebar has a fixed width */
+    height: 100vh; /* Full viewport height */
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #C31D3C;
+    color: white;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    font-family: 'Montserrat', sans-serif; /* Ensure font applies here */
+  }
+  
+  .mainContent {
+    margin-left: 250px; /* Push the main content to the right, matching sidebar width */
+    padding: 20px;
+    width: calc(100% - 250px); /* Remaining space for the main content */
+    overflow: auto;
+    min-height: 100vh;
+    font-family: 'Montserrat', sans-serif; /* Apply to main content */
+  }
+  
