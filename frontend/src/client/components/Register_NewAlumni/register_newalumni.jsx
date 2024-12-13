@@ -82,6 +82,7 @@ const Register_NewAlumni = ({ closeModal }) => {
         setCourse(e.target.value);
     };
 
+    // Make sure that all required fields are populated before submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -91,7 +92,13 @@ const Register_NewAlumni = ({ closeModal }) => {
             return;
         }
 
-        // Prepare the data to be sent to the backend
+        // Additional frontend validation (e.g., check for missing fields)
+        if (!college || !course || !firstName || !lastName || !middleName || !birthday) {
+            alert("All fields are required");
+            return;
+        }
+
+        // Prepare data and send to backend
         const formData = {
             alumniID: null, // No alumniID since this is a registration without it
             college,
@@ -115,14 +122,11 @@ const Register_NewAlumni = ({ closeModal }) => {
             });
 
             const data = await response.json();
-            
+
             if (response.ok) {
-                // Handle successful registration (you can show a success message or redirect)
                 alert('Registration successful!');
-                console.log('Registered user:', data);
-                closeModal();  // Close modal after successful submission
+                closeModal();
             } else {
-                // Handle errors from backend
                 alert(`Error: ${data.error || 'Registration failed'}`);
             }
         } catch (error) {
