@@ -23,6 +23,7 @@ import CompletedForm from './client/components/CompletedForm/CompletedForm';
 import AlumniPage from './admin/components/Alumni/Page/AlumniPage'
 import SurveyContent from './admin/components/AdminSurvey/Content/SurveyContent'
 import EvenTabs from './admin/components/Event/EventTabs';
+import Opportunities from './admin/components/Opportunities/Admin-Opportunities';
 import Navbar from './admin/components/Navbar';
 import Login from './admin/Pages/Login';
 import Register from './admin/Pages/Register'
@@ -33,39 +34,41 @@ import Register from './admin/Pages/Register'
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-      <Routes>
-        {/* for CLIENT path */}
-        <Route index element ={<FrontPage/>} />
-        <Route path='/Frontpage' element ={<FrontPage/>}/>
-        <Route path='/registerselection' element ={<RegisterSelection/>}/>
-        <Route path='/Home' element ={<Home/>} />
-        <Route path='/Survey' element ={<Survey/>}/>
-        <Route path='/Events' element ={<Events/>}/>
-        <Route path='/JobPage' element ={<JobPage/>}/>
-        <Route path='/JobPageGive' element ={<JobPageGive/>}/>
-        <Route path='/JobPageGive/addjobform' element ={<AddJobForm/>}/>
-        <Route path='/JobPageList' element ={<JobPageList/>}/>
-        <Route path='/Contact' element ={<Contact/>}/>
-        <Route path='/Profile' element ={<Profile/>}/>
-        <Route path='/SurveyForm' element ={<SurveyForm/>}/>
-        <Route path='/CompletedForm' element ={<CompletedForm/>}/>
-        
+      <div className="backgroundWrapper">
+        <BrowserRouter>
+          <Routes>
+            {/* CLIENT path */}
+            <Route index element={<FrontPage />} />
+            <Route path="/Frontpage" element={<FrontPage />} />
+            <Route path="/registerselection" element={<RegisterSelection />} />
+            <Route path="/Home" element={<Home />} />
+            <Route path="/Survey" element={<Survey />} />
+            <Route path="/Events" element={<Events />} />
+            <Route path="/JobPage" element={<JobPage />} />
+            <Route path="/JobPageGive" element={<JobPageGive />} />
+            <Route
+              path="/JobPageGive/addjobform"
+              element={<AddJobForm />}
+            />
+            <Route path="/JobPageList" element={<JobPageList />} />
+            <Route path="/Contact" element={<Contact />} />
+            <Route path="/Profile" element={<Profile />} />
+            <Route path="/SurveyForm" element={<SurveyForm />} />
+            <Route path="/CompletedForm" element={<CompletedForm />} />
 
-        {/* for Admin path */}
-        <Route path='/AlumniPage' element ={<AlumniPage/>}/>
-        <Route path='/SurveyContent' element ={<SurveyContent/>}/>
-        <Route path='/EventTabs' element ={<EvenTabs/>}/>
-        <Route path='/Navbar' element ={<Navbar/>}/>
-        <Route path='/Login' element ={<Login/>}/>
-        <Route path='/Register' element ={<Register/>}/>
-      </Routes>
-      </BrowserRouter>
-      
+            {/* ADMIN path */}
+            <Route path="/AlumniPage" element={<AlumniPage />} />
+            <Route path="/SurveyContent" element={<SurveyContent />} />
+            <Route path="/EventTabs" element={<EvenTabs />} />
+            <Route path="/Opportunities" element={<Opportunities />} />
+            <Route path="/Navbar" element={<Navbar />} />
+            <Route path="/Login" element={<Login />} />
+            <Route path="/Register" element={<Register />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
     </div>
-    
   );
-  
 }
 
 export default App;
