@@ -6,9 +6,5 @@ body {
     font-family: "Montserrat", sans-serif;
   }
   
-  /* App.css */
-.backgroundWrapper {
-    background-color: #f5f5f5; /* Light gray background */
-    min-height: 100vh; /* Ensures the background covers the viewport */
-  }
+
   

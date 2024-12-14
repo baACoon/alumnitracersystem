@@ -6,7 +6,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom"
 
 {/* for Client path */}
 import FrontPage from './client/components/Frontpage/frontpage';
-import RegisterSelection from './client/components/RegisterSelection/registerselection';
+import CrossCheckSurveyForm from './client/components/CrossCheck-Survey/CrossCheck-Survey';
 import Home from './client/components/Home/home'
 import Survey from './client/components/Survey/survey';
 import Events from './client/components/Events/events';
@@ -40,16 +40,13 @@ function App() {
             {/* CLIENT path */}
             <Route index element={<FrontPage />} />
             <Route path="/Frontpage" element={<FrontPage />} />
-            <Route path="/registerselection" element={<RegisterSelection />} />
+            <Route path="/RegisterSurveyForm" element={<CrossCheckSurveyForm />} />
             <Route path="/Home" element={<Home />} />
             <Route path="/Survey" element={<Survey />} />
             <Route path="/Events" element={<Events />} />
             <Route path="/JobPage" element={<JobPage />} />
             <Route path="/JobPageGive" element={<JobPageGive />} />
-            <Route
-              path="/JobPageGive/addjobform"
-              element={<AddJobForm />}
-            />
+            <Route path="/JobPageGive/addjobform" element={<AddJobForm />} />
             <Route path="/JobPageList" element={<JobPageList />} />
             <Route path="/Contact" element={<Contact />} />
             <Route path="/Profile" element={<Profile />} />

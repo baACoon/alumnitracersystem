@@ -1,17 +1,7 @@
-import React, { useState, useEffect } from "react";
-import styles from "./surveyform.module.css"
-import Header from "../Header/header";
-import Sidebar from "../Sidebar/sidebar";
-
-function SurveyForm() {
-  return (
-    <div>
-      <Header />
-      <Sidebar />
-      <SurveyFormPage />
-    </div>
-  );
-}
+import React, { useState } from "react";
+import styles from "./CrossCheck-Survey.module.css";
+import Tuplogo from "../../components/image/Tuplogo.png";
+import Alumnilogo from "../../components/image/alumniassoc_logo.png";
 
 const colleges = {
   "College of Engineering": [
@@ -73,7 +63,7 @@ const colleges = {
     "Bachelor of Technology in Print Media Technology",
   ],
 };
-function SurveyFormPage() {
+function CrossCheckSurveyForm() {
     const [currentPage, setCurrentPage] = useState(1); // Track which page is active
     const [selectedCollege, setSelectedCollege] = useState("");
     const [selectedCourse, setSelectedCourse] = useState("");
@@ -95,6 +85,10 @@ function SurveyFormPage() {
   
     return (
       <div className={styles["survey-container"]}>
+        <div className={styles["logo"]}>
+          <img src={Tuplogo} alt="TUP logo" className={styles["logo-1"]} />
+          <img src={Alumnilogo} alt="Alumni logo" className={styles["logo-2"]} />
+        </div>
         <h1>Tracer Survey Form (2024)</h1>
   
         <form action="process_survey.php" method="post">
@@ -270,4 +264,4 @@ function SurveyFormPage() {
     );
   }
   
-  export default SurveyForm;
+  export default CrossCheckSurveyForm;
