@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import Tuplogo from '/xampp/htdocs/alumnitracersystem/frontend/src/client/components/image/Tuplogo.png'
-import Alumnilogo from '/xampp/htdocs/alumnitracersystem/frontend/src/client/components/image/alumniassoc_logo.png'
+
 import "./Login.css";
 
 export default function Login() {
