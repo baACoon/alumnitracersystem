@@ -50,7 +50,7 @@ function Home() {
       <div className="pop-background" id="popBackground">
         <div className="popup" id="welcomePopup">
           <p>{message}</p>
-          <button className="popbutton" onClick={onClose}>OK</button>
+          <button className="popbutton" onClick={onClose}>Go to Survey</button>
         </div>
       </div>
     );
