@@ -23,6 +23,7 @@ jobs:
     # Step 3: Install dependencies and build the app
     - name: Install Dependencies and Build
       run: |
+        cd frontend
         npm install
         npm run build # Builds your React app into the `build` folder
 
