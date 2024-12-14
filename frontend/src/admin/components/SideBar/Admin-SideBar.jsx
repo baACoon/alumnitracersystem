@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import styles from "./Admin-SideBar.module.css";
+import { GraduatesList } from '../Alumni/BatchList/GraduatesList';
 
 export function Sidebar() {
   const [activeTab, setActiveTab] = useState(null);
@@ -25,6 +26,18 @@ export function Sidebar() {
           DASHBOARD
         </NavLink>
 
+        <div>
+        <NavLink
+          to="/AlumniPage"
+          className={({ isActive }) =>
+            isActive ? styles.mainTabActive : styles.mainTabButton
+          }
+        >
+          ALUMNI
+        </NavLink>
+          
+        </div>
+        
         {/* Events Tab */}
         <NavLink
           to="/EventTabs"
@@ -36,34 +49,6 @@ export function Sidebar() {
         </NavLink>
 
         {/* Tabs with Sub-Tabs */}
-        <div>
-          <button
-            className={styles.mainTabButton}
-            onClick={() => toggleTab("alumni")}
-          >
-            ALUMNI
-          </button>
-          {activeTab === "alumni" && (
-            <div className={styles.subTabs}>
-              <NavLink
-                to="/AlumniPage"
-                className={({ isActive }) =>
-                  isActive ? styles.subTabActive : styles.subTab
-                }
-              >
-                Registered
-              </NavLink>
-              <NavLink
-                to="/AlumniPage/List"
-                className={({ isActive }) =>
-                  isActive ? styles.subTabActive : styles.subTab
-                }
-              >
-                List
-              </NavLink>
-            </div>
-          )}
-        </div>
 
         <div>
           <button

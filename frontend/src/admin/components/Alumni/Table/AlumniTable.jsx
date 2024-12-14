@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './AlumniTable.module.css';
-import SidebarLayout from '../../SideBar/SideBarLayout';
+
 
 const initialAlumniData = [
   {
@@ -99,7 +99,7 @@ export function AlumniTable() {
  
 
   return (
-    <SidebarLayout>
+
     <section className={styles.tableSection} aria-label="Alumni data">
       <div className={styles.tableControls}>
         <button 
@@ -291,7 +291,7 @@ export function AlumniTable() {
 
 
     </section>
-    </SidebarLayout>
+
   );
 }
 

@@ -1,65 +1,93 @@
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import styles from './AlumniFilters.module.css';
-import { AlumniTable } from '../Table/AlumniTable';
-import { GraduatesList } from '../BatchList/GraduatesList';
+import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import styles from "./AlumniFilters.module.css";
+import { AlumniTable } from "../Table/AlumniTable";
+import { GraduatesList } from "../BatchList/GraduatesList";
+import SidebarLayout from "../../SideBar/SideBarLayout";
 
 export function AlumniFilters() {
-
-  const [activeTab, setActiveTab] = useState('registered');
-  const [batch, setBatch] = useState('');
-  const [college, setCollege] = useState('');
-  const [course, setCourse] = useState('');
+  const [activeTab, setActiveTab] = useState("registered");
+  const [batch, setBatch] = useState("");
+  const [college, setCollege] = useState("");
+  const [course, setCourse] = useState("");
   const [activeFilter, setActiveFilter] = useState(null);
 
-  // College and course mappings
   const coursesByCollege = {
-    COE: ["BSCE", "BSEE", "BSME"],
-    CAFA: ["BSA", "BFA", "BGT major in AT", "BGT major in ID", "BGT major in MDT"],
-    CLA: ["BSBM major in IM", "BSE", "BS HM"],
-    CIE: [
-      "BS IE major in ICT",
-      "BS IE major in HE",
-      "BS IE major in IA",
-      "BTVTE major in ANIMATION",
-      "BTVTE major in AUTOMATIVE",
-      "BTVTE major in BCW",
-      "BTVTE major in CP",
-      "BTVTE major in ELECTRONIC",
-      "BTVTE major in FSM",
-      "BTVTE major in FG",
-      "BTVTE major in HVAC",
-    ],
-    COS: ["BASLT", "BSCS", "BSES", "BSIS", "BSIT"],
-    CIT: [
-      "BSFT",
-      "BET major in CT",
-      "BET major in ET",
-      "BET major in CET",
-      "BET major in ECT",
-      "BET major in ICT",
-      "BET major in MT",
-      "BET major in RT",
-      "BTAF",
-      "BTCT",
-      "BTPT",
-    ],
+    "College of Engineering": [
+    "Bachelor of Science in Civil Engineering",
+    "Bachelor of Science in Electrical Engineering",
+    "Bachelor of Science in Electronics Engineering",
+    "Bachelor of Science in Mechanical Engineering",
+  ],
+  "College of Science": [
+    "Bachelor of Applied Science in Laboratory Technology",
+    "Bachelor of Science in Computer Science",
+    "Bachelor of Science in Environmental Science",
+    "Bachelor of Science in Information System",
+    "Bachelor of Science in Information Technology",
+  ],
+  "College of Industrial Education": [
+    "Bachelor of Science Industrial Education Major in Information and Communication Technology",
+    "Bachelor of Science Industrial Education Major in Home Economics",
+    "Bachelor of Science Industrial Education Major in Industrial Arts",
+    "Bachelor of Technical Vocational Teachers Education Major in Animation",
+    "Bachelor of Technical Vocational Teachers Education Major in Automotive",
+    "Bachelor of Technical Vocational Teachers Education Major in Beauty Care and Wellness",
+    "Bachelor of Technical Vocational Teachers Education Major in Computer Programming",
+    "Bachelor of Technical Vocational Teachers Education Major in Electrical",
+    "Bachelor of Technical Vocational Teachers Education Major in Electronics",
+    "Bachelor of Technical Vocational Teachers Education Major in Food Service Management",
+    "Bachelor of Technical Vocational Teachers Education Major in Fashion and Garment",
+    "Bachelor of Technical Vocational Teachers Education Major in Heat Ventillation & Air Conditioning",
+  ],
+  "College of Liberal Arts": [
+    "Bachelor of Science in Business Management Major in Industrial Management",
+    "Bachelor of Science in Entreprenuership",
+    "Bachelor of Science Hospitality Management",
+  ],
+  "College of Architecture and Fine Arts": [
+    "Bachelor of Science in Architecture",
+    "Bachelor of Fine Arts",
+    "Bachelor of Graphic Technology Major in Architecture Technology",
+    "Bachelor of Graphic Technology Major in Industrial Design",
+    "Bachelor of Graphic Technology Major in Mechanical Drafting Technology",
+  ],
+  "College of Industrial Technology": [
+    "Bachelor of Science in Food Technology",
+    "Bachelor of Engineering Technology Major in Civil Technology",
+    "Bachelor of Engineering Technology Major in Electrical Technology",
+    "Bachelor of Engineering Technology Major in Electronics Technology",
+    "Bachelor of Engineering Technology Major in Computer Engineering Technology",
+    "Bachelor of Engineering Technology Major in Instrumentation and Control Technology",
+    "Bachelor of Engineering Technology Major in Mechanical Technology",
+    "Bachelor of Engineering Technology Major in Mechatronics Technology",
+    "Bachelor of Engineering Technology Major in Railway Technology",
+    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Automative Technology",
+    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Heating Ventilation & Airconditioning/Refrigiration Technology",
+    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Power Plant Technology",
+    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Welding Technology",
+    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Dies and Moulds Technology",
+    "Bachelor of Technology in Apparel and Fashion",
+    "Bachelor of Technology in Culinary Technology",
+    "Bachelor of Technology in Print Media Technology",
+  ],
   };
 
   const handleBatchChange = (e) => {
     setBatch(e.target.value);
-    setActiveFilter('batch');
+    setActiveFilter("batch");
   };
 
   const handleCollegeChange = (e) => {
     setCollege(e.target.value);
-    setActiveFilter('college');
+    setActiveFilter("college");
+    setCourse(""); // Reset course when college changes
   };
 
   const handleCourseChange = (e) => {
     setCourse(e.target.value);
-    setActiveFilter('course');
+    setActiveFilter("course");
   };
 
   const handleTabChange = (tab) => {
@@ -67,35 +95,38 @@ export function AlumniFilters() {
   };
 
   return (
+    <SidebarLayout>
     <section className={styles.filterSection} aria-label="Alumni filters">
       <h2 className={styles.databaseTitle}>ALUMNI DATABASE</h2>
-  
-      {/* Filter Controls - Keep existing code */}
+
+      {/* Filter Controls */}
       <div className={styles.filterControls} role="group" aria-label="Filter controls">
         {/* Batch Filter */}
         <div className={styles.filterButtonContainer}>
+          <label htmlFor="batch" className={styles.filterLabel}>Batch:</label>
           <select
-            className={`${styles.filterButton} ${activeFilter === 'batch' ? styles.filterButtonActive : ''}`}
+            id="batch"
+            className={`${styles.filterButton} ${activeFilter === "batch" ? styles.filterButtonActive : ""}`}
             value={batch}
             onChange={handleBatchChange}
-            aria-label="Select Batch"
           >
+            <option value="">All Batches</option>
             {Array.from({ length: 10 }, (_, i) => 2024 - i).map((year) => (
               <option key={year} value={year}>
                 Batch {year}
-                <FontAwesomeIcon icon={faCaretDown} className={styles.filterIcon} aria-hidden="true" />
               </option>
             ))}
           </select>
         </div>
-  
+
         {/* College Filter */}
         <div className={styles.filterButtonContainer}>
+          <label htmlFor="college" className={styles.filterLabel}>College:</label>
           <select
-            className={`${styles.filterButton} ${activeFilter === 'college' ? styles.filterButtonActive : ''}`}
+            id="college"
+            className={`${styles.filterButton} ${activeFilter === "college" ? styles.filterButtonActive : ""}`}
             value={college}
             onChange={handleCollegeChange}
-            aria-label="Select College"
           >
             <option value="">All Colleges</option>
             {Object.keys(coursesByCollege).map((collegeName) => (
@@ -105,14 +136,15 @@ export function AlumniFilters() {
             ))}
           </select>
         </div>
-  
+
         {/* Course Filter */}
         <div className={styles.filterButtonContainer}>
+          <label htmlFor="course" className={styles.filterLabel}>Course:</label>
           <select
-            className={`${styles.filterButton} ${activeFilter === 'course' ? styles.filterButtonActive : ''}`}
+            id="course"
+            className={`${styles.filterButton} ${activeFilter === "course" ? styles.filterButtonActive : ""}`}
             value={course}
             onChange={handleCourseChange}
-            aria-label="Select Course"
             disabled={!college}
           >
             <option value="">Select Course</option>
@@ -125,7 +157,7 @@ export function AlumniFilters() {
           </select>
         </div>
       </div>
-  
+
       {/* Tabs for Registered Alumni and List of Graduates */}
       <div className={styles.viewToggle} role="tablist">
         <button
@@ -145,11 +177,14 @@ export function AlumniFilters() {
           LIST OF GRADUATES
         </button>
       </div>
-  
+
       {/* Conditional Rendering */}
       {activeTab === "registered" && <AlumniTable />}
       {activeTab === "graduates" && <GraduatesList />}
     </section>
+
+    
+    </SidebarLayout>
   );
 }
 
