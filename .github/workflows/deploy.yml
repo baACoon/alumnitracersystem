@@ -37,4 +37,4 @@ jobs:
         protocol: ftp # Ensure the protocol is FTP
         port: 21 # Port for FTP (default)
         local-dir: frontend/build/ # Path to the build folder inside your repository
-        server-dir: /public_html/alumnitracer # Target folder on Hostinger
+        server-dir: /public_html/alumnitracer/ # Target folder on Hostinger
