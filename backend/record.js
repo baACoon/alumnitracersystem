@@ -31,7 +31,7 @@ router.post('/register', async (req, res) => {
     }
 
     const db = await connectToDatabase();
-    const usersCollection = db.collection('users');
+    const usersCollection = db.collection('students');
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
