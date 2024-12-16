@@ -1,14 +1,19 @@
 import express from "express";
 import cors from "cors";
 import records from './record.js';
+import surveyRoutes from './routes/surveyroutes.js'; // Import survey routes
 import { connectToDatabase } from '../backend/db/connection.js';
 
 const PORT = process.env.PORT || 5050;
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
-app.use("/record", records);
+
+// Routes
+app.use("/record", records); // Existing records routes
+app.use("/api/surveys", surveyRoutes); // Add survey routes
 
 // Connect to MongoDB Atlas before starting the server
 connectToDatabase()
