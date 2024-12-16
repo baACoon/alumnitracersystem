@@ -38,7 +38,7 @@ const Register_NewAlumni = ({closeModal}) => {
         };
 
         try {
-            const response = await fetch('https://tupalumni.com/record/register', {
+            const response = await fetch('https://localhost:5050/record/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
