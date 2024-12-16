@@ -7,11 +7,11 @@ import { connectToDatabase } from '../backend/db/connection.js';
 const PORT = process.env.PORT || 5050;
 const app = express();
 
+
+// Middleware
 app.use(cors({
   origin: ['https://tupalumni.com']
 }));
-// Middleware
-app.use(cors());
 app.use(express.json());
 
 // Routes
