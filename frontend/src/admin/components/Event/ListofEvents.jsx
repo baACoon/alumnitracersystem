@@ -1,48 +1,89 @@
-import React from "react";
-import styles from './Events.module.css';
+import React, { useState } from "react";
+import styles from "./ListofEvents.module.css";
 
+export const ListOfEvents = ({ events }) => {
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-export const ListOfEvents = () => {
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+  };
 
-    return(
-        <div className={styles.listOfEvents}>
-            <button className={styles.deleteButton}>DELETE</button>
-            <table className={styles.eventsTable}>
-                <thead>
-                    <tr>
-                        <th>Event ID</th>
-                        <th>Participants ID</th>
-                        <th>Picture</th>
-                        <th>Time</th>
-                        <th>Date</th>
-                        <th>Venue</th>
-                        <th>By</th>
-                        <th>Source</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>01</td>
-                        <td>01</td>
-                        <td>1234567...</td>
-                        <td>4:00-10:00pc</td>
-                        <td>12/14/24</td>
-                        <td>UTC Hall</td>
-                        <td>Admin Ris</td>
-                        <td><a href="#">Link</a></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div className={styles.eventDescription}>
-                <h2>123rd Alumni Homecoming</h2>
-                <p>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. 
-                    Quo nulla aliquam quas veniam, nam qui explicabo et blanditiis! 
-                    Totam itaque cumque ut vero iusto ea veniam consectetur earum dolorem mollitia?
-                </p>
+  const closeModal = () => {
+    setSelectedEvent(null);
+  };
+
+  return (
+    <div className={styles.listOfEvents}>
+      <h2 className={styles.title}>List of Events</h2>
+      {events.length > 0 ? (
+        <div className={styles.eventsGrid}>
+          {events.map((event, index) => (
+            <div
+              key={index}
+              className={styles.eventBox}
+              onClick={() => handleEventClick(event)}
+            >
+              <p>
+                <strong>Date and Time:</strong> {event.date} at {event.time}
+              </p>
+              <h2>{event.title}</h2>
+              <p>
+                {event.description.length > 100
+                  ? event.description.substring(0, 100) + "..."
+                  : event.description}
+              </p>
             </div>
+          ))}
         </div>
-    );
+      ) : (
+        <p className={styles.noEvents}>No events available. Please create one.</p>
+      )}
+
+      {/* Modal */}
+      {selectedEvent && (
+        <div className={styles.modalOverlay} onClick={closeModal}>
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()} // Prevent modal close on content click
+          >
+            <button className={styles.closeButton} onClick={closeModal}>
+              &times;
+            </button>
+            <h2 className={styles.modalTitle}>{selectedEvent.title}</h2>
+            <div className={styles.modalDetails}>
+              <p>
+                <strong>Date:</strong> {selectedEvent.date}
+              </p>
+              <p>
+                <strong>Time:</strong> {selectedEvent.time}
+              </p>
+              <p>
+                <strong>Venue:</strong> {selectedEvent.venue}
+              </p>
+              <p>
+                <strong>Description:</strong> {selectedEvent.description}
+              </p>
+              <p>
+                <strong>Event ID:</strong> {selectedEvent.eventId}
+              </p>
+              <p>
+                <strong>Participants ID:</strong> {selectedEvent.participantsId}
+              </p>
+              <p>
+                <strong>By:</strong> {selectedEvent.by}
+              </p>
+              <p>
+                <strong>Source:</strong>{" "}
+                <a href={selectedEvent.source} target="_blank" rel="noopener noreferrer">
+                  Link
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default ListOfEvents;
