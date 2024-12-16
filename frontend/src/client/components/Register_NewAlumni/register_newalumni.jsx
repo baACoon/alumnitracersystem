@@ -117,12 +117,12 @@ const Register_NewAlumni = ({closeModal}) => {
                         : (
                             <div className="unique-id-modal">
                                 <h3>Registration Successful!</h3>
-                                <p>Your unique ID:
+                                <p>Your User ID:
                                     <strong>{generatedID}</strong>
                                 </p>
-                                <p>Please use this ID to log in.</p>
-                                <button onClick={() => navigate('/login')} className="submit-btn-new-alumni">
-                                    Go to Login
+                                <p>Please save this ID. This serve as your username to login.</p>
+                                <button onClick={handleCrossCheckSurveyFormClick} className="submit-btn-new-alumni">
+                                    Go to Survey
                                 </button>
                             </div>
                         )
