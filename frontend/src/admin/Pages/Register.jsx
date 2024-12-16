@@ -1,60 +1,83 @@
-import { useState } from 'react';
+import React, { useState } from "react";
+import axios from "axios";
 
-export default function Register() {
-  const [data, setData] = useState({ name: '', email: '', password: '' });
-  const [message, setMessage] = useState('');
+const AdminRegister = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [message, setMessage] = useState("");
 
-  const registerUser = async (e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Data being sent:", data);  // Log the data before sending it
-  
+
     try {
-      const response = await fetch("http://localhost:5050/record/register", {
+      const response = await fetch("http://localhost:5050/adminlog_reg/adminregister", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
-  
-      const result = await response.json();
+
+      const data = await response.json();
+
       if (response.ok) {
-        setMessage("Registration successful!");
+        setMessage(data.message); // Success message
+        setFormData({ username: "", password: "", confirmPassword: "" }); // Clear form
       } else {
-        setMessage(result.error || "Error registering user.");
+        setMessage(data.error || "Registration failed."); // Show error message
       }
     } catch (error) {
-      setMessage("Error registering user.");
-      console.error("Error during registration:", error);  // Log error to console
+      console.error("Error submitting registration:", error);
+      setMessage("An error occurred. Please try again.");
     }
   };
-  
 
   return (
     <div>
-      <form onSubmit={registerUser}>
-        <label>Name</label>
-        <input
-          type="text"
-          placeholder="Enter name"
-          value={data.name}
-          onChange={(e) => setData({ ...data, name: e.target.value })}
-        />
-        <label>Email</label>
-        <input
-          type="email"  // Change to 'email' type
-          placeholder="Enter email"
-          value={data.email}
-          onChange={(e) => setData({ ...data, email: e.target.value })}
-        />
-        <label>Password</label>
-        <input
-          type="password"
-          placeholder="Enter password"
-          value={data.password}
-          onChange={(e) => setData({ ...data, password: e.target.value })}
-        />
-        <button type="submit">Submit</button>
+      <h2>Admin Register</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Username:</label>
+          <input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label>Confirm Password:</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit">Register</button>
       </form>
-      <p>{message}</p>
+      {message && <p>{message}</p>}
     </div>
   );
-}
+};
+
+export default AdminRegister;
