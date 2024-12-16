@@ -1,15 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Tuplogo from '/xampp/htdocs/alumnitracersystem/frontend/src/client/components/image/Tuplogo.png';
-import Alumnilogo from '/xampp/htdocs/alumnitracersystem/frontend/src/client/components/image/alumniassoc_logo.png';
+import Tuplogo from '../components/images/Tuplogo.png';
+import Alumnilogo from '../components/images/alumniassoc_logo.png'
 import styles from './Register.module.css';
-
-export default function Register() {
-  const [data, setData] = useState({ email: '', username: '', password: '', confirmPassword: '' });
-  const [message, setMessage] = useState('');
-  const navigate = useNavigate();
-import React, { useState } from "react";
-import axios from "axios";
 
 const AdminRegister = () => {
   const [formData, setFormData] = useState({
@@ -25,12 +17,6 @@ const AdminRegister = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (data.password !== data.confirmPassword) {
-      setMessage("Passwords do not match.");
-      return;
-    }
-
-    console.log("Data being sent:", data); // Log the data before sending it
 
     try {
       const response = await fetch("http://localhost:5050/adminlog_reg/adminregister", {
@@ -41,7 +27,8 @@ const AdminRegister = () => {
         body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
+      const data = await response.json();
+
       if (response.ok) {
         setMessage(data.message); // Success message
         setFormData({ username: "", password: "", confirmPassword: "" }); // Clear form
@@ -49,13 +36,14 @@ const AdminRegister = () => {
         setMessage(data.error || "Registration failed."); // Show error message
       }
     } catch (error) {
-      setMessage("Error registering user.");
-      console.error("Error during registration:", error); // Log error to console
+      console.error("Error submitting registration:", error);
+      setMessage("An error occurred. Please try again.");
     }
   };
 
   return (
-    <div className={styles.registerBg}>
+    <div>
+      <div className={styles.registerBg}>
       <div className={styles.adminLoginLogo}>
         <img src={Tuplogo} alt="TUP logo" className={styles.logo1} />
         <img src={Alumnilogo} alt="Alumni logo" className={styles.logo2} />
@@ -69,38 +57,34 @@ const AdminRegister = () => {
       </div>
 
       <div className={styles.registerContainer}>
-        <form onSubmit={registerUser} className={styles.registerForm}>
-          <label>Email</label>
-          <input
-            type="email"
-            placeholder="Enter email"
-            value={data.email}
-            onChange={(e) => setData({ ...data, email: e.target.value })}
-          />
+        <form onSubmit={handleSubmit} className={styles.registerForm}>
           <label>Username</label>
           <input
             type="text"
+            name="username"
             placeholder="Enter username"
-            value={data.username}
-            onChange={(e) => setData({ ...data, username: e.target.value })}
+            value={formData.username}
+            onChange={handleChange}
           />
           <label>Password</label>
           <input
             type="password"
+            name="password"
             placeholder="Enter password"
-            value={data.password}
-            onChange={(e) => setData({ ...data, password: e.target.value })}
+            value={formData.password}
+            onChange={handleChange}
           />
           <label>Confirm Password</label>
           <input
             type="password"
+            name='confirmPassword'
             placeholder="Confirm password"
-            value={data.confirmPassword}
-            onChange={(e) => setData({ ...data, confirmPassword: e.target.value })}
+            value={formData.confirmPassword}
+            onChange={handleChange}
           />
           <button type="submit">Register</button>
         </form>
-        <p>{message}</p>
+        {message && <p>{message}</p>}
         <button
           className={styles.loginButton}
           onClick={() => navigate('/login')}
@@ -109,6 +93,8 @@ const AdminRegister = () => {
         </button>
       </div>
     </div>
+    </div>
+    
   );
 };
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Tuplogo from '/xampp/htdocs/alumnitracersystem/frontend/src/client/components/image/Tuplogo.png';
-import Alumnilogo from '/xampp/htdocs/alumnitracersystem/frontend/src/client/components/image/alumniassoc_logo.png';
+import Tuplogo from '../components/images/Tuplogo.png';
+import Alumnilogo from '../components/images/alumniassoc_logo.png'
 import styles from './Login.module.css'; // Updated to use module.css
 import { useNavigate } from 'react-router-dom';
 
