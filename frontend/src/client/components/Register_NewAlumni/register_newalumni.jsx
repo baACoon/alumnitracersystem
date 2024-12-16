@@ -33,7 +33,8 @@ const Register_NewAlumni = ({closeModal}) => {
             middleName,
             lastName,
             birthday,
-            password
+            password,
+            confirmPassword
         };
 
         try {
