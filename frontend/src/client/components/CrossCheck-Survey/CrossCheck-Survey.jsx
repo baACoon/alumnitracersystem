@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios"; // To handle API requests
 import styles from "./CrossCheck-Survey.module.css";
 import Tuplogo from "../../components/image/Tuplogo.png";
 import Alumnilogo from "../../components/image/alumniassoc_logo.png";
@@ -63,205 +64,267 @@ const colleges = {
     "Bachelor of Technology in Print Media Technology",
   ],
 };
+
 function CrossCheckSurveyForm() {
-    const [currentPage, setCurrentPage] = useState(1); // Track which page is active
-    const [selectedCollege, setSelectedCollege] = useState("");
-    const [selectedCourse, setSelectedCourse] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [formData, setFormData] = useState({
+    date: new Date().toISOString().split("T")[0],
+    first_name: "",
+    last_name: "",
+    middle_name: "",
+    college: "",
+    course: "",
+    occupation: "",
+    company_name: "",
+    year_started: "",
+    position: "",
+    job_status: "",
+    type_of_organization: "",
+    work_alignment: "",
+  });
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    const handleCollegeChange = (e) => {
-      setSelectedCollege(e.target.value);
-      setSelectedCourse(""); // Reset course when college changes
-    };
-  
-    const handleCourseChange = (e) => {
-      setSelectedCourse(e.target.value);
-    };
-  
-    const handleNextPage = () => setCurrentPage(2);
-    const handlePreviousPage = () => setCurrentPage(1);
-  
-    const currentDate = new Date().toISOString().split("T")[0]; // Get current date in 'YYYY-MM-DD' format
-  
-    return (
-      <div className={styles["survey-container"]}>
-        <div className={styles["logo"]}>
-          <img src={Tuplogo} alt="TUP logo" className={styles["logo-1"]} />
-          <img src={Alumnilogo} alt="Alumni logo" className={styles["logo-2"]} />
-        </div>
-        <h1>Tracer Survey Form (2024)</h1>
-  
-        <form action="process_survey.php" method="post">
-          {currentPage === 1 && (
-            <>
-              <h5>Personal Information</h5>
-              <div className={styles["form-group"]}>
-                <label htmlFor="date">Date:</label>
-                <input
-                  type="date"
-                  id="date"
-                  name="date"
-                  value={currentDate}
-                  readOnly
-                />
-              </div>
-              <div className={styles["form-group"]}>
-                <label htmlFor="first_name">First Name:</label>
-                <input type="text" id="first_name" name="first_name" required />
-              </div>
-              <div className={styles["form-group"]}>
-                <label htmlFor="last_name">Last Name:</label>
-                <input type="text" id="last_name" name="last_name" required />
-              </div>
-              <div className={styles["form-group"]}>
-                <label htmlFor="middle_name">Middle Name:</label>
-                <input type="text" id="middle_name" name="middle_name" />
-              </div>
-              <div className={styles["form-group"]}>
-                <label htmlFor="college">College:</label>
-                <select
-                  id="college"
-                  name="college"
-                  value={selectedCollege}
-                  onChange={handleCollegeChange}
-                  required
-                >
-                  <option value="">Select College</option>
-                  {Object.keys(colleges).map((college) => (
-                    <option key={college} value={college}>
-                      {college}
+  const handleNextPage = () => setCurrentPage(2);
+  const handlePreviousPage = () => setCurrentPage(1);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:5050/api/surveys/submit", formData);
+      alert(response.data.message);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to submit the survey. Please try again.");
+    }
+  };
+
+  return (
+    <div className={styles["survey-container"]}>
+      <div className={styles["logo"]}>
+        <img src={Tuplogo} alt="TUP logo" className={styles["logo-1"]} />
+        <img src={Alumnilogo} alt="Alumni logo" className={styles["logo-2"]} />
+      </div>
+      <h1>Tracer Survey Form (2024)</h1>
+
+      <form onSubmit={handleSubmit}>
+        {currentPage === 1 && (
+          <>
+            <h5>Personal Information</h5>
+            <div className={styles["form-group"]}>
+              <label htmlFor="date">Date:</label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                value={formData.date}
+                readOnly
+              />
+            </div>
+            <div className={styles["form-group"]}>
+              <label htmlFor="first_name">First Name:</label>
+              <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                value={formData.first_name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className={styles["form-group"]}>
+              <label htmlFor="last_name">Last Name:</label>
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                value={formData.last_name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className={styles["form-group"]}>
+              <label htmlFor="middle_name">Middle Name:</label>
+              <input
+                type="text"
+                id="middle_name"
+                name="middle_name"
+                value={formData.middle_name}
+                onChange={handleChange}
+              />
+            </div>
+            <div className={styles["form-group"]}>
+              <label htmlFor="college">College:</label>
+              <select
+                id="college"
+                name="college"
+                value={formData.college}
+                onChange={(e) => {
+                  handleChange(e);
+                  setFormData({ ...formData, course: "" });
+                }}
+                required
+              >
+                <option value="">Select College</option>
+                {Object.keys(colleges).map((college) => (
+                  <option key={college} value={college}>
+                    {college}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className={styles["form-group"]}>
+              <label htmlFor="course">Course:</label>
+              <select
+                id="course"
+                name="course"
+                value={formData.course}
+                onChange={handleChange}
+                required
+                disabled={!formData.college}
+              >
+                <option value="">Select Course</option>
+                {formData.college &&
+                  colleges[formData.college].map((course) => (
+                    <option key={course} value={course}>
+                      {course}
                     </option>
                   ))}
-                </select>
-              </div>
-              <div className={styles["form-group"]}>
-                <label htmlFor="course">Course:</label>
-                <select
-                  id="course"
-                  name="course"
-                  value={selectedCourse}
-                  onChange={handleCourseChange}
-                  required
-                  disabled={!selectedCollege}
-                >
-                  <option value="">Select Course</option>
-                  {selectedCollege &&
-                    colleges[selectedCollege].map((course) => (
-                      <option key={course} value={course}>
-                        {course}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              <div className={styles["survey-form-button-container"]}>
-                <button
-                  type="button"
-                  className={styles["surveyform-btn"]}
-                  onClick={handleNextPage}
-                >
-                  Next
-                </button>
-              </div>
-            </>
-          )}
-  
-          {currentPage === 2 && (
-            <>
-              <h5>Occupational Information</h5>
-              <div className={styles["form-group"]}>
-                <label htmlFor="occupation">Occupation:</label>
-                <input type="text" id="occupation" name="occupation" required />
-              </div>
-              <div className={styles["form-group"]}>
-                <label htmlFor="company_name">Company Name:</label>
-                <input
-                  type="text"
-                  id="company_name"
-                  name="company_name"
-                  required
-                />
-              </div>
-              <div className={styles["form-group"]}>
-                <label htmlFor="year_started">
-                  Year Started in the Company (Date of Employment):
-                </label>
-                <input
-                  type="text"
-                  id="year_started"
-                  name="year_started"
-                  required
-                />
-              </div>
-              <div className={styles["form-group"]}>
-                <label htmlFor="position">Position / Designation:</label>
-                <input type="text" id="position" name="position" required />
-              </div>
-              <div className={styles["form-group"]}>
-                <label htmlFor="job_status">Job Status:</label>
-                <div className={styles["select-box"]}>
-                  <select id="job_status" name="job_status" required>
-                    <option value="Permanent">Permanent</option>
-                    <option value="Contractual">Contractual / Project Based</option>
-                    <option value="Temporary">Temporary</option>
-                    <option value="Unemployed">Unemployed</option>
-                  </select>
-                </div>
-              </div>
-              <div className={styles["form-group"]}>
-                <label htmlFor="type_of_organization">
-                  Type of Organization:
-                </label>
-                <div className={styles["select-box"]}>
-                  <select
-                    id="type_of_organization"
-                    name="type_of_organization"
-                    required
-                  >
-                    <option value="Private">Private</option>
-                    <option value="Non-Government">
-                      Non-Government Organization
-                    </option>
-                    <option value="Self-Employed">Self-Employed</option>
-                  </select>
-                </div>
-              </div>
-              <div className={styles["form-group"]}>
-                <label htmlFor="work_alignment">
-                  Is your current work aligned with your academic specialization?
-                </label>
-                <div className={styles["select-box"]}>
-                  <select
-                    id="work_alignment"
-                    name="work_alignment"
-                    required
-                  >
-                    <option value="Very much aligned">Very much aligned</option>
-                    <option value="Aligned">Aligned</option>
-                    <option value="Averagely Aligned">
-                      Averagely Aligned
-                    </option>
-                    <option value="Somehow Aligned">Somehow Aligned</option>
-                    <option value="Unaligned">Unaligned</option>
-                  </select>
-                </div>
-              </div>
-              <div className={styles["survey-form-button-container"]}>
-                <button
-                  type="button"
-                  className={styles["surveyform-prevbtn"]}
-                  onClick={handlePreviousPage}
-                >
-                  Previous
-                </button>
-                <button className={styles["surveyform-btn"]} type="submit">
-                  Submit
-                </button>
-              </div>
-            </>
-          )}
-        </form>
-      </div>
-    );
-  }
-  
-  export default CrossCheckSurveyForm;
+              </select>
+            </div>
+            <div className={styles["survey-form-button-container"]}>
+              <button
+                type="button"
+                className={styles["surveyform-btn"]}
+                onClick={handleNextPage}
+              >
+                Next
+              </button>
+            </div>
+          </>
+        )}
+
+        {currentPage === 2 && (
+          <>
+            <h5>Occupational Information</h5>
+            <div className={styles["form-group"]}>
+              <label htmlFor="occupation">Occupation:</label>
+              <input
+                type="text"
+                id="occupation"
+                name="occupation"
+                value={formData.occupation}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className={styles["form-group"]}>
+              <label htmlFor="company_name">Company Name:</label>
+              <input
+                type="text"
+                id="company_name"
+                name="company_name"
+                value={formData.company_name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className={styles["form-group"]}>
+              <label htmlFor="year_started">Year Started:</label>
+              <input
+                type="text"
+                id="year_started"
+                name="year_started"
+                value={formData.year_started}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className={styles["form-group"]}>
+              <label htmlFor="position">Position / Designation:</label>
+              <input
+                type="text"
+                id="position"
+                name="position"
+                value={formData.position}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className={styles["form-group"]}>
+              <label htmlFor="job_status">Job Status:</label>
+              <select
+                id="job_status"
+                name="job_status"
+                value={formData.job_status}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Job Status</option>
+                <option value="Permanent">Permanent</option>
+                <option value="Contractual">Contractual / Project Based</option>
+                <option value="Temporary">Temporary</option>
+                <option value="Unemployed">Unemployed</option>
+              </select>
+            </div>
+            <div className={styles["form-group"]}>
+              <label htmlFor="type_of_organization">
+                Type of Organization:
+              </label>
+              <select
+                id="type_of_organization"
+                name="type_of_organization"
+                value={formData.type_of_organization}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Organization Type</option>
+                <option value="Private">Private</option>
+                <option value="Non-Government">
+                  Non-Government Organization
+                </option>
+                <option value="Self-Employed">Self-Employed</option>
+              </select>
+            </div>
+            <div className={styles["form-group"]}>
+              <label htmlFor="work_alignment">
+                Work Alignment with Academic Specialization:
+              </label>
+              <select
+                id="work_alignment"
+                name="work_alignment"
+                value={formData.work_alignment}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Alignment</option>
+                <option value="Very much aligned">Very much aligned</option>
+                <option value="Aligned">Aligned</option>
+                <option value="Averagely Aligned">Averagely Aligned</option>
+                <option value="Somehow Aligned">Somehow Aligned</option>
+                <option value="Unaligned">Unaligned</option>
+              </select>
+            </div>
+            <div className={styles["survey-form-button-container"]}>
+              <button
+                type="button"
+                className={styles["surveyform-prevbtn"]}
+                onClick={handlePreviousPage}
+              >
+                Previous
+              </button>
+              <button className={styles["surveyform-btn"]} type="submit">
+                Submit
+              </button>
+            </div>
+          </>
+        )}
+      </form>
+    </div>
+  );
+}
+
+export default CrossCheckSurveyForm;
