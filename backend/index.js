@@ -10,7 +10,9 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['https://tupalumni.com']
+  origin: ['http://tupalumni.com', 'https://tupalumni.com', 'http://localhost:3000'],
+  methods: ['GET', 'POST'], // Specify allowed methods
+  credentials: true,       // Include cookies if needed
 }));
 app.use(express.json());
 
