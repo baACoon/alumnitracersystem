@@ -1,15 +1,36 @@
 import React, { useState } from 'react';
-import './testLoginForm.css'
+import './LoginForm.css';
 
 const TestLoginForm = ({ closeModal }) => {
   const [alumniID, setAlumniID] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Implement login logic
-    console.log('Alumni ID:', alumniID, 'Password:', password);
-    closeModal();
+
+    const formData = { alumniID, password };
+
+    try {
+      const response = await fetch('http://localhost:5050/record/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Login successful!');
+        closeModal();
+      } else {
+        alert(`Error: ${data.error || 'Login failed'}`);
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      alert('There was an error with the login request.');
+    }
   };
 
   return (

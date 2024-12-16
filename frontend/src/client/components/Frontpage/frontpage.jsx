@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './frontpage.css'
-import TestLoginForm from '../test_login/testLoginForm';  // Login Form Modal
+import LoginForm from '../Login_Alumni/LoginForm';  // Login Form Modal
 import Register_NewAlumni from '../Register_NewAlumni/register_newalumni';  // Form for users without Alumni ID
 import Tuplogo from '../../components/image/Tuplogo.png'
 import Alumnilogo from '../../components/image/alumniassoc_logo.png'
@@ -37,7 +37,7 @@ const TestFrontPage = () => {
           {/* Login Modal */}
           {showLoginModal && (
             <div className="modal">
-              <TestLoginForm closeModal={closeModal} />
+              <LoginForm closeModal={closeModal} />
             </div>
           )}
       
