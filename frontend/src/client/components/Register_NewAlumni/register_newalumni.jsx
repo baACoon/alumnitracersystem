@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import './register_newalumni.css';
 
-const Register_NewAlumni = ({closeModal}) => {
+const Register_NewAlumni = ({ closeModal }) => {
+    const [email, setEmail] = useState('');
     const [lastName, setLastName] = useState('');
     const [firstName, setFirstName] = useState('');
     const [middleName, setMiddleName] = useState('');
@@ -23,12 +24,14 @@ const Register_NewAlumni = ({closeModal}) => {
             return;
         }
 
-        if (!firstName || !lastName || !middleName || !birthday || !password || !confirmPassword) {
+        // Additional frontend validation (e.g., check for missing fields)
+        if (!email || !firstName || !lastName || !middleName || !birthday || !password || !confirmPassword) {
             alert("All fields are required");
             return;
         }
 
         const formData = {
+            email,
             firstName,
             middleName,
             lastName,
@@ -69,6 +72,14 @@ const Register_NewAlumni = ({closeModal}) => {
                     !generatedID
                         ? (
                             <form onSubmit={handleSubmit} className="register-form-new-alumni">
+                    <input
+                        type="text"
+                        placeholder="EMAIL"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className="input-field-new-alumni"
+                    />
                                 <input
                                     type="text"
                                     placeholder="FIRST NAME"

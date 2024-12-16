@@ -1,10 +1,13 @@
 import { useState } from 'react';
-
-import "./Login.css";
+import Tuplogo from '/xampp/htdocs/alumnitracersystem/frontend/src/client/components/image/Tuplogo.png';
+import Alumnilogo from '/xampp/htdocs/alumnitracersystem/frontend/src/client/components/image/alumniassoc_logo.png';
+import styles from './Login.module.css'; // Updated to use module.css
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const [data, setData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const loginAdmin = async (e) => {
     e.preventDefault();
@@ -29,21 +32,21 @@ export default function Login() {
   };
 
   return (
-    <div className='admin-bg'>
-      <div className="admin-login-logo">
-        <img src={Tuplogo} alt="TUP logo" className="logo-1" />
-        <img src={Alumnilogo} alt="Alumni logo" className="logo-2" />
+    <div className={styles.adminBg}>
+      <div className={styles.adminLoginLogo}>
+        <img src={Tuplogo} alt="TUP logo" className={styles.logo1} />
+        <img src={Alumnilogo} alt="Alumni logo" className={styles.logo2} />
       </div>
 
       {/* Title Section */}
-      <div className="admin-login-title">
-        <h3 className='admin-system-title-1'>TUPATS</h3>
-        <h4 className='admin-system-title-2'>The Technological University of the Philippines Alumni Tracer System</h4>
-        <h5 className="admin-system-title-3">ADMIN ACCESS</h5>
+      <div className={styles.adminLoginTitle}>
+        <h3 className={styles.adminSystemTitle1}>TUPATS</h3>
+        <h4 className={styles.adminSystemTitle2}>The Technological University of the Philippines Alumni Tracer System</h4>
+        <h5 className={styles.adminSystemTitle3}>ADMIN ACCESS</h5>
       </div>
 
-      <div className='admin-login-container'>
-        <form className='admin-login-form'onSubmit={loginAdmin}>
+      <div className={styles.adminLoginContainer}>
+        <form className={styles.adminLoginForm} onSubmit={loginAdmin}>
           <label>Username</label>
           <input
             type="text"
@@ -61,6 +64,12 @@ export default function Login() {
           <button type="submit">LOGIN</button>
         </form>
         <p>{message}</p>
+        <button
+          className={styles.registerButton}
+          onClick={() => navigate('/register')}
+        >
+          REGISTER
+        </button>
       </div>
     </div>
   );

@@ -3,14 +3,17 @@
   display: flex;
   justify-content: center;
   position: relative;
-  top: 50px;
+  top: 10px;
+  margin-bottom: 30px;
 }
 
 .batchesContainer {
   display: flex;
   flex-direction: column-reverse;
+  align-items: center;
   gap: 20px;
   width: 75%;
+  padding: 30px;
 }
 
 .batchButtonsContainer {
@@ -40,7 +43,8 @@
   background-color: #c31d3c;
   color: white;
   border: none;
-  width: 50%;
+  width: 100%;
+  padding: 10px;
   justify-content: center;
 }
 

@@ -57,6 +57,9 @@
   background-color: #8F263A;
   color: white;
   font-weight: 500; /* Slightly bolder for active state */
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 /* Sub-Tabs Container */
