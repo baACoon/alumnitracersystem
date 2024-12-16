@@ -15,7 +15,7 @@ const TestLoginForm = ({ closeModal }) => {
     console.log('Login attempt with:', formData); // Debug log
 
     try {
-      const response = await fetch('http://localhost:5050/record/login', {
+      const response = await fetch('http://tupalumni.com/record/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
