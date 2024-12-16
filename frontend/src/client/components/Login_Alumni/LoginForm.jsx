@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // To navigate to the Home page
+import { useNavigate } from 'react-router-dom';
 import './LoginForm.css';
 
 const TestLoginForm = ({ closeModal }) => {
   const [alumniID, setAlumniID] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Initialize navigation
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     const formData = { alumniID, password };
 
+    console.log('Login attempt with:', formData); // Debug log
+
     try {
-      // Replace with your hosted backend URL
       const response = await fetch('http://localhost:5050/record/login', {
         method: 'POST',
         headers: {
@@ -23,11 +24,12 @@ const TestLoginForm = ({ closeModal }) => {
       });
 
       const data = await response.json();
+      console.log('Server response:', response.status, data); // Debug log
 
       if (response.ok) {
         alert('Login successful!');
-        closeModal(); // Close the login modal
-        navigate('/home'); // Redirect to Home page
+        closeModal();
+        navigate('/home');
       } else {
         alert(`Error: ${data.error || 'Login failed'}`);
       }
