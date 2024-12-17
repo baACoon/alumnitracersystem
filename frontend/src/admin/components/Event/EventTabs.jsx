@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ListOfEvents from "./ListofEvents";
 import CreateEvent from "./CreateEvent";
 import styles from "./Events.module.css";
@@ -9,9 +9,27 @@ export const EvenTabs = () => {
   const [events, setEvents] = useState([]);
 
   // Function to add an event
-  const addEvent = (event) => {
-    setEvents([...events, event]);
-  };
+    useEffect(() => {
+      fetchEvents();
+    }, []);
+  
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("http://localhost:5050/event/list");
+        if (response.ok) {
+          const data = await response.json();
+          setEvents(data);
+        } else {
+          console.error("Failed to fetch events.");
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+  
+    const addEvent = (event) => {
+      setEvents([...events, event]);
+    };
 
   return (
     <SideBarLayout>

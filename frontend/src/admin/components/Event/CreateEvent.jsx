@@ -10,20 +10,50 @@ export const CreateEvent = ({ onPost, onBack }) => {
   const [venue, setVenue] = useState("");
   const [source, setSource] = useState("");
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (title && description && date && time && venue) {
-      const newEvent = { title, description, date, time, venue, source };
-      onPost(newEvent);
-      setTitle("");
-      setDescription("");
-      setDate("");
-      setTime("");
-      setVenue("");
-      setSource("");
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("date", date);
+      formData.append("time", time);
+      formData.append("venue", venue);
+      formData.append("source", source);
+      if (fileName) {
+        const fileInput = document.getElementById("fileInput");
+        formData.append("image", fileInput.files[0]); // Attach file
+      }
+  
+      try {
+        const response = await fetch("http://localhost:5050/event/create", {
+          method: "POST",
+          body: formData, // Send as FormData
+        });
+  
+        if (response.ok) {
+          const result = await response.json();
+          alert(result.message);
+          onPost(result.event);
+          setTitle("");
+          setDescription("");
+          setDate("");
+          setTime("");
+          setVenue("");
+          setSource("");
+          setFileName("");
+        } else {
+          const errorData = await response.json();
+          alert(`Failed to create the event: ${errorData.error}`);
+        }
+      } catch (error) {
+        console.error("Error creating event:", error);
+        alert("An error occurred.");
+      }
     } else {
       alert("Please fill out all required fields.");
     }
   };
+  
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -102,5 +132,8 @@ export const CreateEvent = ({ onPost, onBack }) => {
     </div>
   );
 };
+const uri = "mongodb+srv://alumni:alumnipassword@alumni.fcta3.mongodb.net/?retryWrites=true&w=majority&appName=Alumni";
+//mongodb+srv://alumnitracer:pj3Nrrn4k32LKdEq@cluster0.cn3yf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
 
 export default CreateEvent;

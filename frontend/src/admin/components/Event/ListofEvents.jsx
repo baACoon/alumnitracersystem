@@ -1,8 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./ListofEvents.module.css";
 
 export const ListOfEvents = ({ events }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [eventList, setEventList] = useState([]);
+  
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch("http://localhost:5050/event/list");
+      if (response.ok) {
+        const data = await response.json();
+        setEventList(data);
+      } else {
+        console.error("Failed to fetch events.");
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
@@ -15,26 +34,34 @@ export const ListOfEvents = ({ events }) => {
   return (
     <div className={styles.listOfEvents}>
       <h2 className={styles.title}>List of Events</h2>
-      {events.length > 0 ? (
+      {eventList.length > 0 ? (
         <div className={styles.eventsGrid}>
-          {events.map((event, index) => (
-            <div
-              key={index}
-              className={styles.eventBox}
-              onClick={() => handleEventClick(event)}
-            >
-              <p>
-                <strong>Date and Time:</strong> {event.date} at {event.time}
-              </p>
-              <h2>{event.title}</h2>
-              <p>
-                {event.description.length > 100
-                  ? event.description.substring(0, 100) + "..."
-                  : event.description}
-              </p>
-            </div>
-          ))}
-        </div>
+        {eventList.map((event, index) => (
+          <div
+            key={index}
+            className={styles.eventBox}
+            onClick={() => handleEventClick(event)}
+          >
+            {event.image && (
+              <img
+                src={`http://localhost:5050/uploads/${event.image}`}
+                alt={event.title}
+                className={styles.eventImage}
+              />
+            )}
+            <p>
+              <strong>Date and Time:</strong> {event.date} at {event.time}
+            </p>
+            <h2>{event.title}</h2>
+            <p>
+              {event.description.length > 100
+                ? event.description.substring(0, 100) + "..."
+                : event.description}
+            </p>
+          </div>
+        ))}
+      </div>
+      
       ) : (
         <p className={styles.noEvents}>No events available. Please create one.</p>
       )}
