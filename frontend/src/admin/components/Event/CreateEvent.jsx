@@ -46,6 +46,9 @@ export const CreateEvent = ({ onPost, onBack }) => {
           alert(`Failed to create the event: ${errorData.error}`);
         }
       } catch (error) {
+        if (error instanceof multer.MulterError && error.code === "LIMIT_FILE_SIZE") {
+          return res.status(400).json({ error: "File size exceeds the maximum limit of 25 MB." });
+        }
         console.error("Error creating event:", error);
         alert("An error occurred.");
       }

@@ -31,6 +31,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
+  limits: {
+    fileSize: 25 * 1024 * 1024, // Limit file size to 25 MB
+  },
   fileFilter: (req, file, cb) => {
     const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
     if (allowedTypes.includes(file.mimetype)) {
@@ -40,6 +43,7 @@ const upload = multer({
     }
   },
 });
+
 
 // POST: Create a new event with an image
 router.post("/create", upload.single("image"), async (req, res) => {
