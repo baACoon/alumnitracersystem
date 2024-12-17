@@ -20,7 +20,7 @@ router.post('/register', async (req, res) => {
 
     try {
         // Validate input fields
-        if (!email ||!firstName || !lastName || !middleName || !birthday || !password || !confirmPassword) {
+        if (!email || !firstName || !lastName || !middleName || !birthday || !password || !confirmPassword) {
             console.log("Error: Missing fields");
             return res
                 .status(400)
