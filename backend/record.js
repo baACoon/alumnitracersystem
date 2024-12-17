@@ -56,7 +56,7 @@ router.post('/register', async (req, res) => {
 
         // Insert new user into MongoDB
         const result = await usersCollection.insertOne({
-            firstName, middleName, lastName, generatedID, // Store the unique ID
+            email, firstName, middleName, lastName, generatedID, // Store the unique ID
             birthday: new Date(birthday), // Ensure birthday is stored as a Date object
             password: hashedPassword,
             registrationDate: new Date()
