@@ -1,0 +1,108 @@
+/* Sidebar Container */
+.sidebar {
+  background-color: #C31D3C;
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  color: white;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo Section */
+.logoContainer {
+  margin-bottom: 20px;
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+}
+
+/* Navigation Section */
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Main Tabs */
+.mainTab,
+.mainTabButton {
+  text-decoration: none;
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  font-size: 1.1rem;
+  font-weight: 400; /* Make font lighter */
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.mainTab:hover,
+.mainTabButton:hover {
+  background-color: #8F263A;
+  color: white;
+}
+
+.mainTabActive {
+  background-color: #8F263A;
+  color: white;
+  font-weight: 500; /* Slightly bolder for active state */
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* Sub-Tabs Container */
+.subTabs {
+  padding-left: 20px; /* Indent sub-tabs */
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Sub-Tabs */
+.subTab {
+  color: #ddd;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 5px;
+  border-radius: 5px;
+  transition: color 0.3s ease, background 0.3s ease;
+}
+
+.subTab:hover {
+  color: white;
+  background-color: #8F263A;
+}
+
+.subTabActive {
+  color: white;
+  background-color: #8F263A;
+}
+
+/* User Profile Button */
+.userProfile {
+  margin-top: auto;
+  background: none;
+  border: none;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 10px;
+  text-align: left;
+}
+
+.userProfile:hover {
+  background-color: #5D0E1D;
+}

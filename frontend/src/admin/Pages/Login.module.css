@@ -1,0 +1,137 @@
+.adminBg {
+  font-family: "Montserrat", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(200deg, #C31D3C, #4e0e1a);
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+}
+  
+/* Admin Login Container */
+.adminLoginContainer {
+  padding: 30px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Logos Section */
+.adminLoginLogo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo1, .logo2 {
+  width: 80px;
+  height: auto;
+  margin: 0 10px;
+}
+
+.adminLoginTitle {
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.adminSystemTitle1 {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.adminSystemTitle2 {
+  font-size: 1.5rem;
+  color: #ffffff;
+  margin: 10px 0;
+}
+
+.adminSystemTitle3 {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #ffffff;
+}
+
+/* Form Styling */
+.adminLoginForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.adminLoginForm label {
+  margin-bottom: 5px;
+  font-size: 1.3rem;
+  color: #ffffff;
+}
+
+.adminLoginForm input {
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1.0rem;
+}
+
+.adminLoginForm input:focus {
+  outline: none;
+  border-color: #8f94fb;
+  box-shadow: 0 0 5px rgba(143, 148, 251, 0.5);
+}
+
+.adminLoginForm button {
+  background: #C31D3C;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+form button:hover {
+  background: #e42448;
+}
+
+.adminLoginContainer p {
+  text-align: center;
+  font-size: 0.9rem;
+  color: red;
+  margin-top: 10px;
+}
+
+.registerButton {
+background: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.registerButton:hover {
+  color: #f84c3f;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+  .adminLoginLogo img {
+      width: 60px;
+  }
+
+  .adminLoginContainer {
+      padding: 20px;
+  }
+
+  .adminSystemTitle1 {
+      font-size: 1.5rem;
+  }
+
+  .adminSystemTitle2, .adminSystemTitle3 {
+      font-size: 0.9rem;
+  }
+}

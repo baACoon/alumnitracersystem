@@ -1,12 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100900&display=swap');
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Montserrat", sans-serif;
-}
-
 .frontpg-container {
     background-image: linear-gradient(
             to right,
@@ -56,10 +47,6 @@
     margin: 10px 0;
 }
 
-.frontpg-container .system-title .system-title-2 {
-    font-weight: 400;
-    font-size: 20px;
-}
 
 .btn {
     margin-top: 20px;

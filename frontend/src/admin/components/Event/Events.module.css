@@ -1,77 +1,130 @@
-.eventTabsContainer{
-    height: 100%;
-    width: 100%;
+/* Container for Event Tabs */
+.eventTabsContainer {
     padding: 20px;
+    font-family: "Montserrat", sans-serif;
     background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
 }
-.title{
-    font-size: 24px;
+
+/* Event Title */
+.eventTitle {
+    font-size: 1.5rem;
     font-weight: bold;
-    color: #000;
+    color: #c31d3c;
     margin-bottom: 20px;
 }
-.tabControls{
+
+/* Tab Controls Container */
+.tabControls {
     display: flex;
-    margin-bottom: 20px;
+    gap: 10px;
+    width: 300px;
 }
-.tabButton{
-    flex: 1;
-    padding: 10px;
-    font-size: 16px;
-    text-align: center;
-    cursor: pointer;
-    border: none;
+
+/* Tab Button */
+.tabButton {
+    padding: 10px 20px;
+    font-size: 1rem;
     background-color: #e0e0e0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.1s ease;
+}
+
+.tabButton:hover {
+    background-color: #ddd;
     color: #000;
 }
-.tabButton:hover{
-    background-color: #d0d0d0;
-}
-.active{
-    background-color: #900c3f;
+
+/* Active Tab Button */
+.active {
+    background-color: #c31d3c;
     color: #fff;
 }
-.tabContent{
-    padding: 20px;
-    background:white;
-    border-radius: 5px;
+
+
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .eventBox {
+        width: 100%;
+    }
+
+    .modalContent {
+        width: 90%;
+    }
 }
-.listOfEvents{
-    position: relative;
+
+@media (max-width: 480px) {
+    .eventBox {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .eventTitle {
+        font-size: 1rem;
+    }
+
+    .eventShortDescription {
+        font-size: 0.8rem;
+    }
 }
-.deleteButton{
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    background-color: #900c3f;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    .eventTitle {
+        font-size: 1.5rem;
+    }
+
+    .tabControls {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .tabButton {
+        width: 100%;
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .tabContent {
+        padding: 15px;
+    }
+    .deleteButton,
+    .editButton {
+        font-size: 0.8rem;
+        padding: 8px 12px;
+    }
 }
-.eventTable{
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-.eventsTable th, .eventTable td{
-    padding: 10px;
-    text-align: left;
-    border: 1px solid #ddd;
-}
-.eventsTable th {
-    background-color: #900c3f;
-    color: white;
-}
-.eventsDescription h2 {
-    font-size: 18px;
-    margin: 10px 0;
-}
-.createEvent{
-    padding: 20px;
-}
-.buttons{
-    display: flex;
-    justify-content: space-between;
+
+@media (max-width: 480px) {
+    .eventTabsContainer {
+        padding: 15px;
+    }
+
+    .eventTitle {
+        font-size: 1.2rem;
+    }
+
+    .tabButton {
+        font-size: 0.8rem;
+        padding: 8px;
+    }
+
+    .tabContent {
+        padding: 10px;
+    }
+    
+
+    .deleteButton,
+    .editButton {
+        font-size: 0.7rem;
+        padding: 6px 10px;
+    }
 }

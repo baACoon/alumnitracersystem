@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './AlumniTable.module.css';
 
+
 const initialAlumniData = [
   {
     id: 'TUPM-21-2231',
@@ -98,6 +99,7 @@ export function AlumniTable() {
  
 
   return (
+
     <section className={styles.tableSection} aria-label="Alumni data">
       <div className={styles.tableControls}>
         <button 
@@ -289,6 +291,7 @@ export function AlumniTable() {
 
 
     </section>
+
   );
 }
 

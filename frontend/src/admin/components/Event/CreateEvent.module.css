@@ -1,0 +1,150 @@
+/* Container for Create Events */
+.createEvents {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+/* Buttons Container */
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+/* Back Button */
+.backButton {
+    background-color: #f9f9f9;;
+    color: #c31d3c;;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 20px;
+
+    border: none;
+    cursor: pointer;
+}
+
+.backButton:hover {
+    color: #701919;
+}
+
+/* Post Button */
+.postButton {
+    background-color: #4caf50;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.postButton:hover {
+    background-color: #45a045;
+}
+
+/* Form Container */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Input Field */
+.inputField {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.inputField:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Text Area */
+.textArea {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    height: 100px;
+    resize: none;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.textArea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Inline Fields for Date, Time, and Venue */
+.inlineFields {
+    display: flex;
+    gap: 15px;
+}
+
+.inlineFields .inputField {
+    flex: 1;
+}
+
+/* Import */
+.fileInputContainer {
+    margin-bottom: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .importImageButton {
+    background-color: #e43a19;
+    color: white;
+    font-size: 16px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+  }
+  
+  .importImageButton:hover {
+    background-color: #c72f16;
+  }
+  
+  .fileInput {
+    display: none; /* Hidden input field for file upload */
+  }
+  
+  .fileName {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .inlineFields {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .importImageButton {
+        width: 100%;
+    }
+}

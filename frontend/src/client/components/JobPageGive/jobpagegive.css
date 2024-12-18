@@ -1,7 +1,6 @@
 /* Container styling */
 .givecontainer {
     padding: 200px 20px 100px; /* Account for the fixed header */
-    font-family: Arial, sans-serif;
     max-width: 800px;
     margin: 0 auto;
   }

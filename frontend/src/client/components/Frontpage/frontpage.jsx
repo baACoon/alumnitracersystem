@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
 import './frontpage.css'
-import { useNavigate } from 'react-router-dom';  // Importing useNavigate for redirection
-import TestLoginForm from '../test_login/testLoginForm';  // Login Form Modal
+import LoginForm from '../Login_Alumni/LoginForm';  // Login Form Modal
+import Register_NewAlumni from '../Register_NewAlumni/register_newalumni';  // Form for users without Alumni ID
 import Tuplogo from '../../components/image/Tuplogo.png'
 import Alumnilogo from '../../components/image/alumniassoc_logo.png'
 
 
 const TestFrontPage = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const navigate = useNavigate();  // Initialize the navigate function
+  const [showRegister_NewAlumniModal, setShowRegister_NewAlumniModal] = useState(false);
 
   const handleLoginClick = () => setShowLoginModal(true);
-  const handleRegisterClick = () => navigate('../registerselection');  // Redirect to RegisterSelection page
+  const openRegister_NewAlumniModal = () => setShowRegister_NewAlumniModal(true);
 
-  const closeLoginModal = () => setShowLoginModal(false);
+  const closeModal = () => {
+    setShowLoginModal(false);
+    setShowRegister_NewAlumniModal(false);
+    };
+  
 
-  return (
-    <div className="frontpg-container">
-        <div className="logo">
+    return (
+        <div className="frontpg-container">
+          <div className="logo">
             <img src={Tuplogo} alt="TUP logo" className="logo-1" />
             <img src={Alumnilogo} alt="Alumni logo" className="logo-2" />
         </div>
@@ -27,18 +31,24 @@ const TestFrontPage = () => {
         </div>
         <div className="btn">
             <button onClick={handleLoginClick}>LOGIN</button>
-            <button onClick={handleRegisterClick}>REGISTER</button>
-        </div>
+            <button onClick={openRegister_NewAlumniModal}>REGISTER</button>
+          </div>
       
-
-      {/* Login Modal */}
-        {showLoginModal && (
+          {/* Login Modal */}
+          {showLoginModal && (
             <div className="modal">
-                {showLoginModal && <TestLoginForm modalType={showLoginModal} closeModal={closeLoginModal} />}
+              <LoginForm closeModal={closeModal} />
             </div>
-        )}
+          )}
+      
+          {/* Register Modal */}
+          {showRegister_NewAlumniModal && (
+            <div className="modal">
+              <Register_NewAlumni closeModal={closeModal} />
+            </div>
+          )}
         </div>
-  );
+      );      
 };
 
 export default TestFrontPage;

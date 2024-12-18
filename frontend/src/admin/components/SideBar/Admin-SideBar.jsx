@@ -1,0 +1,118 @@
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import styles from "./Admin-SideBar.module.css";
+import { GraduatesList } from '../Alumni/BatchList/GraduatesList';
+
+export function Sidebar() {
+  const [activeTab, setActiveTab] = useState(null);
+
+  const toggleTab = (tab) => {
+    setActiveTab((prevTab) => (prevTab === tab ? null : tab)); // Toggle between open/close
+  };
+
+  return (
+    <aside className={styles.sidebar} role="navigation">
+      <div className={styles.logoContainer}>
+        <h1 className={styles.logo}>TUPATS</h1>
+      </div>
+      <nav className={styles.navigation}>
+        {/* Dashboard Tab */}
+        <NavLink
+          to="/dashboard"
+          className={({ isActive }) =>
+            isActive ? styles.mainTabActive : styles.mainTab
+          }
+        >
+          DASHBOARD
+        </NavLink>
+
+        <div>
+        <NavLink
+          to="/AlumniPage"
+          className={({ isActive }) =>
+            isActive ? styles.mainTabActive : styles.mainTabButton
+          }
+        >
+          ALUMNI
+        </NavLink>
+          
+        </div>
+        
+        {/* Events Tab */}
+        <NavLink
+          to="/EventTabs"
+          className={({ isActive }) =>
+            isActive ? styles.mainTabActive : styles.mainTab
+          }
+        >
+          EVENTS
+        </NavLink>
+
+        {/* Tabs with Sub-Tabs */}
+
+        <div>
+          <button
+            className={styles.mainTabButton}
+            onClick={() => toggleTab("surveys")}
+          >
+            SURVEYS
+          </button>
+          {activeTab === "surveys" && (
+            <div className={styles.subTabs}>
+              <NavLink
+                to="/SurveyContent"
+                className={({ isActive }) =>
+                  isActive ? styles.subTabActive : styles.subTab
+                }
+              >
+                Published
+              </NavLink>
+              <NavLink
+                to="/SurveyContent/Pending"
+                className={({ isActive }) =>
+                  isActive ? styles.subTabActive : styles.subTab
+                }
+              >
+                Pending
+              </NavLink>
+            </div>
+          )}
+        </div>
+
+        <div>
+          <button
+            className={styles.mainTabButton}
+            onClick={() => toggleTab("opportunities")}
+          >
+            OPPORTUNITIES
+          </button>
+          {activeTab === "opportunities" && (
+            <div className={styles.subTabs}>
+              <NavLink
+                to="/Opportunities"
+                className={({ isActive }) =>
+                  isActive ? styles.subTabActive : styles.subTab
+                }
+              >
+                Published
+              </NavLink>
+              <NavLink
+                to="/Opportunities/Pending"
+                className={({ isActive }) =>
+                  isActive ? styles.subTabActive : styles.subTab
+                }
+              >
+                Pending
+              </NavLink>
+            </div>
+          )}
+        </div>
+      </nav>
+      <button className={styles.userProfile} aria-label="User profile">
+        GARCIA, J
+      </button>
+    </aside>
+  );
+}
+
+export default Sidebar;
