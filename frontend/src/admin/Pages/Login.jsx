@@ -5,29 +5,37 @@ import styles from './Login.module.css'; // Updated to use module.css
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
-  const [data, setData] = useState({ email: '', password: '' });
-  const [message, setMessage] = useState('');
+  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const loginAdmin = async (e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await fetch("http://localhost:5050/record/login", {
+      const response = await fetch("http://localhost:5050/adminlog_reg/adminlogin", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
+      const data = await response.json();
+
       if (response.ok) {
         setMessage("Login successful!");
-        console.log("Token:", result.token); // Store token for authenticated requests
+        navigate("/AlumniPage"); // Redirect on success
       } else {
-        setMessage(result.error);
+        setMessage(data.error || "Login failed.");
       }
     } catch (error) {
-      setMessage("Error logging in.");
-      console.error(error);
+      console.error("Error during login:", error);
+      setMessage("An error occurred. Please try again.");
     }
   };
 
@@ -46,24 +54,26 @@ export default function Login() {
       </div>
 
       <div className={styles.adminLoginContainer}>
-        <form className={styles.adminLoginForm} onSubmit={loginAdmin}>
+        <form className={styles.adminLoginForm} onSubmit={handleSubmit}>
           <label>Username</label>
           <input
             type="text"
+            name='username'
             placeholder="Enter username"
-            value={data.email}
-            onChange={(e) => setData({ ...data, email: e.target.value })}
+            value={formData.username}
+            onChange={handleChange}
           />
           <label>Password</label>
           <input
             type="password"
+            name='password'
             placeholder="Enter password"
-            value={data.password}
-            onChange={(e) => setData({ ...data, password: e.target.value })}
+            value={formData.password}
+            onChange={handleChange}
           />
           <button type="submit">LOGIN</button>
         </form>
-        <p>{message}</p>
+        {message && <p>{message}</p>}
         <button
           className={styles.registerButton}
           onClick={() => navigate('/register')}

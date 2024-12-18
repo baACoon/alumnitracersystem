@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Tuplogo from '../components/images/Tuplogo.png';
 import Alumnilogo from '../components/images/alumniassoc_logo.png'
 import styles from './Register.module.css';
@@ -10,6 +11,7 @@ const AdminRegister = () => {
     confirmPassword: "",
   });
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,6 +34,10 @@ const AdminRegister = () => {
       if (response.ok) {
         setMessage(data.message); // Success message
         setFormData({ username: "", password: "", confirmPassword: "" }); // Clear form
+
+                // Redirect to AlumniPage
+                navigate("/AlumniPage");
+
       } else {
         setMessage(data.error || "Registration failed."); // Show error message
       }

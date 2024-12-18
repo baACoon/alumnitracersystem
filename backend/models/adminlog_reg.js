@@ -49,4 +49,38 @@ router.post("/adminregister", async (req, res) => {
       res.status(500).json({ error: "Internal server error." });
     }
   });
+
+  // POST route for admin login
+router.post("/adminlogin", async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ error: "Both username and password are required." });
+  }
+
+  try {
+    const db = await connectToDatabase();
+    const adminsCollection = db.collection("admins");
+
+    // Check if admin exists
+    const admin = await adminsCollection.findOne({ username });
+    if (!admin) {
+      return res.status(400).json({ error: "Invalid username or password." });
+    }
+
+    // Compare password
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ error: "Invalid username or password." });
+    }
+
+    // Login successful
+    res.status(200).json({ message: "Login successful.", username });
+  } catch (error) {
+    console.error("Error during admin login:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
+
+
 export default router;
