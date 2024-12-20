@@ -1,32 +1,18 @@
-import pkg from 'mongodb';
-const { MongoClient, ServerApiVersion } = pkg;
+
+import mongoose from "mongoose";
 
 const uri = "mongodb+srv://alumni:alumnipassword@alumni.fcta3.mongodb.net/?retryWrites=true&w=majority&appName=Alumni";
 //mongodb+srv://alumnitracer:pj3Nrrn4k32LKdEq@cluster0.cn3yf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-const client = new MongoClient(uri, { 
-  serverApi: { 
-    version: ServerApiVersion.v1, 
-    strict: true, 
-    deprecationErrors: true, 
-  } 
-});
-
-let dbInstance;
 
 export async function connectToDatabase() {
   try {
-    if (!dbInstance) {
-      await client.connect();
-      dbInstance = client.db("alumni");
-      console.log("Connected to MongoDB Atlas");
-    }
-    return dbInstance;
+    await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("Connected to MongoDB Atlas");
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
     throw error;
   }
-}
-
-export function getClient() {
-  return client;
 }
