@@ -61,15 +61,18 @@ router.post("/register", async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Insert new user into MongoDB
-        const result = await usersCollection.insertOne({
-            email, firstName, middleName, lastName, generatedID, // Store the unique ID
-            birthday: new Date(birthday), // Ensure birthday is stored as a Date object
-            password: hashedPassword,
-            registrationDate: new Date()
-        });
+    // Create and save the new user
+    const newUser = new Student({
+      email,
+      firstName,
+      middleName,
+      lastName,
+      generatedID, // Store the unique ID
+      birthday: new Date(birthday), // Ensure birthday is stored as a Date object
+      password: hashedPassword,
+      registrationDate: new Date(),
+    });
 
-    // Save the user to the database
     await newUser.save();
 
     console.log(`User registered with ID: ${generatedID}`);

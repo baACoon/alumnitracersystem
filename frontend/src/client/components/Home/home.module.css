@@ -1,4 +1,4 @@
-.home-bg{
+.homebg{
     background: url('../image/grad3.jpg');
     background-position: center;
     background-repeat: no-repeat;
@@ -7,7 +7,7 @@
     height: 130vh;
 }
 
-.home-percentage{
+.homePercentage{
     color: whitesmoke;
     margin-top: 33em;
     margin-left: 7.5em;
@@ -21,34 +21,35 @@
     
 }
 
-.home-percentage .percent-1,
-.home-percentage .percent-2 {
+.homePercentage .percent1,
+.homePercentage .percent2 {
     text-align: center;
     flex: 1;
 }
 
-.home-percentage .percent-1 h1,
-.home-percentage .percent-2 h1 {
+.homePercentage .percent1 h1,
+.homePercentage .percent2 h1 {
     font-size: 120px;
     font-weight: 750;
     margin: 0;
 }
 
-.home-percentage .percent-1 h2,
-.home-percentage .percent-2 h2 {
+.homePercentage .percent1 h2,
+.homePercentage .percent2 h2 {
     font-size: 30px;
     margin-top: -10px;
 }
 
 
 /* Specific color for percent-1 */
-.home-percentage .percent-1 h1 {
+.homePercentage .percent1 h1 {
     color: #FF4040;
 }
 
 /* tupats container */
-.TUPATS-container{
+.tupatsContainer{
     background-color: #C31D3C;
+    padding: 20px;
     width: 100%;
     position: absolute;
     left: 0px;
@@ -56,12 +57,12 @@
     margin-top: -5em;
 }
 
-.TUPATS-container h1{
+.tupatsContainer h1{
     color: white;
     text-align: center;
 }
 
-.TUPATS-container p{
+.tupatsContainer p{
     color: white;
     width: 70%;
     text-align: center;
@@ -70,67 +71,78 @@
 }
 
 
-/* second container */
-.slanted-container{
-    background-color: #f4f4f4;
+/* Container for slanted boxes */
+.slantedContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
     padding: 20px;
-    margin-top: 5em;
-    
-}
-
-.slanted-box {
-    background-color: white;
-    color: black;
+    margin-top: 9em;
+  }
+  
+  /* Slanted box styling */
+  .slantedBox {
+    flex: 1;
+    background: white; /* Gradient background */
+    color: #1a1a1a; /* Text color */
     padding: 20px;
-    margin: 20px 0;
-    margin-top: 2em;
-    position: relative;
-    transform: skew(-15deg); /* Adds the slanted effect */
-    border-radius: 0px;
-    background: linear-gradient(225deg, #ffffff, #e3dfdf);
+    border-radius: 10px;
+    transform: skew(-5deg); /* Slanted effect */
+    text-align: center;
+    cursor: pointer; /* Indicates it's clickable */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
     box-shadow:  -9px 9px 7px #929090,
                  9px -9px 0px #C31D3C;
-    
   }
   
-  .slanted-box h2 {
-    transform: skew(5deg); /* Undo the skew for text */
-    font-size: 1.5em;
-  }
-  
-  .slanted-box p {
-    transform: skew(5deg); /* Undo the skew for text */
-    font-size: 1em;
-    color: gray;
-  }
-  
-  .slanted-box:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -10px;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
+  /* Restore skew for content inside */
+  .slantedBox h2,
+  .slantedBox p {
     transform: skew(5deg);
   }
 
+  .slantedBox h2{
+    font-style: italic;
+  }
+  
+  /* Hover effect for slanted boxes */
+  .slantedBox:hover {
+    transform: skew(-5deg) scale(1.05); /* Slightly enlarge on hover */
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3); /* Add shadow effect */
+  }
+  
+  /* Animation for hover */
+  .slantedBox:hover h2,
+  .slantedBox:hover p {
+    color: #C31D3C; /* Highlighted text color */
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .slantedContainer {
+      flex-direction: column; /* Stack vertically on small screens */
+      margin-top: 15em;
+    }
+  }
+  
+
 
     /*ARTICLE*/
-    .section-title {
+    .sectionTitle {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 100%; /* Ensure the content is centered within the container */
     }
     
-    .section-title h1 {
+    .sectionTitle h1 {
         font-weight: bold;
         margin: 0 50px; /* Spacing between the title and lines */
         white-space: nowrap; /* Prevent text from wrapping */
     }
     
-    .section-title hr {
+    .sectionTitle hr {
         flex-grow: 1; /* Line will take up remaining space */
         height: 2px; /* Thickness of the line */
         background-color: #000000; /* Line color */

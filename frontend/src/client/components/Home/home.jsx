@@ -1,133 +1,148 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './home.css'
-import Header from '../Header/header'
+import styles from './home.module.css'; // Import CSS module
+import Header from '../Header/header';
 import Footer from '../../../admin/components/Footer/Footer';
 import FooterClient from '../FooterClient/Footer';
-
 
 function Home() {
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
 
-  useEffect(() => {
-    // Mock session data (replace with actual logic to fetch session data in production)
-    const session = {
-      show_popup: true,
-      success: 'Welcome to TUPATS!',
-      tup_id: '123456',
+    useEffect(() => {
+        const session = {
+            show_popup: true,
+            success: 'Welcome to TUPATS!',
+            tup_id: '123456',
+        };
+
+        if (session.show_popup) {
+            setShowPopup(true);
+            if (session.success) {
+                setPopupMessage(session.success);
+            } else if (session.tup_id) {
+                setPopupMessage(`Welcome, ${session.tup_id}!`);
+            }
+        }
+    }, []);
+
+    const closePopup = () => {
+        setShowPopup(false);
     };
 
-    if (session.show_popup) {
-      setShowPopup(true);
-      if (session.success) {
-        setPopupMessage(session.success);
-      } else if (session.tup_id) {
-        setPopupMessage(`Welcome, ${session.tup_id}!`);
-      }
-    }
-  }, []);
-
-  const closePopup = () => {
-    setShowPopup(false);
-  };
-
-  return (
-    <div className={showPopup ? 'popup-visible' : ''}>
-      <Header />
-      {showPopup && <Popup message={popupMessage} onClose={closePopup} />}
-      <HomePage/>
-      <Tupats/>
-      <Slanted/>
-      <Articles/>
-      <FooterClient/>
-      <Footer/>
-    </div>
-  );
-
-  function Popup({ message, onClose }) {
     return (
-      <div className="pop-background" id="popBackground">
-        <div className="popup" id="welcomePopup">
-          <p>{message}</p>
-          <button className="popbutton" onClick={onClose}>Go to Survey</button>
+        <div className={showPopup ? styles.popupVisible : ''}>
+            <Header />
+            {showPopup && <Popup message={popupMessage} onClose={closePopup} />}
+            <HomePage />
+            <Tupats />
+            <Slanted />
+            <Articles />
+            <FooterClient />
+            <Footer />
         </div>
-      </div>
-    );
-  }
-}
-
-function HomePage () {
-
-  return (
-    <div className='home-bg'>
-
-      <div className='home-percentage'>
-        <div className='percent-1'>
-          <h1>97%</h1>
-          <h2>Employability Rate of TUP Alumni</h2>
-        </div>
-
-        <div className='percent-2'>
-          <h1>81%</h1>
-          <h2>Aligned with Specialized Course</h2>
-        </div>
-      </div>
-    </div>
-
-  );
-}
-
-function Tupats () {
-    return(
-      <div className='TUPATS'>
-        <div className='TUPATS-container'>
-          <h1>TUPATS</h1>
-            <p>The Technological University of the Philippines - Alumni Tracer System  
-              <b> (TUPATS)</b> is the unofficial alumni tracer system of TUP-Manila where it’s 
-              serves to monitor and collect data from the univerisity’s alumnus on their 
-              employment status after graduating. The data  collected will help to assess 
-              whether the university is upholding its responsibility as an educational 
-              institution.
-          </p>
-        </div>
-      </div>
     );
 
+    function Popup({ message, onClose }) {
+        return (
+            <div className={styles.popBackground} id="popBackground">
+                <div className={styles.popup} id="welcomePopup">
+                    <p>{message}</p>
+                    <button className={styles.popButton} onClick={onClose}>
+                        Go to Survey
+                    </button>
+                </div>
+            </div>
+        );
+    }
 }
 
-function Slanted () {
+function HomePage() {
+    return (
+        <div className={styles.homebg}>
+            <div className={styles.homePercentage}>
+                <div className={styles.percent1}>
+                    <h1>97%</h1>
+                    <h2>Employability Rate of TUP Alumni</h2>
+                </div>
+
+                <div className={styles.percent2}>
+                    <h1>81%</h1>
+                    <h2>Aligned with Specialized Course</h2>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function Tupats() {
+    return (
+        <div className={styles.tupats}>
+            <div className={styles.tupatsContainer}>
+                <h1>TUPATS</h1>
+                <p>
+                    The Technological University of the Philippines - Alumni Tracer
+                    System <b>(TUPATS)</b> is the unofficial alumni tracer system of
+                    TUP-Manila where it serves to monitor and collect data from the
+                    university’s alumnus on their employment status after graduating.
+                    The data collected will help to assess whether the university is
+                    upholding its responsibility as an educational institution.
+                </p>
+            </div>
+        </div>
+    );
+}
+
+function Slanted() {
+  const navigate = useNavigate();
+
   return (
+      <div className={styles.slantedContainer}>
+          <div
+              className={styles.slantedBox}
+              onClick={() => navigate('/Survey')}
+          >
+              <h2>BE THE REASON WHY TUP IS THE BEST</h2>
+              <p>Participate and answer survey and tracer forms.</p>
+          </div>
 
-    <div className='slanted-container'>
-        <div className="slanted-box">
-            <h2>BE THE REASON ON WHY TUP IS THE BEST</h2>
-            <p>Participate and answer survey and tracer forms.</p>
-        </div>
+          <div
+              className={styles.slantedBox}
+              onClick={() => navigate('/Events')}
+          >
+              <h2>ENJOY UNIVERSITY EVENTS</h2>
+              <h2>AS AN ALUMNI</h2>
+              <p>
+                  Even after graduating, alumni are still included and invited to
+                  participate in university events.
+              </p>
+          </div>
 
-        <div className="slanted-box">
-            <h2>ENJOY UNIVERSITY EVENTS AS AN ALUMNI</h2>
-            <p>Even after graduating, alumni are still included and invited to participate in university events.</p>
-        </div>
-
-        <div className="slanted-box">
-            <h2>GET OR BE THE OPPORTUNITY</h2>
-            <p>See the opportunities given by the community or be the opportunity itself.</p>
-        </div>
-    </div>
+          <div
+              className={styles.slantedBox}
+              onClick={() => navigate('/JobPage')}
+          >
+              <h2>GIVE OR GET</h2>
+              <h2>THE OPPORTUNITY</h2>
+              <p>
+                  See the opportunities given by the community or be the opportunity
+                  itself.
+              </p>
+          </div>
+      </div>
   );
 }
 
-function Articles () {
-  return (
 
-    <div className='article-container'>
-          <div className="section-title">
-            <h1>ARTICLES</h1>
-            <hr/>
-         </div>
-    </div>
-  );
+function Articles() {
+    return (
+        <div className={styles.articleContainer}>
+            <div className={styles.sectionTitle}>
+                <h1>ARTICLES</h1>
+                <hr />
+            </div>
+        </div>
+    );
 }
 
 export default Home;

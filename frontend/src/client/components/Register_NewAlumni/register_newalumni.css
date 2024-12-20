@@ -80,6 +80,47 @@
     background-color: #350e15;
 }
 
+/* Modal container */
+.unique-id-modal {
+    position: fixed; /* Keeps the modal in place */
+    top: 50%; /* Centers vertically */
+    left: 50%; /* Centers horizontally */
+    transform: translate(-50%, -50%); /* Centers the modal exactly */
+    width: 100%; /* Adjust width for responsiveness */
+    max-width: 450px; /* Sets a max width */
+    background-color: #380a12; /* Background color for the modal */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Space inside the modal */
+    text-align: center; /* Aligns text */
+    z-index: 1000; /* Ensures the modal is above other elements */
+  }
+  
+  /* Modal title */
+  .unique-id-modal h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #ffffff; /* Darker text for readability */
+  }
+  
+  /* Modal text */
+  .unique-id-modal p {
+    font-size: 1em;
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: #ffffff; /* Slightly lighter text */
+  }
+  
+  /* Emphasized User ID */
+  .unique-id-modal strong {
+    color: #ffffff; /* Highlighted color for User ID */
+    font-weight: bold;
+    background-color: #C12542;
+    padding: 10px;
+    text-transform: lowercase;
+  }
+  
+  
 /* Responsive design */
 @media (max-width: 500px) {
     .modal-content-new-alumni {
