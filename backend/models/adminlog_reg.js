@@ -1,8 +1,16 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import { connectToDatabase } from "../db/connection.js";
+import mongoose, { mongo } from "mongoose";
 
 const router = express.Router();
+
+const adminSchema = new mongoose.Schema({
+  username: {type: String, required: true},
+  password: {type: String, required: true},
+  createdAt: { type: Date, default: Date.now },
+});
+
+const Admin = mongoose.model("Admin", adminSchema);
 
 // POST route for admin registration
 router.post("/adminregister", async (req, res) => {
@@ -21,11 +29,13 @@ router.post("/adminregister", async (req, res) => {
     }
   
     try {
-      const db = await connectToDatabase();
-      const adminsCollection = db.collection("admins");
+      if(!username || !password || !confirmPassword) {
+        console.log("ERROR: missing fields")
+        return res.status(400).json({error: "all fields are required."})
+      }
   
       // Check if username already exists
-      const existingAdmin = await adminsCollection.findOne({ username });
+      const existingAdmin = await Admin.findOne({ username });
       if (existingAdmin) {
         console.error("Username already exists:", username);
         return res.status(400).json({ error: "Username already exists." });
@@ -36,11 +46,13 @@ router.post("/adminregister", async (req, res) => {
       console.log("Password hashed successfully");
   
       // Insert new admin into the database
-      const result = await adminsCollection.insertOne({
+      const result = await Admin({
         username,
         password: hashedPassword,
         createdAt: new Date(),
       });
+
+      await result.save(); 
       console.log("Admin inserted successfully:", result);
   
       res.status(201).json({ message: "Admin registered successfully.", id: result.insertedId });
@@ -59,11 +71,9 @@ router.post("/adminlogin", async (req, res) => {
   }
 
   try {
-    const db = await connectToDatabase();
-    const adminsCollection = db.collection("admins");
 
     // Check if admin exists
-    const admin = await adminsCollection.findOne({ username });
+    const admin = await Admin.findOne({ username });
     if (!admin) {
       return res.status(400).json({ error: "Invalid username or password." });
     }
