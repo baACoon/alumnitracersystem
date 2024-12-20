@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import mongoose from "mongoose"; // Also wag mo to kalimutan i add
+import mongoose from "mongoose"; // Also wag mo to kalimutan i addd
 
 const router = express.Router();
 
