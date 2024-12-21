@@ -4,7 +4,7 @@ import styles from "./ListofEvents.module.css";
 export const ListOfEvents = ({ events }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventList, setEventList] = useState([]);
-  
+
   useEffect(() => {
     fetchEvents();
   }, []);
@@ -27,6 +27,28 @@ export const ListOfEvents = ({ events }) => {
     setSelectedEvent(event);
   };
 
+  const handleDeleteEvent = async (eventId) => {
+    if (!eventId) {
+      console.error("Invalid event ID.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:5050/event/delete/${eventId}`, {
+        method: "DELETE",
+      });
+  
+      if (response.ok) {
+        setEventList(eventList.filter((event) => event._id !== eventId)); // Use `_id` here
+        console.log(`Event with ID ${eventId} deleted successfully.`);
+      } else {
+        console.error("Failed to delete event.");
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
+  };  
+
   const closeModal = () => {
     setSelectedEvent(null);
   };
@@ -36,17 +58,14 @@ export const ListOfEvents = ({ events }) => {
       <h2 className={styles.title}>List of Events</h2>
       {eventList.length > 0 ? (
         <div className={styles.eventsGrid}>
-        {eventList.map((event, index) => (
-          <div
-            key={index}
-            className={styles.eventBox}
-            onClick={() => handleEventClick(event)}
-          >
+          {eventList.map((event, index) => (
+          <div key={event._id} className={styles.eventBox}>
             {event.image && (
               <img
                 src={`http://localhost:5050/uploads/${event.image}`}
                 alt={event.title}
                 className={styles.eventImage}
+                onClick={() => handleEventClick(event)}
               />
             )}
             <p>
@@ -58,10 +77,15 @@ export const ListOfEvents = ({ events }) => {
                 ? event.description.substring(0, 100) + "..."
                 : event.description}
             </p>
+            <button
+              className={styles.deleteButton}
+              onClick={() => handleDeleteEvent(event._id)} // Use `_id` here
+            >
+              Delete
+            </button>
           </div>
         ))}
-      </div>
-      
+        </div>
       ) : (
         <p className={styles.noEvents}>No events available. Please create one.</p>
       )}
@@ -76,35 +100,48 @@ export const ListOfEvents = ({ events }) => {
             <button className={styles.closeButton} onClick={closeModal}>
               &times;
             </button>
+            {selectedEvent.image && (
+              <img
+                src={`http://localhost:5050/uploads/${selectedEvent.image}`}
+                alt={selectedEvent.title}
+                className={styles.modalEventImage}
+              />
+            )}
             <h2 className={styles.modalTitle}>{selectedEvent.title}</h2>
             <div className={styles.modalDetails}>
+            <div className={styles.dateTimeRow}>
+                <p>
+                  <strong>Date:</strong> <br />
+                  {selectedEvent.date}
+                </p>
+                <p>
+                  <strong>Time:</strong> <br />
+                  {selectedEvent.time}
+                </p>
+              </div>
+              <div className={styles.description2}>
+                <p>
+                  <strong>Description:</strong> <br />{selectedEvent.description}
+                </p>
+              </div>
+              <div className={styles.venueSource}>
+                <p>
+                  <strong>Venue:</strong> <br />{selectedEvent.venue}
+                </p>
+                <p>
+                  <strong>Source:</strong>{" "}
+                  <a href={selectedEvent.source} target="_blank" rel="noopener noreferrer">
+                    <br />Link
+                  </a>
+                </p>
+              </div>
               <p>
-                <strong>Date:</strong> {selectedEvent.date}
+                <strong>Participants ID:</strong> <br />{selectedEvent.participantsId}
               </p>
               <p>
-                <strong>Time:</strong> {selectedEvent.time}
+                <strong>By:</strong> <br />{selectedEvent.by}
               </p>
-              <p>
-                <strong>Venue:</strong> {selectedEvent.venue}
-              </p>
-              <p>
-                <strong>Description:</strong> {selectedEvent.description}
-              </p>
-              <p>
-                <strong>Event ID:</strong> {selectedEvent.eventId}
-              </p>
-              <p>
-                <strong>Participants ID:</strong> {selectedEvent.participantsId}
-              </p>
-              <p>
-                <strong>By:</strong> {selectedEvent.by}
-              </p>
-              <p>
-                <strong>Source:</strong>{" "}
-                <a href={selectedEvent.source} target="_blank" rel="noopener noreferrer">
-                  Link
-                </a>
-              </p>
+              
             </div>
           </div>
         </div>

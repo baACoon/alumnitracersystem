@@ -1,29 +1,47 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
 
 .layout {
-    display: flex; /* Flexbox layout to position sidebar and main content */
-    font-family: 'Montserrat', sans-serif; /* Apply font to the entire layout */
+  display: flex;
+  font-family: "Montserrat", sans-serif;
+}
+
+.mainContent {
+  margin-left: 250px;
+  padding: 20px;
+  width: calc(100% - 250px);
+  overflow: auto;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease; /* Smooth adjustment when sidebar toggles */
+}
+
+/* Hamburger Button - only visible on smaller screens */
+.hamburgerButton {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1001;
+  background-color: #c31d3c;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: none; /* Hidden by default */
+}
+
+.hamburgerButton:hover {
+  background-color: #8f263a;
+}
+
+/* Show hamburger button on smaller screens */
+@media (max-width: 768px) {
+  .hamburgerButton {
+    display: block;
   }
-  
-  .sidebar {
-    flex: 0 0 250px; /* Sidebar has a fixed width */
-    height: 100vh; /* Full viewport height */
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: #C31D3C;
-    color: white;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    font-family: 'Montserrat', sans-serif; /* Ensure font applies here */
-  }
-  
+
   .mainContent {
-    margin-left: 250px; /* Push the main content to the right, matching sidebar width */
-    padding: 20px;
-    width: calc(100% - 250px); /* Remaining space for the main content */
-    overflow: auto;
-    min-height: 100vh;
-    font-family: 'Montserrat', sans-serif; /* Apply to main content */
+    margin-left: 0; /* Main content takes full width */
+    width: 100%;
   }
-  
+}

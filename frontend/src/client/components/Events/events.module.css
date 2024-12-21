@@ -1,0 +1,186 @@
+/* Container styling */
+.eventsContainer {
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto;
+  padding-top: 120px;
+}
+
+/* Parent container for event */
+.eventNo1 {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  padding: 20px;
+  padding-left: 40px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.eventNo1:hover {
+  background: #f8f9fa;
+  transform: scale(1.03);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Event Date Styling */
+.eventDate {
+  flex-shrink: 0;
+  text-align: center;
+  margin-right: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.eventDate h3 {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.eventDate h3:last-child {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 5px;
+  color: #000;
+}
+
+/* Event Details Styling */
+.eventDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.eventDetails h5 {
+  font-size: 14px;
+  margin: 5px 0;
+  color: #555;
+}
+
+.eventDetails h3 {
+  font-size: 20px;
+  font-weight: bolder;
+  margin: 5px 0;
+  color: #222;
+  text-transform: uppercase;
+}
+
+/* Modal Styling */
+.eventModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.eventModalContent {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90%;
+  text-align: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow-y: auto;
+}
+
+.closeButton {
+  position: absolute;
+  top: 3px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.eventPoster {
+  width: 100%;
+  max-width: 550px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .eventsContainer{
+    padding-top: 70px;
+  }
+  .eventsContainer h4{
+    padding: 20px;
+  }
+  .eventNo1 {
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;
+    padding: 10px;
+  }
+
+  .eventDate {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .eventDate h3 {
+    font-size: 16px;
+  }
+
+  .eventDate h3:last-child {
+    font-size: 18px;
+  }
+
+  .eventDetails h3 {
+    font-size: 15px;
+    text-align: center;
+
+  }
+
+  .eventDetails h5 {
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .eventModalContent {
+    padding: 15px;
+  }
+
+  .dateTimeVenue {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .dateTimeVenue p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .eventDate h3 {
+    font-size: 14px;
+  }
+
+  .eventDate h3:last-child {
+    font-size: 16px;
+  }
+
+  .eventDetails h3 {
+    font-size: 11px;
+  }
+
+  .eventDetails h5 {
+    font-size: 11px;
+  }
+}

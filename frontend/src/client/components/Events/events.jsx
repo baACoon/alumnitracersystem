@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../Events/events.css";
+import styles from "./events.module.css"; // Import the CSS module
 import Header from "../Header/header";
 import Footer from "../../../admin/components/Footer/Footer";
 
@@ -45,20 +45,20 @@ function EventMainPage() {
   };
 
   return (
-    <div className="EventsContainer">
-      <h4>DECEMBER 2024</h4>
+    <div className={styles.eventsContainer}>
+      <h4>UPCOMING EVENTS</h4>
       {events.length > 0 ? (
         events.map((event, index) => (
           <div
             key={index}
-            className="eventNo1"
+            className={styles.eventNo1}
             onClick={() => handleEventClick(event)}
           >
-            <div className="event-date">
-              <h3>{new Date(event.date).toLocaleString("default", { month: "short" })}</h3>
+            <div className={styles.eventDate}>
+              <h3>{new Date(event.date).toLocaleString("default", { month: "long" })}</h3>
               <h3>{new Date(event.date).getDate()}</h3>
             </div>
-            <div className="event-details">
+            <div className={styles.eventDetails}>
               <h5>
                 {event.time} in {event.venue}
               </h5>
@@ -77,26 +77,29 @@ function EventMainPage() {
 
       {/* Modal */}
       {selectedEvent && (
-        <div className="eventmodal">
-          <div className="eventmodal-content">
-            <span className="close-button" onClick={closeModal}>
+        <div className={styles.eventModal}>
+          <div className={styles.eventModalContent}>
+            <span className={styles.closeButton} onClick={closeModal}>
               &times;
             </span>
             {selectedEvent.image && (
               <img
                 src={`http://localhost:5050/uploads/${selectedEvent.image}`}
                 alt={selectedEvent.title}
-                className="event-poster"
+                className={styles.eventPoster}
               />
             )}
             <h2>{selectedEvent.title}</h2>
-            <p>
-              <strong>Date:</strong> {selectedEvent.date} at {selectedEvent.time}
-            </p>
-            <p>
-              <strong>Location:</strong> {selectedEvent.venue}
-            </p>
             <p>{selectedEvent.description}</p>
+            <div className={styles.dateTimeVenue}>
+              <p>
+                <strong>Date & Time:</strong> <br />{selectedEvent.date} at {selectedEvent.time}
+              </p>
+              <p>
+                <strong>Location:</strong> <br />{selectedEvent.venue}
+              </p>
+            </div>
+            
           </div>
         </div>
       )}

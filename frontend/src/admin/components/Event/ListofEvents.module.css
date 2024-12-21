@@ -1,126 +1,197 @@
+/* General body style to limit screen size */
+body {
+  min-width: 375px; /* Minimum width for the entire screen */
+}
+
 /* List of Events Wrapper */
 .listOfEvents {
-    padding: 1.5em;
-    text-align: left; /* Align list to start from the left */
-  }
+  padding: 1.5em;
+  text-align: left;
+}
+
+/* Title Style */
+.title {
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 1em;
   
-  /* Title Style */
-  .title {
-    text-align: center;
-    font-size: 2em;
-    margin-bottom: 1em;
-  }
-  
-  /* Flexbox for events grid */
+}
+
+/* Event Image Styling in Event Box */
+.eventImage {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 5px;
+  margin: 0 auto 10px auto;
+}
+
+/* Flexbox for events grid */
+.eventsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5em;
+  justify-content: center; /* Center items within the grid */
+}
+
+/* Individual Event Box */
+.eventBox {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1em;
+  width: 300px; /* Fixed width for event boxes */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.eventBox:hover {
+  transform: translateY(-5px);
+}
+
+.eventBox h2 {
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.eventBox p {
+  font-size: 0.9em;
+  color: #555;
+  text-align: center;
+}
+
+/* No Events Message */
+.noEvents {
+  text-align: center;
+  font-size: 1.2em;
+  color: #777;
+}
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: #fff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90%;
+  padding: 2em;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  overflow-y: auto;
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.closeButton:hover {
+  color: #e43a19;
+}
+
+/* Delete Button Styling */
+.deleteButton {
+  background-color: #e43a19;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  display: block;
+  width: 100%;
+}
+
+.deleteButton:hover {
+  background-color: #c22f15;
+}
+
+/* Modal Event Image Styling */
+.modalEventImage {
+  width: 100%;
+  height: auto;
+  margin-bottom: 1em;
+  border-radius: 5px;
+}
+
+.modalTitle {
+  text-align: center;
+  font-size: 1.8em;
+  margin-bottom: 1em;
+}
+
+.modalDetails p {
+  font-size: 1em;
+  margin-bottom: 0.8em;
+  text-align: center;
+}
+
+/* Row styling for flexible layouts */
+.dateTimeRow,
+.venueSource {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.dateTimeRow p,
+.venueSource p,
+.description2 p {
+  flex: 1;
+  text-align: center;
+  background-color: #f8f8f8;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+
+@media (max-width: 920px) {
   .eventsGrid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5em;
-    justify-content: flex-start; /* Start from the left while keeping overall centering */
+    justify-content: space-between; /* Adjust spacing between items */
   }
-  
-  /* Individual Event Box */
+
   .eventBox {
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1em;
-    width: calc(33.333% - 1em); /* Default to 3 columns */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out;
+    width: calc(50% - 1em); /* Switch to 2 columns */
   }
-  
-  .eventBox:hover {
-    transform: translateY(-5px);
-  }
-  
-  .eventBox h2 {
-    font-size: 1.2em;
-    margin-bottom: 0.5em;
-    text-align: center; /* Center title inside each event box */
-  }
-  
-  .eventBox p {
-    font-size: 0.9em;
-    color: #555;
-  }
-  
-  /* No Events Message */
-  .noEvents {
-    text-align: center;
-    font-size: 1.2em;
-    color: #777;
-  }
-  
-  /* Modal Styles */
-  .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
+}
+
+@media (max-width: 600px) {
+  .eventsGrid {
+    flex-direction: column; /* Switch to a single column layout */
     align-items: center;
-    z-index: 1000;
   }
-  
-  .modalContent {
-    background-color: #fff;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
-    padding: 2em;
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: center;
+
+  .eventBox {
+    width: 300px; /* Maintain fixed width for boxes */
   }
-  
-  .closeButton {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .closeButton:hover {
-    color: #e43a19;
-  }
-  
-  .modalTitle {
-    text-align: center;
-    font-size: 1.8em;
-    margin-bottom: 1em;
-  }
-  
-  .modalDetails p {
-    font-size: 1em;
-    margin-bottom: 0.5em;
-    text-align: center;
-  }
-  
-  /* Responsive Adjustments */
-  @media (max-width: 920px) {
-    .eventBox {
-      width: calc(50% - 1em); /* Adjust to 2 columns */
-    }
-  }
-  
-  @media (max-width: 600px) {
-    .eventBox {
-      width: 100%; /* Adjust to 1 column */
-    }
-  
-    .modalContent {
-      padding: 1.5em;
-    }
-  }
-  
+}

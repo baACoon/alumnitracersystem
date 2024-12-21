@@ -126,7 +126,7 @@ export const CreateEvent = ({ onPost, onBack }) => {
         </div>
         <input
           type="text"
-          placeholder="Source"
+          placeholder="URL Source"
           value={source}
           onChange={(e) => setSource(e.target.value)}
           className={styles.inputField}
