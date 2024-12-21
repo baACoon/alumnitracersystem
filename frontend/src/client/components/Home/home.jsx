@@ -8,6 +8,8 @@ import FooterClient from '../FooterClient/Footer';
 function Home() {
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
+    const navigate = useNavigate(); // Initialize the navigate function
+    const handleCrossCheckSurveyFormClick = () => navigate('/RegisterSurveyForm');
 
     useEffect(() => {
         const session = {

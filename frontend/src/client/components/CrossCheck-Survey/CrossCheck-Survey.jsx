@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import axios from "axios"; // To handle API requests
+import React, { useState, useCallback} from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Correct way to import useNavigate
 import styles from "./CrossCheck-Survey.module.css";
 import Tuplogo from "../../components/image/Tuplogo.png";
 import Alumnilogo from "../../components/image/alumniassoc_logo.png";
@@ -64,264 +65,545 @@ const colleges = {
     "Bachelor of Technology in Print Media Technology",
   ],
 };
-
 function CrossCheckSurveyForm() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
   const [formData, setFormData] = useState({
-    date: new Date().toISOString().split("T")[0],
     first_name: "",
-    last_name: "",
     middle_name: "",
+    last_name: "",
+    email_address: "",
+    contact_no: "",
+    birthdate: "",
+    birthplace: "",
+    sex: "",
+    nationality: "",
+    address: "",
+    degree: "",
     college: "",
     course: "",
     occupation: "",
     company_name: "",
     year_started: "",
-    position: "",
     job_status: "",
+    position: "",
     type_of_organization: "",
     work_alignment: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }, []);
+
+  const handleCollegeChange = (e) => {
+    const selectedCollege = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      college: selectedCollege,
+      course: "", // Reset course when college changes
+    }));
   };
 
-  const handleNextPage = () => setCurrentPage(2);
-  const handlePreviousPage = () => setCurrentPage(1);
+  const handleCourseChange = (e) => {
+    const selectedCourse = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      course: selectedCourse,
+    }));
+  };
+
+
+  const validateForm = useCallback(() => {
+    if (currentPage === 1) {
+      return (
+        formData.first_name.trim() &&
+        formData.last_name.trim() &&
+        formData.email_address.trim() &&
+        formData.contact_no.trim() &&
+        formData.birthdate &&
+        formData.birthplace.trim() &&
+        (formData.sex === "Male" || formData.sex === "Female") &&
+        formData.nationality.trim() &&
+        formData.address.trim() &&
+        formData.degree &&
+        formData.college.trim() &&
+        formData.course.trim()
+      );
+    }
+    if (currentPage === 2) {
+      return (
+        formData.occupation.trim() &&
+        formData.company_name.trim() &&
+        formData.year_started &&
+        formData.position.trim() &&
+        formData.job_status &&
+        formData.type_of_organization &&
+        formData.work_alignment
+      );
+    }
+    return false;
+  }, [currentPage, formData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    console.log("Submitting Form Data:", formData); // Debug log
+  
+    if (!validateForm()) {
+      setSubmitStatus({ type: "error", message: "Please fill in all required fields" });
+      console.log("Validation Failed"); // Debug log
+      return;
+    }
+  
+    setIsSubmitting(true);
     try {
-      const response = await axios.post("http://localhost:5050/api/surveys/submit", formData);
-      alert(response.data.message);
+      const response = await axios.post("http://localhost:5050/surveys/submit", {
+        personalInfo: {
+          first_name: formData.first_name,
+          middle_name: formData.middle_name,
+          last_name: formData.last_name,
+          email_address: formData.email_address,
+          contact_no: formData.contact_no,
+          birthdate: formData.birthdate,
+          birthplace: formData.birthplace,
+          sex: formData.sex,
+          nationality: formData.nationality,
+          address: formData.address,
+          degree: formData.degree,
+          college: formData.college,
+          course: formData.course,
+        },
+        employmentInfo: {
+          occupation: formData.occupation,
+          company_name: formData.company_name,
+          year_started: formData.year_started,
+          position: formData.position,
+          job_status: formData.job_status,
+          type_of_organization: formData.type_of_organization,
+          work_alignment: formData.work_alignment,
+        },
+      });
+
+      if (response.data.success) {
+        setSubmitStatus({ type: "success", message: "Survey submitted successfully!" });
+        setTimeout(() => navigate("/profile"), 2000); // Redirect to homepage after 2 seconds
+        setFormData({
+          first_name: "",
+          middle_name: "",
+          last_name: "",
+          email_address: "",
+          contact_no: "",
+          birthdate: "",
+          birthplace: "",
+          sex: "",
+          nationality: "",
+          address: "",
+          degree: "",
+          college: "",
+          course: "",
+          occupation: "",
+          company_name: "",
+          year_started: "",
+          job_status: "",
+          position: "",
+          type_of_organization: "",
+          work_alignment: "",
+        });
+        setCurrentPage(1);
+        
+      }
     } catch (error) {
-      console.error(error);
-      alert("Failed to submit the survey. Please try again.");
+      setSubmitStatus({
+        type: "error",
+        message: error.response?.data?.message || "Failed to submit survey. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className={styles["survey-container"]}>
-      <div className={styles["logo"]}>
+      <div className={styles["logo-container"]}>
         <img src={Tuplogo} alt="TUP logo" className={styles["logo-1"]} />
         <img src={Alumnilogo} alt="Alumni logo" className={styles["logo-2"]} />
       </div>
-      <h1>Tracer Survey Form (2024)</h1>
 
-      <form onSubmit={handleSubmit}>
-        {currentPage === 1 && (
-          <>
-            <h5>Personal Information</h5>
-            <div className={styles["form-group"]}>
-              <label htmlFor="date">Date:</label>
-              <input
-                type="date"
-                id="date"
-                name="date"
-                value={formData.date}
-                readOnly
-              />
-            </div>
-            <div className={styles["form-group"]}>
-              <label htmlFor="first_name">First Name:</label>
-              <input
-                type="text"
-                id="first_name"
-                name="first_name"
-                value={formData.first_name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className={styles["form-group"]}>
-              <label htmlFor="last_name">Last Name:</label>
-              <input
-                type="text"
-                id="last_name"
-                name="last_name"
-                value={formData.last_name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className={styles["form-group"]}>
-              <label htmlFor="middle_name">Middle Name:</label>
-              <input
-                type="text"
-                id="middle_name"
-                name="middle_name"
-                value={formData.middle_name}
-                onChange={handleChange}
-              />
-            </div>
-            <div className={styles["form-group"]}>
-              <label htmlFor="college">College:</label>
-              <select
-                id="college"
-                name="college"
-                value={formData.college}
-                onChange={(e) => {
-                  handleChange(e);
-                  setFormData({ ...formData, course: "" });
-                }}
-                required
-              >
-                <option value="">Select College</option>
-                {Object.keys(colleges).map((college) => (
-                  <option key={college} value={college}>
-                    {college}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className={styles["form-group"]}>
-              <label htmlFor="course">Course:</label>
-              <select
-                id="course"
-                name="course"
-                value={formData.course}
-                onChange={handleChange}
-                required
-                disabled={!formData.college}
-              >
-                <option value="">Select Course</option>
-                {formData.college &&
-                  colleges[formData.college].map((course) => (
-                    <option key={course} value={course}>
-                      {course}
-                    </option>
-                  ))}
-              </select>
-            </div>
-            <div className={styles["survey-form-button-container"]}>
-              <button
-                type="button"
-                className={styles["surveyform-btn"]}
-                onClick={handleNextPage}
-              >
-                Next
-              </button>
-            </div>
-          </>
-        )}
+      <h1 className={styles["survey-title"]}>Tracer Survey Form (2024)</h1>
 
-        {currentPage === 2 && (
+      {submitStatus.message && (
+        <div className={`${styles.alert} ${styles[submitStatus.type]}`}>
+          {submitStatus.message}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className={styles["survey-form"]}>
+        {currentPage === 1 ? (
           <>
-            <h5>Occupational Information</h5>
-            <div className={styles["form-group"]}>
-              <label htmlFor="occupation">Occupation:</label>
-              <input
-                type="text"
-                id="occupation"
-                name="occupation"
-                value={formData.occupation}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className={styles["form-group"]}>
-              <label htmlFor="company_name">Company Name:</label>
-              <input
-                type="text"
-                id="company_name"
-                name="company_name"
-                value={formData.company_name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className={styles["form-group"]}>
-              <label htmlFor="year_started">Year Started:</label>
-              <input
-                type="text"
-                id="year_started"
-                name="year_started"
-                value={formData.year_started}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className={styles["form-group"]}>
-              <label htmlFor="position">Position / Designation:</label>
-              <input
-                type="text"
-                id="position"
-                name="position"
-                value={formData.position}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className={styles["form-group"]}>
-              <label htmlFor="job_status">Job Status:</label>
-              <select
-                id="job_status"
-                name="job_status"
-                value={formData.job_status}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select Job Status</option>
-                <option value="Permanent">Permanent</option>
-                <option value="Contractual">Contractual / Project Based</option>
-                <option value="Temporary">Temporary</option>
-                <option value="Unemployed">Unemployed</option>
-              </select>
-            </div>
-            <div className={styles["form-group"]}>
-              <label htmlFor="type_of_organization">
-                Type of Organization:
-              </label>
-              <select
-                id="type_of_organization"
-                name="type_of_organization"
-                value={formData.type_of_organization}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select Organization Type</option>
-                <option value="Private">Private</option>
-                <option value="Non-Government">
-                  Non-Government Organization
-                </option>
-                <option value="Self-Employed">Self-Employed</option>
-              </select>
-            </div>
-            <div className={styles["form-group"]}>
-              <label htmlFor="work_alignment">
-                Work Alignment with Academic Specialization:
-              </label>
-              <select
-                id="work_alignment"
-                name="work_alignment"
-                value={formData.work_alignment}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select Alignment</option>
-                <option value="Very much aligned">Very much aligned</option>
-                <option value="Aligned">Aligned</option>
-                <option value="Averagely Aligned">Averagely Aligned</option>
-                <option value="Somehow Aligned">Somehow Aligned</option>
-                <option value="Unaligned">Unaligned</option>
-              </select>
-            </div>
-            <div className={styles["survey-form-button-container"]}>
-              <button
-                type="button"
-                className={styles["surveyform-prevbtn"]}
-                onClick={handlePreviousPage}
-              >
-                Previous
-              </button>
-              <button className={styles["surveyform-btn"]} type="submit">
-                Submit
-              </button>
-            </div>
-          </>
-        )}
+            <h2 className={styles["section-title"]}>Personal Information</h2>
+            <div className={styles["form-grid"]}>
+              {/* Personal Information Fields */}
+                          <div className={styles["form-group"]}>
+                              <label htmlFor="first_name">First Name: *</label>
+                              <input
+                                  type="text"
+                                  id="first_name"
+                                  name="first_name"
+                                  value={formData.first_name}
+                                  onChange={handleChange}
+                                  required
+                                  className={styles["form-input"]}
+                              />
+                          </div>
+  
+                           <div className={styles["form-group"]}>
+                                  <label htmlFor="middle_name">Middle Name:</label>
+                                  <input
+                                      type="text"
+                                      id="middle_name"
+                                      name="middle_name"
+                                      value={formData.middle_name}
+                                      onChange={handleChange}
+                                      className={styles["form-input"]}
+                                  />
+                              </div>
+  
+                              <div className={styles["form-group"]}>
+                                  <label htmlFor="last_name">Last Name: *</label>
+                                  <input
+                                      type="text"
+                                      id="last_name"
+                                      name="last_name"
+                                      value={formData.last_name}
+                                      onChange={handleChange}
+                                      required
+                                      className={styles["form-input"]}
+                                  />
+                              </div>
+  
+                              <div className={styles["form-group"]}>
+                                  <label htmlFor="email_address">Email Address: *</label>
+                                  <input
+                                      type="email"
+                                      id="email_address"
+                                      name="email_address"
+                                      value={formData.email_address}
+                                      onChange={handleChange}
+                                      required
+                                      className={styles["form-input"]}
+                                  />
+                              </div>
+  
+                              <div className={styles["form-group"]}>
+                                  <label htmlFor="contact_no">Contact Number: *</label>
+                                  <input
+                                      type="tel"
+                                      id="contact_no"
+                                      name="contact_no"
+                                      value={formData.contact_no}
+                                      onChange={handleChange}
+                                      required
+                                      className={styles["form-input"]}
+                                  />
+                              </div>
+  
+                              <div className={styles["form-group"]}>
+                                  <label htmlFor="birthdate">Birth Date: *</label>
+                                  <input
+                                      type="date"
+                                      id="birthdate"
+                                      name="birthdate"
+                                      value={formData.birthdate}
+                                      onChange={handleChange}
+                                      required
+                                      className={styles["form-input"]}
+                                  />
+                              </div>
+  
+                              <div className={styles["form-group"]}>
+                                  <label htmlFor="birthplace">Birth Place: *</label>
+                                  <input
+                                      type="text"
+                                      id="birthplace"
+                                      name="birthplace"
+                                      value={formData.birthplace}
+                                      onChange={handleChange}
+                                      required
+                                      className={styles["form-input"]}
+                                  />
+                              </div>
+  
+                              <div className={styles["form-group"]}>
+                                  <label>Sex: *</label>
+                                  <div className={styles["radio-group"]}>
+                                      <label className={styles["radio-label"]}>
+                                          <input
+                                              type="radio"
+                                              name="sex"
+                                              value="Male"
+                                              checked={formData.sex === "Male"}
+                                              onChange={handleChange}
+                                              required
+                                          />
+                                          Male
+                                      </label>
+                                      <label className={styles["radio-label"]}>
+                                          <input
+                                              type="radio"
+                                              name="sex"
+                                              value="Female"
+                                              checked={formData.sex === "Female"}
+                                              onChange={handleChange}
+                                          />
+                                          Female
+                                      </label>
+                                  </div>
+                              </div>
+  
+                              <div className={styles["form-group"]}>
+                                  <label htmlFor="nationality">Nationality: *</label>
+                                  <input
+                                      type="text"
+                                      id="nationality"
+                                      name="nationality"
+                                      value={formData.nationality}
+                                      onChange={handleChange}
+                                      required
+                                      className={styles["form-input"]}
+                                  />
+                              </div>
+  
+                              <div className={styles["form-group-full"]}>
+                                  <label htmlFor="address">Complete Address: *</label>
+                                  <textarea
+                                      id="address"
+                                      name="address"
+                                      value={formData.address}
+                                      onChange={handleChange}
+                                      required
+                                      className={styles["form-textarea"]}
+                                      rows="3"
+                                  />
+                              </div>
+  
+                              <div className={styles["form-group"]}>
+                                  <label htmlFor="degree">Degree: *</label>
+                                  <select
+                                      id="degree"
+                                      name="degree"
+                                      value={formData.degree}
+                                      onChange={handleChange}
+                                      required
+                                      className={styles["form-select"]}
+                                  >
+                                      <option value="">Select Degree</option>
+                                      <option value="bachelors">Bachelor's Degree</option>
+                                      <option value="masters">Master's Degree</option>
+                                      <option value="doctorate">Doctorate Degree</option>
+                                  </select>
+                              </div>
+  
+                              <div className={styles["form-group"]}>
+                              <label htmlFor="college">College: *</label>
+                              <select
+                                id="college"
+                                name="college"
+                                value={formData.college}
+                                onChange={handleCollegeChange}
+                                required
+                                className={styles["form-select"]}
+                              >
+                                <option value="">Select College</option>
+                                {Object.keys(colleges).map((college) => (
+                                  <option key={college} value={college}>
+                                    {college}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
+                            <div className={styles["form-group"]}>
+                              <label htmlFor="course">Course: *</label>
+                              <select
+                                id="course"
+                                name="course"
+                                value={formData.course}
+                                onChange={handleCourseChange}
+                                required
+                                className={styles["form-select"]}
+                                disabled={!formData.college}
+                              >
+                                <option value="">Select Course</option>
+                                {formData.college &&
+                                  colleges[formData.college].map((course) => (
+                                    <option key={course} value={course}>
+                                      {course}
+                                    </option>
+                                  ))}
+                              </select>
+                            </div>
+                                    </div>
+
+                          <div className={styles["button-container"]}>
+                            <button
+                              type="button"
+                              className={styles["next-btn"]}
+                              onClick={() => {
+                                if (validateForm()) {
+                                  setCurrentPage(2);
+                                } else {
+                                  setSubmitStatus({
+                                    type: "error",
+                                    message: "Please fill in all required fields",
+                                  });
+                                }
+                              }}
+                            >
+                              Next
+                            </button>
+                          </div>
+                </>
+              ) : (
+                <>
+                  <h2 className={styles["section-title"]}>Occupational Information</h2>
+                    <div className={styles["form-grid"]}>
+                      {/* Occupational Information Fields */}
+                          <div className={styles["form-group"]}>
+                              <label htmlFor="occupation">Occupation: *</label>
+                              <input
+                                  type="text"
+                                  id="occupation"
+                                  name="occupation"
+                                  value={formData.occupation}
+                                  onChange={handleChange}
+                                  required
+                                  className={styles["form-input"]}
+                              />
+                          </div>
+  
+                          <div className={styles["form-group"]}>
+                                  <label htmlFor="company_name">Company Name: *</label>
+                                  <input
+                                      type="text"
+                                      id="company_name"
+                                      name="company_name"
+                                      value={formData.company_name}
+                                      onChange={handleChange}
+                                      required
+                                      className={styles["form-input"]}
+                                  />
+                              </div>
+  
+                              <div className={styles["form-group"]}>
+                                  <label htmlFor="year_started">Year Started: *</label>
+                                  <input
+                                      type="number"
+                                      id="year_started"
+                                      name="year_started"
+                                      value={formData.year_started}
+                                      onChange={handleChange}
+                                      required
+                                      min="1900"
+                                      max="2024"
+                                      className={styles["form-input"]}
+                                  />
+                              </div>
+  
+                              <div className={styles["form-group"]}>
+                                  <label htmlFor="position">Position: *</label>
+                                  <input
+                                      type="text"
+                                      id="position"
+                                      name="position"
+                                      value={formData.position}
+                                      onChange={handleChange}
+                                      required
+                                      className={styles["form-input"]}
+                                  />
+                              </div>
+  
+                              <div className={styles["form-group"]}>
+                                  <label htmlFor="job_status">Employment Status: *</label>
+                                  <select
+                                      id="job_status"
+                                      name="job_status"
+                                      value={formData.job_status}
+                                      onChange={handleChange}
+                                      required
+                                      className={styles["form-select"]}
+                                  >
+                                      <option value="">Select Status</option>
+                                      <option value="Permanent">Permanent</option>
+                                      <option value="Contractual">Contractual</option>
+                                      <option value="Temporary">Temporary</option>
+                                      <option value="Self-employed">Self-employed</option>
+                                      <option value="Unemployed">Unemployed</option>
+                                  </select>
+                              </div>
+  
+                              <div className={styles["form-group"]}>
+                                  <label htmlFor="type_of_organization">Type of Organization: *</label>
+                                  <select
+                                      id="type_of_organization"
+                                      name="type_of_organization"
+                                      value={formData.type_of_organization}
+                                      onChange={handleChange}
+                                      required
+                                      className={styles["form-select"]}
+                                  >
+                                      <option value="">Select Type</option>
+                                      <option value="Public">Public</option>
+                                      <option value="Private">Private</option>
+                                      <option value="NGO">NGO</option>
+                                      <option value="Government">Government</option>
+                                  </select>
+                              </div>
+                              <div className={styles["form-group"]}>
+                                <label htmlFor="work_alignment">
+                                  Work Alignment with Academic Specialization:
+                                </label>
+                                <select
+                                  id="work_alignment"
+                                  name="work_alignment"
+                                  value={formData.work_alignment}
+                                  onChange={handleChange}
+                                  required
+                                >
+                                  <option value="">Select Alignment</option>
+                                  <option value="Very much aligned">Very much aligned</option>
+                                  <option value="Aligned">Aligned</option>
+                                  <option value="Averagely Aligned">Averagely Aligned</option>
+                                  <option value="Somehow Aligned">Somehow Aligned</option>
+                                  <option value="Unaligned">Unaligned</option>
+                                </select>
+                              </div>
+                    </div>
+
+              <div className={styles["survey-form-button-container"]}>
+                <button
+                  type="button"
+                  className={styles["surveyform-prevbtn"]}
+                  onClick={() => setCurrentPage(1)}
+                  disabled={isSubmitting}
+                >
+                  Previous
+                </button>
+                <button
+                  type="submit"
+                  className={styles["surveyform-btn"]}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Submitting..." : "Submit"}
+                </button>
+              </div>
+            </>
+          )}
       </form>
     </div>
   );
