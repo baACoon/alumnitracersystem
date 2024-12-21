@@ -38,19 +38,8 @@ export function Sidebar({ isOpen, toggleSidebar }) {
             ALUMNI
           </NavLink>
         </div>
-
-        {/* Events Tab */}
-        <NavLink
-          to="/EventTabs"
-          className={({ isActive }) =>
-            isActive ? styles.mainTabActive : styles.mainTab
-          }
-        >
-          EVENTS
-        </NavLink>
-
-        {/* Tabs with Sub-Tabs */}
-        <div>
+{/* Tabs with Sub-Tabs */}
+<div>
           <button
             className={styles.mainTabButton}
             onClick={() => toggleTab("surveys")}
@@ -78,35 +67,25 @@ export function Sidebar({ isOpen, toggleSidebar }) {
             </div>
           )}
         </div>
+        
+        {/* Events Tab */}
+        <NavLink
+          to="/EventTabs"
+          className={({ isActive }) =>
+            isActive ? styles.mainTabActive : styles.mainTab
+          }
+        >
+          EVENTS
+        </NavLink>
 
-        <div>
-          <button
-            className={styles.mainTabButton}
-            onClick={() => toggleTab("opportunities")}
-          >
-            OPPORTUNITIES
-          </button>
-          {activeTab === "opportunities" && (
-            <div className={styles.subTabs}>
-              <NavLink
-                to="/Opportunities"
-                className={({ isActive }) =>
-                  isActive ? styles.subTabActive : styles.subTab
-                }
-              >
-                Published
-              </NavLink>
-              <NavLink
-                to="/Opportunities/Pending"
-                className={({ isActive }) =>
-                  isActive ? styles.subTabActive : styles.subTab
-                }
-              >
-                Pending
-              </NavLink>
-            </div>
-          )}
-        </div>
+        <NavLink
+          to="/Opportunities"
+          className={({ isActive }) =>
+            isActive ? styles.mainTabActive : styles.mainTab
+          }
+        >
+          OPPORTUNITIES
+        </NavLink>
       </nav>
       <button className={styles.userProfile} aria-label="User profile">
         GARCIA, J
