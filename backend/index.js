@@ -21,7 +21,7 @@ app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 // Routes
 app.use("/record", records); // Existing records routes
-app.use("/api/surveys", surveyRoutes); // Add survey routes
+app.use("/surveys", surveyRoutes); // Add survey routes
 app.use("/adminlog_reg", adminlogreg);
 app.use("/event", eventRoutes);
 
