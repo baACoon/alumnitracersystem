@@ -9,6 +9,8 @@ import FooterClient from '../FooterClient/Footer';
 function Home() {
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
+    const navigate = useNavigate(); // Initialize the navigate function
+    const handleCrossCheckSurveyFormClick = () => navigate('/RegisterSurveyForm');
 
   useEffect(() => {
     // Mock session data (replace with actual logic to fetch session data in production)
@@ -50,7 +52,7 @@ function Home() {
       <div className="pop-background" id="popBackground">
         <div className="popup" id="welcomePopup">
           <p>{message}</p>
-          <button className="popbutton" onClick={onClose}>Go to Survey</button>
+          <button className="popbutton" onClick={handleCrossCheckSurveyFormClick} >Go to Survey</button>
         </div>
       </div>
     );
