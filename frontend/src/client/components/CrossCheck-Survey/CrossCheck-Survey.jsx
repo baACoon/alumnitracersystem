@@ -246,7 +246,7 @@ function CrossCheckSurveyForm() {
       <form onSubmit={handleSubmit} className={styles["survey-form"]}>
         {currentPage === 1 ? (
           <>
-            <h2 className={styles["section-title"]}>Personal Information</h2>
+            <h3 className={styles["section-title"]}>Personal Information</h3>
             <div className={styles["form-grid"]}>
               {/* Personal Information Fields */}
                           <div className={styles["form-group"]}>
@@ -340,32 +340,32 @@ function CrossCheckSurveyForm() {
                               </div>
   
                               <div className={styles["form-group"]}>
-                                  <label>Sex: *</label>
-                                  <div className={styles["radio-group"]}>
-                                      <label className={styles["radio-label"]}>
-                                          <input
-                                              type="radio"
-                                              name="sex"
-                                              value="Male"
-                                              checked={formData.sex === "Male"}
-                                              onChange={handleChange}
-                                              required
-                                          />
-                                          Male
-                                      </label>
-                                      <label className={styles["radio-label"]}>
-                                          <input
-                                              type="radio"
-                                              name="sex"
-                                              value="Female"
-                                              checked={formData.sex === "Female"}
-                                              onChange={handleChange}
-                                          />
-                                          Female
-                                      </label>
-                                  </div>
+                                <label>Sex: *</label>
+                                <div className={styles["radio-group"]}>
+                                  <label className={styles["radio-pill"]}>
+                                    <input
+                                      type="radio"
+                                      name="sex"
+                                      value="Male"
+                                      checked={formData.sex === "Male"}
+                                      onChange={handleChange}
+                                      required
+                                    />
+                                    <span>Male</span>
+                                  </label>
+                                  <label className={styles["radio-pill"]}>
+                                    <input
+                                      type="radio"
+                                      name="sex"
+                                      value="Female"
+                                      checked={formData.sex === "Female"}
+                                      onChange={handleChange}
+                                    />
+                                    <span>Female</span>
+                                  </label>
+                                </div>
                               </div>
-  
+
                               <div className={styles["form-group"]}>
                                   <label htmlFor="nationality">Nationality: *</label>
                                   <input
@@ -378,17 +378,17 @@ function CrossCheckSurveyForm() {
                                       className={styles["form-input"]}
                                   />
                               </div>
-  
-                              <div className={styles["form-group-full"]}>
+
+                              <div className={styles["form-group"]}>
                                   <label htmlFor="address">Complete Address: *</label>
-                                  <textarea
+                                  <input
+                                      type="text"
                                       id="address"
                                       name="address"
                                       value={formData.address}
                                       onChange={handleChange}
                                       required
-                                      className={styles["form-textarea"]}
-                                      rows="3"
+                                      className={styles["form-input"]}
                                   />
                               </div>
   
@@ -450,10 +450,10 @@ function CrossCheckSurveyForm() {
                             </div>
                                     </div>
 
-                          <div className={styles["button-container"]}>
+                          <div className={styles["survey-form-button-container"]}>
                             <button
                               type="button"
-                              className={styles["next-btn"]}
+                              className={styles["surveyform-btn"]}
                               onClick={() => {
                                 if (validateForm()) {
                                   setCurrentPage(2);

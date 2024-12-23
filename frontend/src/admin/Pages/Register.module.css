@@ -136,5 +136,17 @@
     .registerForm label {
       font-size: 1rem;
     }
+
+    .adminLoginLogo img {
+      width: 60px;
+  }
+  
+    .adminSystemTitle1 {
+      font-size: 1.5rem;
+  }
+
+  .adminSystemTitle2, .adminSystemTitle3 {
+      font-size: 0.9rem;
+  }
   }
   
