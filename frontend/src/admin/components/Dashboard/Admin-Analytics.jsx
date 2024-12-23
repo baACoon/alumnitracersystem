@@ -1,16 +1,12 @@
 import React, { useState } from "react";
-import styles from "./Opp-Filter.module.css";
-import SidebarLayout from "../SideBar/SideBarLayout";
-import OpportunityList from "./Opportunity-List";
-import OpportunityPending from "./Opportunity-Pending";
-import CreateOpportunity from "./Create-Opportunity";
- 
-export function OpportunityFilters() {
-  const [activeTab, setActiveTab] = useState("published");
+import styles from "./Admin-Analytics.module.css";
+
+
+
+export default function Analytics() {
   const [college, setCollege] = useState("");
   const [course, setCourse] = useState("");
   const [activeFilter, setActiveFilter] = useState(null);
-  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const coursesByCollege = {
     "College of Engineering": [
@@ -58,26 +54,9 @@ export function OpportunityFilters() {
     setActiveTab(tab);
   };
 
-  const handleCreateClick = () => {
-    setShowCreateModal(true); // Show the create opportunity modal
-  };
-
-  const closeCreateModal = () => {
-    setShowCreateModal(false); // Close the create opportunity modal
-  };
-
   return (
-    <SidebarLayout>
-      <section className={styles.filterSection} aria-label="Opportunity filters">
-        <div className={styles.header}>
-          <h2 className={styles.databaseTitle}>OPPORTUNITY DATABASE</h2>
-          <button
-            className={styles.createButton}
-            onClick={handleCreateClick}
-          >
-            + Create Opportunity
-          </button>
-        </div>
+
+      <section className={styles.filterSection} aria-label="Dashboard filters">
 
         {/* Filter Controls */}
         <div
@@ -132,41 +111,9 @@ export function OpportunityFilters() {
           </div>
         </div>
 
-        {/* Tabs for Published and Pending Opportunities */}
-        <div className={styles.viewToggle} role="tablist">
-          <button
-            role="tab"
-            aria-selected={activeTab === "published"}
-            className={`${styles.tab} ${
-              activeTab === "published" ? styles.activeTab : ""
-            }`}
-            onClick={() => handleTabChange("published")}
-          >
-            PUBLISHED
-          </button>
-          <button
-            role="tab"
-            aria-selected={activeTab === "pending"}
-            className={`${styles.tab} ${
-              activeTab === "pending" ? styles.activeTab : ""
-            }`}
-            onClick={() => handleTabChange("pending")}
-          >
-            PENDING
-          </button>
-        </div>
-
-        {/* Conditional Rendering */}
-        {activeTab === "published" && <OpportunityList />}
-        {activeTab === "pending" && <OpportunityPending />}
-
-        {/* Create Opportunity Modal */}
-        {showCreateModal && (
-          <CreateOpportunity onClose={closeCreateModal} />
-        )}
+       
       </section>
-    </SidebarLayout>
+
   );
 }
 
-export default OpportunityFilters;

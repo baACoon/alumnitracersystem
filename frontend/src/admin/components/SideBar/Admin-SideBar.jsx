@@ -20,7 +20,7 @@ export function Sidebar({ isOpen, toggleSidebar }) {
       <nav className={styles.navigation}>
         {/* Dashboard Tab */}
         <NavLink
-          to="/dashboard"
+          to="/Dashboard"
           className={({ isActive }) =>
             isActive ? styles.mainTabActive : styles.mainTab
           }
