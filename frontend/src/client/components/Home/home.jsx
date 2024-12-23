@@ -4,6 +4,7 @@ import styles from './home.module.css'; // Import CSS module
 import Header from '../Header/header';
 import Footer from '../../../admin/components/Footer/Footer';
 import FooterClient from '../FooterClient/Footer';
+import ArticleClient from '../Articles/articlesclient';
 
 function Home() {
     const [showPopup, setShowPopup] = useState(false);
@@ -39,7 +40,7 @@ function Home() {
             <HomePage />
             <Tupats />
             <Slanted />
-            <Articles />
+            <ArticleClient/>
             <FooterClient />
             <Footer />
         </div>
@@ -136,15 +137,5 @@ function Slanted() {
 }
 
 
-function Articles() {
-    return (
-        <div className={styles.articleContainer}>
-            <div className={styles.sectionTitle}>
-                <h1>ARTICLES</h1>
-                <hr />
-            </div>
-        </div>
-    );
-}
 
 export default Home;

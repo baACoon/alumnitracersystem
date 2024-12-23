@@ -128,26 +128,4 @@
   
 
 
-    /*ARTICLE*/
-    .sectionTitle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%; /* Ensure the content is centered within the container */
-    }
     
-    .sectionTitle h1 {
-        font-weight: bold;
-        margin: 0 50px; /* Spacing between the title and lines */
-        white-space: nowrap; /* Prevent text from wrapping */
-    }
-    
-    .sectionTitle hr {
-        flex-grow: 1; /* Line will take up remaining space */
-        height: 2px; /* Thickness of the line */
-        background-color: #000000; /* Line color */
-        border: none; /* Removes default border */
-        margin: 50px; /* Removes margin */
-        width: 20%; /* Adjust this to control line length */
-        
-    }

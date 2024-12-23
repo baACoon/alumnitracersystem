@@ -27,6 +27,7 @@ import Opportunities from './admin/components/Opportunities/Admin-Opportunities'
 import Navbar from './admin/components/Navbar';
 import Login from './admin/Pages/Login';
 import Register from './admin/Pages/Register'
+import Articles from './admin/components/Articles/articleadmin'
 
 
 
@@ -61,6 +62,7 @@ function App() {
             <Route path="/Navbar" element={<Navbar />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/Register" element={<Register />} />
+            <Route path='/Articles' element={< Articles/>}/>
           </Routes>
         </BrowserRouter>
       </div>
