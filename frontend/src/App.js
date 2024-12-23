@@ -20,15 +20,14 @@ import SurveyForm from './client/components/SurveyForm/SurveyForm';
 import CompletedForm from './client/components/CompletedForm/CompletedForm';
 
 {/* for Admin path */}
+import Dashboard from './admin/components/Dashboard/Dashboard';
 import AlumniPage from './admin/components/Alumni/Page/AlumniPage'
 import SurveyContent from './admin/components/AdminSurvey/Content/SurveyContent'
 import EvenTabs from './admin/components/Event/EventTabs';
 import Opportunities from './admin/components/Opportunities/Admin-Opportunities';
 import Navbar from './admin/components/Navbar';
 import Login from './admin/Pages/Login';
-import Register from './admin/Pages/Register'
-import Articles from './admin/components/Articles/articleadmin'
-
+import Register from './admin/Pages/Register';
 
 
 
@@ -55,6 +54,7 @@ function App() {
             <Route path="/CompletedForm" element={<CompletedForm />} />
 
             {/* ADMIN path */}
+            <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="/AlumniPage" element={<AlumniPage />} />
             <Route path="/SurveyContent" element={<SurveyContent />} />
             <Route path="/EventTabs" element={<EvenTabs />} />
@@ -62,7 +62,7 @@ function App() {
             <Route path="/Navbar" element={<Navbar />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/Register" element={<Register />} />
-            <Route path='/Articles' element={< Articles/>}/>
+       
           </Routes>
         </BrowserRouter>
       </div>
