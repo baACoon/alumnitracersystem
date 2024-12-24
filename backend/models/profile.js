@@ -32,14 +32,10 @@ router.get('/profile', authenticateToken, async (req, res) => {
 
     // Fetch the user's survey answers from the 'surveys' collection
     const surveyResponses = await Survey.find({ userId });
-    if (surveyResponses.length === 0) {
-      return res.status(404).json({ message: 'No survey responses found for this user' });
-    }
-
     // Combine profile and survey data into a single response
     res.json({
       profile: userProfile,
-      surveys: surveyResponses || [] // Return empty array if no surveys
+      surveys: surveyResponses // Return empty array if no surveys
     });
   } catch (error) {
     console.error('Error fetching profile and survey data:', error);

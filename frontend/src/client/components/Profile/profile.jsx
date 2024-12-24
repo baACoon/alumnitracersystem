@@ -5,6 +5,7 @@ import Header from '../Header/header';
 import Footer from '../../../admin/components/Footer/Footer';
 import ProfilePic from '../../components/image/ayne.jpg';
 import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
 function Profile() {
   return (
@@ -21,26 +22,26 @@ function ProfilePage() {
   const [surveyData, setSurveyData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Add this
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          window.location.href = '/profile';
+          navigate('/profile'); // Use navigate instead of window.location
           return;
         }
 
         // Decode token and check if it's valid
         try {
           const decoded = jwtDecode(token);
-          console.log('Decoded token:', decoded);
           if (!decoded.id) {
             throw new Error('Invalid token');
           }
         } catch (tokenError) {
           localStorage.removeItem('token');
-          window.location.href = '/profile';
+          navigate('/profile'); // Use navigate instead of window.location
           return;
         }
 
@@ -53,13 +54,14 @@ function ProfilePage() {
         });
 
         if (!response.ok) {
-          throw new Error('Failed to fetch profile data');
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to fetch profile data');
         }
 
         const data = await response.json();
-        if (data.profile && data.surveys) {
+        if (data.profile) {
           setUserData(data.profile);
-          setSurveyData(data.surveys);
+          setSurveyData(data.surveys || []); // Handle empty surveys gracefully
         } else {
           throw new Error('Invalid data format received');
         }
@@ -67,10 +69,10 @@ function ProfilePage() {
         setError(err.message);
         console.error('Error fetching profile:', err);
         
-        // Don't redirect immediately, show the error instead
+        // Only redirect for token-related errors
         if (err.message === 'Invalid token') {
           localStorage.removeItem('token');
-          window.location.href = '/Profile';
+          navigate('/profile');
         }
       } finally {
         setLoading(false);

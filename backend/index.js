@@ -7,6 +7,8 @@ import surveyRoutes from './routes/surveyroutes.js'; // Import survey routes
 import adminlogreg from './models/adminlog_reg.js';
 import eventRoutes from './models/event.js'
 import userProfile from './models/profile.js'
+import dotenv from 'dotenv';
+dotenv.config();
 
 const PORT = process.env.PORT || 5050;
 const app = express();
