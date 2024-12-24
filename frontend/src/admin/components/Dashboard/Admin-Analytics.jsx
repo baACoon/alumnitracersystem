@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import AnalyticsCards from "./Analytics-Cards";
 import styles from "./Admin-Analytics.module.css";
 
 
@@ -55,7 +56,6 @@ export default function Analytics() {
   };
 
   return (
-
       <section className={styles.filterSection} aria-label="Dashboard filters">
 
         {/* Filter Controls */}
@@ -111,9 +111,10 @@ export default function Analytics() {
           </div>
         </div>
 
-       
+        <div className={styles.analyticsContainer}>
+          <AnalyticsCards />
+        </div>
       </section>
-
   );
 }
 

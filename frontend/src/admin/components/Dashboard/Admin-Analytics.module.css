@@ -1,5 +1,5 @@
 .filterSection {
-    padding: 20px;
+ 
     font-family: "Montserrat", sans-serif;
   }
   
@@ -42,6 +42,11 @@
     cursor: not-allowed;
   }
 
+  .analyticsContainer {
+
+    font-family: "Montserrat", sans-serif;
+  }
+  
   
   /* Medium screens (tablets) */
   @media (max-width: 1024px) {
