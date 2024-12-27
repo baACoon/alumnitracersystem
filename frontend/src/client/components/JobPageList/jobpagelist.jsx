@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './jobpagelist.css';
 import Header from '../Header/header';
 import Footer from '../../../admin/components/Footer/Footer';
+import axios from 'axios';
 
 function JobPageList() {
   return (
