@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import AnalyticsCards from "./Analytics-Cards";
+import { TracerSurveyGraph, EmploymentAlumniGraph, CourseAlignmentGraph } from "./Analytics-Graphs";
 import styles from "./Admin-Analytics.module.css";
-
-
 
 export default function Analytics() {
   const [college, setCollege] = useState("");
@@ -36,7 +36,25 @@ export default function Analytics() {
       "Bachelor of Science in Architecture",
       "Bachelor of Fine Arts",
       "Bachelor of Graphic Technology Major in Architecture Technology",
-    ],
+    ]
+  };
+
+  const tracerData = {
+    dates: ["June 19", "June 26", "July 3", "July 10", "July 17"],
+    participants: [50, 60, 70, 80, 90],
+    total: [60, 70, 80, 90, 100],
+  };
+
+  const employmentData = {
+    colleges: ["COE", "COS", "CIE", "CLA", "CAFA"],
+    employed: [500, 700, 300, 400, 250],
+    total: [800, 1000, 600, 700, 500],
+  };
+
+  const courseAlignData = {
+    level: ["1", "2", "3", "4", "5"],
+    employed: [500, 700, 300, 400, 250],
+
   };
 
   const handleCollegeChange = (e) => {
@@ -50,70 +68,74 @@ export default function Analytics() {
     setActiveFilter("course");
   };
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-  };
-
   return (
-
-      <section className={styles.filterSection} aria-label="Dashboard filters">
-
-        {/* Filter Controls */}
-        <div
-          className={styles.filterControls}
-          role="group"
-          aria-label="Filter controls"
-        >
-          {/* College Filter */}
-          <div className={styles.filterButtonContainer}>
-            <label htmlFor="college" className={styles.filterLabel}>
-              College:
-            </label>
-            <select
-              id="college"
-              className={`${styles.filterButton} ${
-                activeFilter === "college" ? styles.filterButtonActive : ""
-              }`}
-              value={college}
-              onChange={handleCollegeChange}
-            >
-              <option value="">All Colleges</option>
-              {Object.keys(coursesByCollege).map((collegeName) => (
-                <option key={collegeName} value={collegeName}>
-                  {collegeName}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Course Filter */}
-          <div className={styles.filterButtonContainer}>
-            <label htmlFor="course" className={styles.filterLabel}>
-              Course:
-            </label>
-            <select
-              id="course"
-              className={`${styles.filterButton} ${
-                activeFilter === "course" ? styles.filterButtonActive : ""
-              }`}
-              value={course}
-              onChange={handleCourseChange}
-              disabled={!college}
-            >
-              <option value="">Select Course</option>
-              {college &&
-                coursesByCollege[college].map((courseName) => (
-                  <option key={courseName} value={courseName}>
-                    {courseName}
-                  </option>
-                ))}
-            </select>
-          </div>
+    <section className={styles.filterSection} aria-label="Dashboard filters">
+      <div className={styles.filterControls} role="group" aria-label="Filter controls">
+        {/* College Filter */}
+        <div className={styles.filterButtonContainer}>
+          <label htmlFor="college" className={styles.filterLabel}>
+            College:
+          </label>
+          <select
+            id="college"
+            className={`${styles.filterButton} ${
+              activeFilter === "college" ? styles.filterButtonActive : ""
+            }`}
+            value={college}
+            onChange={handleCollegeChange}
+          >
+            <option value="">All Colleges</option>
+            {Object.keys(coursesByCollege).map((collegeName) => (
+              <option key={collegeName} value={collegeName}>
+                {collegeName}
+              </option>
+            ))}
+          </select>
         </div>
 
-       
-      </section>
+        {/* Course Filter */}
+        <div className={styles.filterButtonContainer}>
+          <label htmlFor="course" className={styles.filterLabel}>
+            Course:
+          </label>
+          <select
+            id="course"
+            className={`${styles.filterButton} ${
+              activeFilter === "course" ? styles.filterButtonActive : ""
+            }`}
+            value={course}
+            onChange={handleCourseChange}
+            disabled={!college}
+          >
+            <option value="">Select Course</option>
+            {college &&
+              coursesByCollege[college].map((courseName) => (
+                <option key={courseName} value={courseName}>
+                  {courseName}
+                </option>
+              ))}
+          </select>
+        </div>
+      </div>
 
+      <div className={styles.analyticsContainer}>
+        <AnalyticsCards />
+      </div>
+
+      <div className={styles.analyticsContainer}>
+        {/* Tracer Survey Graph */}
+        <TracerSurveyGraph tracerData={tracerData} />
+      </div>
+
+      <div className={styles.analyticsContainer}>
+        {/* Employment Alumni Graph */}
+        <EmploymentAlumniGraph employmentData={employmentData} />
+      </div>
+
+      <div className={styles.analyticsContainer}>
+        {/* Employment Alumni Graph */}
+        <CourseAlignmentGraph courseAlignData={courseAlignData} />
+      </div>
+    </section>
   );
 }
-
