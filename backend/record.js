@@ -1,5 +1,5 @@
 import express from "express";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import mongoose from "mongoose"; // Also wag mo to kalimutan i addd
 import jwt from 'jsonwebtoken';
 
