@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Tuplogo from '../components/images/Tuplogo.png';
 import Alumnilogo from '../components/images/alumniassoc_logo.png'
-import styles from './Login.module.css'; // Updated to use module.css
+import styles from './Login.module.css'; 
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {

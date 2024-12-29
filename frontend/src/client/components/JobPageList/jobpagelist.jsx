@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './jobpagelist.css';
 import Header from '../Header/header';
@@ -18,59 +18,33 @@ function JobPageList() {
 function JobListMainPage() {
   const navigate = useNavigate();
   const [selectedJob, setSelectedJob] = useState(null);
+  const [jobs, setJobs] = useState([]);
 
   const goToJobPage = () => {
     navigate('/JobPage');
   };
 
-  const jobs = [
-    {
-      title: "Front End Developer",
-      datePosted: "September 8, 2024",
-      company: "Tech Solutions Inc.",
-      location: "Makati City",
-      type: "Full Time",
-      jobDescription: `We are looking for a Front-End Developer with expertise in React, HTML, CSS, and JavaScript. You'll be responsible for creating user-friendly interfaces and ensuring an exceptional user experience.`,
-      keyResponsibilities: [
-        "Develop responsive web interfaces.",
-        "Collaborate with designers and back-end developers.",
-        "Optimize performance across different browsers and devices.",
-      ],
-      qualifications: [
-        "Bachelor's degree in Computer Science or related field.",
-        "Experience with modern JavaScript libraries (React, Angular).",
-        "Strong understanding of responsive design principles.",
-      ],
-      source: "https://www.example.com/job/front-end-developer",
-    },
-    {
-      title: "Back End Developer",
-      datePosted: "October 15, 2024",
-      company: "Innovate Tech",
-      location: "Quezon City",
-      type: "Part Time",
-      jobDescription: `We are looking for a Back-End Developer to build and maintain scalable APIs and server-side applications.`,
-      keyResponsibilities: [
-        "Design and implement RESTful APIs.",
-        "Manage database systems and optimize queries.",
-        "Collaborate with front-end teams to integrate systems.",
-      ],
-      qualifications: [
-        "Proficiency in Node.js or Python.",
-        "Experience with SQL and NoSQL databases.",
-        "Knowledge of cloud-based deployment (AWS, Azure).",
-      ],
-      source: "https://www.example.com/job/back-end-developer",
-    },
-  ];
+  useEffect(() => {
+    const fetchJobs = async () => {
+        try {
+            const response = await axios.get('/api/jobs', {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            });
+            setJobs(response.data);
+        } catch (error) {
+            console.error('Error fetching jobs:', error);
+        }
+    };
+    fetchJobs();
+}, []);
 
-  const handleJobClick = (job) => {
-    setSelectedJob(job);
-  };
+    const handleJobClick = (job) => {
+        setSelectedJob(job);
+    };
 
-  const closeModal = () => {
-    setSelectedJob(null);
-  };
+    const closeModal = () => {
+        setSelectedJob(null);
+    };
 
   return (
     <div className="listcontainer">
