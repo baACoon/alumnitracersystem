@@ -1,6 +1,7 @@
 import express from "express";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import mongoose from "mongoose"; // Also wag mo to kalimutan i addd
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -120,8 +121,29 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid Alumni ID or password." });
     }
 
+    // Generate JWT token
+    const token = jwt.sign(
+      { 
+        id: user._id,
+        generatedID: user.generatedID,
+        email: user.email 
+      },
+      process.env.JWT_SECRET, // Make sure to set this in your .env file
+      { expiresIn: '24h' }
+    );
+
     console.log(`User logged in: ${user.generatedID}`);
-    res.status(200).json({ message: "Login successful!" });
+    res.status(200).json({ 
+      message: "Login successful!",
+      token: token,
+      user: {
+        id: user._id,
+        generatedID: user.generatedID,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email
+      }
+    });
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ error: "Error logging in." });

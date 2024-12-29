@@ -6,6 +6,9 @@ import records from './record.js';
 import surveyRoutes from './routes/surveyroutes.js'; // Import survey routes
 import adminlogreg from './models/adminlog_reg.js';
 import eventRoutes from './models/event.js'
+import userProfile from './models/profile.js'
+import dotenv from 'dotenv';
+dotenv.config();
 import articleRoutes from './routes/artcileroutes.js'
 import jobRoutes from './routes/jobroutes.js'
 
@@ -26,7 +29,7 @@ app.use("/record", records); // Existing records routes
 app.use("/surveys", surveyRoutes); // Add survey routes
 app.use("/adminlog_reg", adminlogreg);
 app.use("/event", eventRoutes);
-app.use("/artcileroutes", articleRoutes)
+app.use("/user", userProfile);app.use("/artcileroutes", articleRoutes)
 app.use("/jobs", jobRoutes)
 
 // Connect to MongoDB Atlas before starting the server
