@@ -29,7 +29,8 @@ app.use("/record", records); // Existing records routes
 app.use("/surveys", surveyRoutes); // Add survey routes
 app.use("/adminlog_reg", adminlogreg);
 app.use("/event", eventRoutes);
-app.use("/user", userProfile);app.use("/artcileroutes", articleRoutes)
+//app.use("/user", userProfile);
+app.use("/artcileroutes", articleRoutes)
 app.use("/jobs", jobRoutes)
 
 // Connect to MongoDB Atlas before starting the server
