@@ -1,5 +1,4 @@
 .filterSection {
-    padding: 20px;
     font-family: "Montserrat", sans-serif;
   }
   
@@ -40,6 +39,11 @@
   .filterButton:disabled {
     background-color: #f0f0f0;
     cursor: not-allowed;
+  }
+
+  .analyticsContainer {
+    margin-bottom: 20px;
+    font-family: "Montserrat", sans-serif;
   }
 
   
