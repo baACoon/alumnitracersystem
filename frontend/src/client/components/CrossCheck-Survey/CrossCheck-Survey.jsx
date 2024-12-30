@@ -165,7 +165,13 @@ function CrossCheckSurveyForm() {
         setSubmitStatus({ type: "error", message: "User not logged in" });
         return;
       }
-      localStorage.removeItem("userId"); // Avoid removing unless the session ends.
+      console.log("Submitting survey for userId:", userId);
+      
+    const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+      if (!token) {
+        setSubmitStatus({ type: "error", message: "No token provided. Please log in again." });
+        return;
+      }
 
     setIsSubmitting(true);
     try {
@@ -195,7 +201,11 @@ function CrossCheckSurveyForm() {
           type_of_organization: formData.type_of_organization,
           work_alignment: formData.work_alignment,
         },
-      });
+      },
+      { headers: { Authorization: `Bearer ${token}` } } 
+    
+    );
+
 
       if (response.data.success) {
         setSubmitStatus({ type: "success", message: "Survey submitted successfully!" });

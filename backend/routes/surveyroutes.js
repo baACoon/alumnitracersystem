@@ -1,6 +1,9 @@
 // Updated surveyroutes.js (Backend Routes)
 import express from "express";
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
+import { Student } from "../record.js"; // Adjust the relative path to record.js
+
 
 const router = express.Router();
 
@@ -62,6 +65,24 @@ const surveySchema = new mongoose.Schema({
 
 const SurveySubmission = mongoose.model("surveys", surveySchema);
 
+// Middleware to authenticate user
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Extract the token from the Authorization header
+
+  if (!token) {
+    return res.status(401).json({ success: false, message: "No token provided." });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ success: false, message: "Invalid token." });
+    }
+    req.user = user; // Attach the decoded user info to the request object
+    next();
+  });
+};
+
 // Middleware for validation
 const validateSurvey = (req, res, next) => {
   const requiredFields = ["personalInfo", "employmentInfo"];
@@ -77,10 +98,11 @@ const validateSurvey = (req, res, next) => {
 };
 
 // Submit survey
-router.post("/submit", validateSurvey, async (req, res) => {
+router.post("/submit", authenticateToken, validateSurvey, async (req, res) => {
+  let userId; // Declare userId outside the try block (Updated to avoid scope issues)
   try {
-    
-    const { userId, ...surveyData } = req.body;
+    const { userId: extractedUserId, ...surveyData } = req.body;
+    userId = extractedUserId; // Assign the extracted userId to the outer variable (Updated)
 
     // Validate that the user exists
     const user = await Student.findById(userId);
@@ -94,9 +116,12 @@ router.post("/submit", validateSurvey, async (req, res) => {
       success: true,
       message: "Survey submitted successfully",
     });
+
+    console.log("Survey submitted for user:", userId);
   } catch (error) {
-    console.error("Survey submission error:", error);
-    res.status(400).json({
+    console.error("Error during survey submission:", error.message);
+    console.log("Invalid userId:", userId || "Not provided"); // Updated to log fallback value if userId is undefined
+    res.status(500).json({
       success: false,
       message: "Failed to submit survey",
       error: error.message,
@@ -137,20 +162,20 @@ router.get("/submissions", async (req, res) => {
   }
 });
 
-router.get("/user-surveys/:userId", async (req, res) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
-    return res.status(400).json({ success: false, message: "Invalid user ID." });
-  }
-
+router.get("/user-surveys", authenticateToken, async (req, res) => {
   try {
-    const surveys = await SurveySubmission.find({ userId: req.params.userId });
+    const userId = req.user.id;
+    const surveys = await SurveySubmission.find({ userId });
     res.status(200).json({ success: true, data: surveys });
   } catch (error) {
     console.error("Error fetching user surveys:", error);
-    res.status(500).json({ success: false, message: "Failed to fetch surveys." });
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch surveys.",
+      error: error.message,
+    });
   }
 });
-
 
 // Get statistics
 router.get("/statistics", async (req, res) => {
@@ -190,7 +215,5 @@ router.get("/statistics", async (req, res) => {
     });
   }
 });
-
-
 
 export default router;

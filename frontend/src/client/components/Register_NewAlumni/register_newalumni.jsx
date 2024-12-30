@@ -13,7 +13,12 @@ const Register_NewAlumni = ({ closeModal }) => {
     const [generatedID, setGeneratedID] = useState(null); // To display the generated unique ID
 
     const navigate = useNavigate(); // Initialize the navigate function
-    const handleCrossCheckSurveyFormClick = () => navigate('/RegisterSurveyForm');
+
+    const handleCrossCheckSurveyFormClick = () => {
+        if (generatedID) {
+          navigate('/RegisterSurveyForm'); // Navigate to the survey form
+        }
+      };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -56,13 +61,11 @@ const Register_NewAlumni = ({ closeModal }) => {
 
             if (response.ok) {
                 /// Convert ObjectId to string if needed
-                const userIdString = data.userId ? data.userId.toString() : undefined;
-                
-                localStorage.setItem('userId', userIdString);
-                localStorage.setItem('generatedID', data.generatedID); // Store the generatedID
-                
-                setGeneratedID(data.generatedID); // Update the generatedID in state
-            
+                 const userIdString = data.user?.id || '';
+                    localStorage.setItem('userId', userIdString); // Store the userId in localStorage
+                    localStorage.setItem('token', data.token); // Store the token
+                    localStorage.setItem('generatedID', data.user.generatedID); // Store the generatedID
+                    setGeneratedID(data.user.generatedID); 
             } else {
                alert(`Error: ${data.error || 'Registration failed'}`);
             }

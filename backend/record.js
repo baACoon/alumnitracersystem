@@ -184,4 +184,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
+export { Student };
+
 export default router;
