@@ -47,7 +47,7 @@ const Register_NewAlumni = ({ closeModal }) => {
         };
 
         try {
-            const response = await fetch('http://localhost:5050/record/register', {
+            const response = await fetch('https://alumnitracersystem.onrender.com/record/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
