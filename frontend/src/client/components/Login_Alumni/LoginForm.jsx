@@ -31,10 +31,7 @@ const TestLoginForm = ({ closeModal }) => {
         localStorage.clear();
         localStorage.setItem("userId", data.user.id);
         localStorage.setItem("token", data.token);        
-        toast.success("Login successful!",{
-          position: "top-center",
-          autoClose: 10000
-        });
+        alert("Login successful!");
         closeModal();
         navigate("/home");
       } else {
