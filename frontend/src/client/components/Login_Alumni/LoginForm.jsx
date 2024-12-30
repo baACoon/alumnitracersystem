@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './LoginForm.css';
 
 const TestLoginForm = ({ closeModal }) => {
@@ -27,18 +29,22 @@ const TestLoginForm = ({ closeModal }) => {
       console.log('Server response:', response.status, data); // Debug log
 
       if (response.ok) {
+        console.log("Storing userId in localStorage:", data.user.id);
         localStorage.clear();
         localStorage.setItem("userId", data.user.id);
         localStorage.setItem("token", data.token);        
-        alert("Login successful!");
+        toast.success("Login successful!",{
+          position: "top-center",
+          autoClose: 10000
+        });
         closeModal();
         navigate("/home");
       } else {
-        alert(`Error: ${data.error || 'Login failed'}`);
+       alert(`Error: ${data.error || 'Login failed'}`);
       }
     } catch (error) {
       console.error('Error during login:', error);
-      alert('There was an error with the login request.');
+     alert('There was an error with the login request.');
     }
   };
 

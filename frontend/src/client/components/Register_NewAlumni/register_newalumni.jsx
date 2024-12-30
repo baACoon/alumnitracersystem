@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import './register_newalumni.css';
+import './register_newalumni.css'
 
 const Register_NewAlumni = ({ closeModal }) => {
     const [email, setEmail] = useState('');
@@ -20,15 +20,16 @@ const Register_NewAlumni = ({ closeModal }) => {
 
         // Validate password match
         if (password !== confirmPassword) {
-            alert("Passwords don't match");
+           alert("Passwords don't match");
             return;
         }
 
         // Additional frontend validation (e.g., check for missing fields)
         if (!email || !firstName || !lastName || !middleName || !birthday || !password || !confirmPassword) {
-            alert("All fields are required");
+           alert("All fields are required");
             return;
         }
+        
 
         const formData = {
             email,
@@ -51,15 +52,23 @@ const Register_NewAlumni = ({ closeModal }) => {
 
             const data = await response.json();
 
+            console.log("Full backend response during registration:", data); // Debug log
+
             if (response.ok) {
-                localStorage.setItem("userId", data.userId); // Save MongoDB _id
-                setGeneratedID(data.generatedID);
+                /// Convert ObjectId to string if needed
+                const userIdString = data.userId ? data.userId.toString() : undefined;
+                
+                localStorage.setItem('userId', userIdString);
+                localStorage.setItem('generatedID', data.generatedID); // Store the generatedID
+                
+                setGeneratedID(data.generatedID); // Update the generatedID in state
+            
             } else {
-                alert(`Error: ${data.error || 'Registration failed'}`);
+               alert(`Error: ${data.error || 'Registration failed'}`);
             }
         } catch (error) {
             console.error('Error submitting registration:', error);
-            alert('There was an error with the registration request.');
+           alert('There was an error with the registration request.');
         }
     };
 
