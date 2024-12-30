@@ -17,7 +17,7 @@ const app = express();
 
 
 // Middleware
-app.use(cors({ origin: 'https://tupalumni.com' }));
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 // Serve static files (uploaded images)
