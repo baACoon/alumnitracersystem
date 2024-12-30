@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 const router = express.Router();
 
 const surveySchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true },
   date: {
     type: Date,
     default: Date.now,
@@ -78,7 +79,16 @@ const validateSurvey = (req, res, next) => {
 // Submit survey
 router.post("/submit", validateSurvey, async (req, res) => {
   try {
-    const submission = new SurveySubmission(req.body);
+    
+    const { userId, ...surveyData } = req.body;
+
+    // Validate that the user exists
+    const user = await Student.findById(userId);
+    if (!user) {
+      return res.status(400).json({ success: false, message: "Invalid user ID." });
+    }
+
+    const submission = new SurveySubmission({ userId, ...surveyData });
     await submission.save();
     res.status(201).json({
       success: true,
@@ -126,6 +136,21 @@ router.get("/submissions", async (req, res) => {
     });
   }
 });
+
+router.get("/user-surveys/:userId", async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
+    return res.status(400).json({ success: false, message: "Invalid user ID." });
+  }
+
+  try {
+    const surveys = await SurveySubmission.find({ userId: req.params.userId });
+    res.status(200).json({ success: true, data: surveys });
+  } catch (error) {
+    console.error("Error fetching user surveys:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch surveys." });
+  }
+});
+
 
 // Get statistics
 router.get("/statistics", async (req, res) => {

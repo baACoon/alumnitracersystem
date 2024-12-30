@@ -52,7 +52,8 @@ const Register_NewAlumni = ({ closeModal }) => {
             const data = await response.json();
 
             if (response.ok) {
-                setGeneratedID(data.generatedID); // Display the unique ID after successful registration
+                localStorage.setItem("userId", data.userId); // Save MongoDB _id
+                setGeneratedID(data.generatedID);
             } else {
                 alert(`Error: ${data.error || 'Registration failed'}`);
             }

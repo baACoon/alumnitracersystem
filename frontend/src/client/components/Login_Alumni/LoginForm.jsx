@@ -27,10 +27,12 @@ const TestLoginForm = ({ closeModal }) => {
       console.log('Server response:', response.status, data); // Debug log
 
       if (response.ok) {
-        localStorage.setItem('token', data.token)
-        alert('Login successful!');
+        localStorage.clear();
+        localStorage.setItem("userId", data.user.id);
+        localStorage.setItem("token", data.token);        
+        alert("Login successful!");
         closeModal();
-        navigate('/home');
+        navigate("/home");
       } else {
         alert(`Error: ${data.error || 'Login failed'}`);
       }
