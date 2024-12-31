@@ -66,7 +66,7 @@ const surveySchema = new mongoose.Schema({
 const SurveySubmission = mongoose.model("surveys", surveySchema);
 
 // Middleware to authenticate user
-const authenticateToken = (req, res, next) => {
+export const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1]; // Extract the token from the Authorization header
 
