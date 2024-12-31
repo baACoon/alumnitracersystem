@@ -5,7 +5,7 @@ import Header from '../Header/header';
 import Footer from '../../../admin/components/Footer/Footer';
 import ProfilePic from '../../components/image/ayne.jpg';
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 function Profile() {
   return (
@@ -19,6 +19,7 @@ function Profile() {
 
 function ProfilePage() {
   const [userData, setUserData] = useState(null);
+  const [surveyData, setSurveyData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -33,12 +34,22 @@ function ProfilePage() {
           return;
         }
 
-        // Decode token to extract user ID
-        const decoded = jwtDecode(token);
-        const userId = decoded.id;
+        // Decode token to check validity
+        let decoded;
+        try {
+          decoded = jwtDecode(token);
+          if (!decoded.id) {
+            throw new Error('Invalid token');
+          }
+        } catch (tokenError) {
+          alert("Invalid session. Redirecting to login.");
+          localStorage.removeItem('token');
+          navigate('/frontpage');
+          return;
+        }
 
-        // Fetch profile data from the backend
-        const response = await fetch(`https://alumnitracersystem.onrender.com/user/profile/${userId}`, {
+        // Fetch profile and survey data
+        const response = await fetch('https://alumnitracersystem.onrender.com/surveys/user-surveys', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -52,7 +63,8 @@ function ProfilePage() {
         }
 
         const data = await response.json();
-        setUserData(data.data); // Set user data to state
+        setUserData(decoded); // Basic user data from token
+        setSurveyData(data.data || []); // Surveys fetched from API
       } catch (err) {
         setError(err.message);
         console.error('Error fetching profile:', err);
@@ -63,6 +75,29 @@ function ProfilePage() {
 
     fetchData();
   }, [navigate]);
+
+  const renderSurveys = () => {
+    if (!surveyData || surveyData.length === 0) {
+      return <p>No surveys completed yet.</p>;
+    }
+
+    return (
+      <div className="survey-summary">
+        <h3>Completed Surveys</h3>
+        {surveyData.map((survey, index) => (
+          <div key={survey._id} className="survey-item">
+            <h4>Survey #{index + 1}</h4>
+            <div className="survey-details">
+              <p>Date Completed: {new Date(survey.createdAt).toLocaleDateString()}</p>
+              <p>College: {survey.personalInfo.college}</p>
+              <p>Course: {survey.personalInfo.course}</p>
+              <p>Work Alignment: {survey.employmentInfo.work_alignment}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -131,7 +166,7 @@ function ProfilePage() {
 
           <div className="row">
             <label>Company</label>
-            <input type="text" value={userData.companyName || ''} readOnly />
+            <input type="text" value={userData.company_name || ''} readOnly />
           </div>
 
           <div className="row">
@@ -141,24 +176,28 @@ function ProfilePage() {
 
           <div className="row">
             <label>Job Status</label>
-            <input type="text" value={userData.jobStatus || ''} readOnly />
+            <input type="text" value={userData.job_status || ''} readOnly />
           </div>
 
           <div className="row">
             <label>Year Started</label>
-            <input type="text" value={userData.yearStarted || ''} readOnly />
+            <input type="text" value={userData.year_started || ''} readOnly />
           </div>
 
           <div className="row">
             <label>Organization Type</label>
-            <input type="text" value={userData.typeOfOrganization || ''} readOnly />
+            <input type="text" value={userData.type_of_organization || ''} readOnly />
           </div>
 
           <div className="row">
             <label>Work Alignment</label>
-            <input type="text" value={userData.workAlignment || ''} readOnly />
+            <input type="text" value={userData.work_alignment || ''} readOnly />
           </div>
         </div>
+      </section>
+
+      <section className="survey-summary">
+        {renderSurveys()}
       </section>
     </div>
   );
