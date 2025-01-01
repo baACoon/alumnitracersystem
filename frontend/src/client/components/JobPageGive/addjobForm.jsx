@@ -42,7 +42,7 @@ function AddjobFormMainPage() {
         e.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:5050/jobs", {
+            const response = await fetch("http://localhost:5050/jobs/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
