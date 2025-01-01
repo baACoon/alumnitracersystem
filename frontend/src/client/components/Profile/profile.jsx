@@ -80,10 +80,10 @@ function ProfilePage() {
     return date.toLocaleDateString();
   };
 
-  const logout = () => {
-    localStorage.removeItem("token-info");
-    setIsLoggedin(false);
-};
+  const handleLogout = () => {
+    localStorage.clear(); // Clear token and other data
+    navigate('/frontpage'); // Redirect to login page
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
