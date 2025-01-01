@@ -8,43 +8,33 @@ const router = express.Router();
 // Route to fetch user profile and surveys
 router.get('/user-profile', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.id; // Get user ID from authenticated token
+    const userId = req.user.id;
 
-    // Fetch user details
-    const user = await Student.findById(userId);
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+    // Fetch user's latest survey submission
+    const latestSurvey = await SurveySubmission.findOne(
+      { userId: userId },
+      {},
+      { sort: { 'createdAt': -1 } }
+    );
+
+    if (!latestSurvey) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'No survey data found' 
+      });
     }
 
-    // Fetch user's surveys
-    const surveys = await SurveySubmission.find({ 'userId': userId });
+    // Get all surveys for the completed surveys section
+    const allSurveys = await SurveySubmission.find({ userId: userId })
+      .sort({ createdAt: -1 });
 
-    // Return combined data
+    // Combine the data, using the latest survey for personal/employment info
     res.status(200).json({
       success: true,
       data: {
-        personalInfo: {
-          college: user.college,
-          course: user.course,
-          degree: user.degree,
-          firstName: user.firstName,
-          middleName: user.middleName,
-          lastName: user.lastName,
-          address: user.address,
-          birthday: user.birthday,
-          email: user.email,
-          contact_no: user.contact_no
-        },
-        employmentInfo: {
-          occupation: user.occupation,
-          company_name: user.company_name,
-          position: user.position,
-          job_status: user.job_status,
-          year_started: user.year_started,
-          type_of_organization: user.type_of_organization,
-          work_alignment: user.work_alignment
-        },
-        surveys: surveys
+        personalInfo: latestSurvey.personalInfo,
+        employmentInfo: latestSurvey.employmentInfo,
+        surveys: allSurveys
       }
     });
   } catch (error) {

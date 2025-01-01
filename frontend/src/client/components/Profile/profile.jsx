@@ -74,34 +74,17 @@ function ProfilePage() {
     fetchData();
   }, [navigate]);
 
-  const renderSurveys = () => {
-    if (!profileData.surveys || profileData.surveys.length === 0) {
-      return <p>No surveys completed yet.</p>;
-    }
-
-    return (
-      <div className="survey-summary">
-        <h3>Completed Surveys</h3>
-        {profileData.surveys.map((survey, index) => (
-          <div key={survey._id} className="survey-item">
-            <h4>Survey #{index + 1}</h4>
-            <div className="survey-details">
-              <p>Date Completed: {new Date(survey.createdAt).toLocaleDateString()}</p>
-              <p>College: {survey.personalInfo?.college}</p>
-              <p>Course: {survey.personalInfo?.course}</p>
-              <p>Work Alignment: {survey.employmentInfo?.work_alignment}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
   };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="profile-container">
+  <div className="profile-container">
       <section className="personal-info">
         <h2>PERSONAL INFORMATION</h2>
         <div className="profile-section">
@@ -125,7 +108,7 @@ function ProfilePage() {
               <label>Name</label>
               <input
                 type="text"
-                value={`${profileData.personalInfo?.firstName || ''} ${profileData.personalInfo?.middleName || ''} ${profileData.personalInfo?.lastName || ''}`}
+                value={`${profileData.personalInfo?.first_name || ''} ${profileData.personalInfo?.middle_name || ''} ${profileData.personalInfo?.last_name || ''}`}
                 readOnly
               />
             </div>
@@ -137,12 +120,12 @@ function ProfilePage() {
 
             <div className="row">
               <label>Birthday</label>
-              <input type="text" value={profileData.personalInfo?.birthday || ''} readOnly />
+              <input type="text" value={formatDate(profileData.personalInfo?.birthday) || ''} readOnly />
             </div>
 
             <div className="row">
               <label>Email</label>
-              <input type="text" value={profileData.personalInfo?.email || ''} readOnly />
+              <input type="text" value={profileData.personalInfo?.email_address || ''} readOnly />
             </div>
 
             <div className="row">
@@ -152,7 +135,7 @@ function ProfilePage() {
           </div>
         </div>
       </section>
-      
+
       <section className="employment-status">
         <h2>Employment Status</h2>
         <div className="details">
@@ -193,8 +176,17 @@ function ProfilePage() {
         </div>
       </section>
 
-      <section className="survey-summary">
-        {renderSurveys()}
+      <section className="completed-surveys">
+        <h2>Completed Surveys</h2>
+        {profileData.surveys?.map((survey, index) => (
+          <div key={survey._id} className="survey-item">
+            <h3>Survey #{index + 1}</h3>
+            <p>Date Completed: {formatDate(survey.createdAt)}</p>
+            <p>College: {survey.personalInfo.college}</p>
+            <p>Course: {survey.personalInfo.course}</p>
+            <p>Work Alignment: {survey.employmentInfo.work_alignment}</p>
+          </div>
+        ))}
       </section>
     </div>
   );
