@@ -80,6 +80,11 @@ function ProfilePage() {
     return date.toLocaleDateString();
   };
 
+  const logout = () => {
+    localStorage.removeItem("token-info");
+    setIsLoggedin(false);
+};
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -177,17 +182,14 @@ function ProfilePage() {
       </section>
 
       <section className="completed-surveys">
-        <h2>Completed Surveys</h2>
+        
         {profileData.surveys?.map((survey, index) => (
           <div key={survey._id} className="survey-item">
-            <h3>Survey #{index + 1}</h3>
             <p>Date Completed: {formatDate(survey.createdAt)}</p>
-            <p>College: {survey.personalInfo.college}</p>
-            <p>Course: {survey.personalInfo.course}</p>
-            <p>Work Alignment: {survey.employmentInfo.work_alignment}</p>
           </div>
         ))}
       </section>
+      <button className="logout-btn" onClick={handleLogout}>Logout</button>
     </div>
   );
 }

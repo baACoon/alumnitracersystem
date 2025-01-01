@@ -23,6 +23,14 @@ router.get('/user-profile', authenticateToken, async (req, res) => {
         message: 'No survey data found' 
       });
     }
+    // Fetch user details from the Student collection
+    const student = await Student.findById(userId);
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found in Student collection'
+      });
+    }
 
     // Get all surveys for the completed surveys section
     const allSurveys = await SurveySubmission.find({ userId: userId })
@@ -32,7 +40,7 @@ router.get('/user-profile', authenticateToken, async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        personalInfo: latestSurvey.personalInfo,
+        personalInfo: { ...latestSurvey.personalInfo,birthday: student.birthday}, // Add birthday from the Student collection,
         employmentInfo: latestSurvey.employmentInfo,
         surveys: allSurveys
       }
