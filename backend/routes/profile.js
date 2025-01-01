@@ -1,7 +1,7 @@
 import express from 'express';
 import { authenticateToken } from '../routes/surveyroutes.js';
 import { Student } from '../record.js';
-import { Survey } from '../models/survey.js'; // Add this import
+import { Survey } from '../routes/surveyroutes.js'; // Add this import
 
 const router = express.Router();
 
