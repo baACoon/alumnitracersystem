@@ -75,9 +75,8 @@ function ProfilePage() {
   }, [navigate]);
 
   const formatDate = (dateString) => {
-    if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString();
+    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   };
 
   const handleLogout = () => {
@@ -127,7 +126,7 @@ function ProfilePage() {
               <label>Birthday</label>
               <input type="text" value={formatDate(profileData.personalInfo?.birthday) || ''} readOnly />
             </div>
-
+            
             <div className="row">
               <label>Email</label>
               <input type="text" value={profileData.personalInfo?.email_address || ''} readOnly />
