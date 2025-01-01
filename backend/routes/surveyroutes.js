@@ -216,4 +216,6 @@ router.get("/statistics", async (req, res) => {
   }
 });
 
+export { SurveySubmission };
+
 export default router;

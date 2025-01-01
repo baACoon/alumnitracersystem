@@ -1,7 +1,7 @@
 import express from 'express';
 import { authenticateToken } from '../routes/surveyroutes.js';
 import { Student } from '../record.js';
-import { Survey } from '../routes/surveyroutes.js'; // Add this import
+import { SurveySubmission } from '../routes/surveyroutes.js'; // Add this import
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.get('/user-profile', authenticateToken, async (req, res) => {
     }
 
     // Fetch user's surveys
-    const surveys = await Survey.find({ 'userId': userId });
+    const surveys = await SurveySubmission.find({ 'userId': userId });
 
     // Return combined data
     res.status(200).json({
