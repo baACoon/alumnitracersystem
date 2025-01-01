@@ -160,10 +160,23 @@ function CrossCheckSurveyForm() {
       console.log("Validation Failed"); // Debug log
       return;
     }
-  
+    const userId = localStorage.getItem("userId"); // Retrieve the logged-in user's ID
+      if (!userId) {
+        setSubmitStatus({ type: "error", message: "User not logged in" });
+        return;
+      }
+      console.log("Submitting survey for userId:", userId);
+      
+    const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+      if (!token) {
+        setSubmitStatus({ type: "error", message: "No token provided. Please log in again." });
+        return;
+      }
+
     setIsSubmitting(true);
     try {
       const response = await axios.post("http://localhost:5050/surveys/submit", {
+        userId,
         personalInfo: {
           first_name: formData.first_name,
           middle_name: formData.middle_name,
@@ -188,7 +201,11 @@ function CrossCheckSurveyForm() {
           type_of_organization: formData.type_of_organization,
           work_alignment: formData.work_alignment,
         },
-      });
+      },
+      { headers: { Authorization: `Bearer ${token}` } } 
+    
+    );
+
 
       if (response.data.success) {
         setSubmitStatus({ type: "success", message: "Survey submitted successfully!" });

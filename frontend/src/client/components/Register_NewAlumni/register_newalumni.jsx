@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import './register_newalumni.css';
+import './register_newalumni.css'
 
 const Register_NewAlumni = ({ closeModal }) => {
     const [email, setEmail] = useState('');
@@ -13,22 +13,28 @@ const Register_NewAlumni = ({ closeModal }) => {
     const [generatedID, setGeneratedID] = useState(null); // To display the generated unique ID
 
     const navigate = useNavigate(); // Initialize the navigate function
-    const handleCrossCheckSurveyFormClick = () => navigate('/RegisterSurveyForm');
+
+    const handleCrossCheckSurveyFormClick = () => {
+        if (generatedID) {
+          navigate('/RegisterSurveyForm'); // Navigate to the survey form
+        }
+      };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Validate password match
         if (password !== confirmPassword) {
-            alert("Passwords don't match");
+           alert("Passwords don't match");
             return;
         }
 
         // Additional frontend validation (e.g., check for missing fields)
         if (!email || !firstName || !lastName || !middleName || !birthday || !password || !confirmPassword) {
-            alert("All fields are required");
+           alert("All fields are required");
             return;
         }
+        
 
         const formData = {
             email,
@@ -41,7 +47,7 @@ const Register_NewAlumni = ({ closeModal }) => {
         };
 
         try {
-            const response = await fetch('http://localhost:5050/record/register', {
+            const response = await fetch('https://alumnitracersystem.onrender.com/record/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -51,14 +57,21 @@ const Register_NewAlumni = ({ closeModal }) => {
 
             const data = await response.json();
 
+            console.log("Full backend response during registration:", data); // Debug log
+
             if (response.ok) {
-                setGeneratedID(data.generatedID); // Display the unique ID after successful registration
+                /// Convert ObjectId to string if needed
+                 const userIdString = data.user?.id || '';
+                    localStorage.setItem('userId', userIdString); // Store the userId in localStorage
+                    localStorage.setItem('token', data.token); // Store the token
+                    localStorage.setItem('generatedID', data.user.generatedID); // Store the generatedID
+                    setGeneratedID(data.user.generatedID); 
             } else {
-                alert(`Error: ${data.error || 'Registration failed'}`);
+               alert(`Error: ${data.error || 'Registration failed'}`);
             }
         } catch (error) {
             console.error('Error submitting registration:', error);
-            alert('There was an error with the registration request.');
+           alert('There was an error with the registration request.');
         }
     };
 

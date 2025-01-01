@@ -1,0 +1,79 @@
+0000000000000000000000000000000000000000 b7860dad3882b1b7e6e33c536cf8bde8d9b5add2 gigi <angelaasuntogallo@gmail.com> 1732358069 +0800	clone: from https://github.com/baACoon/alumnitracersystem.git
+b7860dad3882b1b7e6e33c536cf8bde8d9b5add2 83f969fef680036427ab5325a9a609576e889bf3 gigi <angelaasuntogallo@gmail.com> 1732361053 +0800	pull --ff --recurse-submodules --progress origin: Fast-forward
+83f969fef680036427ab5325a9a609576e889bf3 a56952b2c37bf22d1206211fec2b4502c1ae7ac6 gigi <angelaasuntogallo@gmail.com> 1732363857 +0800	pull --ff --recurse-submodules --progress origin: Fast-forward
+a56952b2c37bf22d1206211fec2b4502c1ae7ac6 160c2b77eaaca8fb9f45d69cb212be04048a500c gigi <angelaasuntogallo@gmail.com> 1732365692 +0800	pull --ff --recurse-submodules --progress origin: Fast-forward
+160c2b77eaaca8fb9f45d69cb212be04048a500c baa40f001a1dd92371159c72b0f542cdedfb1a12 gigi <angelaasuntogallo@gmail.com> 1732372364 +0800	commit: package json and admin folder update
+baa40f001a1dd92371159c72b0f542cdedfb1a12 91d4c8210cc45968ce2190e5c22680219f6676ab gigi <angelaasuntogallo@gmail.com> 1732380728 +0800	pull: fast-forward
+91d4c8210cc45968ce2190e5c22680219f6676ab 9d258a6f5d8e2b73a437c50a4f4dcf19f8e87cdc gigi <angelaasuntogallo@gmail.com> 1732382718 +0800	pull: fast-forward
+9d258a6f5d8e2b73a437c50a4f4dcf19f8e87cdc 0343c26d624818bb78cbe15d4cd8f23a39eba660 gigi <angelaasuntogallo@gmail.com> 1732693434 +0800	pull: fast-forward
+0343c26d624818bb78cbe15d4cd8f23a39eba660 6a4c433613fdebe732e1b603a2d759b4eff1180d gigi <angelaasuntogallo@gmail.com> 1732696892 +0800	commit (merge): Merge branch 'Angela'
+6a4c433613fdebe732e1b603a2d759b4eff1180d 49b26937457fb333bbe60aff28ab613f1a0cb8ce gigi <angelaasuntogallo@gmail.com> 1732697853 +0800	commit: update
+49b26937457fb333bbe60aff28ab613f1a0cb8ce 1e03f300595c0d835f139471f4a639ddcf9399c6 gigi <angelaasuntogallo@gmail.com> 1732756102 +0800	pull: fast-forward
+1e03f300595c0d835f139471f4a639ddcf9399c6 dffa69b4d05def930507ab6205b232eecfe1f526 gigi <angelaasuntogallo@gmail.com> 1733228216 +0800	pull: fast-forward
+dffa69b4d05def930507ab6205b232eecfe1f526 fddb0a804a498fd76c050508b78c008c4b81d673 gigi <angelaasuntogallo@gmail.com> 1733234482 +0800	pull: fast-forward
+fddb0a804a498fd76c050508b78c008c4b81d673 ef22a5a850e1073b8ebff6b3e0a624eaab809a09 gigi <angelaasuntogallo@gmail.com> 1733414193 +0800	commit: ..
+ef22a5a850e1073b8ebff6b3e0a624eaab809a09 29b30427c2aa8db98e5ffb40f96d59623e236b41 gigi <angelaasuntogallo@gmail.com> 1733414224 +0800	pull --tags origin main: Merge made by the 'ort' strategy.
+29b30427c2aa8db98e5ffb40f96d59623e236b41 f5782f88a48ab300455b6f8cdf84a351d85138d1 gigi <angelaasuntogallo@gmail.com> 1733414507 +0800	merge Angela: Merge made by the 'ort' strategy.
+f5782f88a48ab300455b6f8cdf84a351d85138d1 87e16f5f65453624a15eeb82ad6b6b92c3ad1ae6 gigi <angelaasuntogallo@gmail.com> 1733511537 +0800	merge Angela: Fast-forward
+87e16f5f65453624a15eeb82ad6b6b92c3ad1ae6 57b79c51b66035e4e4fe5a985677740aede3535a gigi <angelaasuntogallo@gmail.com> 1733511557 +0800	pull --tags origin main: Fast-forward
+57b79c51b66035e4e4fe5a985677740aede3535a c7bd83783130ac0cb596bebe4049dc4c5f1e83d8 gigi <angelaasuntogallo@gmail.com> 1734182470 +0800	pull --tags origin main: Fast-forward
+c7bd83783130ac0cb596bebe4049dc4c5f1e83d8 edfa92cb011ce39eb8d5e9e54c86fc14a6be3544 gigi <angelaasuntogallo@gmail.com> 1734182912 +0800	commit: create deploy.yml
+edfa92cb011ce39eb8d5e9e54c86fc14a6be3544 01f774aa794d534d0a9862f50edcc7e15e39df01 gigi <angelaasuntogallo@gmail.com> 1734183530 +0800	commit: update
+01f774aa794d534d0a9862f50edcc7e15e39df01 40a51f9a2648f466b6b04b6fa6fec81fd81e0427 gigi <angelaasuntogallo@gmail.com> 1734183891 +0800	commit: Fix FTP input keys in deploy.yml
+40a51f9a2648f466b6b04b6fa6fec81fd81e0427 555afe57e42d12930f2e44c92b012614f77b3ad5 gigi <angelaasuntogallo@gmail.com> 1734184238 +0800	commit: Fix local-dir and server-dir paths
+555afe57e42d12930f2e44c92b012614f77b3ad5 d79801825033349341fc92a0975ad95e847c938e gigi <angelaasuntogallo@gmail.com> 1734184532 +0800	commit: Fix backlash end in server-dir
+d79801825033349341fc92a0975ad95e847c938e 11129d568280290076e9c242ac7a6ad4064637e4 gigi <angelaasuntogallo@gmail.com> 1734185083 +0800	commit: Fix FTP connection details
+11129d568280290076e9c242ac7a6ad4064637e4 39f80ce20df99c528e2743a4913a8b8f5dd4b038 gigi <angelaasuntogallo@gmail.com> 1734185123 +0800	commit: Fix FTP connection details
+39f80ce20df99c528e2743a4913a8b8f5dd4b038 71ee738e18c84062d512d033cf02466ddf3c91fc gigi <angelaasuntogallo@gmail.com> 1734185481 +0800	commit: Changing titles
+71ee738e18c84062d512d033cf02466ddf3c91fc 5cc8f64fd2a8ce1c4fd92df1412a71eddfd5e98d gigi <angelaasuntogallo@gmail.com> 1734186198 +0800	commit: Fix the path server-dir
+5cc8f64fd2a8ce1c4fd92df1412a71eddfd5e98d c2413387aa919fd7fcee4e2b5ddc401bd74531b2 gigi <angelaasuntogallo@gmail.com> 1734186621 +0800	commit: Title changes testing
+c2413387aa919fd7fcee4e2b5ddc401bd74531b2 8bccf8986a6db70e1c9c76ac2f2d0acaed6f7442 gigi <angelaasuntogallo@gmail.com> 1734192296 +0800	pull --tags origin main: Fast-forward
+8bccf8986a6db70e1c9c76ac2f2d0acaed6f7442 ec59447eca27e24d5488624796f6c6d2d923f33b gigi <angelaasuntogallo@gmail.com> 1734194508 +0800	commit: record update
+ec59447eca27e24d5488624796f6c6d2d923f33b 9d0716297d554d99ff51990ffd20b457ae809dbe gigi <angelaasuntogallo@gmail.com> 1734195107 +0800	commit: collection in database change
+9d0716297d554d99ff51990ffd20b457ae809dbe 56dbf0889b5ab407fafd71a809aff86d6c8f7e72 gigi <angelaasuntogallo@gmail.com> 1734315241 +0800	commit: connection modified
+56dbf0889b5ab407fafd71a809aff86d6c8f7e72 046740c782cf73d93215f45e68568300760314d2 gigi <angelaasuntogallo@gmail.com> 1734317316 +0800	commit: backend update
+046740c782cf73d93215f45e68568300760314d2 f9aed298edaa73168b766c20e926690550ec78c9 gigi <angelaasuntogallo@gmail.com> 1734317641 +0800	commit: survey update
+f9aed298edaa73168b766c20e926690550ec78c9 532f1e262cf6467fa52cb0336c552d6f2d9f1796 gigi <angelaasuntogallo@gmail.com> 1734319131 +0800	commit: Record added login
+532f1e262cf6467fa52cb0336c552d6f2d9f1796 6725893efc2ad735212d5d97d12ac0b73533c252 gigi <angelaasuntogallo@gmail.com> 1734319163 +0800	commit: Registration and login update
+6725893efc2ad735212d5d97d12ac0b73533c252 041de7c0b82fa304aedb486353302f0a49b31482 gigi <angelaasuntogallo@gmail.com> 1734320087 +0800	commit: Fixing login form
+041de7c0b82fa304aedb486353302f0a49b31482 2a4f4a3190d4f625f4fed82483f89fd02a44f60c gigi <angelaasuntogallo@gmail.com> 1734331235 +0800	commit: Fixing Login form
+2a4f4a3190d4f625f4fed82483f89fd02a44f60c 9498d7ab7773c085b7f59ad32b9d87dec281ff88 gigi <angelaasuntogallo@gmail.com> 1734332983 +0800	commit: Missing in formdata
+9498d7ab7773c085b7f59ad32b9d87dec281ff88 442260926e4cbaf73b1681fa7173197aed9a3c9b gigi <angelaasuntogallo@gmail.com> 1734333382 +0800	commit: Fixing Onclick
+442260926e4cbaf73b1681fa7173197aed9a3c9b cfeca71e0dab38a8efef7612337add8365af2dc3 gigi <angelaasuntogallo@gmail.com> 1734334997 +0800	commit: await modified
+cfeca71e0dab38a8efef7612337add8365af2dc3 b963bcd5a4ca9205979f20181829e4e9e9fa4514 gigi <angelaasuntogallo@gmail.com> 1734335519 +0800	commit: cors modified
+b963bcd5a4ca9205979f20181829e4e9e9fa4514 f0afb335804be8a87ab32d1b0c0d05441dc78fa1 gigi <angelaasuntogallo@gmail.com> 1734336024 +0800	commit: cors changes
+f0afb335804be8a87ab32d1b0c0d05441dc78fa1 3f8fac60700f9915ae8975f5bf5ca2d1fb52ab05 gigi <angelaasuntogallo@gmail.com> 1734337427 +0800	commit: cors modified
+3f8fac60700f9915ae8975f5bf5ca2d1fb52ab05 510356a3a0be2eb15bc54e49571919ffe22ad584 gigi <angelaasuntogallo@gmail.com> 1734338445 +0800	commit: cors modified
+510356a3a0be2eb15bc54e49571919ffe22ad584 16b538627257cf0c24ece4fa77e18e42a2697d2f gigi <angelaasuntogallo@gmail.com> 1734339885 +0800	commit: 3000 change to 5050
+16b538627257cf0c24ece4fa77e18e42a2697d2f 54293f927e57e9fe2c3c39c694dc56119be7de33 gigi <angelaasuntogallo@gmail.com> 1734341893 +0800	commit: undo cors and await changes
+54293f927e57e9fe2c3c39c694dc56119be7de33 c28a046a1c1e9d67aae301ba8e97552b10a3b53f gigi <angelaasuntogallo@gmail.com> 1734409711 +0800	pull --tags origin main: Fast-forward
+c28a046a1c1e9d67aae301ba8e97552b10a3b53f c1adaadf4e11f8815ed1b81aefb46e7ec216a351 gigi <angelaasuntogallo@gmail.com> 1734416507 +0800	commit: adding email
+c1adaadf4e11f8815ed1b81aefb46e7ec216a351 ab2c3f6f207a2d95a7ba670fff0e4cf0cc1779e3 gigi <angelaasuntogallo@gmail.com> 1734416630 +0800	commit: add space
+ab2c3f6f207a2d95a7ba670fff0e4cf0cc1779e3 1fce5c7d40bc6833cc51700e02a14eec80ef32e2 gigi <angelaasuntogallo@gmail.com> 1734440196 +0800	commit: Event management update
+1fce5c7d40bc6833cc51700e02a14eec80ef32e2 2e4f837204a5345524fa1fd16e9523a60f498ae9 gigi <angelaasuntogallo@gmail.com> 1735403660 +0800	pull --tags origin main: Fast-forward
+2e4f837204a5345524fa1fd16e9523a60f498ae9 dd360e8ddc90b63caafa03c779c1a7587d29fb13 gigi <angelaasuntogallo@gmail.com> 1735404353 +0800	commit: changing the start script
+dd360e8ddc90b63caafa03c779c1a7587d29fb13 5691015d7693480f1278e0e02939676469dadd7e gigi <angelaasuntogallo@gmail.com> 1735404650 +0800	commit: moving nodemon
+5691015d7693480f1278e0e02939676469dadd7e 64954e39db6262c5e605398e085d1c3b27b8d461 gigi <angelaasuntogallo@gmail.com> 1735405684 +0800	commit: adding build
+64954e39db6262c5e605398e085d1c3b27b8d461 f2c1eb61fdc0d10370800a2011db2da5ecb55073 gigi <angelaasuntogallo@gmail.com> 1735406482 +0800	commit: build script update
+f2c1eb61fdc0d10370800a2011db2da5ecb55073 28c151fabd347a344a8edecc40acfb58a6ddd5de gigi <angelaasuntogallo@gmail.com> 1735406990 +0800	commit: bycrypt modified into bycryptjs
+28c151fabd347a344a8edecc40acfb58a6ddd5de e6e14e88a54d6840fd8b119c73c0ced7fc8b8ca0 gigi <angelaasuntogallo@gmail.com> 1735407404 +0800	commit: ...
+e6e14e88a54d6840fd8b119c73c0ced7fc8b8ca0 3740664c8f678c8033d04424a4a94663218dbcbb gigi <angelaasuntogallo@gmail.com> 1735408851 +0800	commit: updatting bycrypt to bycryptjs
+3740664c8f678c8033d04424a4a94663218dbcbb b8c3d7949cb565882ce0da6467f8846e3da74a7d gigi <angelaasuntogallo@gmail.com> 1735409076 +0800	commit: updating bycrypt into bycryptjs
+b8c3d7949cb565882ce0da6467f8846e3da74a7d a5d7b65075094c3ac9d5edd0ee78f13a17417584 gigi <angelaasuntogallo@gmail.com> 1735453306 +0800	pull origin main: Fast-forward
+a5d7b65075094c3ac9d5edd0ee78f13a17417584 ab6a784070109a1c288e4a17677bbd424d135b1d gigi <angelaasuntogallo@gmail.com> 1735454353 +0800	commit: commenting the line 9 and installing mongoose$latest.
+ab6a784070109a1c288e4a17677bbd424d135b1d 1762ba98fef83b1fafa6b6d1cfc8b71228a0c5fa gigi <angelaasuntogallo@gmail.com> 1735456199 +0800	pull origin main: Fast-forward
+1762ba98fef83b1fafa6b6d1cfc8b71228a0c5fa 2bc2b2e6994f47cff3d225a10eeb877dcbd3e717 gigi <angelaasuntogallo@gmail.com> 1735457495 +0800	commit: reinstall mongoose and mongodb part 1
+2bc2b2e6994f47cff3d225a10eeb877dcbd3e717 0ff5b4aa43c4ca72d4c7dab0eedff05516012375 gigi <angelaasuntogallo@gmail.com> 1735458885 +0800	commit: import fix
+0ff5b4aa43c4ca72d4c7dab0eedff05516012375 9b0a1bf24d3648712e47ae65f2d0cee0562abdb8 gigi <angelaasuntogallo@gmail.com> 1735533446 +0800	commit: corsschecking of user acc and survey
+9b0a1bf24d3648712e47ae65f2d0cee0562abdb8 0c1fd445726696f99e92a8db850603b380d33e1f gigi <angelaasuntogallo@gmail.com> 1735577571 +0800	commit: adding userId and token of login and register
+0c1fd445726696f99e92a8db850603b380d33e1f be70a6edebddeb6f468a4a224800adf46e435f35 gigi <angelaasuntogallo@gmail.com> 1735586165 +0800	commit: linking user to their survey(not finish)
+be70a6edebddeb6f468a4a224800adf46e435f35 7eee89a91acac1e74fc81b4726b52987a5b0cd64 gigi <angelaasuntogallo@gmail.com> 1735586326 +0800	commit: ..
+7eee89a91acac1e74fc81b4726b52987a5b0cd64 83ad50c7e959b520cf1aab2d48419efa661f19f3 gigi <angelaasuntogallo@gmail.com> 1735586454 +0800	commit: ..
+83ad50c7e959b520cf1aab2d48419efa661f19f3 2d91ae69db49661667cbbe980dc4d363c6b28a3b gigi <angelaasuntogallo@gmail.com> 1735587917 +0800	commit: path change
+2d91ae69db49661667cbbe980dc4d363c6b28a3b a7d0d9ef0db988c51713532f1a7f490d4a4a3183 gigi <angelaasuntogallo@gmail.com> 1735589422 +0800	commit: ..
+a7d0d9ef0db988c51713532f1a7f490d4a4a3183 609f26ec039a09dd8194eb80b7a88e2f11636492 gigi <angelaasuntogallo@gmail.com> 1735589449 +0800	commit: modified origin of cors
+609f26ec039a09dd8194eb80b7a88e2f11636492 b0cc919b99e66dd5593e10c21a57371d688ccbe8 gigi <angelaasuntogallo@gmail.com> 1735589896 +0800	commit: updating the orgin of cors
+b0cc919b99e66dd5593e10c21a57371d688ccbe8 93a23177efd914d4ba00589ae4ac2787de3d6022 gigi <angelaasuntogallo@gmail.com> 1735590493 +0800	commit: another changes in cors
+93a23177efd914d4ba00589ae4ac2787de3d6022 db15171d01ffa41e5d89fa381d27f5c870623879 gigi <angelaasuntogallo@gmail.com> 1735590649 +0800	commit: remove toast and updating again the cors
+db15171d01ffa41e5d89fa381d27f5c870623879 b8720e44b8e7f17a1d5ca88aa1fb376308c16c66 gigi <angelaasuntogallo@gmail.com> 1735590980 +0800	commit: undo changes in cors
+b8720e44b8e7f17a1d5ca88aa1fb376308c16c66 976cfffa81287789c5749b062274ecc4c9535627 gigi <angelaasuntogallo@gmail.com> 1735591995 +0800	commit: modified the profile to display the information

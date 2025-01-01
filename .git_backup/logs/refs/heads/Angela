@@ -1,0 +1,30 @@
+0000000000000000000000000000000000000000 baa40f001a1dd92371159c72b0f542cdedfb1a12 gigi <angelaasuntogallo@gmail.com> 1732378574 +0800	branch: Created from origin/Angela
+baa40f001a1dd92371159c72b0f542cdedfb1a12 917a5132c21a0885cc8d3b9c37f83d4abb3289d2 gigi <angelaasuntogallo@gmail.com> 1732378612 +0800	commit: login update
+917a5132c21a0885cc8d3b9c37f83d4abb3289d2 9ee85ccea2bb4e5c6ce5289de8b8cac2ef4a61ce gigi <angelaasuntogallo@gmail.com> 1732445754 +0800	commit: Alumnis update
+9ee85ccea2bb4e5c6ce5289de8b8cac2ef4a61ce 194b17a9cf97bf81576660fafa466e1f642a3534 gigi <angelaasuntogallo@gmail.com> 1732632568 +0800	commit: alumni tab update
+194b17a9cf97bf81576660fafa466e1f642a3534 d90867dd8de64b79452589e7540a4cc79c160f8d gigi <angelaasuntogallo@gmail.com> 1732694355 +0800	commit: Profile of student update
+d90867dd8de64b79452589e7540a4cc79c160f8d 1e03f300595c0d835f139471f4a639ddcf9399c6 gigi <angelaasuntogallo@gmail.com> 1732750624 +0800	pull --tags origin Angela: Fast-forward
+1e03f300595c0d835f139471f4a639ddcf9399c6 7d836fd9a750ae2dc602d5132596378f3cc5d5e9 gigi <angelaasuntogallo@gmail.com> 1732755890 +0800	commit: Survey tab update
+7d836fd9a750ae2dc602d5132596378f3cc5d5e9 9a8bba5596c3c81e8a8e3a453146c76a5d076456 gigi <angelaasuntogallo@gmail.com> 1733227914 +0800	commit: Survey Tab update and Some Tables in Alumnis
+9a8bba5596c3c81e8a8e3a453146c76a5d076456 b1bb533c1a2bfc863d4c36816af495b3a6a438c4 gigi <angelaasuntogallo@gmail.com> 1733228241 +0800	pull --ff --recurse-submodules --progress origin: Merge made by the 'ort' strategy.
+b1bb533c1a2bfc863d4c36816af495b3a6a438c4 23b8f21c003cf91b1ff5a4184f898355d20218ff gigi <angelaasuntogallo@gmail.com> 1733228539 +0800	commit: appjs update
+23b8f21c003cf91b1ff5a4184f898355d20218ff 9a61abfd13ed75cc9208322d055ec89cee6944e9 gigi <angelaasuntogallo@gmail.com> 1733413697 +0800	commit: backend update
+9a61abfd13ed75cc9208322d055ec89cee6944e9 7b69a842506a4855a8fb60c5811181737659167f gigi <angelaasuntogallo@gmail.com> 1733413728 +0800	commit: backend update and new packages
+7b69a842506a4855a8fb60c5811181737659167f ab09cd294f23e42de3ebe4648aba074c96f3ee68 gigi <angelaasuntogallo@gmail.com> 1733493167 +0800	commit: backend updated
+ab09cd294f23e42de3ebe4648aba074c96f3ee68 bff062f17fe1c71a047fd5b45214162a867e1779 gigi <angelaasuntogallo@gmail.com> 1733493192 +0800	pull --tags origin Angela: Merge made by the 'ort' strategy.
+bff062f17fe1c71a047fd5b45214162a867e1779 87e16f5f65453624a15eeb82ad6b6b92c3ad1ae6 gigi <angelaasuntogallo@gmail.com> 1733501041 +0800	pull --tags origin Angela: Fast-forward
+87e16f5f65453624a15eeb82ad6b6b92c3ad1ae6 57b79c51b66035e4e4fe5a985677740aede3535a gigi <angelaasuntogallo@gmail.com> 1733511816 +0800	pull --tags origin Angela: Fast-forward
+57b79c51b66035e4e4fe5a985677740aede3535a d710b16c37161104571763bf1aa0dca6c7f98065 gigi <angelaasuntogallo@gmail.com> 1733575403 +0800	pull --tags origin Angela: Fast-forward
+d710b16c37161104571763bf1aa0dca6c7f98065 1fce5c7d40bc6833cc51700e02a14eec80ef32e2 gigi <angelaasuntogallo@gmail.com> 1734445031 +0800	merge main: Fast-forward
+1fce5c7d40bc6833cc51700e02a14eec80ef32e2 7efde81cd4c36ea74de76c79c68a430351e42ffb gigi <angelaasuntogallo@gmail.com> 1734445343 +0800	commit: create new file
+7efde81cd4c36ea74de76c79c68a430351e42ffb 34e1caea5e01aa0f34e64448a268e82fa1a89d81 gigi <angelaasuntogallo@gmail.com> 1734449763 +0800	commit: Completed Event both Admin and Client
+34e1caea5e01aa0f34e64448a268e82fa1a89d81 7a45039ebdd3854fe3781745f1f6bf824454ddc9 gigi <angelaasuntogallo@gmail.com> 1734463188 +0800	commit: Updating the structure of login and register
+7a45039ebdd3854fe3781745f1f6bf824454ddc9 8254481473c4358e74f1ccb4a4ecdbaa7675d64d gigi <angelaasuntogallo@gmail.com> 1734463291 +0800	pull --tags origin Angela: Merge made by the 'ort' strategy.
+8254481473c4358e74f1ccb4a4ecdbaa7675d64d f25096c7722b29708820f33ee076a98f03d86674 gigi <angelaasuntogallo@gmail.com> 1734464540 +0800	commit: Update
+f25096c7722b29708820f33ee076a98f03d86674 850eeca69a64b463d7ff55ae1781d2577b1df332 gigi <angelaasuntogallo@gmail.com> 1734674519 +0800	commit: db update
+850eeca69a64b463d7ff55ae1781d2577b1df332 701a8362518f427f595fe6d22d9e6e7a70bebeb2 gigi <angelaasuntogallo@gmail.com> 1734776082 +0800	commit: Adding backend to Survey
+701a8362518f427f595fe6d22d9e6e7a70bebeb2 22f953865cab8bb4281ac65775e027ed3ce164ba gigi <angelaasuntogallo@gmail.com> 1734791299 +0800	pull origin main: Fast-forward
+22f953865cab8bb4281ac65775e027ed3ce164ba 7d011bc6e32034e2310b727e45d0739ebda7401e gigi <angelaasuntogallo@gmail.com> 1735009731 +0800	commit: profile update
+7d011bc6e32034e2310b727e45d0739ebda7401e 938195c97f5a1b2471cf76e4f14f5431414d7169 gigi <angelaasuntogallo@gmail.com> 1735011986 +0800	commit: Add JWT and DONTENV in front and backend.
+938195c97f5a1b2471cf76e4f14f5431414d7169 2e4f837204a5345524fa1fd16e9523a60f498ae9 gigi <angelaasuntogallo@gmail.com> 1735402985 +0800	commit: moving the uri to .env
+2e4f837204a5345524fa1fd16e9523a60f498ae9 c22f43b3e59afaab7a66cdae4997e3244b63da6f gigi <angelaasuntogallo@gmail.com> 1735403479 +0800	commit: Small changes

@@ -76,8 +76,41 @@ router.post("/register", async (req, res) => {
 
     await newUser.save();
 
+    // Generate JWT token
+    const token = jwt.sign(
+      { 
+        id: newUser._id,
+        generatedID: newUser.generatedID,
+        email: newUser.email 
+      },
+      process.env.JWT_SECRET, // Ensure this is set in your .env file
+      { expiresIn: '24h' }
+    );
+
     console.log(`User registered with ID: ${generatedID}`);
-    res.status(201).json({ message: "User registered successfully!", generatedID });
+    console.log("Register response:", { 
+      message: "User registered successfully!",
+      token: token,
+      user: {
+        id: newUser._id.toString(),
+        generatedID,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email
+      }
+    });
+
+    res.status(201).json({ 
+      message: "User registered successfully!",
+      token: token,
+      user: {
+        id: newUser._id.toString(),
+        generatedID,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email
+      }
+    });
   } catch (error) {
     console.error("Error during registration:", error);
     res.status(500).json({ error: "Error registering user." });
@@ -133,6 +166,7 @@ router.post("/login", async (req, res) => {
     );
 
     console.log(`User logged in: ${user.generatedID}`);
+    console.log("Login response:", { userId: user._id, token });
     res.status(200).json({ 
       message: "Login successful!",
       token: token,
@@ -149,5 +183,7 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Error logging in." });
   }
 });
+
+export { Student };
 
 export default router;

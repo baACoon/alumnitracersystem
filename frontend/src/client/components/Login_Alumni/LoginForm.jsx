@@ -15,7 +15,7 @@ const TestLoginForm = ({ closeModal }) => {
     console.log('Login attempt with:', formData); // Debug log
 
     try {
-      const response = await fetch('http://localhost:5050/record/login', {
+      const response = await fetch('https://alumnitracersystem.onrender.com/record/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -27,16 +27,19 @@ const TestLoginForm = ({ closeModal }) => {
       console.log('Server response:', response.status, data); // Debug log
 
       if (response.ok) {
-        localStorage.setItem('token', data.token)
-        alert('Login successful!');
+        console.log("Storing userId in localStorage:", data.user.id);
+        localStorage.clear();
+        localStorage.setItem("userId", data.user.id);
+        localStorage.setItem("token", data.token);        
+        alert("Login successful!");
         closeModal();
-        navigate('/home');
+        navigate("/home");
       } else {
-        alert(`Error: ${data.error || 'Login failed'}`);
+       alert(`Error: ${data.error || 'Login failed'}`);
       }
     } catch (error) {
       console.error('Error during login:', error);
-      alert('There was an error with the login request.');
+     alert('There was an error with the login request.');
     }
   };
 
