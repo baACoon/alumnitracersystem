@@ -1,16 +1,14 @@
 import express from 'express';
-import { authenticateToken } from '../routes/surveyroutes.js'; // Middleware to verify JWT tokens
-import {Student} from '../record.js'; // Model for Student (adjust path as necessary)
-
+import { authenticateToken } from '../routes/surveyroutes.js';
+import { Student } from '../record.js';
+import { Survey } from '../models/survey.js'; // Add this import
 
 const router = express.Router();
 
 // Route to fetch user profile and surveys
-router.get('/user/profile/:userId', authenticateToken, async (req, res) => {
+router.get('/user-profile', authenticateToken, async (req, res) => {
   try {
-    const { userId } = req.params; // Get the user ID from the URL
-
-
+    const userId = req.user.id; // Get user ID from authenticated token
 
     // Fetch user details
     const user = await Student.findById(userId);
@@ -18,16 +16,36 @@ router.get('/user/profile/:userId', authenticateToken, async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    // Fetch user's survey
-    const surveys = await SurveySubmission.find({ userId });
+    // Fetch user's surveys
+    const surveys = await Survey.find({ 'userId': userId });
 
-    // Return user and survey data
+    // Return combined data
     res.status(200).json({
       success: true,
       data: {
-        user,
-        surveys,
-      },
+        personalInfo: {
+          college: user.college,
+          course: user.course,
+          degree: user.degree,
+          firstName: user.firstName,
+          middleName: user.middleName,
+          lastName: user.lastName,
+          address: user.address,
+          birthday: user.birthday,
+          email: user.email,
+          contact_no: user.contact_no
+        },
+        employmentInfo: {
+          occupation: user.occupation,
+          company_name: user.company_name,
+          position: user.position,
+          job_status: user.job_status,
+          year_started: user.year_started,
+          type_of_organization: user.type_of_organization,
+          work_alignment: user.work_alignment
+        },
+        surveys: surveys
+      }
     });
   } catch (error) {
     console.error('Error fetching profile:', error);
