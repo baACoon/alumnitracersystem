@@ -48,7 +48,7 @@ function ArticleClient() {
               onClick={() => openArticleModal(item)}
             >
               <img
-                src={`http://localhost:5050${item.image}`}
+                src={`https://alumnitracersystem.onrender.com${item.image}`}
                 alt={item.title}
                 className={styles.articleImage}
               />
