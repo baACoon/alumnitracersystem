@@ -53,15 +53,17 @@ function App() {
             <Route path="/SurveyForm" element={<SurveyForm />} />
             <Route path="/CompletedForm" element={<CompletedForm />} />
 
-            {/* ADMIN path */}
-            <Route path="/Dashboard" element={<Dashboard />} />
-            <Route path="/AlumniPage" element={<AlumniPage />} />
-            <Route path="/SurveyContent" element={<SurveyContent />} />
-            <Route path="/EventTabs" element={<EvenTabs />} />
-            <Route path="/Opportunities" element={<Opportunities />} />
-            <Route path="/Navbar" element={<Navbar />} />
-            <Route path="/Login" element={<Login />} />
-            <Route path="/Register" element={<Register />} />
+             {/* ADMIN paths */}
+            <Route path="/admin/" element={<Dashboard />} />
+            <Route path="/admin/Dashboard" element={<Dashboard />} />
+            <Route path="/admin/AlumniPage" element={<AlumniPage />} />
+            <Route path="/admin/SurveyContent" element={<SurveyContent />} />
+            <Route path="/admin/EventTabs" element={<EvenTabs />} />
+            <Route path="/admin/Opportunities" element={<Opportunities />} />
+            <Route path="/admin/Navbar" element={<Navbar />} />
+            <Route path="/admin/Login" element={<Login />} />
+            <Route path="/admin/Register" element={<Register />} />
+
        
           </Routes>
         </BrowserRouter>
