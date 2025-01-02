@@ -21,7 +21,7 @@ const AdminRegister = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5050/adminlog_reg/adminregister", {
+      const response = await fetch('https://alumnitracersystem.onrender.com/adminlog_reg/adminregister', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
