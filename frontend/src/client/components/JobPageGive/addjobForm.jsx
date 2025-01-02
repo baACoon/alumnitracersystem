@@ -42,11 +42,11 @@ function AddjobFormMainPage() {
         e.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:5050/jobs/", {
+            const response = await fetch("https://alumnitracersystem.onrender.com/jobs/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token if needed
+                    Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token
                 },
                 body: JSON.stringify(formData),
             });

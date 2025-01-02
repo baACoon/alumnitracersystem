@@ -1,18 +1,25 @@
-import mongoose from 'mongoose';
+import express from 'express';
+import { protect } from '../middlewares/authmiddleware.js';
+import Job from '../models/job.js';
 
-const JobSchema = new mongoose.Schema({
-    title: String,
-    company: String,
-    location: String,
-    type: String,
-    description: String,
-    responsibilities: [String],
-    qualifications: [String],
-    source: String,
-    status: { type: String, default: 'Pending' }, // Pending, Published, Denied
-    feedback: String, // For denied posts
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Alumni ID
-    reviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Admin ID
-}, { timestamps: true });
+const router = express.Router();
 
-export default mongoose.model('Job', JobSchema);
+router.post('/', protect, async (req, res) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(400).json({ message: 'Invalid user information' });
+        }
+
+        const newJob = new Job({
+            ...req.body,
+            createdBy: req.user.id, // Use the authenticated user's ID
+        });
+        await newJob.save();
+        res.status(201).json({ message: 'Job posted successfully!' });
+    } catch (error) {
+        console.error('Error saving job:', error);
+        res.status(500).json({ error: 'Failed to post the job' });
+    }
+});
+
+export default router;
