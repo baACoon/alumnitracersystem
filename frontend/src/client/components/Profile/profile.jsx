@@ -18,8 +18,11 @@ function Profile() {
 }
 
 function ProfilePage() {
-  const [userData, setUserData] = useState(null);
-  const [surveyData, setSurveyData] = useState([]);
+  const [profileData, setProfileData] = useState({
+    personalInfo: {},
+    employmentInfo: {},
+    surveys: []
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -34,37 +37,32 @@ function ProfilePage() {
           return;
         }
 
-        // Decode token to check validity
-        let decoded;
+        // Verify token
         try {
-          decoded = jwtDecode(token);
-          if (!decoded.id) {
-            throw new Error('Invalid token');
-          }
-        } catch (tokenError) {
-          alert("Invalid session. Redirecting to login.");
+          const decoded = jwtDecode(token);
+          if (!decoded.id) throw new Error('Invalid token');
+        } catch (err) {
+          alert("Invalid session. Please log in again.");
           localStorage.removeItem('token');
           navigate('/frontpage');
           return;
         }
 
-        // Fetch profile and survey data
-        const response = await fetch('https://alumnitracersystem.onrender.com/surveys/user-surveys', {
+        // Fetch profile data
+        const response = await fetch('https://alumnitracersystem.onrender.com/profile/user-profile', {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to fetch profile data');
+          throw new Error('Failed to fetch profile data');
         }
 
         const data = await response.json();
-        setUserData(decoded); // Basic user data from token
-        setSurveyData(data.data || []); // Surveys fetched from API
+        setProfileData(data.data);
       } catch (err) {
         setError(err.message);
         console.error('Error fetching profile:', err);
@@ -76,35 +74,21 @@ function ProfilePage() {
     fetchData();
   }, [navigate]);
 
-  const renderSurveys = () => {
-    if (!surveyData || surveyData.length === 0) {
-      return <p>No surveys completed yet.</p>;
-    }
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  };
 
-    return (
-      <div className="survey-summary">
-        <h3>Completed Surveys</h3>
-        {surveyData.map((survey, index) => (
-          <div key={survey._id} className="survey-item">
-            <h4>Survey #{index + 1}</h4>
-            <div className="survey-details">
-              <p>Date Completed: {new Date(survey.createdAt).toLocaleDateString()}</p>
-              <p>College: {survey.personalInfo.college}</p>
-              <p>Course: {survey.personalInfo.course}</p>
-              <p>Work Alignment: {survey.employmentInfo.work_alignment}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+  const handleLogout = () => {
+    localStorage.clear(); // Clear token and other data
+    navigate('/frontpage'); // Redirect to login page
   };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  if (!userData) return <div>No user data found</div>;
 
   return (
-    <div className="profile-container">
+  <div className="profile-container">
       <section className="personal-info">
         <h2>PERSONAL INFORMATION</h2>
         <div className="profile-section">
@@ -112,15 +96,15 @@ function ProfilePage() {
             <div className="row-group">
               <div className="row">
                 <label>College</label>
-                <input type="text" value={userData.college || ''} readOnly />
+                <input type="text" value={profileData.personalInfo?.college || ''} readOnly />
               </div>
               <div className="row">
                 <label>Course</label>
-                <input type="text" value={userData.course || ''} readOnly />
+                <input type="text" value={profileData.personalInfo?.course || ''} readOnly />
               </div>
               <div className="row">
                 <label>Degree</label>
-                <input type="text" value={userData.degree || ''} readOnly />
+                <input type="text" value={profileData.personalInfo?.degree || ''} readOnly />
               </div>
             </div>
 
@@ -128,29 +112,29 @@ function ProfilePage() {
               <label>Name</label>
               <input
                 type="text"
-                value={`${userData.firstName || ''} ${userData.middleName || ''} ${userData.lastName || ''}`}
+                value={`${profileData.personalInfo?.first_name || ''} ${profileData.personalInfo?.middle_name || ''} ${profileData.personalInfo?.last_name || ''}`}
                 readOnly
               />
             </div>
 
             <div className="row">
               <label>Address</label>
-              <input type="text" value={userData.address || ''} readOnly />
+              <input type="text" value={profileData.personalInfo?.address || ''} readOnly />
             </div>
 
             <div className="row">
               <label>Birthday</label>
-              <input type="text" value={userData.birthday || ''} readOnly />
+              <input type="text" value={formatDate(profileData.personalInfo?.birthday) || ''} readOnly />
             </div>
-
+            
             <div className="row">
               <label>Email</label>
-              <input type="text" value={userData.email || ''} readOnly />
+              <input type="text" value={profileData.personalInfo?.email_address || ''} readOnly />
             </div>
 
             <div className="row">
               <label>Contact No.</label>
-              <input type="text" value={userData.contact_no || ''} readOnly />
+              <input type="text" value={profileData.personalInfo?.contact_no || ''} readOnly />
             </div>
           </div>
         </div>
@@ -161,44 +145,50 @@ function ProfilePage() {
         <div className="details">
           <div className="row">
             <label>Occupation</label>
-            <input type="text" value={userData.occupation || ''} readOnly />
+            <input type="text" value={profileData.employmentInfo?.occupation || ''} readOnly />
           </div>
 
           <div className="row">
             <label>Company</label>
-            <input type="text" value={userData.company_name || ''} readOnly />
+            <input type="text" value={profileData.employmentInfo?.company_name || ''} readOnly />
           </div>
 
           <div className="row">
             <label>Position</label>
-            <input type="text" value={userData.position || ''} readOnly />
+            <input type="text" value={profileData.employmentInfo?.position || ''} readOnly />
           </div>
 
           <div className="row">
             <label>Job Status</label>
-            <input type="text" value={userData.job_status || ''} readOnly />
+            <input type="text" value={profileData.employmentInfo?.job_status || ''} readOnly />
           </div>
 
           <div className="row">
             <label>Year Started</label>
-            <input type="text" value={userData.year_started || ''} readOnly />
+            <input type="text" value={profileData.employmentInfo?.year_started || ''} readOnly />
           </div>
 
           <div className="row">
             <label>Organization Type</label>
-            <input type="text" value={userData.type_of_organization || ''} readOnly />
+            <input type="text" value={profileData.employmentInfo?.type_of_organization || ''} readOnly />
           </div>
 
           <div className="row">
             <label>Work Alignment</label>
-            <input type="text" value={userData.work_alignment || ''} readOnly />
+            <input type="text" value={profileData.employmentInfo?.work_alignment || ''} readOnly />
           </div>
         </div>
       </section>
 
-      <section className="survey-summary">
-        {renderSurveys()}
+      <section className="completed-surveys">
+        
+        {profileData.surveys?.map((survey, index) => (
+          <div key={survey._id} className="survey-item">
+            <p>Date Completed: {formatDate(survey.createdAt)}</p>
+          </div>
+        ))}
       </section>
+      <button className="logout-btn" onClick={handleLogout}>Logout</button>
     </div>
   );
 }
