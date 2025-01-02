@@ -48,7 +48,7 @@ function ArticleClient() {
               onClick={() => openArticleModal(item)}
             >
               <img
-                src={`http://localhost:5050${item.image}`}
+                src={`https://alumnitracersystem.onrender.com${item.image}`}
                 alt={item.title}
                 className={styles.articleImage}
               />
@@ -73,7 +73,7 @@ function ArticleClient() {
             </button>
             <h2>{selectedArticle.title}</h2>
             <img
-              src={`http://localhost:5050${selectedArticle.image}`}
+              src={`https://alumnitracersystem.onrender.com${selectedArticle.image}`}
               alt={selectedArticle.title}
               className={styles.fullArticleImage}
             />
