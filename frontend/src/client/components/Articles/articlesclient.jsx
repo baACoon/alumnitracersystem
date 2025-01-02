@@ -8,7 +8,7 @@ function ArticleClient() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch("http://localhost:5050/artcileroutes/");
+        const response = await fetch("https://alumnitracersystem.onrender.com/artcileroutes/");
         if (!response.ok) {
           throw new Error("Failed to fetch news");
         }

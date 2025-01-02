@@ -14,7 +14,7 @@ export default function NewsArticles() {
   // Fetch articles
   const fetchArticles = async () => {
     try {
-      const response = await fetch("http://localhost:5050/artcileroutes/");
+      const response = await fetch("https://alumnitracersystem.onrender.com/artcileroutes/");
       const data = await response.json();
       setArticles(data);
     } catch (error) {
