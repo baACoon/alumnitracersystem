@@ -5,29 +5,29 @@ import {BrowserRouter, Routes, Route} from "react-router-dom"
 
 
 {/* for Client path */}
-import FrontPage from './client/components/Frontpage/frontpage';
-import CrossCheckSurveyForm from './client/components/CrossCheck-Survey/CrossCheck-Survey';
-import Home from './client/components/Home/home'
-import Survey from './client/components/Survey/survey';
-import Events from './client/components/Events/events';
-import JobPage from './client/components/JobPage/jobpage';
-import JobPageGive from './client/components/JobPageGive/jobpagegive';
-import AddJobForm from './client/components/JobPageGive/addjobForm';
-import JobPageList from './client/components/JobPageList/jobpagelist';
-import Contact from './client/components/Contact/contact';
-import Profile from './client/components/Profile/profile';
-import SurveyForm from './client/components/SurveyForm/SurveyForm';
-import CompletedForm from './client/components/CompletedForm/CompletedForm';
+import FrontPage from '../src/client/components/Frontpage/frontpage';
+import CrossCheckSurveyForm from '../src/client/components/CrossCheck-Survey/CrossCheck-Survey';
+import Home from '../src/client/components/Home/home'
+import Survey from '../src/client/components/Survey/survey';
+import Events from '../src/client/components/Events/events';
+import JobPage from '../src/client/components/JobPage/jobpage';
+import JobPageGive from '../src/client/components/JobPageGive/jobpagegive';
+import AddJobForm from '../src/client/components/JobPageGive/addjobForm';
+import JobPageList from '../src/client/components/JobPageList/jobpagelist';
+import Contact from '../src/client/components/Contact/contact';
+import Profile from '../src/client/components/Profile/profile';
+import SurveyForm from '../src/client/components/SurveyForm/SurveyForm';
+import CompletedForm from '../src/client/components/CompletedForm/CompletedForm';
 
 {/* for Admin path */}
-import Dashboard from './admin/components/Dashboard/Dashboard';
-import AlumniPage from './admin/components/Alumni/Page/AlumniPage'
-import SurveyContent from './admin/components/AdminSurvey/Content/SurveyContent'
-import EvenTabs from './admin/components/Event/EventTabs';
-import Opportunities from './admin/components/Opportunities/Admin-Opportunities';
-import Navbar from './admin/components/Navbar';
-import Login from './admin/Pages/Login';
-import Register from './admin/Pages/Register';
+import Dashboard from '../src/admin/components/Dashboard/Dashboard';
+import AlumniPage from '../src/admin/components/Alumni/Page/AlumniPage'
+import SurveyContent from '../src/admin/components/AdminSurvey/Content/SurveyContent'
+import EvenTabs from '../src/admin/components/Event/EventTabs';
+import Opportunities from '../src/admin/components/Opportunities/Admin-Opportunities';
+import Navbar from '../src/admin/components/Navbar';
+import Login from './admin/src/Pages/Login';
+import Register from './admin/src/Pages/Register';
 
 
 
