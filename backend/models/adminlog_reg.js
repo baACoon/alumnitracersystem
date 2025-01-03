@@ -55,8 +55,18 @@ router.post("/adminregister", async (req, res) => {
 
       await result.save(); 
       console.log("Admin inserted successfully:", result);
+
+      const token = jwt.sign(
+        {
+           id: admin._id, username: admin.username
+          },
+        process.env.JWT_SECRET, // Ensure JWT_SECRET is set in your .env file
+        { expiresIn: "24h" }
+      );
   
-      res.status(201).json({ message: "Admin registered successfully.", id: result.insertedId });
+      console.log("Login response:", { userId: user._id, token: token });
+  
+      res.status(201).json({ message: "Admin registered successfully.",token: token, id: result.insertedId });
     } catch (error) {
       console.error("Error during admin registration:", error);
       res.status(500).json({ error: "Internal server error." });
@@ -86,12 +96,14 @@ router.post("/adminlogin", async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: admin._id, username: admin.username },
+      {
+         id: admin._id, username: admin.username
+        },
       process.env.JWT_SECRET, // Ensure JWT_SECRET is set in your .env file
       { expiresIn: "24h" }
     );
 
-
+    console.log("Login response:", { userId: user._id, token: token });
     // Login successful
     res.status(200).json({ message: "Login successful.", redirect: "/alumni-page"  });
   } catch (error) {

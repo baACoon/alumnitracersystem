@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from './AlumniTable.module.css';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const initialAlumniData = [
   {
@@ -61,31 +63,56 @@ export function AlumniTable() {
   const [selectedAlumni, setSelectedAlumni] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState(''); 
   const [StudentDetails, setSelectedStudentDetails] = useState(null); // Add this line
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
-    // Get the token from localStorage
-      const token = localStorage.getItem('token'); // or wherever you store your JWT token
-      
-      // Configure axios headers
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          alert("Session expired. Please log in again");
+          navigate('/login');
+          return;
         }
-      };
-
-    // Fetch alumni data from the backend API
-    axios.get('https://alumnitracersystem.onrender.com/api/alumni/all', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
+  
+        try {
+          const decoded = jwtDecode(token);
+          if (!decoded.id) throw new Error('Invalid token');
+        } catch (err) {
+          alert("Invalid session. Please log in again.");
+          localStorage.removeItem('token');
+          navigate('/login');
+          return;
+        }
+  
+        const response = await fetch('https://alumnitracersystem.onrender.com/api/alumni/all', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': 'https://admin.tupalumni.com'
+          },
+          credentials: 'include'
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+  
+        const data = await response.json();
+        setAlumniData(data.data);
+  
+      } catch (error) {
+        console.error('Error fetching alumni data:', error);
+        if (error.response?.status === 401) {
+          alert("Authentication error. Please log in again.");
+          navigate('/login');
+        }
       }
-    })
-      .then(response => {
-      console.log(response.data); // Debugging
-      setAlumniData(response.data.data); // Use the correct data field
-    })
-      .catch(error => console.error('Error fetching alumni data:', error));
-  }, []);
+    };
+  
+    fetchData();
+  }, [navigate]);
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {

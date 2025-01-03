@@ -28,6 +28,8 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
+        localStorage.clear();
+        localStorage.setItem("token", data.token);    // set token
         setMessage("Login successful!");
         navigate("/alumni-page"); // Redirect on success
       } else {
