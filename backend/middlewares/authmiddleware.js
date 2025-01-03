@@ -11,10 +11,10 @@ export const protect = async (req, res, next) => {
         }
 
         const token = authHeader.split(' ')[1];
-        console.log('Token:', token);
+        console.log('Token:', token); // Debugging
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log('Decoded Payload:', decoded);
+        console.log('Decoded:', decoded); // Debugging
 
         req.user = await User.findById(decoded.id).select('-password');
         if (!req.user) {
@@ -23,10 +23,11 @@ export const protect = async (req, res, next) => {
 
         next();
     } catch (error) {
-        console.error('Authentication Error:', error.message);
+        console.error('Authorization Error:', error.message);
         res.status(401).json({ message: 'Not authorized, invalid token' });
     }
 };
+
 
 // Admin-only route middleware
 export const adminOnly = (req, res, next) => {
