@@ -74,7 +74,7 @@ export function AlumniTable() {
       };
 
     // Fetch alumni data from the backend API
-    axios.get('https://alumnitracersystem.onrender.com/api/alumni') // Replace with your API endpoint
+    axios.get('https://alumnitracersystem.onrender.com/api/alumni/all') // Replace with your API endpoint
       .then(response => {
       console.log(response.data); // Debugging
       setAlumniData(response.data.data); // Use the correct data field

@@ -20,7 +20,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 // Get all alumni (with filters and pagination)
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/all', authenticateToken, async (req, res) => {
   try {
     const { page = 1, limit = 10, college, course, batch } = req.query;
 
