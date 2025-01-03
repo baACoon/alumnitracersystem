@@ -6,7 +6,7 @@
   "homepage": "https://tupalumni.com",
   "scripts": {
     "start": "react-scripts start",
-    "build:client": "react-scripts build --output-path ./src/client/build --public-url /",
+    "build:client": "react-scripts build --output-path ./build --public-url /",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
