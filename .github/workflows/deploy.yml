@@ -20,22 +20,19 @@ jobs:
       with:
         node-version: 16 # Use the Node.js version compatible with your project
 
-      # Step 3: Install Dependencies and Build Client App
+       # Step 3: Install Dependencies and Build Client App
     - name: Build Client App
+      working-directory: ./frontend
       run: |
-        cd frontend
         npm install
         npm run build:client
-      working-directory: ./frontend # Target the frontend client app
 
     # Step 4: Install Dependencies and Build Admin App
     - name: Build Admin App
+      working-directory: ./frontend/src/admin
       run: |
-        cd frontend/src/admin
         npm install
         npm run build:admin
-      working-directory: ./frontend/src/admin # Target the admin app
-
 
     # Step 5: Deploy Client App to Hostinger via FTP
     - name: Deploy to Hostinger
