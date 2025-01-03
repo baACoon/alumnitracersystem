@@ -30,6 +30,7 @@ router.get('/all', authenticateToken, async (req, res) => {
     if (batch) query.batch = parseInt(batch);
 
     const alumni = await Student.find(query)
+      .populate('surveys')
       .sort({ registrationDate: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
