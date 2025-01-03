@@ -5,32 +5,56 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 const initialAlumniData = [
-
+  {
+    id: 'TUPM-21-2231',
+    college: 'COE',
+    department: 'CE',
+    course: 'BSCE',
+    email: 'choiseungcholpogi@gmail.com',
+    firstName: 'Choi',
+    lastName: 'Seungcheol',
+    graduationYear: '2021',
+    address: '123 Seoul Street, South Korea',
+    contactNumber: '+82 10 1234 5678'
+  },
+  {
+    id: 'TUPM-21-2232',
+    college: 'COE',
+    department: 'CE',
+    course: 'BSCE',
+    email: 'example@gmail.com',
+    firstName: 'Jane',
+    lastName: 'Doe',
+    graduationYear: '2021',
+    address: '456 Example Avenue, City',
+    contactNumber: '+1 123 456 7890'
+  }
 ];
 
 const selectedStudentDetails = {
-  profileImage: '',
-  college: '',
-  course: '',
-  graduationYear: '',
-  lastName: '',
-  firstName: '',
-  middleName: '',
-  address: '',
-  birthday: '',
-  email: '',
-  contactNumber: '0912345678',
+  profileImage: 'https://via.placeholder.com/150',
+  college: 'College of Engineering',
+  course: 'Bachelor of Science in Civil Engineering',
+  graduationYear: '2015',
+  lastName: 'Choi',
+  firstName: 'Seung-cheol',
+  middleName: null,
+  suffix: null,
+  address: 'Daegu, South Korea',
+  birthday: 'August 8, 1995',
+  email: 'seungcheolpogi@gmail.com',
+  contactNumber: '09123456789',
   employmentHistory: [
-    { company: '', years: '' },
-    { company: '', years: '' },
-    { company: '', years: ''},
-    { company: '', years: '' },
-    { company: '', years: '' },
+    { company: 'Elephant', years: 2 },
+    { company: 'Horse', years: 1 },
+    { company: 'Tiger', years: 4 },
+    { company: 'Lion', years: 3 },
+    { company: 'Jaguar', years: 5 },
   ],
   surveys: [
-    { title: '', dateReceived: '', dateSubmitted: '' },
-    { title: '', dateReceived: '', dateSubmitted: '' },
-    { title: '', dateReceived: '', dateSubmitted: '' },
+    { title: 'Tracer Survey Form (2020)', dateReceived: 'July 29, 2020', dateSubmitted: 'July 31, 2020' },
+    { title: 'Material: Subject Alignment', dateReceived: 'July 29, 2020', dateSubmitted: 'July 31, 2020' },
+    { title: 'Masters or Comfortability?', dateReceived: 'July 29, 2018', dateSubmitted: 'July 31, 2018' },
   ],
 };
 
