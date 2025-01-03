@@ -29,7 +29,7 @@ export default function Login() {
 
       if (response.ok) {
         setMessage("Login successful!");
-        navigate("/AlumniPage"); // Redirect on success
+        navigate("/alumni-page"); // Redirect on success
       } else {
         setMessage(data.error || "Login failed.");
       }

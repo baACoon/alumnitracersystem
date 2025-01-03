@@ -85,7 +85,7 @@ router.post("/adminlogin", async (req, res) => {
     }
 
     // Login successful
-    res.status(200).json({ message: "Login successful.", username });
+    res.status(200).json({ message: "Login successful.", redirect: "/alumni-page"  });
   } catch (error) {
     console.error("Error during admin login:", error);
     res.status(500).json({ error: "Internal server error." });

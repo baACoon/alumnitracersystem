@@ -36,7 +36,7 @@ const AdminRegister = () => {
         setFormData({ username: "", password: "", confirmPassword: "" }); // Clear form
 
                 // Redirect to AlumniPage
-                navigate("/AlumniPage");
+                navigate("/alumni-page");
 
       } else {
         setMessage(data.error || "Registration failed."); // Show error message
