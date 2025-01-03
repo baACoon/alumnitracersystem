@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styles from './AlumniTable.module.css';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
-const initialAlumniData = [];
+const initialAlumniData = [
+
+];
 
 const selectedStudentDetails = {
   profileImage: '',
@@ -16,21 +19,28 @@ const selectedStudentDetails = {
   address: '',
   birthday: '',
   email: '',
-  contactNumber: '',
+  contactNumber: '0912345678',
   employmentHistory: [
     { company: '', years: '' },
     { company: '', years: '' },
+    { company: '', years: ''},
+    { company: '', years: '' },
+    { company: '', years: '' },
   ],
-  surveys: [],
+  surveys: [
+    { title: '', dateReceived: '', dateSubmitted: '' },
+    { title: '', dateReceived: '', dateSubmitted: '' },
+    { title: '', dateReceived: '', dateSubmitted: '' },
+  ],
 };
 
 export function AlumniTable() {
   const [alumniData, setAlumniData] = useState(initialAlumniData);
   const [selectedAlumni, setSelectedAlumni] = useState(new Set());
-  const [searchQuery, setSearchQuery] = useState('');
-  const [StudentDetails, setSelectedStudentDetails] = useState(null); // For selected student details
+  const [searchQuery, setSearchQuery] = useState(''); 
+  const [StudentDetails, setSelectedStudentDetails] = useState(null); // Add this line
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -40,7 +50,7 @@ export function AlumniTable() {
           navigate('/login');
           return;
         }
-
+  
         try {
           const decoded = jwtDecode(token);
           console.log('Decoded token:', decoded);
@@ -51,7 +61,7 @@ export function AlumniTable() {
           navigate('/login');
           return;
         }
-
+  
         const response = await fetch('https://alumnitracersystem.onrender.com/api/alumni/all', {
           method: 'GET',
           headers: {
@@ -59,21 +69,15 @@ export function AlumniTable() {
             'Content-Type': 'application/json'
           }
         });
-
+  
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.status}`);
         }
-
+  
         const data = await response.json();
         console.log('Fetched data:', data);
-
-        const transformedData = data.data.surveys.map((survey) => ({
-          ...data.data.personalInfo,
-          employmentInfo: data.data.employmentInfo,
-          surveyDetails: survey,
-        }));
-
-        setAlumniData(transformedData);
+        setAlumniData(data.data);
+  
       } catch (error) {
         console.error('Error fetching alumni data:', error);
         if (error.message.includes('401')) {
@@ -82,9 +86,9 @@ export function AlumniTable() {
         }
       }
     };
-
+  
     fetchData();
-  }, [navigate]);
+  }, [navigate]);  
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -111,7 +115,29 @@ export function AlumniTable() {
   };
 
   const openStudentDetails = (student) => {
+    const token = localStorage.getItem('token');
+    
+    // First set basic student info
     setSelectedStudentDetails(student);
+    
+    // Then fetch detailed info including surveys
+    axios.get(`https://alumnitracersystem.onrender.com/api/alumni/${student.id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        const detailedData = response.data.data;
+        setSelectedStudentDetails(prevDetails => ({
+          ...prevDetails,
+          ...detailedData,
+          surveys: detailedData.surveys || []
+        }));
+      })
+      .catch(error => {
+        console.error('Error fetching student details:', error);
+      });
   };
 
   const closeStudentDetails = () => {
@@ -194,7 +220,6 @@ export function AlumniTable() {
                 <td>{alumni.department}</td>
                 <td>{alumni.course}</td>
                 <td>{alumni.email}</td>
-                <td>{alumni.surveys?.length || 0} Surveys Completed</td>
               </tr>
             ))}
           </tbody>
@@ -215,7 +240,7 @@ export function AlumniTable() {
                 {/* Student Profile Section */}
                 <div className={styles.studentProfile}>
                   <img
-                    src={StudentDetails.profileImage || ''}
+                    src={StudentDetails.profileImage || 'https://via.placeholder.com/150'}
                     alt="Profile"
                     className={styles.profileImage}
                   />
