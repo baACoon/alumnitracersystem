@@ -27,6 +27,7 @@ const TestLoginForm = ({ closeModal }) => {
       console.log('Server response:', response.status, data); // Debug log
 
       if (response.ok) {
+        localStorage.setItem('token', data.token)
         alert('Login successful!');
         closeModal();
         navigate('/home');

@@ -7,6 +7,9 @@ import surveyRoutes from './routes/surveyroutes.js'; // Import survey routes
 import adminlogreg from './models/adminlog_reg.js';
 import eventRoutes from './models/event.js'
 import articleRoutes from './routes/artcileroutes.js'
+import userProfile from './models/profile.js'
+import dotenv from 'dotenv';
+dotenv.config();
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -27,6 +30,7 @@ app.use("/adminlog_reg", adminlogreg);
 app.use("/event", eventRoutes);
 app.use("/artcileroutes", articleRoutes)
 
+app.use("/user", userProfile);
 // Connect to MongoDB Atlas before starting the server
 connectToDatabase()
   .then(() => {
