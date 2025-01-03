@@ -1,6 +1,7 @@
 import express from 'express';
 import { Student } from '../record.js'; // Import the existing Student schema
 import { SurveySubmission } from './surveyroutes.js'; // Import the existing SurveySubmission schema
+import { authenticateToken } from '../routes/surveyroutes.js';
 
 
 const router = express.Router();
