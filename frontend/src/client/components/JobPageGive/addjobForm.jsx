@@ -41,6 +41,13 @@ function AddjobFormMainPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('You need to log in first');
+            return;
+        }
+
+
         try {
             const response = await fetch("https://alumnitracersystem.onrender.com/jobs/", {
                 method: "POST",
@@ -50,6 +57,8 @@ function AddjobFormMainPage() {
                 },
                 body: JSON.stringify(formData),
             });
+            console.log('Response Status:', response.status);
+            console.log('Response Body:', await response.text());
 
             const data = await response.json();
 
