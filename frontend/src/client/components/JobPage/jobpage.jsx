@@ -4,7 +4,7 @@ import './jobpage.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHandHoldingHeart, faBriefcase } from '@fortawesome/free-solid-svg-icons';
 import Header from '../Header/header';
-import Footer from '../../../admin/components/Footer/Footer';
+import Footer from '../FooterClient/Footer';
 
 function JobPage() {
   return (

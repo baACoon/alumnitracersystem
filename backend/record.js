@@ -1,6 +1,7 @@
 import express from "express";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import mongoose from "mongoose"; // Also wag mo to kalimutan i addd
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -75,8 +76,41 @@ router.post("/register", async (req, res) => {
 
     await newUser.save();
 
+    // Generate JWT token
+    const token = jwt.sign(
+      { 
+        id: newUser._id,
+        generatedID: newUser.generatedID,
+        email: newUser.email 
+      },
+      process.env.JWT_SECRET, // Ensure this is set in your .env file
+      { expiresIn: '24h' }
+    );
+
     console.log(`User registered with ID: ${generatedID}`);
-    res.status(201).json({ message: "User registered successfully!", generatedID });
+    console.log("Register response:", { 
+      message: "User registered successfully!",
+      token: token,
+      user: {
+        id: newUser._id.toString(),
+        generatedID,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email
+      }
+    });
+
+    res.status(201).json({ 
+      message: "User registered successfully!",
+      token: token,
+      user: {
+        id: newUser._id.toString(),
+        generatedID,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email
+      }
+    });
   } catch (error) {
     console.error("Error during registration:", error);
     res.status(500).json({ error: "Error registering user." });
@@ -120,12 +154,36 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid Alumni ID or password." });
     }
 
+    // Generate JWT token
+    const token = jwt.sign(
+      { 
+        id: user._id,
+        generatedID: user.generatedID,
+        email: user.email 
+      },
+      process.env.JWT_SECRET, // Make sure to set this in your .env file
+      { expiresIn: '24h' }
+    );
+
     console.log(`User logged in: ${user.generatedID}`);
-    res.status(200).json({ message: "Login successful!" });
+    console.log("Login response:", { userId: user._id, token });
+    res.status(200).json({ 
+      message: "Login successful!",
+      token: token,
+      user: {
+        id: user._id,
+        generatedID: user.generatedID,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email
+      }
+    });
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ error: "Error logging in." });
   }
 });
+
+export { Student };
 
 export default router;

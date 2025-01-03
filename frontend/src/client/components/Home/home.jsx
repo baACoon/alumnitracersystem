@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './home.module.css'; // Import CSS module
 import Header from '../Header/header';
-import Footer from '../../../admin/components/Footer/Footer';
+import Footer from '../FooterClient/Footer';
 import FooterClient from '../FooterClient/Footer';
 import ArticleClient from '../Articles/articlesclient';
 
@@ -42,7 +42,7 @@ function Home() {
             <Slanted />
             <ArticleClient/>
             <FooterClient />
-            <Footer />
+            
         </div>
     );
 

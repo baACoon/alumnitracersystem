@@ -1,4 +1,4 @@
-import Job from '../models/Job.js'; // Ensure the file path is correct and includes the `.js` extension
+import Job from '../models/job.js'; // Ensure the file path is correct and includes the `.js` extension
 
 export const createJob = async (req, res) => {
     try {

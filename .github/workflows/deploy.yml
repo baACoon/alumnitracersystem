@@ -20,14 +20,21 @@ jobs:
       with:
         node-version: 16 # Use the Node.js version compatible with your project
 
-    # Step 3: Install dependencies and build the app
-    - name: Install Dependencies and Build
+       # Step 3: Install Dependencies and Build Client App
+    - name: Build Client App
+      working-directory: ./frontend
       run: |
-        cd frontend
         npm install
-        npm run build # Builds your React app into the `build` folder
+        npm run build
 
-    # Step 4: Deploy files to Hostinger via FTP
+    # Step 4: Install Dependencies and Build Admin App
+    - name: Build Admin App
+      working-directory: ./frontend/src/admin
+      run: |
+        npm install
+        npm run build
+
+    # Step 5: Deploy Client App to Hostinger via FTP
     - name: Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
@@ -38,3 +45,16 @@ jobs:
         port: 21 # Port for FTP (default)
         local-dir: frontend/build/ # Path to the build folder inside your repository
         server-dir: /public_html/ # Target folder on Hostinger
+
+
+ # Step 6: Deploy Admin App to Hostinger
+    - name: Deploy Admin App to Hostinger
+      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      with:
+        server: ${{ secrets.FTP_HOST }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: ftp
+        port: 21
+        local-dir: ./frontend/src/admin/build/ # Path to the admin build folder
+        server-dir: /public_html/admin/ # Target folder for the admin app on Hostinger
