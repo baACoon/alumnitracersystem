@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/static/css/main.6f667609.css",
-    "main.js": "/static/js/main.0d4b076b.js",
+    "main.js": "/static/js/main.a20a5674.js",
     "static/media/Tuplogo.png": "/static/media/Tuplogo.219e81bb435842ea2694.png",
     "static/media/alumniassoc_logo.png": "/static/media/alumniassoc_logo.3c0aa4afa760c7f695e1.png",
     "index.html": "/index.html",
     "main.6f667609.css.map": "/static/css/main.6f667609.css.map",
-    "main.0d4b076b.js.map": "/static/js/main.0d4b076b.js.map"
+    "main.a20a5674.js.map": "/static/js/main.a20a5674.js.map"
   },
   "entrypoints": [
     "static/css/main.6f667609.css",
-    "static/js/main.0d4b076b.js"
+    "static/js/main.a20a5674.js"
   ]
 }
