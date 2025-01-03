@@ -63,6 +63,16 @@ export function AlumniTable() {
   const [StudentDetails, setSelectedStudentDetails] = useState(null); // Add this line
 
   useEffect(() => {
+    // Get the token from localStorage
+      const token = localStorage.getItem('token'); // or wherever you store your JWT token
+      
+      // Configure axios headers
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
+
     // Fetch alumni data from the backend API
     axios.get('https://alumnitracersystem.onrender.com/api/alumni') // Replace with your API endpoint
       .then(response => {
@@ -97,7 +107,28 @@ export function AlumniTable() {
   };
 
   const openStudentDetails = (student) => {
+    const token = localStorage.getItem('token');
+    
+    // First set basic student info
     setSelectedStudentDetails(student);
+    
+    // Then fetch detailed info including surveys
+    axios.get(`https://alumnitracersystem.onrender.com/api/alumni/${student.id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        const detailedData = response.data.data;
+        setSelectedStudentDetails(prevDetails => ({
+          ...prevDetails,
+          ...detailedData,
+          surveys: detailedData.surveys || []
+        }));
+      })
+      .catch(error => {
+        console.error('Error fetching student details:', error);
+      });
   };
 
   const closeStudentDetails = () => {
