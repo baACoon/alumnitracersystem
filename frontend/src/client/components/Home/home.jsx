@@ -42,7 +42,7 @@ function Home() {
             <Slanted />
             <ArticleClient/>
             <FooterClient />
-            <Footer />
+            
         </div>
     );
 
