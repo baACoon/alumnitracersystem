@@ -65,7 +65,10 @@ export function AlumniTable() {
   useEffect(() => {
     // Fetch alumni data from the backend API
     axios.get('https://alumnitracersystem.onrender.com/api/alumni') // Replace with your API endpoint
-      .then(response => setAlumniData(response.data))
+      .then(response => {
+      console.log(response.data); // Debugging
+      setAlumniData(response.data.data); // Use the correct data field
+    })
       .catch(error => console.error('Error fetching alumni data:', error));
   }, []);
 
@@ -100,6 +103,11 @@ export function AlumniTable() {
   const closeStudentDetails = () => {
     setSelectedStudentDetails(null);
   };
+
+  const filteredAlumni = alumniData.filter(alumni =>
+    `${alumni.firstName} ${alumni.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  
 
  
 
@@ -153,7 +161,7 @@ export function AlumniTable() {
             </tr>
           </thead>
           <tbody>
-            {alumniData.map((alumni) => (
+          {filteredAlumni.map((alumni) => (
               <tr 
                 key={alumni.id}
                 className={selectedAlumni.has(alumni.id) ? styles.selectedRow : ''}
@@ -169,7 +177,7 @@ export function AlumniTable() {
                     aria-label={`Select ${alumni.id}`}
                   />
                 </td>
-                <td>{alumni.id}</td>
+                <td>{alumni.generatedID}</td>
                 <td>{`${alumni.firstName} ${alumni.lastName}`}</td>
                 <td>{alumni.college}</td>
                 <td>{alumni.department}</td>

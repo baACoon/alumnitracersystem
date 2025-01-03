@@ -93,7 +93,16 @@ router.get('/statistics', authenticateToken, async (req, res) => {
       },
     ]);
 
-    res.status(200).json({ success: true, data: stats });
+    res.status(200).json({
+        success: true,
+        data: alumni,
+        pagination: {
+          total,
+          page: parseInt(page),
+          pages: Math.ceil(total / limit),
+        },
+      });
+      
   } catch (error) {
     console.error('Error fetching statistics:', error);
     res.status(500).json({ error: 'Failed to fetch statistics.' });
