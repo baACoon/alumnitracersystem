@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './AlumniTable.module.css';
-
+import axios from 'axios';
 
 const initialAlumniData = [
   {
@@ -62,7 +62,12 @@ export function AlumniTable() {
   const [searchQuery, setSearchQuery] = useState(''); 
   const [StudentDetails, setSelectedStudentDetails] = useState(null); // Add this line
 
-
+  useEffect(() => {
+    // Fetch alumni data from the backend API
+    axios.get('https://alumnitracersystem.onrender.com/api/alumni') // Replace with your API endpoint
+      .then(response => setAlumniData(response.data))
+      .catch(error => console.error('Error fetching alumni data:', error));
+  }, []);
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {

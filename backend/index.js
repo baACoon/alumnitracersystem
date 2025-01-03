@@ -11,6 +11,7 @@ import dotenv from 'dotenv';
 import articleRoutes from './routes/artcileroutes.js';
 import jobRoutes from './routes/jobroutes.js';
 import profileRoutes from './routes/profile.js';
+import alumnipage from './routes/alumnipageroutes.js'
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -33,6 +34,7 @@ app.use("/event", eventRoutes);
 app.use("/artcileroutes", articleRoutes);
 app.use("/jobs", jobRoutes);
 app.use("/profile", profileRoutes);
+app.use("/api/alumni", alumnipage);
 
 // Connect to MongoDB Atlas before starting the server
 connectToDatabase()
