@@ -1,7 +1,7 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
-import {BrowserRouter, Routes, Route} from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Dashboard from './components/Dashboard/Dashboard';
 import AlumniPage from './components/Alumni/Page/AlumniPage';
