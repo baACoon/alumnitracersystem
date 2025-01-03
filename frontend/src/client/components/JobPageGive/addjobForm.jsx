@@ -80,7 +80,7 @@ function AddjobFormMainPage() {
             <a onClick={goToJobPageGive} className="back-button">
                 Back
             </a>
-            <h1 className="form-title">POST A JOB OPPORTUNITY</h1>
+            <h1 className="form-title">POST A JOB OPPORTUNITY </h1>
             <form className="opportunity-form" onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="title">Title:</label>
