@@ -9,7 +9,7 @@ const router = express.Router();
  * @desc    Create a new job posting
  * @access  Protected (Alumni)
  */
-router.post('/', protect, async (req, res) => {
+router.post('/jobadmin', protect, async (req, res) => {
     try {
         const newJob = new Job({
             ...req.body,
