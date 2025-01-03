@@ -7,7 +7,6 @@
   "scripts": {
     "start": "react-scripts start",
     "build:client": "react-scripts build --output-path ./src/client/build --public-url /",
-    "build:admin": "react-scripts build --output-path ./src/admin/build --public-url /admin/",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
