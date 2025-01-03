@@ -15,20 +15,23 @@ import Register from './Pages/Register';
 function App() {
   return (
     <div className="App">
-      <BrowserRouter basename="/admin">
+      <BrowserRouter>
         <Routes>
           {/* Default route: Redirect to Login */}
-          <Route path="/" element={<Navigate to="/Login" />} />
-          <Route path="/Login" element={<Login />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<Login />} />
 
           {/* Other admin paths */}
-          <Route path="/Dashboard" element={<Dashboard />} />
-          <Route path="/AlumniPage" element={<AlumniPage />} />
-          <Route path="/SurveyContent" element={<SurveyContent />} />
-          <Route path="/EventTabs" element={<EvenTabs />} />
-          <Route path="/Opportunities" element={<Opportunities />} />
-          <Route path="/Navbar" element={<Navbar />} />
-          <Route path="/Register" element={<Register />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/alumni-page" element={<AlumniPage />} />
+          <Route path="/survey-content" element={<SurveyContent />} />
+          <Route path="/event-tabs" element={<EvenTabs />} />
+          <Route path="/opportunities" element={<Opportunities />} />
+          <Route path="/navbar" element={<Navbar />} />
+          <Route path="/register" element={<Register />} />
+          
+          {/* Catch all route */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
     </div>
