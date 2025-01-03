@@ -1,10 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App"; // Adjust path as needed
+import App from "./App";
+import ErrorBoundary from "./ErrorBoundary";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App admin={true} />
-  </React.StrictMode>,
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>,
   document.getElementById("root")
 );
