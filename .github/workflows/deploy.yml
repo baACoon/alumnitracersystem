@@ -25,14 +25,14 @@ jobs:
       working-directory: ./frontend
       run: |
         npm install
-        npm run build:client
+        npm run build
 
     # Step 4: Install Dependencies and Build Admin App
     - name: Build Admin App
       working-directory: ./frontend/src/admin
       run: |
         npm install
-        npm run build:admin
+        npm run build
 
     # Step 5: Deploy Client App to Hostinger via FTP
     - name: Deploy to Hostinger
