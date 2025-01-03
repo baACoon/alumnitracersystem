@@ -1,0 +1,100 @@
+/* Reports-Content.module.css */
+
+.reports {
+    background-color: #f9f9f9;
+    font-family: "Montserrat", sans-serif;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .filters {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .filterControls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .filterButtonContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .filterLabel {
+    font-weight: bold;
+  }
+  
+  .filterButton {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  .filterButtonActive {
+    border-color: #007bff;
+    background-color: #e6f2ff;
+  }
+  
+  .filterButton:disabled {
+    background-color: #f4f4f4;
+    color: #aaa;
+    cursor: not-allowed;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+  }
+  
+  .table th,
+  .table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin: 20px 0 20px 0 ;
+  }
+  
+  .actions button {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #c31d3c;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .actions button:hover {
+    background-color: #570d1a;
+  }
+  
+  .actions button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
