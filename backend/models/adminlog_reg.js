@@ -17,6 +17,8 @@ const Admin = mongoose.model("Admin", adminSchema);
 router.post("/adminregister", async (req, res) => {
     const { username, password, confirmPassword } = req.body;
   
+    //console.log("Request body received:", req.body);
+  
     if (!username || !password || !confirmPassword) {
       console.error("Validation failed: Missing fields");
       return res.status(400).json({ error: "All fields are required." });
@@ -28,6 +30,7 @@ router.post("/adminregister", async (req, res) => {
     }
   
     try {
+
       // Check if username already exists
       const existingAdmin = await Admin.findOne({ username });
       if (existingAdmin) {
@@ -39,39 +42,36 @@ router.post("/adminregister", async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       console.log("Password hashed successfully");
   
-      // Create and save new admin
-      const newAdmin = new Admin({
+      // Insert new admin into the database
+      const result = await Admin({
         username,
-        password: hashedPassword
+        password: hashedPassword,
+        createdAt: new Date(),
       });
 
-      const result = await newAdmin.save();
+      await result.save(); 
       console.log("Admin inserted successfully:", result);
 
-      // Generate a JWT token
+     // Generate a JWT token
       const token = jwt.sign(
         {
-          id: result._id,
-          username: result.username,
+          id: result._id, // Use the admin's ID
+          username: result.username, // Use the admin's username
         },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET, // Ensure JWT_SECRET is set in your .env file
         { expiresIn: "24h" }
       );
   
-      console.log("Registration successful:", { userId: result._id, token });
+      console.log("Login response:", { userId: user._id, token: token });
   
-      res.status(201).json({ 
-        message: "Admin registered successfully.",
-        token,
-        id: result._id 
-      });
+      res.status(201).json({ message: "Admin registered successfully.",token: token, id: result.insertedId });
     } catch (error) {
       console.error("Error during admin registration:", error);
       res.status(500).json({ error: "Internal server error." });
     }
-});
+  });
 
-// POST route for admin login
+  // POST route for admin login
 router.post("/adminlogin", async (req, res) => {
   const { username, password } = req.body;
 
@@ -80,6 +80,7 @@ router.post("/adminlogin", async (req, res) => {
   }
 
   try {
+
     // Check if admin exists
     const admin = await Admin.findOne({ username });
     if (!admin) {
@@ -94,24 +95,20 @@ router.post("/adminlogin", async (req, res) => {
 
     const token = jwt.sign(
       {
-        id: admin._id,
-        username: admin.username
-      },
-      process.env.JWT_SECRET,
+         id: admin._id, username: admin.username
+        },
+      process.env.JWT_SECRET, // Ensure JWT_SECRET is set in your .env file
       { expiresIn: "24h" }
     );
 
-    console.log("Login successful:", { userId: admin._id, token });
-    
-    res.status(200).json({ 
-      message: "Login successful.",
-      token,
-      redirect: "/alumni-page"
-    });
+    console.log("Login response:", { userId: user._id, token: token });
+    // Login successful
+    res.status(200).json({ message: "Login successful.", redirect: "/alumni-page"  });
   } catch (error) {
     console.error("Error during admin login:", error);
     res.status(500).json({ error: "Internal server error." });
   }
 });
+
 
 export default router;
