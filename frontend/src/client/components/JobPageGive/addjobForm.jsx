@@ -53,7 +53,7 @@ function AddjobFormMainPage() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token
+                    Authorization: `Bearer ${token}`, // Include token
                 },
                 body: JSON.stringify(formData),
             });
@@ -62,25 +62,30 @@ function AddjobFormMainPage() {
 
             const data = await response.json();
 
-            if (response.ok) {
-                setMessage("Job posted successfully. Pending admin approval.");
-                setFormData({
-                    title: '',
-                    company: '',
-                    location: '',
-                    type: 'full-time',
-                    description: '',
-                    responsibilities: '',
-                    qualifications: '',
-                    source: '',
-                });
-                navigate('/JobPageGive');
-            } else {
-                setMessage(data.error || "Failed to post the job. Please try again.");
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Response Body:', errorData);
+                setMessage(errorData.message || 'Failed to post the job.');
+                return;
             }
+
+
+            console.log('Response Data:', data);
+
+            setMessage('Job posted successfully. Pending admin approval.');
+            setFormData({
+                title: '',
+                company: '',
+                location: '',
+                type: 'full-time',
+                description: '',
+                responsibilities: '',
+                qualifications: '',
+                source: '',
+            });
         } catch (error) {
-            console.error("Error posting the job:", error);
-            setMessage("An error occurred. Please try again.");
+            console.error('Error posting the job:', error);
+            setMessage('An error occurred. Please try again.');
         }
     };
 
