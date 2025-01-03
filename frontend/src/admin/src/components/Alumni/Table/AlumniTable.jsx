@@ -70,13 +70,14 @@ export function AlumniTable() {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          alert("Session expired. Please log in again");
+          alert("Session expired. Please log in again.");
           navigate('/login');
           return;
         }
   
         try {
           const decoded = jwtDecode(token);
+          console.log('Decoded token:', decoded);
           if (!decoded.id) throw new Error('Invalid token');
         } catch (err) {
           alert("Invalid session. Please log in again.");
@@ -90,21 +91,22 @@ export function AlumniTable() {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': 'https://admin.tupalumni.com'
+            'Access-Control-Allow-Origin': 'https://admin.tupalumni.com',
           },
-          credentials: 'include'
+          credentials: 'include',
         });
   
         if (!response.ok) {
-          throw new Error('Failed to fetch data');
+          throw new Error(`Failed to fetch data: ${response.status}`);
         }
   
         const data = await response.json();
+        console.log('Fetched data:', data);
         setAlumniData(data.data);
   
       } catch (error) {
         console.error('Error fetching alumni data:', error);
-        if (error.response?.status === 401) {
+        if (error.message.includes('401')) {
           alert("Authentication error. Please log in again.");
           navigate('/login');
         }
@@ -112,7 +114,7 @@ export function AlumniTable() {
     };
   
     fetchData();
-  }, [navigate]);
+  }, [navigate]);  
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
