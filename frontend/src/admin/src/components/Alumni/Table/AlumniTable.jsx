@@ -90,10 +90,8 @@ export function AlumniTable() {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': 'https://admin.tupalumni.com',
-          },
-          credentials: 'include',
+            'Content-Type': 'application/json'
+          }
         });
   
         if (!response.ok) {

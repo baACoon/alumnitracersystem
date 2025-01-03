@@ -32,12 +32,9 @@ const AdminRegister = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage(data.message); // Success message
-        setFormData({ username: "", password: "", confirmPassword: "" }); // Clear form
-
-                // Redirect to AlumniPage
-                navigate("/alumni-page");
-
+        setMessage(data.message); // Show success message
+        localStorage.setItem('token', data.token); // Save token
+        navigate("/alumni-page"); // Redirect
       } else {
         setMessage(data.error || "Registration failed."); // Show error message
       }
