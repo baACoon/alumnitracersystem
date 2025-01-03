@@ -31,9 +31,6 @@ export const protect = async (req, res, next) => {
     }
 };
 
-
-
-
 /*Admin only access*/
 export const adminOnly = (req, res, next) => {
     if (req.user.role !== 'admin') {
