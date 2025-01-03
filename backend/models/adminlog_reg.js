@@ -62,8 +62,6 @@ router.post("/adminregister", async (req, res) => {
         { expiresIn: "24h" }
       );
   
-      console.log("Login response:", { userId: user._id, token: token });
-  
       res.status(201).json({ message: "Admin registered successfully.",token: token, id: result.insertedId });
     } catch (error) {
       console.error("Error during admin registration:", error);
@@ -101,7 +99,6 @@ router.post("/adminlogin", async (req, res) => {
       { expiresIn: "24h" }
     );
 
-    console.log("Login response:", { userId: user._id, token: token });
     // Login successful
     res.status(200).json({ message: "Login successful.", redirect: "/alumni-page"  });
   } catch (error) {

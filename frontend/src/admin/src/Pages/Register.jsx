@@ -18,7 +18,7 @@ const AdminRegister = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  
 
     try {
       const response = await fetch('https://alumnitracersystem.onrender.com/adminlog_reg/adminregister', {
