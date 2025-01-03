@@ -5,7 +5,7 @@ import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import './jobpagegive.css';
 
 import Header from '../Header/header';
-import Footer from '../../../admin/components/Footer/Footer';
+import Footer from '../FooterClient/Footer';
 
 
 function JobPageGive() {

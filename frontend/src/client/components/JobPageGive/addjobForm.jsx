@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './addjobForm.css';
 import Header from '../Header/header';
-import Footer from '../../../admin/components/Footer/Footer';
+import Footer from '../FooterClient/Footer';
 
 function AddJobForm() {
     return (

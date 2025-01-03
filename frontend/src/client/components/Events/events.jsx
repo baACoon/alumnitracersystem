@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./events.module.css"; // Import the CSS module
 import Header from "../Header/header";
-import Footer from "../../../admin/components/Footer/Footer";
+import Footer from "../FooterClient/Footer";
 
 function Events() {
   return (

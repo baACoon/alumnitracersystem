@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../../components/Styles/popup.css';
 import './profile.css';
 import Header from '../Header/header';
-import Footer from '../../../admin/components/Footer/Footer';
+import Footer from '../FooterClient/Footer';
 import ProfilePic from '../../components/image/ayne.jpg';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
