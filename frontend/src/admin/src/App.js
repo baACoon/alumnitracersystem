@@ -22,11 +22,11 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           {/* Other admin paths */}
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/alumni-page" element={<AlumniPage />} />
-          <Route path="/survey-content" element={<SurveyContent />} />
-          <Route path="/event-tabs" element={<EvenTabs />} />
-          <Route path="/opportunities" element={<Opportunities />} />
+          <Route path="/SurveyContent" element={<SurveyContent />} />
+          <Route path="/EventTabs" element={<EvenTabs />} />
+          <Route path="/Opportunities" element={<Opportunities />} />
           <Route path="/navbar" element={<Navbar />} />
           <Route path="/register" element={<Register />} />
           
