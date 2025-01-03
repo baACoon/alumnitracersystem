@@ -138,9 +138,6 @@ export function AlumniTable() {
   const filteredAlumni = alumniData.filter(alumni =>
     `${alumni.firstName} ${alumni.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
-
- 
 
   return (
 

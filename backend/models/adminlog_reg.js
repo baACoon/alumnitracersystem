@@ -1,6 +1,7 @@
 import express from "express";
 import bcrypt from "bcryptjs";
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ const Admin = mongoose.model("Admin", adminSchema);
 router.post("/adminregister", async (req, res) => {
     const { username, password, confirmPassword } = req.body;
   
-    console.log("Request body received:", req.body);
+    //console.log("Request body received:", req.body);
   
     if (!username || !password || !confirmPassword) {
       console.error("Validation failed: Missing fields");
@@ -83,6 +84,13 @@ router.post("/adminlogin", async (req, res) => {
     if (!isPasswordValid) {
       return res.status(400).json({ error: "Invalid username or password." });
     }
+
+    const token = jwt.sign(
+      { id: admin._id, username: admin.username },
+      process.env.JWT_SECRET, // Ensure JWT_SECRET is set in your .env file
+      { expiresIn: "24h" }
+    );
+
 
     // Login successful
     res.status(200).json({ message: "Login successful.", redirect: "/alumni-page"  });
