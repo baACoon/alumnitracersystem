@@ -18,7 +18,7 @@ const app = express();
 dotenv.config();
 
 // Middleware
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: ['https://tupalumni.com', 'https://admin.tupalumni.com']}));
 app.use(express.json());
 
 // Serve static files (uploaded images)
