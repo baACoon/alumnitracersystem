@@ -1,6 +1,6 @@
 import express from 'express';
 import { Student } from '../record.js'; // Import the existing Student schema
-import { SurveySubmission } from '../surveyroutes.js'; // Import the existing SurveySubmission schema
+import { SurveySubmission } from './surveyroutes.js'; // Import the existing SurveySubmission schema
 import jwt from 'jsonwebtoken';
 
 const router = express.Router();
