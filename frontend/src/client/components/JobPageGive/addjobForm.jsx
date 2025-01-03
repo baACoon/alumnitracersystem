@@ -42,7 +42,7 @@ function AddjobFormMainPage() {
         e.preventDefault();
 
         try {
-            const response = await fetch("https://alumnitracersystem.onrender.com/jobs/", {
+            const response = await fetch("https://alumnitracersystem.onrender.com/jobs/jobadmin", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
