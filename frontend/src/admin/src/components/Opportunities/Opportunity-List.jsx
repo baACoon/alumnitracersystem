@@ -56,6 +56,12 @@ export default function OpportunityList() {
 
     return (
         <div>
+                <div>
+                    <Helmet>
+                        <title>Opportunities | TUPATS </title>
+                        <link rel="icon" href="/tupats.png" />
+                    </Helmet>
+                </div>
             <h2>Published Opportunities</h2>
             <div className={styles.gridContainer}>
                 {publishedOpportunities.length > 0 ? (
