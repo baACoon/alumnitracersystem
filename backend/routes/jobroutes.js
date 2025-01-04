@@ -37,6 +37,7 @@ router.get('/jobpost', protect, async (req, res) => {
     }
 });
 
+// Approve a job posting
 router.post('/:id/approve', protect, adminOnly, async (req, res) => {
     try {
         const job = await Job.findByIdAndUpdate(
@@ -46,13 +47,13 @@ router.post('/:id/approve', protect, adminOnly, async (req, res) => {
         );
 
         if (!job) {
-            return res.status(404).json({ error: 'Job not found.' });
+            return res.status(404).json({ message: 'Job not found.' });
         }
 
         res.status(200).json({ message: 'Job approved successfully.', job });
     } catch (error) {
-        console.error('Error Approving Job:', error.message);
-        res.status(500).json({ error: 'Failed to approve job.' });
+        console.error('Error approving job:', error.message);
+        res.status(500).json({ message: 'Failed to approve job.' });
     }
 });
 

@@ -4,159 +4,109 @@ import styles from "./Opportunity-Pending.module.css";
 export default function OpportunityPending() {
   const [pendingOpportunities, setPendingOpportunities] = useState([]);
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
-  const [rejectionReason, setRejectionReason] = useState("");
-  const [showRejectionForm, setShowRejectionForm] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Fetch pending opportunities from the backend
   useEffect(() => {
-    const fetchPendingOpportunities = async () => {
-      const token = localStorage.getItem("token"); // Ensure token is included
+      const fetchPendingOpportunities = async () => {
+          const token = localStorage.getItem("token");
+          if (!token) {
+              alert("You need to log in first.");
+              return;
+          }
+
+          try {
+              const response = await fetch("https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending", {
+                  headers: {
+                      Authorization: `Bearer ${token}`,
+                  },
+              });
+
+              if (!response.ok) {
+                  const errorData = await response.json();
+                  console.error("Failed to fetch pending opportunities:", errorData);
+                  alert(errorData.message || "Failed to fetch pending opportunities.");
+                  return;
+              }
+
+              const data = await response.json();
+              setPendingOpportunities(data);
+          } catch (error) {
+              console.error("Error fetching pending opportunities:", error);
+              alert("An error occurred while fetching pending opportunities.");
+          } finally {
+              setLoading(false);
+          }
+      };
+
+      fetchPendingOpportunities();
+  }, []);
+
+  const handlePublishClick = async () => {
+      const token = localStorage.getItem("token");
       if (!token) {
-        alert("You need to log in first.");
-        return;
+          alert("You need to log in first.");
+          return;
       }
 
       try {
-        const response = await fetch("https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+          const response = await fetch(`https://alumnitracersystem.onrender.com/jobs/${selectedOpportunity._id}/approve`, {
+              method: "POST",
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Failed to fetch pending opportunities:", errorData);
-          alert(errorData.message || "Failed to fetch pending opportunities.");
-          return;
-        }
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Failed to publish opportunity:", errorData);
+              alert(errorData.message || "Failed to publish opportunity.");
+              return;
+          }
 
-        const data = await response.json();
-        setPendingOpportunities(data); // Set the fetched opportunities
+          alert("Opportunity published successfully!");
+          setPendingOpportunities((prev) =>
+              prev.filter((opportunity) => opportunity._id !== selectedOpportunity._id)
+          );
+          setSelectedOpportunity(null);
       } catch (error) {
-        console.error("Error fetching pending opportunities:", error);
-        alert("An error occurred while fetching pending opportunities.");
-      } finally {
-        setLoading(false);
+          console.error("Error publishing opportunity:", error);
+          alert("An error occurred while publishing the opportunity.");
       }
-    };
-
-    fetchPendingOpportunities();
-  }, []);
+  };
 
   const handleOpportunityClick = (opportunity) => {
-    setSelectedOpportunity(opportunity);
-  };
-
-  const handleRejectClick = () => {
-    setShowRejectionForm(true);
-  };
-
-  const handlePublishClick = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-        alert("You need to log in first.");
-        return;
-    }
-
-    try {
-        const response = await fetch(`https://alumnitracersystem.onrender.com/jobs/${selectedOpportunity._id}/approve`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Failed to publish opportunity:", errorData);
-            alert(errorData.message || "Failed to publish opportunity.");
-            return;
-        }
-
-        alert("Opportunity published successfully!");
-        
-        // Remove the published opportunity from pending opportunities
-        setPendingOpportunities((prev) =>
-            prev.filter((opportunity) => opportunity._id !== selectedOpportunity._id)
-        );
-
-        setSelectedOpportunity(null);
-    } catch (error) {
-        console.error("Error publishing opportunity:", error);
-        alert("An error occurred while publishing the opportunity.");
-    }
-};
-
-
-  const handleRejectionSubmit = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("You need to log in first.");
-      return;
-    }
-
-    try {
-      const response = await fetch(`https://alumnitracersystem.onrender.com/jobs/${selectedOpportunity._id}/deny`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ feedback: rejectionReason }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Failed to reject opportunity:", errorData);
-        alert(errorData.message || "Failed to reject opportunity.");
-        return;
-      }
-
-      alert(`Opportunity rejected for the following reason: ${rejectionReason}`);
-      setPendingOpportunities((prev) =>
-        prev.filter((opportunity) => opportunity._id !== selectedOpportunity._id)
-      );
-      setRejectionReason("");
-      setShowRejectionForm(false);
-      setSelectedOpportunity(null);
-    } catch (error) {
-      console.error("Error rejecting opportunity:", error);
-      alert("An error occurred while rejecting the opportunity.");
-    }
+      setSelectedOpportunity(opportunity);
   };
 
   const closeModal = () => {
-    setSelectedOpportunity(null);
-    setShowRejectionForm(false);
+      setSelectedOpportunity(null);
   };
 
   if (loading) {
-    return <p>Loading pending opportunities...</p>;
+      return <p>Loading pending opportunities...</p>;
   }
 
   return (
-    <div>
-      <h2>Pending Opportunities</h2>
-      <div className={styles.gridContainer}>
-        {pendingOpportunities.length > 0 ? (
-          pendingOpportunities.map((opportunity, index) => (
-            <div
-              key={index}
-              className={styles.opportunityBox}
-              onClick={() => handleOpportunityClick(opportunity)}
-            >
-              <p><strong>College:</strong> {opportunity.college}</p>
-              <p><strong>Job Title:</strong> {opportunity.title}</p>
-              <p><strong>Location:</strong> {opportunity.location}</p>
-              <p><strong>Job Status:</strong> {opportunity.status}</p>
-              <p><strong>Date Requested:</strong> {new Date(opportunity.createdAt).toLocaleDateString()}</p>
-            </div>
-          ))
-        ) : (
-          <p>No pending opportunities found.</p>
-        )}
-      </div>
+      <div>
+          <h2>Pending Opportunities</h2>
+          <div className={styles.gridContainer}>
+              {pendingOpportunities.length > 0 ? (
+                  pendingOpportunities.map((opportunity) => (
+                      <div
+                          key={opportunity._id}
+                          className={styles.opportunityBox}
+                          onClick={() => handleOpportunityClick(opportunity)}
+                      >
+                          <p><strong>Job Title:</strong> {opportunity.title}</p>
+                          <p><strong>Status:</strong> {opportunity.status}</p>
+                      </div>
+                  ))
+              ) : (
+                  <p>No pending opportunities found.</p>
+              )}
+          </div>
+
 
       {/* Modal */}
       {selectedOpportunity && (
