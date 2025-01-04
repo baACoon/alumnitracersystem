@@ -4,24 +4,19 @@ import Job from '../models/job.js';
 
 const router = express.Router();
 
-/**
- * @route   POST /jobs/
- * @desc    Create a new job posting
- * @access  Protected (Alumni)
- */
 router.post('/jobpost', protect, async (req, res) => {
     try {
-        const newJob = new Job({
+        const job = new Job({
             ...req.body,
-            createdBy: req.user.id, // Authenticated user ID
-            status: 'Pending', // Default status
+            createdBy: req.user._id,
+            status: 'Pending',
         });
 
-        await newJob.save();
+        await job.save();
         res.status(201).json({ message: 'Job posted successfully. Pending admin approval.' });
     } catch (error) {
-        console.error('Error Saving Job:', error.message);
-        res.status(500).json({ error: 'Failed to post the job.' });
+        console.error('Error posting job:', error);
+        res.status(500).json({ message: 'Failed to post the job.' });
     }
 });
 
