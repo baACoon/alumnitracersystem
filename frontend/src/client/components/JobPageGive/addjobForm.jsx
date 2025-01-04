@@ -53,19 +53,16 @@ function AddjobFormMainPage() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`, // Include token
+                    Authorization: `Bearer ${token}`, 
                 },
                 body: JSON.stringify(formData),
             });
-            console.log('Response Status:', response.status);
-            console.log('Response Body:', await response.text());
 
             const data = await response.json();
 
             if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Response Body:', errorData);
-                setMessage(errorData.message || 'Failed to post the job.');
+                setMessage(data.message || 'Failed to post the job.');
+                console.error('Error Response:', data);
                 return;
             }
 
