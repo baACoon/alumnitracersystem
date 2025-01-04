@@ -137,7 +137,7 @@ export function AlumniTable() {
           </tr>
         </thead>
         <tbody>
-          {filteredAlumni.map((alumni) => (
+        {filteredAlumni.map((alumni) => (
             <tr key={alumni.id} onClick={() => openStudentDetails(alumni.id)}>
               <td>
                 <input
@@ -148,31 +148,43 @@ export function AlumniTable() {
                 />
               </td>
               <td>{alumni.generatedID}</td>
-              <td>{`${alumni.firstName} ${alumni.lastName}`}</td>
-              <td>{alumni.college || 'N/A'}</td>
-              <td>{alumni.department || 'N/A'}</td>
-              <td>{alumni.course || 'N/A'}</td>
-              <td>{alumni.email}</td>
+              <td>{`${alumni.personalInfo.firstName} ${alumni.personalInfo.lastName}`}</td>
+              <td>{alumni.personalInfo.college || 'N/A'}</td>
+              <td>{alumni.personalInfo.department || 'N/A'}</td>
+              <td>{alumni.personalInfo.course || 'N/A'}</td>
+              <td>{alumni.personalInfo.email}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
       {studentDetails && (
-        <div className={styles.modalOverlay} onClick={closeStudentDetails}>
+        <div className={styles.modalOverlay} onClick={() => setStudentDetails(null)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.closeButton} onClick={closeStudentDetails}>×</button>
+            <button className={styles.closeButton} onClick={() => setStudentDetails(null)}>×</button>
             <h2>{`${studentDetails.personalInfo.firstName} ${studentDetails.personalInfo.lastName}`}</h2>
-            <p>College: {studentDetails.personalInfo.college || 'N/A'}</p>
-            <p>Course: {studentDetails.personalInfo.course || 'N/A'}</p>
-            <p>Graduation Year: {studentDetails.personalInfo.gradYear || 'N/A'}</p>
-            <p>Email: {studentDetails.personalInfo.email || 'N/A'}</p>
-            <h3>Employment History</h3>
-            <ul>
-              {studentDetails.employmentInfo?.map((job, index) => (
-                <li key={index}>{job.occupation} at {job.companyName}</li>
-              )) || <li>No employment history available</li>}
-            </ul>
+            <div className="student-info">
+              <h3>Personal Information</h3>
+              <p>College: {studentDetails.personalInfo.college || 'N/A'}</p>
+              <p>Department: {studentDetails.personalInfo.department || 'N/A'}</p>
+              <p>Course: {studentDetails.personalInfo.course || 'N/A'}</p>
+              <p>Email: {studentDetails.personalInfo.email || 'N/A'}</p>
+              <p>Contact: {studentDetails.personalInfo.contactNumber || 'N/A'}</p>
+              <p>Address: {studentDetails.personalInfo.address || 'N/A'}</p>
+            </div>
+            {studentDetails.surveys && studentDetails.surveys.length > 0 && (
+              <div className="employment-info">
+                <h3>Employment Information</h3>
+                {studentDetails.surveys.map((survey, index) => (
+                  <div key={index} className="employment-entry">
+                    <p>Company: {survey.employmentInfo?.company_name || 'N/A'}</p>
+                    <p>Position: {survey.employmentInfo?.position || 'N/A'}</p>
+                    <p>Status: {survey.employmentInfo?.job_status || 'N/A'}</p>
+                    <p>Year Started: {survey.employmentInfo?.year_started || 'N/A'}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
