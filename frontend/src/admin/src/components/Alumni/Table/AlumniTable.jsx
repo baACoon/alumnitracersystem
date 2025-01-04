@@ -41,8 +41,18 @@ export function AlumniTable() {
         });
   
         if (!response.ok) {
-            setAlumniData(data.data)// Assuming `data` contains the list of alumni
+          throw new Error(`Failed to fetch data: ${response.status}`)// Assuming `data` contains the list of alumni
 
+          }
+
+        const data = await response.json(); // Parse JSON response
+          console.log('Fetched data:', data);
+
+          if (data && data.data) {
+            setAlumniData(data.data); // Assuming the list of alumni is in `data.data`
+          } else {
+            console.error('Unexpected response structure:', data);
+            setAlumniData([]); // Fallback to empty data
           }
   
         //const data = await response.json();
