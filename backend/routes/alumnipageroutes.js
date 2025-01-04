@@ -36,17 +36,17 @@ router.get('/all', authenticateToken, async (req, res) => {
 
     const total = await Student.countDocuments(query);
 
-     // Map the data to match the frontend expectations
-     const mappedAlumni = alumni.map(student => ({
+     // In the /all endpoint, update the mapping:
+    const mappedAlumni = alumni.map(student => ({
       id: student._id,
-      generatedID: student.generatedID,
+      generatedID: student.generatedID || '',
       personalInfo: {
-        firstName: student.firstName,
-        lastName: student.lastName,
-        email: student.email,
-        college: student.college,
-        department: student.department,
-        course: student.course
+        firstName: student.firstName || '',
+        lastName: student.lastName || '',
+        email: student.email || '',
+        college: student.college || '',
+        department: student.department || '',
+        course: student.course || ''
       }
     }));
 
@@ -86,8 +86,38 @@ router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const updatedAlumnus = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedAlumnus) return res.status(404).json({ error: 'Alumnus not found.' });
+// Get the survey submissions for this student
+    const surveys = await SurveySubmission.find({ userId: req.params.id });
 
-    res.status(200).json({ success: true, data: updatedAlumnus });
+    // Create a formatted response
+    const formattedResponse = {
+      id: alumnus._id,
+      generatedID: alumnus.generatedID,
+      personalInfo: {
+        firstName: alumnus.firstName,
+        lastName: alumnus.lastName,
+        email: alumnus.email,
+        college: alumnus.college,
+        department: alumnus.department,
+        course: alumnus.course,
+        birthday: alumnus.birthday,
+        contactNumber: alumnus.contactNumber,
+        address: alumnus.address,
+        middleName: alumnus.middleName,
+        suffix: alumnus.suffix || '',
+        graduationYear: alumnus.gradyear
+      },
+      employmentInfo: surveys.map(survey => ({
+        company: survey.employmentInfo?.company_name || '',
+        years: survey.employmentInfo?.year_started || ''
+      })),
+      surveys: surveys.map(survey => ({
+        title: 'Alumni Survey',
+        dateReceived: survey.createdAt,
+        dateSubmitted: survey.updatedAt
+      }))
+    };
+    res.status(200).json({ success: true, data: formattedResponse });
   } catch (error) {
     console.error('Error updating alumnus:', error);
     res.status(500).json({ error: 'Failed to update alumnus.' });

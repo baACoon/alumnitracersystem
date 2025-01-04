@@ -106,12 +106,18 @@ export function AlumniTable() {
           'Authorization': `Bearer ${token}`,
         },
       });
-
-      if (response.status === 200) {
-        setSelectedStudentDetails(response.data.data); // Assuming detailed data comes under `data`
+      
+      if (response.status === 200 && response.data.data) {
+        console.log('Received student details:', response.data.data); // Debug log
+        setSelectedStudentDetails(response.data.data);
+      } else {
+        console.error('Invalid response structure:', response);
       }
     } catch (error) {
       console.error('Error fetching student details:', error);
+      if (error.response) {
+        console.error('Error response:', error.response.data);
+      }
     }
   };
   const closeStudentDetails = () => {
@@ -174,8 +180,8 @@ export function AlumniTable() {
           <tbody>
           {filteredAlumni.map((alumni) => (
               <tr
-                key={alumni.id}
-                className={selectedAlumni.has(alumni.id) ? styles.selectedRow : ''}
+                key={alumni._id}
+                className={selectedAlumni.has(alumni._id) ? styles.selectedRow : ''}
                 onClick={() => openStudentDetails(alumni)}
               >
                 <td>
