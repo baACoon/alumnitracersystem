@@ -82,7 +82,7 @@ export default function OpportunityPending() {
 
   return (
       <div>
-          <h2>Pending Opportunities</h2>
+          <h2>Pending Opportunities </h2>
           <div className={styles.gridContainer}>
               {pendingOpportunities.length > 0 ? (
                   pendingOpportunities.map((opportunity) => (
