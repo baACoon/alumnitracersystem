@@ -41,7 +41,7 @@ export function AlumniTable() {
         });
   
         if (!response.ok) {
-            setAlumniData(response.data.data)// Assuming `data` contains the list of alumni
+            setAlumniData(data.data)// Assuming `data` contains the list of alumni
 
           }
   
