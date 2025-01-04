@@ -9,7 +9,7 @@ const router = express.Router();
  * @desc    Create a new job posting
  * @access  Protected (Alumni)
  */
-router.post('/', protect, async (req, res) => {
+router.post('/jobpost', protect, async (req, res) => {
     try {
         const newJob = new Job({
             ...req.body,
@@ -25,12 +25,8 @@ router.post('/', protect, async (req, res) => {
     }
 });
 
-/**
- * @route   GET /jobs/
- * @desc    Get all jobs (optionally filtered by status)
- * @access  Protected (Alumni/Admin)
- */
-router.get('/', protect, async (req, res) => {
+
+router.get('/jobpost', protect, async (req, res) => {
     try {
         const { status } = req.query; // Optional query param for filtering by status
         const filter = status ? { status } : {};
@@ -46,11 +42,6 @@ router.get('/', protect, async (req, res) => {
     }
 });
 
-/**
- * @route   POST /jobs/:id/approve
- * @desc    Approve a job posting
- * @access  Protected (Admin Only)
- */
 router.post('/:id/approve', protect, adminOnly, async (req, res) => {
     try {
         const job = await Job.findByIdAndUpdate(
@@ -70,11 +61,7 @@ router.post('/:id/approve', protect, adminOnly, async (req, res) => {
     }
 });
 
-/**
- * @route   POST /jobs/:id/deny
- * @desc    Deny a job posting with feedback
- * @access  Protected (Admin Only)
- */
+
 router.post('/:id/deny', protect, adminOnly, async (req, res) => {
     try {
         const { feedback } = req.body;
