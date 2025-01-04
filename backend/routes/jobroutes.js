@@ -59,7 +59,7 @@ router.post('/:id/approve', protect, async (req, res) => {
 
 
 
-router.post('/:id/deny', protect, adminOnly, async (req, res) => {
+router.post('/:id/deny', protect, async (req, res) => {
     try {
         const { feedback } = req.body;
 
