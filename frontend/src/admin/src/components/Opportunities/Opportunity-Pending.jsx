@@ -43,37 +43,30 @@ export default function OpportunityPending() {
   }, []);
 
   const handlePublishClick = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-          alert("You need to log in first.");
-          return;
-      }
+    const token = localStorage.getItem("token");
+    console.log("Token:", token); // Debugging
 
-      try {
-          const response = await fetch(`https://alumnitracersystem.onrender.com/jobs/${selectedOpportunity._id}/approve`, {
-              method: "POST",
-              headers: {
-                  Authorization: `Bearer ${token}`,
-              },
-          });
+    try {
+        const response = await fetch(`https://alumnitracersystem.onrender.com/jobs/${selectedOpportunity._id}/approve`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
 
-          if (!response.ok) {
-              const errorData = await response.json();
-              console.error("Failed to publish opportunity:", errorData);
-              alert(errorData.message || "Failed to publish opportunity.");
-              return;
-          }
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Failed to publish opportunity:", errorData);
+            alert(errorData.message || "Failed to publish opportunity.");
+            return;
+        }
 
-          alert("Opportunity published successfully!");
-          setPendingOpportunities((prev) =>
-              prev.filter((opportunity) => opportunity._id !== selectedOpportunity._id)
-          );
-          setSelectedOpportunity(null);
-      } catch (error) {
-          console.error("Error publishing opportunity:", error);
-          alert("An error occurred while publishing the opportunity.");
-      }
-  };
+        alert("Opportunity published successfully!");
+    } catch (error) {
+        console.error("Error publishing opportunity:", error);
+        alert("An error occurred while publishing the opportunity.");
+    }
+};
 
   const handleOpportunityClick = (opportunity) => {
       setSelectedOpportunity(opportunity);

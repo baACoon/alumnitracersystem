@@ -38,11 +38,11 @@ router.get('/jobpost', protect, async (req, res) => {
 });
 
 // Approve a job posting
-router.post('/:id/approve', protect, adminOnly, async (req, res) => {
+router.post('/:id/approve', protect, async (req, res) => {
     try {
         const job = await Job.findByIdAndUpdate(
             req.params.id,
-            { status: 'Published', reviewedBy: req.user.id }, // Approve the job
+            { status: 'Published', reviewedBy: req.user.id },
             { new: true }
         );
 
@@ -56,6 +56,7 @@ router.post('/:id/approve', protect, adminOnly, async (req, res) => {
         res.status(500).json({ message: 'Failed to approve job.' });
     }
 });
+
 
 
 router.post('/:id/deny', protect, adminOnly, async (req, res) => {
