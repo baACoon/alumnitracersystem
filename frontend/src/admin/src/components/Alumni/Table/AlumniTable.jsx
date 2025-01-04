@@ -120,7 +120,7 @@ export function AlumniTable() {
   };
 
   const filteredAlumni = alumniData.filter(alumni =>
-    `${alumni.personalInfo.firstName} ${alumni.personalInfo.last_name}`.toLowerCase().includes(searchQuery.toLowerCase())
+    `${alumni.personalInfo.firstName} ${alumni.personalInfo.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
