@@ -8,7 +8,7 @@ router.post('/jobpost', protect, async (req, res) => {
     try {
         const job = new Job({
             ...req.body,
-            createdBy: req.user._id,
+            createdBy: req.user.id, // Attach user ID directly from middleware
             status: 'Pending',
         });
 
