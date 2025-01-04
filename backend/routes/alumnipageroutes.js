@@ -82,39 +82,45 @@ router.get('/:id', authenticateToken, async (req, res) => {
 });
 
 // Update an alumnus (optional endpoint if needed)
-router.put('/:id', authenticateToken, async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
   try {
-    const updatedAlumnus = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedAlumnus) return res.status(404).json({ error: 'Alumnus not found.' });
+    // First get the student data
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ error: 'Alumnus not found.' });
+    }
 // Get the survey submissions for this student
     const surveys = await SurveySubmission.find({ userId: req.params.id });
 
     // Create a formatted response
     const formattedResponse = {
-      id: alumnus._id,
-      generatedID: alumnus.generatedID,
       personalInfo: {
-        firstName: alumnus.firstName,
-        lastName: alumnus.lastName,
-        email: alumnus.email,
-        college: alumnus.college,
-        department: alumnus.department,
-        course: alumnus.course,
-        birthday: alumnus.birthday,
-        contactNumber: alumnus.contactNumber,
-        address: alumnus.address,
-        middleName: alumnus.middleName,
-        suffix: alumnus.suffix || '',
-        graduationYear: alumnus.gradyear
+        firstName: student.firstName,
+        lastName: student.lastName,
+        middleName: student.middleName || '',
+        suffix: student.suffix || '',
+        email: student.email,
+        college: student.college || '',
+        department: student.department || '',
+        course: student.course || '',
+        birthday: student.birthday,
+        contactNumber: student.contactNumber,
+        address: student.address,
+        graduationYear: student.gradyear
       },
       employmentInfo: surveys.map(survey => ({
         company: survey.employmentInfo?.company_name || '',
-        years: survey.employmentInfo?.year_started || ''
+        years: survey.employmentInfo?.year_started || '',
+        position: survey.employmentInfo?.position || '',
+        jobStatus: survey.employmentInfo?.job_status || ''
       })),
       surveys: surveys.map(survey => ({
+        id: survey._id,
         title: 'Alumni Survey',
         dateReceived: survey.createdAt,
-        dateSubmitted: survey.updatedAt
+        dateSubmitted: survey.updatedAt,
+        personalInfo: survey.personalInfo || {},
+        employmentInfo: survey.employmentInfo || {}
       }))
     };
     res.status(200).json({ success: true, data: formattedResponse });
