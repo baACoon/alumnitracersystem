@@ -1,157 +1,107 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Opportunity-List.module.css";
 
 export default function OpportunityList() {
-  const [selectedOpportunity, setSelectedOpportunity] = useState(null);
+    const [publishedOpportunities, setPublishedOpportunities] = useState([]);
+    const [selectedOpportunity, setSelectedOpportunity] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-  const exampleOpportunities = [
-    {
-      jobId: "JOB001",
-      alumniId: "ALUM123",
-      adminId: "ADM001",
-      college: "College of Engineering",
-      jobTitle: "Software Engineer",
-      location: "Manila, Philippines",
-      jobStatus: "Open",
-      datePublished: "2024-12-15",
-      jobDescription: "Develop and maintain software applications.",
-      keyResponsibilities: [
-        "Design, develop, and test software.",
-        "Collaborate with team members to define project requirements.",
-        "Maintain and improve existing applications."
-      ],
-      requirements: [
-        "Bachelor's degree in Computer Science or related field.",
-        "2+ years of experience in software development.",
-        "Proficiency in JavaScript, React, and Node.js."
-      ]
-    },
-    {
-      jobId: "JOB002",
-      alumniId: "ALUM456",
-      adminId: "ADM002",
-      college: "College of Science",
-      jobTitle: "Data Analyst",
-      location: "Cebu, Philippines",
-      jobStatus: "Closed",
-      datePublished: "2024-11-20",
-      jobDescription: "Analyze data to generate business insights.",
-      keyResponsibilities: [
-        "Collect, process, and analyze data.",
-        "Prepare reports and dashboards for stakeholders.",
-        "Identify trends and patterns in data."
-      ],
-      requirements: [
-        "Bachelor's degree in Statistics, Mathematics, or related field.",
-        "1+ year of experience in data analysis.",
-        "Proficiency in Excel, SQL, and Python."
-      ]
-    },
-    {
-        jobId: "JOB001",
-        alumniId: "ALUM123",
-        adminId: "ADM001",
-        college: "College of Engineering",
-        jobTitle: "Software Engineer",
-        location: "Manila, Philippines",
-        jobStatus: "Open",
-        datePublished: "2024-12-15",
-        jobDescription: "Develop and maintain software applications.",
-        keyResponsibilities: [
-          "Design, develop, and test software.",
-          "Collaborate with team members to define project requirements.",
-          "Maintain and improve existing applications."
-        ],
-        requirements: [
-          "Bachelor's degree in Computer Science or related field.",
-          "2+ years of experience in software development.",
-          "Proficiency in JavaScript, React, and Node.js."
-        ]
-      },
-      {
-        jobId: "JOB001",
-        alumniId: "ALUM123",
-        adminId: "ADM001",
-        college: "College of Engineering",
-        jobTitle: "Software Engineer",
-        location: "Manila, Philippines",
-        jobStatus: "Open",
-        datePublished: "2024-12-15",
-        jobDescription: "Develop and maintain software applications.",
-        keyResponsibilities: [
-          "Design, develop, and test software.",
-          "Collaborate with team members to define project requirements.",
-          "Maintain and improve existing applications."
-        ],
-        requirements: [
-          "Bachelor's degree in Computer Science or related field.",
-          "2+ years of experience in software development.",
-          "Proficiency in JavaScript, React, and Node.js."
-        ]
-      }
-  ];
+    // Fetch published opportunities from the backend
+    useEffect(() => {
+        const fetchPublishedOpportunities = async () => {
+            const token = localStorage.getItem("token"); // Ensure token is included
+            if (!token) {
+                alert("You need to log in first.");
+                return;
+            }
 
-  const handleOpportunityClick = (opportunity) => {
-    setSelectedOpportunity(opportunity);
-  };
+            try {
+                const response = await fetch("https://alumnitracersystem.onrender.com/jobs/jobpost?status=Published", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
 
-  const closeModal = () => {
-    setSelectedOpportunity(null);
-  };
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("Failed to fetch published opportunities:", errorData);
+                    alert(errorData.message || "Failed to fetch published opportunities.");
+                    return;
+                }
 
-  return (
-    <div>
-      <h2>Published Opportunities</h2>
-      <div className={styles.gridContainer}>
-        {exampleOpportunities.map((opportunity, index) => (
-          <div
-            key={index}
-            className={styles.opportunityBox}
-            onClick={() => handleOpportunityClick(opportunity)}
-          >
-            <p><strong>College:</strong> {opportunity.college}</p>
-            <p><strong>Job Title:</strong> {opportunity.jobTitle}</p>
-            <p><strong>Location:</strong> {opportunity.location}</p>
-            <p><strong>Job Status:</strong> {opportunity.jobStatus}</p>
-            <p><strong>Date Published:</strong> {opportunity.datePublished}</p>
-          </div>
-        ))}
-      </div>
+                const data = await response.json();
+                setPublishedOpportunities(data); // Set the fetched opportunities
+            } catch (error) {
+                console.error("Error fetching published opportunities:", error);
+                alert("An error occurred while fetching published opportunities.");
+            } finally {
+                setLoading(false);
+            }
+        };
 
-      {/* Modal */}
-      {selectedOpportunity && (
-        <div className={styles.modalOverlay} onClick={closeModal}>
-          <div
-            className={styles.modalContent}
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
-          >
-            <button className={styles.closeButton} onClick={closeModal}>
-              &times;
-            </button>
-            <h2>{selectedOpportunity.jobTitle}</h2>
-            <p><strong>College:</strong> {selectedOpportunity.college}</p>
-            <p><strong>Job ID:</strong> {selectedOpportunity.jobId}</p>
-            <p><strong>Alumni ID:</strong> {selectedOpportunity.alumniId}</p>
-            <p><strong>Admin ID:</strong> {selectedOpportunity.adminId}</p>
-            <p><strong>Location:</strong> {selectedOpportunity.location}</p>
-            <p><strong>Job Status:</strong> {selectedOpportunity.jobStatus}</p>
-            <p><strong>Date Published:</strong> {selectedOpportunity.datePublished}</p>
-            <p><strong>Job Description:</strong> {selectedOpportunity.jobDescription}</p>
-            <p><strong>Key Responsibilities:</strong></p>
-            <ul>
-              {selectedOpportunity.keyResponsibilities.map((resp, i) => (
-                <li key={i}>{resp}</li>
-              ))}
-            </ul>
-            <p><strong>Requirements:</strong></p>
-            <ul>
-              {selectedOpportunity.requirements.map((req, i) => (
-                <li key={i}>{req}</li>
-              ))}
-            </ul>
-          </div>
+        fetchPublishedOpportunities();
+    }, []); // Run only once on component mount
+
+    const handleOpportunityClick = (opportunity) => {
+        setSelectedOpportunity(opportunity);
+    };
+
+    const closeModal = () => {
+        setSelectedOpportunity(null);
+    };
+
+    if (loading) {
+        return <p>Loading published opportunities...</p>;
+    }
+
+    return (
+        <div>
+            <h2>Published Opportunities</h2>
+            <div className={styles.gridContainer}>
+                {publishedOpportunities.length > 0 ? (
+                    publishedOpportunities.map((opportunity, index) => (
+                        <div
+                            key={index}
+                            className={styles.opportunityBox}
+                            onClick={() => handleOpportunityClick(opportunity)}
+                        >
+                            <p><strong>College:</strong> {opportunity.college}</p>
+                            <p><strong>Job Title:</strong> {opportunity.title}</p>
+                            <p><strong>Location:</strong> {opportunity.location}</p>
+                            <p><strong>Job Status:</strong> {opportunity.status}</p>
+                            <p><strong>Date Published:</strong> {new Date(opportunity.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>No published opportunities found.</p>
+                )}
+            </div>
+
+            {/* Modal */}
+            {selectedOpportunity && (
+                <div className={styles.modalOverlay} onClick={closeModal}>
+                    <div
+                        className={styles.modalContent}
+                        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+                    >
+                        <button className={styles.closeButton} onClick={closeModal}>
+                            &times;
+                        </button>
+                        <h2>{selectedOpportunity.title}</h2>
+                        <p><strong>College:</strong> {selectedOpportunity.college}</p>
+                        <p><strong>Location:</strong> {selectedOpportunity.location}</p>
+                        <p><strong>Job Status:</strong> {selectedOpportunity.status}</p>
+                        <p><strong>Date Published:</strong> {new Date(selectedOpportunity.createdAt).toLocaleDateString()}</p>
+                        <p><strong>Job Description:</strong> {selectedOpportunity.description}</p>
+                        <p><strong>Key Responsibilities:</strong></p>
+                        <ul>
+                            {selectedOpportunity.responsibilities.map((resp, i) => (
+                                <li key={i}>{resp}</li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 }

@@ -55,35 +55,39 @@ export default function OpportunityPending() {
   const handlePublishClick = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("You need to log in first.");
-      return;
+        alert("You need to log in first.");
+        return;
     }
 
     try {
-      const response = await fetch(`https://alumnitracersystem.onrender.com/jobs/${selectedOpportunity._id}/approve`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+        const response = await fetch(`https://alumnitracersystem.onrender.com/jobs/${selectedOpportunity._id}/approve`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Failed to publish opportunity:", errorData);
-        alert(errorData.message || "Failed to publish opportunity.");
-        return;
-      }
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Failed to publish opportunity:", errorData);
+            alert(errorData.message || "Failed to publish opportunity.");
+            return;
+        }
 
-      alert("Opportunity published successfully!");
-      setPendingOpportunities((prev) =>
-        prev.filter((opportunity) => opportunity._id !== selectedOpportunity._id)
-      );
-      setSelectedOpportunity(null);
+        alert("Opportunity published successfully!");
+        
+        // Remove the published opportunity from pending opportunities
+        setPendingOpportunities((prev) =>
+            prev.filter((opportunity) => opportunity._id !== selectedOpportunity._id)
+        );
+
+        setSelectedOpportunity(null);
     } catch (error) {
-      console.error("Error publishing opportunity:", error);
-      alert("An error occurred while publishing the opportunity.");
+        console.error("Error publishing opportunity:", error);
+        alert("An error occurred while publishing the opportunity.");
     }
-  };
+};
+
 
   const handleRejectionSubmit = async () => {
     const token = localStorage.getItem("token");
