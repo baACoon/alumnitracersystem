@@ -90,7 +90,7 @@ const Register_NewAlumni = ({ closeModal }) => {
                                 <input
                                     type="text"
                                     placeholder="GRADUATION YEAR"
-                                    value={email}
+                                    value={gradyear}
                                     onChange={(e) => setYear(e.target.value)}
                                     required
                                     className="input-field-new-alumni"/>
