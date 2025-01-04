@@ -117,8 +117,8 @@ export function AlumniTable() {
 
     <section className={styles.tableSection} aria-label="Alumni data">
       <div className={styles.tableControls}>
-        <button 
-          onClick={handleDelete}
+      <button
+          onClick={() => setSelectedAlumni(new Set())}
           className={styles.deleteButton}
           aria-label={`Delete ${selectedAlumni.size} selected alumni`}
           disabled={selectedAlumni.size === 0}
