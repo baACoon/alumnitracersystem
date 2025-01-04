@@ -9,6 +9,7 @@ const router = express.Router();
 //line 10-21 ayan yung nagdagdag and mapapansin mo sa router.post they call Student. Nabago rin yung structure. 
 //check mo yung convo namin ni gpt and also pwede mo naman ipaupdate yung adminlog_reg.js mo kay jpt, tulad na ginawa ko
 const studentSchema = new mongoose.Schema({
+  gradyear: { type: Number, required: true },
   email: { type: String, required: true },
   firstName: { type: String, required: true },
   middleName: { type: String, required: true },
@@ -24,6 +25,7 @@ const Student = mongoose.model("Student", studentSchema);
 // Register a new user
 router.post("/register", async (req, res) => {
   const {
+    gradyear,
     email,
     firstName,
     middleName,
@@ -37,7 +39,7 @@ router.post("/register", async (req, res) => {
 
   try {
     // Validate input fields
-    if (!email || !firstName || !lastName || !middleName || !birthday || !password || !confirmPassword) {
+    if (!gradyear || !email || !firstName || !lastName || !middleName || !birthday || !password || !confirmPassword) {
       console.log("Error: Missing fields");
       return res.status(400).json({ error: "All fields are required." });
     }
@@ -64,6 +66,7 @@ router.post("/register", async (req, res) => {
 
     // Create and save the new user
     const newUser = new Student({
+      gradyear,
       email,
       firstName,
       middleName,
