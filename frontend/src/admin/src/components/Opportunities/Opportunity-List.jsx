@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Opportunity-List.module.css";
-import { Helmet } from "react-helmet";
 
 export default function OpportunityList() {
     const [publishedOpportunities, setPublishedOpportunities] = useState([]);
@@ -57,11 +56,6 @@ export default function OpportunityList() {
 
     return (
         <div>
-                    <Helmet>
-                        <title>Opportunities | TUPATS </title>
-                        <link rel="icon" href="/tupats.png" />
-                    </Helmet>
-                
             <h2>Published Opportunities</h2>
             <div className={styles.gridContainer}>
                 {publishedOpportunities.length > 0 ? (
