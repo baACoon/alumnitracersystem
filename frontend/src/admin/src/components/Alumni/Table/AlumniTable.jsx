@@ -46,7 +46,6 @@ export function AlumniTable() {
           }
 
         const data = await response.json(); // Parse JSON response
-          console.log('Fetched data:', data);
 
           if (data && data.data) {
             setAlumniData(data.data); // Assuming the list of alumni is in `data.data`

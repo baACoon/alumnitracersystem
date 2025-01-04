@@ -36,9 +36,23 @@ router.get('/all', authenticateToken, async (req, res) => {
 
     const total = await Student.countDocuments(query);
 
+     // Map the data to match the frontend expectations
+     const mappedAlumni = alumni.map(student => ({
+      id: student._id,
+      generatedID: student.generatedID,
+      personalInfo: {
+        firstName: student.firstName,
+        lastName: student.lastName,
+        email: student.email,
+        college: student.college,
+        department: student.department,
+        course: student.course
+      }
+    }));
+
     res.status(200).json({
       success: true,
-      data: alumni,
+      data: mappedAlumni,
       pagination: {
         total,
         page: parseInt(page),
