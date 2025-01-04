@@ -4,62 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
-const initialAlumniData = [
-  {
-    id: 'TUPM-21-2231',
-    college: 'COE',
-    department: 'CE',
-    course: 'BSCE',
-    email: 'choiseungcholpogi@gmail.com',
-    firstName: 'Choi',
-    lastName: 'Seungcheol',
-    graduationYear: '2021',
-    address: '123 Seoul Street, South Korea',
-    contactNumber: '+82 10 1234 5678'
-  },
-  {
-    id: 'TUPM-21-2232',
-    college: 'COE',
-    department: 'CE',
-    course: 'BSCE',
-    email: 'example@gmail.com',
-    firstName: 'Jane',
-    lastName: 'Doe',
-    graduationYear: '2021',
-    address: '456 Example Avenue, City',
-    contactNumber: '+1 123 456 7890'
-  }
-];
-
-const selectedStudentDetails = {
-  profileImage: 'https://via.placeholder.com/150',
-  college: 'College of Engineering',
-  course: 'Bachelor of Science in Civil Engineering',
-  graduationYear: '2015',
-  lastName: 'Choi',
-  firstName: 'Seung-cheol',
-  middleName: null,
-  suffix: null,
-  address: 'Daegu, South Korea',
-  birthday: 'August 8, 1995',
-  email: 'seungcheolpogi@gmail.com',
-  contactNumber: '09123456789',
-  employmentHistory: [
-    { company: 'Elephant', years: 2 },
-    { company: 'Horse', years: 1 },
-    { company: 'Tiger', years: 4 },
-    { company: 'Lion', years: 3 },
-    { company: 'Jaguar', years: 5 },
-  ],
-  surveys: [
-    { title: 'Tracer Survey Form (2020)', dateReceived: 'July 29, 2020', dateSubmitted: 'July 31, 2020' },
-    { title: 'Material: Subject Alignment', dateReceived: 'July 29, 2020', dateSubmitted: 'July 31, 2020' },
-    { title: 'Masters or Comfortability?', dateReceived: 'July 29, 2018', dateSubmitted: 'July 31, 2018' },
-  ],
-};
 
 export function AlumniTable() {
-  const [alumniData, setAlumniData] = useState(initialAlumniData);
+  const [alumniData, setAlumniData] = useState([]);
   const [selectedAlumni, setSelectedAlumni] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState(''); 
   const [StudentDetails, setSelectedStudentDetails] = useState(null); // Add this line
@@ -90,21 +37,21 @@ export function AlumniTable() {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
           }
         });
   
         if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.status}`);
-        }
+            setAlumniData(response.data.data)// Assuming `data` contains the list of alumni
+
+          }
   
-        const data = await response.json();
-        console.log('Fetched data:', data);
-        setAlumniData(data.data);
+        //const data = await response.json();
+        //console.log('Fetched data:', data);
+        //setAlumniData(data.data);
   
       } catch (error) {
         console.error('Error fetching alumni data:', error);
-        if (error.message.includes('401')) {
+        if (error.response?.status === 401) {
           alert("Authentication error. Please log in again.");
           navigate('/login');
         }
@@ -132,44 +79,38 @@ export function AlumniTable() {
     setSelectedAlumni(newSelected);
   };
 
-  const handleDelete = () => {
-    const newData = alumniData.filter(alumni => !selectedAlumni.has(alumni.id));
+  {/* Student Details Modal const handleDelete = () => {
+    //const newData = alumniData.filter(alumni => !selectedAlumni.has(alumni.id));
     setAlumniData(newData);
     setSelectedAlumni(new Set());
-  };
+  };*/}
 
-  const openStudentDetails = (student) => {
+  const openStudentDetails = async (student) => {
     const token = localStorage.getItem('token');
     
     // First set basic student info
-    setSelectedStudentDetails(student);
-    
-    // Then fetch detailed info including surveys
-    axios.get(`https://alumnitracersystem.onrender.com/api/alumni/${student.id}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-      .then(response => {
-        const detailedData = response.data.data;
-        setSelectedStudentDetails(prevDetails => ({
-          ...prevDetails,
-          ...detailedData,
-          surveys: detailedData.surveys || []
-        }));
-      })
-      .catch(error => {
-        console.error('Error fetching student details:', error);
+    //setSelectedStudentDetails(student);
+    try {
+      // Fetch detailed info including surveys
+      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/${student.id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
-  };
 
+      if (response.status === 200) {
+        setSelectedStudentDetails(response.data.data); // Assuming detailed data comes under `data`
+      }
+    } catch (error) {
+      console.error('Error fetching student details:', error);
+    }
+  };
   const closeStudentDetails = () => {
     setSelectedStudentDetails(null);
   };
 
   const filteredAlumni = alumniData.filter(alumni =>
-    `${alumni.firstName} ${alumni.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
+    `${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -223,7 +164,7 @@ export function AlumniTable() {
           </thead>
           <tbody>
           {filteredAlumni.map((alumni) => (
-              <tr 
+              <tr
                 key={alumni.id}
                 className={selectedAlumni.has(alumni.id) ? styles.selectedRow : ''}
                 onClick={() => openStudentDetails(alumni)}
@@ -239,11 +180,11 @@ export function AlumniTable() {
                   />
                 </td>
                 <td>{alumni.generatedID}</td>
-                <td>{`${alumni.firstName} ${alumni.lastName}`}</td>
-                <td>{alumni.college}</td>
-                <td>{alumni.department}</td>
-                <td>{alumni.course}</td>
-                <td>{alumni.email}</td>
+                <td>{`${alumni.personalInfo.firstName} ${alumni.personalInfo.lastName}`}</td>
+                <td>{alumni.personalInfo.college || 'N/A'}</td>
+                <td>{alumni.personalInfo.department || 'N/A'}</td>
+                <td>{alumni.personalInfo.course || 'N/A'}</td>
+                <td>{alumni.personalInfo.email}</td>
               </tr>
             ))}
           </tbody>
@@ -270,37 +211,37 @@ export function AlumniTable() {
                   />
                   <div className={styles.profileInfo}>
                     <div>
-                      <strong>College:</strong> {StudentDetails.college}
+                      <strong>College:</strong> {StudentDetails.personalInfo.college}
                     </div>
                     <div>
-                      <strong>Course:</strong> {StudentDetails.course}
+                      <strong>Course:</strong> {StudentDetails.personalInfo.course}
                     </div>
                     <div>
-                      <strong>Graduation Year:</strong> {StudentDetails.graduationYear}
+                      <strong>Graduation Year:</strong> {StudentDetails.personalInfo.graduationYear}
                     </div>
                     <div>
-                      <strong>Last Name:</strong> {StudentDetails.lastName}
+                      <strong>Last Name:</strong> {StudentDetails.personalInfo.lastName}
                     </div>
                     <div>
-                      <strong>First Name:</strong> {StudentDetails.firstName}
+                      <strong>First Name:</strong> {StudentDetails.personalInfo.firstName}
                     </div>
                     <div>
-                      <strong>Middle Name:</strong> {StudentDetails.middleName || 'N/A'}
+                      <strong>Middle Name:</strong> {StudentDetails.personalInfomiddleName || 'N/A'}
                     </div>
                     <div>
-                      <strong>Suffix:</strong> {StudentDetails.suffix || 'N/A'}
+                      <strong>Suffix:</strong> {StudentDetails.personalInfo.suffix || 'N/A'}
                     </div>
                     <div>
-                      <strong>Address:</strong> {StudentDetails.address}
+                      <strong>Address:</strong> {StudentDetails.personalInfo.address}
                     </div>
                     <div>
-                      <strong>Birthday:</strong> {StudentDetails.birthday}
+                      <strong>Birthday:</strong> {StudentDetails.personalInfo.birthday}
                     </div>
                     <div>
-                      <strong>Email:</strong> {StudentDetails.email}
+                      <strong>Email:</strong> {StudentDetails.personalInfo.email}
                     </div>
                     <div>
-                      <strong>Contact No:</strong> {StudentDetails.contactNumber}
+                      <strong>Contact No:</strong> {StudentDetails.personalInfo.contactNumber}
                     </div>
                   </div>
                 </div>
@@ -318,7 +259,7 @@ export function AlumniTable() {
                       </tr>
                     </thead>
                     <tbody>
-                      {StudentDetails.employmentHistory?.map((job, index) => (
+                    {StudentDetails.employmentInfo && StudentDetails.employmentInfo.map((job, index) =>  (
                         <tr key={index}>
                           <td>{job.company}</td>
                           <td>{job.years}</td>
@@ -343,7 +284,7 @@ export function AlumniTable() {
                       </tr>
                     </thead>
                     <tbody>
-                      {StudentDetails.surveys?.map((survey, index) => (
+                    {StudentDetails.surveys && StudentDetails.surveys.map((survey, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{survey.title}</td>
