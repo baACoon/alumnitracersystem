@@ -41,8 +41,17 @@ export function AlumniTable() {
         });
   
         if (!response.ok) {
-            setAlumniData(data.data)// Assuming `data` contains the list of alumni
+          throw new Error(`Failed to fetch data: ${response.status}`)// Assuming `data` contains the list of alumni
 
+          }
+
+        const data = await response.json(); // Parse JSON response
+
+          if (data && data.data) {
+            setAlumniData(data.data); // Assuming the list of alumni is in `data.data`
+          } else {
+            console.error('Unexpected response structure:', data);
+            setAlumniData([]); // Fallback to empty data
           }
   
         //const data = await response.json();
@@ -63,7 +72,7 @@ export function AlumniTable() {
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedAlumni(new Set(alumniData.map(alumni => alumni.id)));
+      setSelectedAlumni(new Set(alumniData.map(alumni => alumni._id)));
     } else {
       setSelectedAlumni(new Set());
     }
@@ -91,18 +100,58 @@ export function AlumniTable() {
     // First set basic student info
     //setSelectedStudentDetails(student);
     try {
+      console.log('Student data being passed:', student); // Debug log to check student object
+
+      // Make sure we have a valid ID before making the request
+      if (!student._id) {
+        console.error('Invalid student ID:', student);
+        return;
+      }
       // Fetch detailed info including surveys
-      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/${student.id}`, {
+      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/${student._id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
+      
+      if (response.status === 200 && response.data.data) {
+        console.log('Received student details:', response.data.data); // Debug log
+         // Format the data to match the modal's expected structure
+         const formattedData = {
+          personalInfo: {
+            college: response.data.data.college || 'N/A',
+            course: response.data.data.course || 'N/A',
+            graduationYear: response.data.data.gradyear || 'N/A',
+            lastName: response.data.data.lastName || '',
+            firstName: response.data.data.firstName || '',
+            middleName: response.data.data.middleName || 'N/A',
+            suffix: response.data.data.suffix || 'N/A',
+            address: response.data.data.address || 'N/A',
+            birthday: response.data.data.birthday || 'N/A',
+            email: response.data.data.email || '',
+            contactNumber: response.data.data.contactNumber || 'N/A'
+          },
+          employmentInfo: response.data.data.surveys?.map(survey => ({
+            company: survey.employmentInfo?.company_name || 'N/A',
+            years: survey.employmentInfo?.year_started || 'N/A'
+          })) || [],
+          surveys: response.data.data.surveys?.map(survey => ({
+            title: 'Alumni Survey',
+            dateReceived: new Date(survey.createdAt).toLocaleDateString(),
+            dateSubmitted: new Date(survey.updatedAt).toLocaleDateString()
+          })) || []
+        };
 
-      if (response.status === 200) {
-        setSelectedStudentDetails(response.data.data); // Assuming detailed data comes under `data`
+        console.log('Formatted student details:', formattedData);
+        setSelectedStudentDetails(formattedData);
+      } else {
+        console.error('Invalid response structure:', response);
       }
     } catch (error) {
       console.error('Error fetching student details:', error);
+      if (error.response) {
+        console.error('Error response:', error.response.data);
+      }
     }
   };
   const closeStudentDetails = () => {
@@ -110,7 +159,7 @@ export function AlumniTable() {
   };
 
   const filteredAlumni = alumniData.filter(alumni =>
-    `${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`.toLowerCase().includes(searchQuery.toLowerCase())
+    `${alumni.personalInfo.firstName} ${alumni.personalInfo.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -165,18 +214,18 @@ export function AlumniTable() {
           <tbody>
           {filteredAlumni.map((alumni) => (
               <tr
-                key={alumni.id}
-                className={selectedAlumni.has(alumni.id) ? styles.selectedRow : ''}
+                key={alumni._id}
+                className={selectedAlumni.has(alumni._id) ? styles.selectedRow : ''}
                 onClick={() => openStudentDetails(alumni)}
               >
                 <td>
                   <input
                     type="checkbox"
-                    id={`select-${alumni.id}`}
-                    checked={selectedAlumni.has(alumni.id)}
-                    onChange={() => handleSelectAlumni(alumni.id)}
+                    id={`select-${alumni._id}`}
+                    checked={selectedAlumni.has(alumni._id)}
+                    onChange={() => handleSelectAlumni(alumni._id)}
                     onClick={(e) => e.stopPropagation()}
-                    aria-label={`Select ${alumni.id}`}
+                    aria-label={`Select ${alumni._id}`}
                   />
                 </td>
                 <td>{alumni.generatedID}</td>

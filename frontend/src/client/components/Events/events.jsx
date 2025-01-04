@@ -7,8 +7,8 @@ function Events() {
   return (
     <div>
       <Header />
-      <Footer />
       <EventMainPage />
+      <Footer />
     </div>
   );
 }
