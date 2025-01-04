@@ -2,11 +2,7 @@
 
 .mainContent {
     flex: 1;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
     width: 100%;
-    background-color: rgba(234, 230, 231, 1);
   }
   
   .pageTitle {

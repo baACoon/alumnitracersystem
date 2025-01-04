@@ -1,35 +1,37 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './PendingSurvey.module.css'; // Custom styles for unique classes
+import styles from './PendingSurvey.module.css';
 
 export const PendingSurvey = () => {
+  const surveys = [
+    { id: 1, title: 'Tracer Survey Form (2020)', status: 'Pending' },
+    { id: 2, title: 'Subject Alignment', status: 'Pending' },
+  ];
+
   return (
-    <div className="pending-table-container">
-      <table className="table table-bordered table-hover table-striped pending-table">
-        <thead className="table-danger">
+    <div className={styles.tableContainer}>
+      <table className={styles.table} role="table" aria-label="Pending Surveys">
+        <thead className={styles.tableHeader}>
           <tr>
-            <th>No.</th>
-            <th>Title</th>
-            <th>Status</th>
+            <th scope="col" className={styles.headerCell}>No.</th>
+            <th scope="col" className={styles.headerCell}>Title</th>
+            <th scope="col" className={styles.headerCell}>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Tracer Survey Form (2020)</td>
-            <td className="text-center">
-              <span className="text-primary edit-button">EDIT</span> |{' '}
-              <span className="text-success publish-button">PUBLISH</span>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Subject Alignment</td>
-            <td className="text-center">
-              <span className="text-primary edit-button">EDIT</span> |{' '}
-              <span className="text-success publish-button">PUBLISH</span>
-            </td>
-          </tr>
+          {surveys.map((survey, index) => (
+            <tr key={survey.id} className={styles.row}>
+              <td className={styles.cell}>{index + 1}</td>
+              <td className={styles.cell}>{survey.title}</td>
+              <td className={styles.cell}>
+                <button className={`${styles.actionButton} ${styles.editButton}`} aria-label={`Edit ${survey.title}`}>
+                  EDIT
+                </button>
+                <button className={`${styles.actionButton} ${styles.publishButton}`} aria-label={`Publish ${survey.title}`}>
+                  PUBLISH
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
