@@ -15,6 +15,7 @@ import alumnipage from './routes/alumnipageroutes.js'
 
 const PORT = process.env.PORT || 5050;
 const app = express();
+
 dotenv.config();
 
 // Middleware

@@ -41,37 +41,51 @@ function AddjobFormMainPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('You need to log in first');
+            return;
+        }
+
+
         try {
-            const response = await fetch("https://alumnitracersystem.onrender.com/jobs/jobadmin", {
+            const response = await fetch("https://alumnitracersystem.onrender.com/jobs/jobpost", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token
+                    Authorization: `Bearer ${token}`, // Include token
                 },
                 body: JSON.stringify(formData),
             });
+            console.log('Response Status:', response.status);
+            console.log('Response Body:', await response.text());
 
             const data = await response.json();
 
-            if (response.ok) {
-                setMessage("Job posted successfully. Pending admin approval.");
-                setFormData({
-                    title: '',
-                    company: '',
-                    location: '',
-                    type: 'full-time',
-                    description: '',
-                    responsibilities: '',
-                    qualifications: '',
-                    source: '',
-                });
-                navigate('/JobPageGive');
-            } else {
-                setMessage(data.error || "Failed to post the job. Please try again.");
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Response Body:', errorData);
+                setMessage(errorData.message || 'Failed to post the job.');
+                return;
             }
+
+
+            console.log('Response Data:', data);
+
+            setMessage('Job posted successfully. Pending admin approval.');
+            setFormData({
+                title: '',
+                company: '',
+                location: '',
+                type: 'full-time',
+                description: '',
+                responsibilities: '',
+                qualifications: '',
+                source: '',
+            });
         } catch (error) {
-            console.error("Error posting the job:", error);
-            setMessage("An error occurred. Please try again.");
+            console.error('Error posting the job:', error);
+            setMessage('An error occurred. Please try again.');
         }
     };
 
