@@ -108,7 +108,7 @@ export function AlumniTable() {
         return;
       }
       // Fetch detailed info including surveys
-      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/${student.id}`, {
+      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/${student._id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -116,7 +116,34 @@ export function AlumniTable() {
       
       if (response.status === 200 && response.data.data) {
         console.log('Received student details:', response.data.data); // Debug log
-        setSelectedStudentDetails(response.data.data);
+         // Format the data to match the modal's expected structure
+         const formattedData = {
+          personalInfo: {
+            college: response.data.data.college || 'N/A',
+            course: response.data.data.course || 'N/A',
+            graduationYear: response.data.data.gradyear || 'N/A',
+            lastName: response.data.data.lastName || '',
+            firstName: response.data.data.firstName || '',
+            middleName: response.data.data.middleName || 'N/A',
+            suffix: response.data.data.suffix || 'N/A',
+            address: response.data.data.address || 'N/A',
+            birthday: response.data.data.birthday || 'N/A',
+            email: response.data.data.email || '',
+            contactNumber: response.data.data.contactNumber || 'N/A'
+          },
+          employmentInfo: response.data.data.surveys?.map(survey => ({
+            company: survey.employmentInfo?.company_name || 'N/A',
+            years: survey.employmentInfo?.year_started || 'N/A'
+          })) || [],
+          surveys: response.data.data.surveys?.map(survey => ({
+            title: 'Alumni Survey',
+            dateReceived: new Date(survey.createdAt).toLocaleDateString(),
+            dateSubmitted: new Date(survey.updatedAt).toLocaleDateString()
+          })) || []
+        };
+
+        console.log('Formatted student details:', formattedData);
+        setSelectedStudentDetails(formattedData);
       } else {
         console.error('Invalid response structure:', response);
       }
