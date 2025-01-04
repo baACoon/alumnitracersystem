@@ -72,7 +72,7 @@ export function AlumniTable() {
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedAlumni(new Set(alumniData.map(alumni => alumni.id)));
+      setSelectedAlumni(new Set(alumniData.map(alumni => alumni._id)));
     } else {
       setSelectedAlumni(new Set());
     }
@@ -100,6 +100,13 @@ export function AlumniTable() {
     // First set basic student info
     //setSelectedStudentDetails(student);
     try {
+      console.log('Student data being passed:', student); // Debug log to check student object
+
+      // Make sure we have a valid ID before making the request
+      if (!student._id) {
+        console.error('Invalid student ID:', student);
+        return;
+      }
       // Fetch detailed info including surveys
       const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/${student.id}`, {
         headers: {
@@ -187,11 +194,11 @@ export function AlumniTable() {
                 <td>
                   <input
                     type="checkbox"
-                    id={`select-${alumni.id}`}
-                    checked={selectedAlumni.has(alumni.id)}
-                    onChange={() => handleSelectAlumni(alumni.id)}
+                    id={`select-${alumni._id}`}
+                    checked={selectedAlumni.has(alumni._id)}
+                    onChange={() => handleSelectAlumni(alumni._id)}
                     onClick={(e) => e.stopPropagation()}
-                    aria-label={`Select ${alumni.id}`}
+                    aria-label={`Select ${alumni._id}`}
                   />
                 </td>
                 <td>{alumni.generatedID}</td>
