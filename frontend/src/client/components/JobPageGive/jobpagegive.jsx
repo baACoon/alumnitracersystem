@@ -33,7 +33,7 @@ function JobGiveMainPage() {
       }
 
       try {
-        const response = await fetch('https://your-backend-url/jobs/jobpost?status=Published', {
+        const response = await fetch('https://alumnitracersystem.onrender.com/jobs/jobpost?status=Published', {
           headers: {
             Authorization: `Bearer ${token}`, // Pass token in headers
           },
@@ -77,7 +77,7 @@ function JobGiveMainPage() {
     if (!window.confirm('Are you sure you want to delete this job?')) return;
 
     try {
-      const response = await fetch(`https://your-backend-url/jobs/${jobId}`, {
+      const response = await fetch(`https://alumnitracersystem.onrender.com/jobs/${jobId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
