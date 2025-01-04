@@ -1,38 +1,90 @@
-.PendingSurvey {
-    position: relative;
-    left: 80px;
-    width: 90%;
-    margin-top: 20px;
-  }
+/* PendingSurvey.module.css */
+
+.tableContainer {
+  margin-top: 20px;
+  font-family: "Montserrat", sans-serif;
   
-  .pending-table {
-    width: 100%;
-    margin: 0 auto;
-    border: 1px solid #ddd;
-    font-size: 14px;
-    text-align: left;
-    
-    background-color: blue;
+  border-radius: 8px;
+
+}
+
+.table {
+  width: 100%;
+  border-radius: 5px;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.tableHeader {
+  background-color: #c31d3c;
+  color: #fff;
+  text-align: left;
+  font-weight: bold;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 5px;
+}
+
+.headerCell {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.row:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.row:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.cell {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.actionButton {
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  border: none;
+
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0 5px;
+}
+
+.editButton {
+  background-color: #007bff;
+  color: #fff;
+  width: 40%;
+}
+
+.editButton:hover {
+  background-color: #0056b3;
+}
+
+.publishButton {
+  background-color: #28a745;
+  color: #fff;
+  width: 40%;
+}
+
+.publishButton:hover {
+  background-color: #218838;
+}
+
+/* Responsive Design */
+
+@media (max-width: 768px) {
+  .table {
+    font-size: 0.9rem;
   }
-  
-  .pending-table th {
-    background-color: #900c3f; /* Red header color */
-    color: white;
-    text-align: center;
-    font-weight: bold;
+
+  .actionButton {
+    padding: 5px;
+    font-size: 0.8rem;
   }
-  
-  .pending-table td {
-    vertical-align: middle;
-  }
-  
-  .edit-button {
-    cursor: pointer;
-    text-decoration: underline;
-  }
-  
-  .publish-button {
-    cursor: pointer;
-    text-decoration: underline;
-  }
-  
+}

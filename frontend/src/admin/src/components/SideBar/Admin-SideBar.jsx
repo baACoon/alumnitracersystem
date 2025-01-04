@@ -38,35 +38,15 @@ export function Sidebar({ isOpen, toggleSidebar }) {
             ALUMNI
           </NavLink>
         </div>
-{/* Tabs with Sub-Tabs */}
-<div>
-          <button
-            className={styles.mainTabButton}
-            onClick={() => toggleTab("surveys")}
-          >
-            SURVEYS
-          </button>
-          {activeTab === "surveys" && (
-            <div className={styles.subTabs}>
-              <NavLink
-                to="/SurveyContent"
-                className={({ isActive }) =>
-                  isActive ? styles.subTabActive : styles.subTab
-                }
-              >
-                Published
-              </NavLink>
-              <NavLink
-                to="/SurveyContent/Pending"
-                className={({ isActive }) =>
-                  isActive ? styles.subTabActive : styles.subTab
-                }
-              >
-                Pending
-              </NavLink>
-            </div>
-          )}
-        </div>
+
+        <NavLink
+          to="/SurveyContent"
+          className={({ isActive }) =>
+            isActive ? styles.mainTabActive : styles.mainTab
+          }
+        >
+          SURVEYS
+        </NavLink>
         
         {/* Events Tab */}
         <NavLink

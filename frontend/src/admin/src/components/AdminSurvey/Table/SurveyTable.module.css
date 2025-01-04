@@ -1,102 +1,84 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+/* SurveyTable.module.css */
 
 .tableWrapper {
-    width: 95%;
-    position: relative;
-    left: 50px;
-    overflow-x: auto;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .tableWrapper:focus {
-    outline: 2px solid rgba(195, 29, 60, 1);
-    outline-offset: 2px;
-  }
-  
+  font-family: "Montserrat", sans-serif;
+  margin-top: 20px;
+  overflow-x: auto; /* For responsive tables */
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.header {
+  background-color: #c31d3c;
+  color: #fff;
+  text-align: left;
+  font-weight: bold;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+.row:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.row:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.cell {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.actionCell {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.actionButton {
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.viewButton {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.viewButton:hover {
+  background-color: #218838;
+}
+
+.downloadButton {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.downloadButton:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive Design */
+
+@media (max-width: 768px) {
   .table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: poppins;
+    font-size: 0.9rem;
   }
-  
-  .header {
-    background-color: rgba(195, 29, 60, 1);
-    color: white;
-    padding: 1rem;
-    text-align: left;
-    font-weight: 500;
-  }
-  
-  .header:first-child {
-    border-top-left-radius: 8px;
-  }
-  
-  .header:last-child {
-    border-top-right-radius: 8px;
-  }
-  
-  .row {
-    background-color: rgba(167, 167, 167, 0.1);
-    transition: background-color 0.2s;
-  }
-  
-  .row:nth-child(even) {
-    background-color: rgba(167, 167, 167, 0.2);
-  }
-  
-  .row:hover {
-    background-color: rgba(195, 29, 60, 0.05);
-  }
-  
-  .cell {
-    padding: 1rem;
-    border-bottom: 1px solid rgba(168, 168, 168, 0.2);
-  }
-  
-  .actionCell {
-    padding: 0.5rem;
-    display: flex;
-    gap: 0.5rem;
-    border-bottom: 1px solid rgba(168, 168, 168, 0.2);
-  }
-  
+
   .actionButton {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.2s;
+    padding: 5px;
+    font-size: 0.8rem;
   }
-  
-  .actionButton:hover {
-    opacity: 0.8;
-    transform: translateY(-1px);
-  }
-  
-  .actionButton:focus {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
-  }
-  
-  .viewButton {
-    color: rgba(57, 0, 244, 1);
-    background-color: rgba(57, 0, 244, 0.1);
-  }
-  
-  .downloadButton {
-    color: rgba(43, 158, 41, 1);
-    background-color: rgba(43, 158, 41, 0.1);
-  }
-  
-  @media (max-width: 991px) {
-    .actionCell {
-      flex-direction: column;
-    }
-    
-    .cell, .actionCell {
-      padding: 0.75rem;
-    }
-  }
+}
