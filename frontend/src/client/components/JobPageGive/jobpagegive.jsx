@@ -25,7 +25,7 @@ function JobGiveMainPage() {
   // Fetch published jobs from the backend
   useEffect(() => {
     const fetchJobs = async () => {
-      const token = localStorage.getItem('token'); // Ensure the token is present
+      const token = localStorage.getItem('token'); // Ensure token is included
 
       if (!token) {
         alert('You need to log in first.');
@@ -33,9 +33,9 @@ function JobGiveMainPage() {
       }
 
       try {
-        const response = await fetch('https://alumnitracersystem.onrender.com/jobs/jobpost?status=Published', {
+        const response = await fetch('https://your-backend-url/jobs/jobpost?status=Published', {
           headers: {
-            Authorization: `Bearer ${token}`, // Pass the token in the headers
+            Authorization: `Bearer ${token}`, // Pass token in headers
           },
         });
 
@@ -47,7 +47,7 @@ function JobGiveMainPage() {
         }
 
         const data = await response.json();
-        setJobs(data); // Update the state with the fetched jobs
+        setJobs(data); // Set the fetched jobs in the state
       } catch (error) {
         console.error('Error fetching published jobs:', error);
         alert('An error occurred while fetching published jobs.');
@@ -77,7 +77,7 @@ function JobGiveMainPage() {
     if (!window.confirm('Are you sure you want to delete this job?')) return;
 
     try {
-      const response = await fetch(`https://alumnitracersystem.onrender.com/jobs/${jobId}`, {
+      const response = await fetch(`https://your-backend-url/jobs/${jobId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
