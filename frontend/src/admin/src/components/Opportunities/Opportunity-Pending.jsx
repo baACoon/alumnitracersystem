@@ -68,12 +68,59 @@ export default function OpportunityPending() {
     }
 };
 
+  const handleRejectClick = () => {
+    setShowRejectionForm(true); // Show the rejection form
+  };
+
+  const handleRejectionSubmit = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You need to log in first.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://alumnitracersystem.onrender.com/jobs/${selectedOpportunity._id}/deny`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ feedback: rejectionReason }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Failed to reject opportunity:", errorData);
+        alert(errorData.message || "Failed to reject opportunity.");
+        return;
+      }
+
+      alert(`Opportunity rejected for the following reason: ${rejectionReason}`);
+      setPendingOpportunities((prev) =>
+        prev.filter((opportunity) => opportunity._id !== selectedOpportunity._id)
+      );
+      setRejectionReason("");
+      setShowRejectionForm(false);
+      setSelectedOpportunity(null);
+    } catch (error) {
+      console.error("Error rejecting opportunity:", error);
+      alert("An error occurred while rejecting the opportunity.");
+    }
+  };
+
+
   const handleOpportunityClick = (opportunity) => {
       setSelectedOpportunity(opportunity);
+      setShowRejectionForm(false); 
   };
 
   const closeModal = () => {
       setSelectedOpportunity(null);
+      setShowRejectionForm(false);
   };
 
   if (loading) {
