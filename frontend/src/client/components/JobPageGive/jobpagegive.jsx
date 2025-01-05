@@ -22,7 +22,7 @@ function JobGiveMainPage() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch all jobs with both "Pending" and "Published" statuses
+  // Fetch jobs with "Pending" and "Published" statuses
   useEffect(() => {
     const fetchJobs = async () => {
       const token = localStorage.getItem('token');
@@ -50,7 +50,8 @@ function JobGiveMainPage() {
         }
 
         const data = await response.json();
-        setJobs(data); // Store all jobs in a single list
+        console.log("API Response:", data); // Debug API response
+        setJobs(data); // Update jobs state
       } catch (error) {
         console.error('Error fetching jobs:', error);
         alert('An error occurred while fetching jobs.');
@@ -69,6 +70,8 @@ function JobGiveMainPage() {
   if (loading) {
     return <p>Loading jobs...</p>;
   }
+
+  console.log("Jobs State:", jobs); // Debug jobs state
 
   return (
     <div className="givecontainer">
