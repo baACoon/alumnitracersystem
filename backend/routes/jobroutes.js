@@ -23,29 +23,21 @@ router.post('/jobpost', protect, async (req, res) => {
 
 router.get('/jobpost', protect, async (req, res) => {
     try {
-      const { status } = req.query; // Optional query param for filtering by status
-      const filter = {};
-  
-      if (status) {
-        filter.status = { $in: status.split(',') }; // Allow multiple statuses
-      }
-  
-      // Check if the logged-in user is a client
-      if (req.user.role !== 'admin') {
-        // Only show jobs created by the client
-        filter.createdBy = req.user._id;
-      }
-  
-      const jobs = await Job.find(filter)
-        .populate('createdBy', 'name email') // Populate user details (optional)
-        .sort({ createdAt: -1 }); // Sort by most recent
-  
-      res.status(200).json(jobs);
+        const { status } = req.query; // Optional query param for filtering by status
+        const filter = status
+        ? { status: { $in: status.split(',') } } // Split status into an array for multiple statuses
+        : {};
+
+        const jobs = await Job.find(filter)
+            .populate('createdBy', 'name email') // Populate user details (optional)
+            .sort({ createdAt: -1 }); // Sort by most recent
+
+        res.status(200).json(jobs);
     } catch (error) {
-      console.error('Error Fetching Jobs:', error.message);
-      res.status(500).json({ error: 'Failed to fetch jobs.' });
+        console.error('Error Fetching Jobs:', error.message);
+        res.status(500).json({ error: 'Failed to fetch jobs.' });
     }
-  });
+});
   
 
 
