@@ -22,16 +22,22 @@ const authenticateToken = (req, res, next) => {
 // Get all alumni (with filters and pagination)
 router.get('/all', authenticateToken, async (req, res) => {
   try {
-    const { page = 1, limit = 10, college, course, batch } = req.query;
+    // Validate and sanitize query parameters
+    const page = Math.max(1, parseInt(req.query.page) || 1); // Default page is 1
+    const limit = Math.max(1, parseInt(req.query.limit) || 10); // Default limit is 10
+    const college = req.query.college?.trim() || null;
+    const course = req.query.course?.trim() || null;
+    const batch = parseInt(req.query.batch) || null;
 
+    // Construct query filters
     const query = {};
     if (college) query.college = college;
     if (course) query.course = course;
-    if (batch) query.batch = parseInt(batch);
+    if (batch) query.batch = batch;
 
     // Aggregate pipeline for fetching alumni and their latest survey
     const alumni = await Student.aggregate([
-      { $match: query },
+      { $match: query }, // Match the query filters
       {
         $lookup: {
           from: 'surveys',
@@ -42,12 +48,12 @@ router.get('/all', authenticateToken, async (req, res) => {
       },
       {
         $addFields: {
-          latestSurvey: { $arrayElemAt: ['$surveys', 0] },
+          latestSurvey: { $arrayElemAt: ['$surveys', 0] }, // Get the first survey
         },
       },
-      { $sort: { registrationDate: -1 } },
-      { $skip: (page - 1) * limit },
-      { $limit: parseInt(limit) },
+      { $sort: { registrationDate: -1 } }, // Sort by registrationDate in descending order
+      { $skip: (page - 1) * limit }, // Pagination: Skip documents
+      { $limit: limit }, // Pagination: Limit the number of documents
     ]);
 
     const total = await Student.countDocuments(query);
@@ -82,10 +88,10 @@ router.get('/all', authenticateToken, async (req, res) => {
 });
 
 
-// Get details of a specific alumni by userId
+// Get details of a specific alumnus by userId
 router.get('/user/:userId', authenticateToken, async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.params; // Correct destructuring
 
     // Validate ObjectId format
     if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -93,7 +99,10 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
     }
 
     // Fetch the alumnus from the Student collection
-    const alumnus = await Student.findById(userId);
+    const alumnus = await Student.findById(userId)
+      .populate('surveys') // Populate surveys if referenced
+      .exec();
+
     if (!alumnus) {
       return res.status(404).json({ error: 'Alumnus not found.' });
     }
@@ -101,6 +110,7 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
     // Fetch surveys associated with the alumnus
     const surveys = await SurveySubmission.find({ userId }).sort({ createdAt: -1 });
 
+    // Structure the response with fallback values
     res.status(200).json({
       success: true,
       data: {
@@ -112,8 +122,8 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
           course: alumnus.course || 'N/A',
           birthday: alumnus.birthday || 'N/A',
         },
-        employmentInfo: surveys.length > 0 ? surveys[0].employmentInfo : null,
-        surveys: surveys,
+        employmentInfo: surveys.length > 0 && surveys[0].employmentInfo ? surveys[0].employmentInfo : null,
+        surveys: surveys || [],
       },
     });
   } catch (error) {
@@ -121,6 +131,7 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch alumnus details.' });
   }
 });
+
 
 {/*// Update an alumni (optional endpoint if needed)
 router.get('/update/:id', authenticateToken, async (req, res) => {
