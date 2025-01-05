@@ -1,0 +1,106 @@
+.createSurvey {
+    padding: 20px;
+    font-family: "Montserrat", sans-serif;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #c31d3c;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .backButton {
+    background-color: #ccc;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+  }
+  
+  .backButton:hover {
+    background-color: #bbb;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .questionBox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  
+  .questionInput {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .selectType {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  
+  .addButton,
+  .removeButton,
+  .submitButton {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .addButton {
+    background-color: #c31d3c;
+    color: #fff;
+  }
+  
+  .addButton:hover {
+    background-color: #8f263a;
+  }
+  
+  .removeButton {
+    background-color: #ff4d4d;
+    color: #fff;
+  }
+  
+  .removeButton:hover {
+    background-color: #d43a3a;
+  }
+  
+  .submitButton {
+    background-color: #28a745;
+    color: #fff;
+    margin-top: 20px;
+    align-self: center;
+  }
+  
+  .submitButton:hover {
+    background-color: #218838;
+  }
+  
