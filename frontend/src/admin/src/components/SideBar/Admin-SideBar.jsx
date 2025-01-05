@@ -32,7 +32,7 @@ export function Sidebar({ isOpen, toggleSidebar }) {
           <NavLink
             to="/alumni-page"
             className={({ isActive }) =>
-              isActive ? styles.mainTabActive : styles.mainTabButton
+              isActive ? styles.mainTabActive : styles.mainTab
             }
           >
             ALUMNI
