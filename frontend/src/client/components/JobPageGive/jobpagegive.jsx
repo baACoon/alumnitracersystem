@@ -19,13 +19,13 @@ function JobPageGive() {
 
 function JobGiveMainPage() {
   const navigate = useNavigate();
-  const [jobs, setJobs] = useState([]);
+  const [pendingJobs, setPendingJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch published jobs from the backend
+  // Fetch jobs with "Pending" status from the backend
   useEffect(() => {
-    const fetchJobs = async () => {
-      const token = localStorage.getItem('token'); // Ensure token is included
+    const fetchPendingJobs = async () => {
+      const token = localStorage.getItem('token'); // Include the token in the request
 
       if (!token) {
         alert('You need to log in first.');
@@ -33,7 +33,7 @@ function JobGiveMainPage() {
       }
 
       try {
-        const response = await fetch('https://your-backend-url/jobs/jobpost?status=Published', {
+        const response = await fetch('https://your-backend-url/jobs/jobpost?status=Pending', {
           headers: {
             Authorization: `Bearer ${token}`, // Pass token in headers
           },
@@ -41,62 +41,26 @@ function JobGiveMainPage() {
 
         if (!response.ok) {
           const errorData = await response.json();
-          console.error('Failed to fetch published jobs:', errorData);
-          alert(errorData.message || 'Failed to fetch published jobs.');
+          console.error('Failed to fetch pending jobs:', errorData);
+          alert(errorData.message || 'Failed to fetch pending jobs.');
           return;
         }
 
         const data = await response.json();
-        setJobs(data); // Set the fetched jobs in the state
+        setPendingJobs(data); // Store the pending jobs in state
       } catch (error) {
-        console.error('Error fetching published jobs:', error);
-        alert('An error occurred while fetching published jobs.');
+        console.error('Error fetching pending jobs:', error);
+        alert('An error occurred while fetching pending jobs.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchJobs();
+    fetchPendingJobs();
   }, []);
-
-  const goToJobPage = () => {
-    navigate('/JobPage');
-  };
 
   const goToAddJob = () => {
     navigate('/JobPageGive/addjobForm');
-  };
-
-  const handleDelete = async (jobId) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('You need to log in first.');
-      return;
-    }
-
-    if (!window.confirm('Are you sure you want to delete this job?')) return;
-
-    try {
-      const response = await fetch(`https://your-backend-url/jobs/${jobId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Failed to delete job:', errorData);
-        alert(errorData.message || 'Failed to delete job.');
-        return;
-      }
-
-      alert('Job deleted successfully.');
-      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
-    } catch (error) {
-      console.error('Error deleting job:', error);
-      alert('An error occurred while deleting the job.');
-    }
   };
 
   if (loading) {
@@ -105,7 +69,7 @@ function JobGiveMainPage() {
 
   return (
     <div className="givecontainer">
-      <a onClick={goToJobPage} className="back-button">
+      <a className="back-button" onClick={() => navigate('/JobPage')}>
         Back
       </a>
       <div className="title-container">
@@ -115,24 +79,20 @@ function JobGiveMainPage() {
         </button>
       </div>
 
-      {jobs.length > 0 ? (
-        jobs.map((job) => (
-          <div key={job._id} className="giveoption">
-            <h4 className="give-status">POSTED</h4>
+      {pendingJobs.length > 0 ? (
+        pendingJobs.map((job) => (
+          <div key={job._id} className="giveoption-pending">
+            <h4 className="give-status-pending">PENDING</h4>
             <div className="give-details">
               <h3>{job.title}</h3>
               <h5>{job.location}</h5>
               <h5>{job.type}</h5>
             </div>
-            <FontAwesomeIcon
-              icon={faTrashCan}
-              className="JobPageGiveIcon"
-              onClick={() => handleDelete(job._id)}
-            />
+            <FontAwesomeIcon icon={faTrashCan} className="JobPageGiveIcon" />
           </div>
         ))
       ) : (
-        <p>No published opportunities found.</p>
+        <p>No pending opportunities found.</p>
       )}
     </div>
   );
