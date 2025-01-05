@@ -24,13 +24,12 @@ router.get('/all', authenticateToken, async (req, res) => {
   try {
     const { page = 1, limit = 10, college, course, batch } = req.query;
 
-    // Construct query filters
     const query = {};
     if (college) query.college = college;
     if (course) query.course = course;
     if (batch) query.batch = parseInt(batch);
 
-    // Aggregate pipeline for fetching alumni with survey data
+    // Aggregate pipeline for fetching alumni and their latest survey
     const alumni = await Student.aggregate([
       { $match: query },
       {
@@ -51,12 +50,10 @@ router.get('/all', authenticateToken, async (req, res) => {
       { $limit: parseInt(limit) },
     ]);
 
-    // Count total documents matching the query
     const total = await Student.countDocuments(query);
 
-    // Map the alumni data
-    const mappedAlumni = alumni.map(student => ({
-      userId: student._id.toString(), // Use the `_id` as the userId
+    const mappedAlumni = alumni.map((student) => ({
+      userId: student._id.toString(),
       generatedID: student.generatedID || '',
       personalInfo: {
         firstName: student.firstName || '',
@@ -66,10 +63,9 @@ router.get('/all', authenticateToken, async (req, res) => {
         course: student.course || '',
         birthday: student.birthday || '',
       },
-      latestSurvey: student.latestSurvey || null, // Include the latest survey data
+      latestSurvey: student.latestSurvey || null,
     }));
 
-    // Respond with the mapped alumni data
     res.status(200).json({
       success: true,
       data: mappedAlumni,
@@ -85,44 +81,47 @@ router.get('/all', authenticateToken, async (req, res) => {
   }
 });
 
-/// Get details of a specific alumni
+
+// Get details of a specific alumni by userId
 router.get('/user/:userId', authenticateToken, async (req, res) => {
   try {
+    const { userId } = req.params;
 
-    const userId = req.user.id;
-    // Fetch user's latest survey submission
-    const latestSurvey = await SurveySubmission.findOne(
-      { userId: alumni._id },
-      {},
-      { sort: { 'createdAt': -1 } }
-    );
-
-    if (!latestSurvey) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'No survey data found' 
-      });
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'Invalid userId format' });
     }
 
-    const alumni = await Student.findById(userId);
-    if (!alumni) return res.status(404).json({ error: 'alumni not found.' });
-    // Get all surveys for the completed surveys section
-    const allSurveys = await SurveySubmission.find({ userId: userIdd })
-    .sort({ createdAt: -1 });
+    // Fetch the alumnus from the Student collection
+    const alumnus = await Student.findById(userId);
+    if (!alumnus) {
+      return res.status(404).json({ error: 'Alumnus not found.' });
+    }
 
-        res.status(200).json({
-          success: true,
-          data: {
-            personalInfo: { ...latestSurvey.personalInfo,birthday: alumni.birthday}, // Add birthday from the Student collection,
-        employmentInfo: latestSurvey.employmentInfo,
-        surveys: allSurveys
-          }
-        });
-        } catch (error) {
-          console.error('Error updating alumni:', error);
-          res.status(500).json({ error: 'Failed to update alumni.' });
-        }
-      });
+    // Fetch surveys associated with the alumnus
+    const surveys = await SurveySubmission.find({ userId }).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        personalInfo: {
+          firstName: alumnus.firstName,
+          lastName: alumnus.lastName,
+          email: alumnus.email,
+          college: alumnus.college,
+          course: alumnus.course,
+          birthday: alumnus.birthday,
+        },
+        employmentInfo: surveys.length > 0 ? surveys[0].employmentInfo : null,
+        surveys: surveys,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching alumnus details:', error.message);
+    res.status(500).json({ error: 'Failed to fetch alumnus details.' });
+  }
+});
+
 {/*// Update an alumni (optional endpoint if needed)
 router.get('/update/:id', authenticateToken, async (req, res) => {
   try {
