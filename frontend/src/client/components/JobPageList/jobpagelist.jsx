@@ -30,20 +30,30 @@ function JobListMainPage() {
 
   useEffect(() => {
     const fetchJobs = async () => {
-      try {
-        const response = await axios.get(
-          "https://alumnitracersystem.onrender.com/jobs/jobpost",
-          {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          }
-        );
-        setJobs(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching jobs:", error);
-        setLoading(false);
+      if (!token) {
+        alert('You need to log in first.');
+        return;
       }
-    };
+
+try {
+      const response = await fetch(
+        'https://alumnitracersystem.onrender.com/jobs/jobpost?status=Published'
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Failed to fetch jobs:', errorData);
+        return;
+      }
+
+      const data = await response.json();
+      setJobs(data);
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
     fetchJobs();
   }, []);
 
