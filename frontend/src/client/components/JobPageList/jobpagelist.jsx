@@ -22,6 +22,7 @@ function JobListMainPage() {
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState({});
   const [likes, setLikes] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const goToJobPage = () => {
     navigate("/JobPage");
@@ -71,6 +72,10 @@ function JobListMainPage() {
       [jobId]: (prevLikes[jobId] || 0) + 1,
     }));
   };
+
+  if (loading) {
+    return <p>Loading please wait....</p>;
+  }
 
   return (
     <div className="listcontainer">
