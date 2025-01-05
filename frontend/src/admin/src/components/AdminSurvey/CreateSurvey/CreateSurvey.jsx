@@ -76,19 +76,19 @@ export const CreateSurvey = ({ onBack }) => {
             {question.type === 'linearScale' && (
               <div className={styles.linearScale}>
                 <label>
-                  Least (1):
+                  <h6>Least (1):</h6>
                   <input
                     type="text"
-                    placeholder="Label for 1"
+                    placeholder="Label (Optional)"
                     value={question.config.least || ''}
                     onChange={(e) => updateConfig(index, 'least', e.target.value)}
                   />
                 </label>
                 <label>
-                  Great (5):
+                  <h6>Great (5):</h6>
                   <input
                     type="text"
-                    placeholder="Label for 5"
+                    placeholder="Label (Optional)"
                     value={question.config.great || ''}
                     onChange={(e) => updateConfig(index, 'great', e.target.value)}
                   />
