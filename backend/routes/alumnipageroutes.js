@@ -85,6 +85,12 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: 'Invalid userId format.' });
     }
 
+    const student = await Student.findById(userId).lean(); // Fetch graduation year and other student-specific fields
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found.' });
+    }
+
+
     // Fetch surveys associated with the given userId
     const surveys = await SurveySubmission.find({ userId }).sort({ createdAt: -1 }).lean();
 
@@ -106,6 +112,7 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
             birthday: latestSurvey.birthday || 'N/A',
           },
           college: latestSurvey.personalInfo.college || 'N/A',
+          gradyear: student.gradyear || 'N/A',
           course:  latestSurvey.personalInfo.course || 'N/A',
           employmentInfo: surveys.length > 0 && surveys[0].employmentInfo ? surveys[0].employmentInfo : null,
           surveys: surveys || [],
