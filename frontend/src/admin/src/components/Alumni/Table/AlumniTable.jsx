@@ -91,8 +91,13 @@ export function AlumniTable() {
   const filteredAlumni = alumniData.filter((alumni) =>
     `${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   console.log('Filtered Alumni:', filteredAlumni);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  };
+
 
   return (
     <section className={styles.tableSection}>
@@ -187,7 +192,7 @@ export function AlumniTable() {
                   <h3>Personal Information</h3>
                   <div className={styles.profileInfo}>
                     <div>
-                      <strong>Degree:</strong> {studentDetails.personalInfo?.degree || 'N/A'}
+                      <strong>Degree:</strong> {studentDetails.degree || 'N/A'}
                     </div>
                     <div>
                       <strong>College:</strong> {studentDetails.college || 'N/A'}
@@ -199,25 +204,25 @@ export function AlumniTable() {
                       <strong>Graduation Year:</strong> {studentDetails.gradyear || 'N/A'}
                     </div>
                     <div>
-                      <strong>Last Name:</strong> {studentDetails.personalInfo?.last_name || 'N/A'}
+                      <strong>Last Name:</strong> {studentDetails.last_name || 'N/A'}
                     </div>
                     <div>
-                      <strong>First Name:</strong> {studentDetails.personalInfo?.first_name || 'N/A'}
+                      <strong>First Name:</strong> {studentDetails.first_name || 'N/A'}
                     </div>
                     <div>
-                      <strong>Middle Name:</strong> {studentDetails.personalInfo?.middle_name || 'N/A'}
+                      <strong>Middle Name:</strong> {studentDetails.middle_name || 'N/A'}
                     </div>
                     <div>
-                      <strong>Address:</strong> {studentDetails.personalInfo?.address || 'N/A'}
+                      <strong>Address:</strong> {studentDetails.address || 'N/A'}
                     </div>
                     <div>
-                      <strong>Birthday:</strong> {studentDetails.personalInfo?.birthday || 'N/A'}
+                      <strong>Birthday:</strong> {formatDate (studentDetails.personalInfo?.birthday) || 'N/A'}
                     </div>
                     <div>
-                      <strong>email_address:</strong> {studentDetails.personalInfo?.email_address || 'N/A'}
+                      <strong>Email:</strong> {studentDetails.email_address || 'N/A'}
                     </div>
                     <div>
-                      <strong>Contact No:</strong> {studentDetails.personalInfo?.contact_no || 'N/A'}
+                      <strong>Contact No:</strong> {studentDetails.contact_no || 'N/A'}
                     </div>
                   </div>
                 </div>
@@ -245,8 +250,8 @@ export function AlumniTable() {
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{survey.title || 'N/A'}</td>
-                          <td>{survey.dateReceived || 'N/A'}</td>
-                          <td>{survey.dateSubmitted || 'N/A'}</td>
+                          <td>{formatDate (survey.date) || 'N/A'}</td>
+                          <td>{formatDate(survey.createdAt) || 'N/A'}</td>
                         </tr>
                       ))}
                     </tbody>
