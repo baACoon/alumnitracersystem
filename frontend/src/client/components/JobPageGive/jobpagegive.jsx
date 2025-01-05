@@ -19,13 +19,13 @@ function JobPageGive() {
 
 function JobGiveMainPage() {
   const navigate = useNavigate();
-  const [pendingJobs, setPendingJobs] = useState([]);
+  const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch jobs with "Pending" status from the backend
+  // Fetch jobs with both "Pending" and "Published" statuses
   useEffect(() => {
-    const fetchPendingJobs = async () => {
-      const token = localStorage.getItem('token'); // Include the token in the request
+    const fetchJobs = async () => {
+      const token = localStorage.getItem('token');
 
       if (!token) {
         alert('You need to log in first.');
@@ -33,30 +33,39 @@ function JobGiveMainPage() {
       }
 
       try {
-        const response = await fetch('https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending', {
-          headers: {
-            Authorization: `Bearer ${token}`, // Pass token in headers
-          },
-        });
+        const response = await fetch(
+          'https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           const errorData = await response.json();
-          console.error('Failed to fetch pending jobs:', errorData);
-          alert(errorData.message || 'Failed to fetch pending jobs.');
+          console.error('Failed to fetch jobs:', errorData);
+          alert(errorData.message || 'Failed to fetch jobs.');
           return;
         }
 
         const data = await response.json();
-        setPendingJobs(data); // Store the pending jobs in state
+        console.log('API Response:', data); // Debug API response
+        if (Array.isArray(data)) {
+          setJobs(data); // Update jobs state only if data is an array
+        } else {
+          console.error('Unexpected API response format:', data);
+          alert('Failed to fetch jobs: Invalid response format.');
+        }
       } catch (error) {
-        console.error('Error fetching pending jobs:', error);
-        alert('An error occurred while fetching pending jobs.');
+        console.error('Error fetching jobs:', error);
+        alert('An error occurred while fetching jobs.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPendingJobs();
+    fetchJobs();
   }, []);
 
   const goToAddJob = () => {
@@ -66,6 +75,8 @@ function JobGiveMainPage() {
   if (loading) {
     return <p>Loading jobs...</p>;
   }
+
+  console.log('Jobs State:', jobs); // Debug jobs state before rendering
 
   return (
     <div className="givecontainer">
@@ -79,20 +90,29 @@ function JobGiveMainPage() {
         </button>
       </div>
 
-      {pendingJobs.length > 0 ? (
-        pendingJobs.map((job) => (
-          <div key={job._id} className="giveoption-pending">
-            <h4 className="give-status-pending">PENDING</h4>
+      {jobs.length > 0 ? (
+        jobs.map((job) => (
+          <div
+            key={job._id}
+            className={`giveoption ${job.status === 'Published' ? 'published-highlight' : ''}`}
+          >
+            <h4 className={`give-status ${job.status === 'Published' ? 'published' : 'pending'}`}>
+              {job.status.toUpperCase()}
+            </h4>
             <div className="give-details">
               <h3>{job.title}</h3>
               <h5>{job.location}</h5>
               <h5>{job.type}</h5>
             </div>
-            <FontAwesomeIcon icon={faTrashCan} className="JobPageGiveIcon" />
+            <FontAwesomeIcon
+              icon={faTrashCan}
+              className="JobPageGiveIcon"
+              onClick={() => console.log(`Delete job ${job._id}`)}
+            />
           </div>
         ))
       ) : (
-        <p>No pending opportunities found.</p>
+        <p>No opportunities found.</p>
       )}
     </div>
   );

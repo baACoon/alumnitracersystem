@@ -153,3 +153,130 @@
     color: #ff0000; /* Bright red on hover */
     transform: rotate(-15deg); /* Adds a playful hover effect */
   }
+
+
+  /* Container styling remains the same */
+
+/* Container styling */
+.givecontainer {
+  padding: 200px 20px 100px; /* Account for the fixed header */
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Back button styling */
+.back-button {
+  display: inline-block;
+  margin-bottom: 15px;
+  color: #c31d3c;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.back-button:hover {
+  text-decoration: underline;
+}
+
+/* Title styling */
+.title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.give-title {
+  margin-bottom: 5px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #333;
+}
+
+.add-button {
+  background-color: #27a543; /* Green background */
+  color: #fff; /* White text */
+  font-size: 14px;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-button:hover {
+  background-color: #1db83f; /* Darker green on hover */
+  transform: scale(1.05); /* Slight zoom effect */
+}
+
+.add-button:active {
+  transform: scale(0.95); /* Slight shrink effect on click */
+}
+
+/* Individual option styling */
+.giveoption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
+  border: 2px solid #ccc;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Highlight Published Jobs */
+.published-highlight {
+  border-color: #27a543; /* Green border for published jobs */
+  background-color: #e6f7e6; /* Light green background */
+}
+
+/* Status styling */
+.give-status {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.give-status.pending {
+  background-color: #aaaaaa; /* Gray for pending */
+  color: #fff;
+}
+
+.give-status.published {
+  background-color: #27a543; /* Green for published */
+  color: #fff;
+}
+
+/* Details styling */
+.give-details h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.give-details h5 {
+  margin: 2px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Trash icon styling */
+.JobPageGiveIcon {
+  color: #ff4d4d;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.JobPageGiveIcon:hover {
+  color: #ff0000;
+  transform: rotate(-15deg);
+}

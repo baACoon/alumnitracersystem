@@ -24,7 +24,9 @@ router.post('/jobpost', protect, async (req, res) => {
 router.get('/jobpost', protect, async (req, res) => {
     try {
         const { status } = req.query; // Optional query param for filtering by status
-        const filter = status ? { status } : {};
+        const filter = status
+        ? { status: { $in: status.split(',') } } // Split status into an array for multiple statuses
+        : {};
 
         const jobs = await Job.find(filter)
             .populate('createdBy', 'name email') // Populate user details (optional)
