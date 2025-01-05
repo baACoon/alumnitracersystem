@@ -22,7 +22,7 @@ function JobGiveMainPage() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch jobs with "Pending" and "Published" statuses
+  // Fetch jobs with both "Pending" and "Published" statuses
   useEffect(() => {
     const fetchJobs = async () => {
       const token = localStorage.getItem('token');
@@ -50,8 +50,13 @@ function JobGiveMainPage() {
         }
 
         const data = await response.json();
-        console.log("API Response:", data); // Debug API response
-        setJobs(data); // Update jobs state
+        console.log('API Response:', data); // Debug API response
+        if (Array.isArray(data)) {
+          setJobs(data); // Update jobs state only if data is an array
+        } else {
+          console.error('Unexpected API response format:', data);
+          alert('Failed to fetch jobs: Invalid response format.');
+        }
       } catch (error) {
         console.error('Error fetching jobs:', error);
         alert('An error occurred while fetching jobs.');
@@ -71,7 +76,7 @@ function JobGiveMainPage() {
     return <p>Loading jobs...</p>;
   }
 
-  console.log("Jobs State:", jobs); // Debug jobs state
+  console.log('Jobs State:', jobs); // Debug jobs state before rendering
 
   return (
     <div className="givecontainer">
@@ -85,7 +90,6 @@ function JobGiveMainPage() {
         </button>
       </div>
 
-      {/* Display All Jobs */}
       {jobs.length > 0 ? (
         jobs.map((job) => (
           <div
