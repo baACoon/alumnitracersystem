@@ -59,9 +59,9 @@ router.get('/all', authenticateToken, async (req, res) => {
       userId: survey.userId.toString(),
       generatedID: survey.studentInfo.generatedID,
       personalInfo: {
-        firstName: survey.personalInfo.first_name,
-        lastName: survey.personalInfo.last_name,
-        email: survey.personalInfo.email_address,
+        first_name: survey.personalInfo.first_name,
+        last_name: survey.personalInfo.last_name,
+        email_address: survey.personalInfo.email_address,
         college: survey.personalInfo.college,
         course: survey.personalInfo.course,
         birthday: survey.studentInfo.birthday || 'N/A',
