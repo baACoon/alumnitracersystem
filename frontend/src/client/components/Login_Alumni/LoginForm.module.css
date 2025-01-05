@@ -1,5 +1,5 @@
 /* Modal overlay for login */
-.modal-overlay-login {
+.modalOverlayLogin {
     position: fixed;
     top: 0;
     left: 0;
@@ -13,7 +13,7 @@
 }
 
 /* Modal content for login */
-.modal-content-login {
+.modalContentLogin {
     background-color: #5D0E1D;
     border-radius: 8px;
     padding: 30px;
@@ -22,12 +22,12 @@
     position: relative;
 }
 
-.modal-content-login h2{
+.modalContentLogin h2{
     color: white;
     font-weight: 600;
 }
 
-.modal-content-login h5{
+.modalContentLogin h5{
     text-align: left;
     width: 100%;
     padding-bottom: 0;
@@ -35,7 +35,7 @@
 
 
 /* Close button for login */
-.close-btn-login {
+.closeButtonLogin {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -46,12 +46,12 @@
     cursor: pointer;
 }
 
-.close-btn-login:hover {
+.closeButtonLogin:hover {
     color: #ff0000;
 }
 
 /* Modal title for login */
-.modal-title-login {
+.modalTitleLogin {
     font-size: 24px;
     color: #333;
     margin-bottom: 20px;
@@ -59,13 +59,13 @@
 }
 
 /* Form styling for login */
-.login-form {
+.loginForm {
     display: flex;
     flex-direction: column;
 }
 
 /* Input fields and select elements for login */
-.input-field-login {
+.inputFieldLogin {
     width: 100%;
     padding: 12px;
     margin-bottom: 10px;
@@ -75,7 +75,7 @@
 }
 
 /* Submit button for login */
-.submit-btn-login {
+.submitButtonLogin {
     align-self: center;
     padding: 12px;
     background-color: #C12542;
@@ -88,18 +88,18 @@
     transition: background-color 0.3s;
 }
 
-.submit-btn-login:hover {
+.submitButtonLogin:hover {
     background-color: #220107;
 }
 
 /* Responsive design for login modal */
 @media (max-width: 500px) {
-    .modal-content-login {
+    .modalContentLogin {
         width: 90%;
         padding: 20px;
     }
 
-    .input-field-login {
+    .inputFieldLogin {
         padding: 10px;
     }
 

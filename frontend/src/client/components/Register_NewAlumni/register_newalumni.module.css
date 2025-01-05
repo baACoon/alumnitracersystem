@@ -1,5 +1,5 @@
 /* Modal overlay */
-.modal-overlay-new-alumni {
+.modalOverlayNewAlumni {
     position: fixed;
     top: 0;
     left: 0;
@@ -13,7 +13,7 @@
 }
 
 /* Modal content */
-.modal-content-new-alumni {
+.modalContentNewAlumni {
     background-color: #5D0E1D;
     border-radius: 8px;
     padding: 30px;
@@ -23,7 +23,7 @@
 }
 
 /* Close button */
-.close-btn-new-alumni {
+.closeButtonNewAlumni {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -34,12 +34,12 @@
     cursor: pointer;
 }
 
-.close-btn-new-alumni:hover {
+.closeButtonNewAlumni:hover {
     color: #db4040;
 }
 
 /* Modal title */
-.modal-title-new-alumni {
+.modalTitleNewAlumni {
     font-size: 24px;
     color: #ffffff;
     margin-bottom: 20px;
@@ -47,13 +47,13 @@
 }
 
 /* Form styling */
-.register-form-new-alumni {
+.registerForm {
     display: flex;
     flex-direction: column;
 }
 
 /* Input fields and select elements */
-.input-field-new-alumni {
+.inputFieldNewAlumni {
     width: 100%;
     padding: 12px;
     margin-bottom: 10px;
@@ -63,7 +63,7 @@
 }
 
 /* Button */
-.submit-btn-new-alumni {
+.submitButtonNewAlumni {
     width: 50%;
     align-self: center;
     padding: 12px;
@@ -76,12 +76,12 @@
     transition: background-color 0.3s;
 }
 
-.submit-btn-new-alumni:hover {
+.submitButtonNewAlumni:hover {
     background-color: #350e15;
 }
 
 /* Modal container */
-.unique-id-modal {
+.uniqueIdModal {
     position: fixed; /* Keeps the modal in place */
     top: 50%; /* Centers vertically */
     left: 50%; /* Centers horizontally */
@@ -97,14 +97,14 @@
   }
   
   /* Modal title */
-  .unique-id-modal h3 {
+  .uniqueIdModal h3 {
     font-size: 1.5em;
     margin-bottom: 10px;
     color: #ffffff; /* Darker text for readability */
   }
   
   /* Modal text */
-  .unique-id-modal p {
+  .uniqueIdModal p {
     font-size: 1em;
     font-weight: 500;
     margin-bottom: 15px;
@@ -112,7 +112,7 @@
   }
   
   /* Emphasized User ID */
-  .unique-id-modal strong {
+  .uniqueIdModal strong {
     color: #ffffff; /* Highlighted color for User ID */
     font-weight: bold;
     background-color: #C12542;
@@ -123,16 +123,16 @@
   
 /* Responsive design */
 @media (max-width: 500px) {
-    .modal-content-new-alumni {
+    .modalContentNewAlumni {
         width: 90%;
         padding: 20px;
     }
 
-    .input-field-new-alumni {
+    .inputFieldNewAlumni {
         padding: 10px;
     }
 
-    .submit-btn-new-alumni {
+    .submitButtonNewAlumni {
         padding: 10px;
     }
 }
