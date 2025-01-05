@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './LoginForm.css';
+import styles from './LoginForm.module.css'; // Import module-based styles
 
 const TestLoginForm = ({ closeModal }) => {
   const [alumniID, setAlumniID] = useState('');
@@ -30,25 +30,27 @@ const TestLoginForm = ({ closeModal }) => {
         console.log("Storing userId in localStorage:", data.user.id);
         localStorage.clear();
         localStorage.setItem("userId", data.user.id);
-        localStorage.setItem("token", data.token);        
+        localStorage.setItem("token", data.token);
         alert("Login successful!");
         closeModal();
         navigate("/home");
       } else {
-       alert(`Error: ${data.error || 'Login failed'}`);
+        alert(`Error: ${data.error || 'Login failed'}`);
       }
     } catch (error) {
       console.error('Error during login:', error);
-     alert('There was an error with the login request.');
+      alert('There was an error with the login request.');
     }
   };
 
   return (
-    <div className="modal-overlay-login">
-      <div className="modal-content-login">
-        <button className="close-btn-login" onClick={closeModal}>&times;</button>
-        <h2 className="modal-title-login">LOGIN</h2>
-        <form onSubmit={handleLogin} className="login-form">
+    <div className={styles.modalOverlayLogin}>
+      <div className={styles.modalContentLogin}>
+        <button className={styles.closeButtonLogin} onClick={closeModal}>
+          &times;
+        </button>
+        <h2 className={styles.modalTitleLogin}>LOGIN</h2>
+        <form onSubmit={handleLogin} className={styles.loginForm}>
           <h5>Alumni ID</h5>
           <input
             type="text"
@@ -56,7 +58,7 @@ const TestLoginForm = ({ closeModal }) => {
             value={alumniID}
             onChange={(e) => setAlumniID(e.target.value)}
             required
-            className="input-field-login"
+            className={styles.inputFieldLogin}
           />
           <h5>Enter Password</h5>
           <input
@@ -65,9 +67,11 @@ const TestLoginForm = ({ closeModal }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="input-field-login"
+            className={styles.inputFieldLogin}
           />
-          <button type="submit" className="submit-btn-login">Login</button>
+          <button type="submit" className={styles.submitButtonLogin}>
+            Login
+          </button>
         </form>
       </div>
     </div>

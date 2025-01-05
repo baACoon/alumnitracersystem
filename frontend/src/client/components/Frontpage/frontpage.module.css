@@ -1,4 +1,4 @@
-.frontpg-container {
+.frontpgContainer {
     background-image: linear-gradient(
             to right,
             rgba(32, 5, 5, 0.85),
@@ -35,20 +35,20 @@
     height: auto;
 }
 
-.frontpg-container .system-title {
+.frontpgContainer .systemTitle {
     text-align: center; /* Center-aligns the text */
     margin-top: 20px; /* Adjust spacing as needed */
     animation: bounceUp 1s ease; /* Trigger the bounce animation */
 }
 
-.frontpg-container .system-title .system-title-1 {
+.frontpgContainer .systemTitle .systemTitle1 {
     font-weight: 800;
     font-size: 35px;
     margin: 10px 0;
 }
 
 
-.btn {
+.btnFrontPage {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
@@ -56,7 +56,7 @@
     animation: bounceUp 1s ease; /* Trigger the bounce animation */
 }
 
-.btn button {
+.btnFrontPage button {
     width: 250px;
     height: 50px;
     border-radius: 10px;
@@ -70,7 +70,7 @@
     
 }
 
-.btn button:hover {
+.btnFrontPage button:hover {
     background-color: #220107;
 }
 
