@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Chart } from 'chart.js';
-import styles from './EmploymentHistory.module.css'; // Adjust the path if needed
+import styles from './AlumniTable.module.css'; // Adjust the path if needed
 
 const EmploymentHistory = ({ employmentInfo }) => {
   useEffect(() => {
