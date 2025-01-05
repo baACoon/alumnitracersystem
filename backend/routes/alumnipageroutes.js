@@ -36,28 +36,38 @@ router.get('/all', authenticateToken, async (req, res) => {
 
     
 
-    // Fetch survey data directly from the surveys collection
-    const surveys = await SurveySubmission.find(query)
-      .sort({ createdAt: -1 }) // Sort by most recent submission
-      .skip((page - 1) * limit) // Pagination: Skip documents
-      .limit(limit) // Pagination: Limit the number of documents
-      .lean(); // Return plain JavaScript objects instead of Mongoose documents
+    const surveys = await SurveySubmission.aggregate([
+      { $match: query }, // Apply the filters
+      {
+        $lookup: {
+          from: 'students', // Collection name for `Student`
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'studentInfo', // Resulting array of matched students
+        },
+      },
+      { $unwind: '$studentInfo' }, // Flatten the joined `studentInfo` array
+      { $sort: { createdAt: -1 } }, // Sort by the most recent survey
+      { $skip: (page - 1) * limit }, // Pagination: Skip documents
+      { $limit: limit }, // Pagination: Limit the number of documents
+    ]);
 
     const total = await SurveySubmission.countDocuments(query); // Total matching documents
 
     // Map surveys to include only relevant fields for the frontend
     const mappedSurveys = surveys.map((survey) => ({
       userId: survey.userId.toString(),
-      
+      generatedID: survey.studentInfo.generatedID,
       personalInfo: {
-        first_name: survey.personalInfo.first_name,
-        last_name: survey.personalInfo.last_name,
-        email_address: survey.personalInfo.email_address,
+        firstName: survey.personalInfo.first_name,
+        lastName: survey.personalInfo.last_name,
+        email: survey.personalInfo.email_address,
         college: survey.personalInfo.college,
         course: survey.personalInfo.course,
-        birthday: survey.personalInfo.birthday || 'N/A',
+        birthday: survey.studentInfo.birthday || 'N/A',
       },
       employmentInfo: survey.employmentInfo || {},
+      gradyear: survey.studentInfo.gradyear,
       submittedAt: survey.createdAt,
     }));
 
