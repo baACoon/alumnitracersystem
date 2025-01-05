@@ -157,6 +157,62 @@
 
   /* Container styling remains the same */
 
+/* Container styling */
+.givecontainer {
+  padding: 200px 20px 100px; /* Account for the fixed header */
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Back button styling */
+.back-button {
+  display: inline-block;
+  margin-bottom: 15px;
+  color: #c31d3c;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.back-button:hover {
+  text-decoration: underline;
+}
+
+/* Title styling */
+.title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.give-title {
+  margin-bottom: 5px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #333;
+}
+
+.add-button {
+  background-color: #27a543; /* Green background */
+  color: #fff; /* White text */
+  font-size: 14px;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-button:hover {
+  background-color: #1db83f; /* Darker green on hover */
+  transform: scale(1.05); /* Slight zoom effect */
+}
+
+.add-button:active {
+  transform: scale(0.95); /* Slight shrink effect on click */
+}
+
 /* Individual option styling */
 .giveoption {
   display: flex;
@@ -198,7 +254,7 @@
   color: #fff;
 }
 
-/* Details styling remains the same */
+/* Details styling */
 .give-details h3 {
   margin: 0;
   font-size: 18px;
@@ -212,7 +268,7 @@
   color: #666;
 }
 
-/* Trash icon styling remains the same */
+/* Trash icon styling */
 .JobPageGiveIcon {
   color: #ff4d4d;
   font-size: 20px;
