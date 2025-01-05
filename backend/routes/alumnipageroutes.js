@@ -52,18 +52,16 @@ router.get('/all', authenticateToken, async (req, res) => {
       { $skip: (page - 1) * limit }, // Pagination: Skip documents
       { $limit: limit }, // Pagination: Limit the number of documents
     ]);
-
-
     const total = await SurveySubmission.countDocuments(query); // Total matching documents
 
-    // Map surveys to include only relevant fields for the frontend2wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-    const mappedSurveys = surveys.map((survey) => ({     //student
+    // Map surveys to include only relevant fields for the frontend
+    const mappedSurveys = surveys.map((survey) => ({
       userId: survey.userId.toString(),
       generatedId: studentInfo.generatedId,
       personalInfo: {
-        firstName: studentInfo.firstName,
-        lastName: studentInfo.lastName,
-        email_address: studentInfo.email,
+        first_name: survey.personalInfo.first_name,
+        last_name: survey.personalInfo.last_name,
+        email_address: survey.personalInfo.email_address,
         college: survey.personalInfo.college,
         course: survey.personalInfo.course,
         birthday: survey.studentInfo.birthday || 'N/A',
