@@ -29,7 +29,7 @@ function JobListMainPage() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get("http://localhost:5050/jobs/", {
+        const response = await axios.get("https://alumnitracersystem.onrender.com/jobs/jobpost", {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         setJobs(response.data);
