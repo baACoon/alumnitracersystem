@@ -4,6 +4,7 @@ import styles from './AlumniTable.module.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import  {jwtDecode} from 'jwt-decode';
+import EmploymentHistory from './EmploymentHistory';
 
 export function AlumniTable() {
   const [alumniData, setAlumniData] = useState([]);
@@ -227,25 +228,8 @@ export function AlumniTable() {
 
                         <hr className={styles.sectionDivider} />
                         {/* Employment History Section */}
-                            <div className={styles.employmentHistory}>
-                              <h3 style={{ color: '#900c3f' }}>Alumni's Employment History</h3>
-                                <table className={styles.employmentTable}>
-                                  <thead>
-                                    <tr>
-                                      <th>Company</th>
-                                      <th>Years of Employment</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                  {studentDetails.employmentInfo && studentDetails.employmentInfo.map((job, index) =>  (
-                                      <tr key={index}>
-                                        <td>{job.company}</td>
-                                        <td>{job.years}</td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                            </div>
+                            {/* EmploymentHistory Component */}
+                               <EmploymentHistory employmentInfo={studentDetails.employmentInfo || []} />
                             <hr className={styles.sectionDivider} />
 
                             {/* Submitted Surveys Section */}
