@@ -1,18 +1,28 @@
 import React, { useState } from 'react';
 import styles from './CreateSurvey.module.css';
-import { useNavigate } from 'react-router-dom';
 
 export const CreateSurvey = ({ onBack }) => {
   const [questions, setQuestions] = useState([]);
-  const navigate = useNavigate();
 
   const addQuestion = () => {
-    setQuestions([...questions, { type: '', question: '' }]);
+    setQuestions([...questions, { type: '', question: '', config: {} }]);
   };
 
   const updateQuestion = (index, field, value) => {
     const updatedQuestions = [...questions];
     updatedQuestions[index][field] = value;
+
+    // Reset config when question type changes
+    if (field === 'type') {
+      updatedQuestions[index].config = {};
+    }
+
+    setQuestions(updatedQuestions);
+  };
+
+  const updateConfig = (index, key, value) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions[index].config[key] = value;
     setQuestions(updatedQuestions);
   };
 
@@ -22,10 +32,10 @@ export const CreateSurvey = ({ onBack }) => {
 
   return (
     <div className={styles.createSurvey}>
-      <h1 className={styles.title}>Create New Survey</h1>
       <button className={styles.backButton} onClick={onBack}>
-        Back
+        Back to Surveys
       </button>
+      <h1 className={styles.title}>Create New Survey</h1>
       <div className={styles.form}>
         {questions.map((question, index) => (
           <div key={index} className={styles.questionBox}>
@@ -49,11 +59,80 @@ export const CreateSurvey = ({ onBack }) => {
               <option value="shortAnswer">Short Answer</option>
               <option value="multipleChoice">Multiple Choice</option>
             </select>
+
+            {/* Dynamic Configurations Based on Question Type */}
+            {question.type === 'shortAnswer' && (
+              <div className={styles.exampleField}>
+                <input type="text" disabled placeholder="Short answer example" />
+              </div>
+            )}
+
+            {question.type === 'longAnswer' && (
+              <div className={styles.exampleField}>
+                <textarea disabled placeholder="Long answer example" />
+              </div>
+            )}
+
+            {question.type === 'linearScale' && (
+              <div className={styles.linearScale}>
+                <label>
+                  Least (1):
+                  <input
+                    type="text"
+                    placeholder="Label for 1"
+                    value={question.config.least || ''}
+                    onChange={(e) => updateConfig(index, 'least', e.target.value)}
+                  />
+                </label>
+                <label>
+                  Great (5):
+                  <input
+                    type="text"
+                    placeholder="Label for 5"
+                    value={question.config.great || ''}
+                    onChange={(e) => updateConfig(index, 'great', e.target.value)}
+                  />
+                </label>
+              </div>
+            )}
+
+            {question.type === 'multipleChoice' && (
+              <div className={styles.multipleChoice}>
+                {question.config.options?.map((option, optIndex) => (
+                  <div key={optIndex} className={styles.option}>
+                    <input
+                      type="text"
+                      placeholder={`Option ${optIndex + 1}`}
+                      value={option}
+                      onChange={(e) =>
+                        updateConfig(index, 'options', [
+                          ...question.config.options.slice(0, optIndex),
+                          e.target.value,
+                          ...question.config.options.slice(optIndex + 1),
+                        ])
+                      }
+                    />
+                  </div>
+                ))}
+                <button
+                  className={styles.addOptionButton}
+                  onClick={() =>
+                    updateConfig(index, 'options', [
+                      ...(question.config.options || []),
+                      '',
+                    ])
+                  }
+                >
+                  Add Option
+                </button>
+              </div>
+            )}
+
             <button
               className={styles.removeButton}
               onClick={() => removeQuestion(index)}
             >
-              Remove
+              Remove Question
             </button>
           </div>
         ))}
