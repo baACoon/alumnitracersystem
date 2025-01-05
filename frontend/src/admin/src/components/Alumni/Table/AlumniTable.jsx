@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './AlumniTable.module.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 export function AlumniTable() {
   const [alumniData, setAlumniData] = useState([]);
@@ -27,7 +27,8 @@ export function AlumniTable() {
         const response = await axios.get('https://alumnitracersystem.onrender.com/api/alumni/all', {
           headers: { 'Authorization': `Bearer ${token}` },
         });
-
+        
+        console.log('API Response Data:', response.data); // Debug log
         if (response.data?.data) {
           setAlumniData(response.data.data);
         } else {
@@ -67,18 +68,8 @@ export function AlumniTable() {
 
       console.log('API response data:', response.data);
 
-      if (response.status === 200 && response.data.data) {
-        const detailedData = response.data.data;
-
-        // Map fields to expected frontend structure
-        setStudentDetails({
-          ...detailedData,
-          personalInfo: {
-            ...detailedData.personalInfo,
-            firstName: detailedData.personalInfo.first_name,
-            lastName: detailedData.personalInfo.last_name,
-          },
-        });
+      if (response.data?.data) {
+        setStudentDetails(response.data.data);
       } else {
         console.error('Unexpected API response structure:', response.data);
         alert('Failed to fetch student details.');
@@ -94,7 +85,7 @@ export function AlumniTable() {
   };
 
   const filteredAlumni = alumniData.filter((alumni) =>
-    `${alumni.firstName} ${alumni.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
+    `${alumni.personalInfo.firstName} ${alumni.personalInfo.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -128,16 +119,17 @@ export function AlumniTable() {
                 checked={selectedAlumni.size === alumniData.length}
               />
             </th>
-            <th>TUP-ID</th>
+            <th>USER-ID</th>
             <th>Name</th>
             <th>College</th>
-            <th>Department</th>
             <th>Course</th>
             <th>Email</th>
+            <th>Birthday</th>
           </tr>
         </thead>
         <tbody>
-        {filteredAlumni.map((alumni) => (
+          {filteredAlumni.map((alumni) => (
+
             <tr key={alumni.id} onClick={() => openStudentDetails(alumni.id)}>
               <td>
                 <input
@@ -150,9 +142,9 @@ export function AlumniTable() {
               <td>{alumni.generatedID}</td>
               <td>{`${alumni.personalInfo.firstName} ${alumni.personalInfo.lastName}`}</td>
               <td>{alumni.personalInfo.college || 'N/A'}</td>
-              <td>{alumni.personalInfo.department || 'N/A'}</td>
               <td>{alumni.personalInfo.course || 'N/A'}</td>
               <td>{alumni.personalInfo.email}</td>
+              <td>{alumni.personalInfo.birthday || 'N/A'}</td>
             </tr>
           ))}
         </tbody>
@@ -166,9 +158,9 @@ export function AlumniTable() {
             <div className="student-info">
               <h3>Personal Information</h3>
               <p>College: {studentDetails.personalInfo.college || 'N/A'}</p>
-              <p>Department: {studentDetails.personalInfo.department || 'N/A'}</p>
               <p>Course: {studentDetails.personalInfo.course || 'N/A'}</p>
               <p>Email: {studentDetails.personalInfo.email || 'N/A'}</p>
+              <p>Birthday: {studentDetails.personalInfo.birthday || 'N/A'}</p>
               <p>Contact: {studentDetails.personalInfo.contactNumber || 'N/A'}</p>
               <p>Address: {studentDetails.personalInfo.address || 'N/A'}</p>
             </div>
