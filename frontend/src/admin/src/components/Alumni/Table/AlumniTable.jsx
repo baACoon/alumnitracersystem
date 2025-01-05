@@ -120,7 +120,7 @@ export function AlumniTable() {
                 checked={selectedAlumni.size === alumniData.length}
               />
             </th>
-            <th>USER-ID</th>
+            <th>TUP-ID</th>
             <th>Name</th>
             <th>College</th>
             <th>Course</th>

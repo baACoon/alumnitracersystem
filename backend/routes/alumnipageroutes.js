@@ -105,12 +105,12 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
       success: true,
       data: {
         personalInfo: {
-          firstName: alumnus.firstName,
-          lastName: alumnus.lastName,
-          email: alumnus.email,
-          college: alumnus.college,
-          course: alumnus.course,
-          birthday: alumnus.birthday,
+          firstName: alumnus.firstName || 'N/A',
+          lastName: alumnus.lastName || 'N/A',
+          email: alumnus.email || 'N/A',
+          college: alumnus.college || 'N/A',
+          course: alumnus.course || 'N/A',
+          birthday: alumnus.birthday || 'N/A',
         },
         employmentInfo: surveys.length > 0 ? surveys[0].employmentInfo : null,
         surveys: surveys,
