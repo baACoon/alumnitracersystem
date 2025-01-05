@@ -9,6 +9,10 @@ const router = express.Router();
 //line 10-21 ayan yung nagdagdag and mapapansin mo sa router.post they call Student. Nabago rin yung structure. 
 //check mo yung convo namin ni gpt and also pwede mo naman ipaupdate yung adminlog_reg.js mo kay jpt, tulad na ginawa ko
 const studentSchema = new mongoose.Schema({
+  surveys: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Survey'
+  }]
   gradyear: { type: Number, required: true },
   email: { type: String, required: true },
   firstName: { type: String, required: true },
