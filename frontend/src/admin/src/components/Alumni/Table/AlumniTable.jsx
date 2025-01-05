@@ -121,7 +121,6 @@ export function AlumniTable() {
             <th>TUP-ID</th>
             <th>Name</th>
             <th>College</th>
-            <th>Department</th>
             <th>Course</th>
             <th>Email</th>
             <th>Birthday</th>
