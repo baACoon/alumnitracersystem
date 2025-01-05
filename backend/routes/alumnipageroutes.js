@@ -109,22 +109,23 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
     // Fetch surveys associated with the alumnus
     const surveys = await SurveySubmission.find({ userId: alumnus._id }).sort({ createdAt: -1 });
 
-    // Structure the response with fallback values
-    res.status(200).json({
-      success: true,
-      data: {
-        personalInfo: {
-          firstName: alumnus.firstName || 'N/A',
-          lastName: alumnus.lastName || 'N/A',
-          email: alumnus.email || 'N/A',
-          college: alumnus.college || 'N/A',
-          course: alumnus.course || 'N/A',
-          birthday: alumnus.birthday || 'N/A',
+     // Get the latest survey to fetch college and course
+     const latestSurvey = surveys.length > 0 ? surveys[0] : null;
+
+      // Structure the response with fallback values
+      res.status(200).json({
+        success: true,
+        data: {
+          personalInfo: {
+            firstName: alumnus.firstName || 'N/A',
+            lastName: alumnus.lastName || 'N/A',
+            email: alumnus.email || 'N/A',
+            birthday: alumnus.birthday || 'N/A',
+          },
+          employmentInfo: surveys.map(survey => survey.employmentInfo) || [], // Fetch employment info from surveys
+          surveys: surveys || [],
         },
-        employmentInfo: surveys.length > 0 && surveys[0].employmentInfo ? surveys[0].employmentInfo : null,
-        surveys: surveys || [],
-      },
-    });
+      });
   } catch (error) {
     console.error(`Error fetching alumnus details for userId ${req.params.userId}:`, error);
     res.status(500).json({ error: 'Failed to fetch alumnus details.' });

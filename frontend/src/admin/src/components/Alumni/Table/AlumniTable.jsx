@@ -135,12 +135,12 @@ export function AlumniTable() {
                 </tr>
               </thead>
               <tbody>
-                {filteredAlumni.map((alumni) => (
+              {filteredAlumni.map((alumni) => (
                     <tr
                       key={alumni.userId || alumni.id}
                       onClick={() => {
                         if (alumni.userId) {
-                          console.log('Clicked userId:', alumni.userId)
+                          console.log('Clicked userId:', alumni.userId);
                           openStudentDetails(alumni.userId);
                         } else {
                           console.error('No userId for alumnus:', alumni);
@@ -160,13 +160,11 @@ export function AlumniTable() {
                       </td>
                       <td>{alumni.generatedID || 'N/A'}</td>
                       <td>{`${alumni.personalInfo?.firstName || 'N/A'} ${alumni.personalInfo?.lastName || 'N/A'}`}</td>
-                      <td>{alumni.personalInfo?.college || 'N/A'}</td>
-                      <td>{alumni.personalInfo?.course || 'N/A'}</td>
+                      <td>{alumni.college || 'N/A'}</td> {/* Updated to fetch from the survey */}
+                      <td>{alumni.course || 'N/A'}</td>   {/* Updated to fetch from the survey */}
                       <td>{alumni.personalInfo?.email || 'N/A'}</td>
                       <td>{alumni.personalInfo?.birthday || 'N/A'}</td>
                     </tr>
-
-                    
                   ))}
                 </tbody>
             </table>
@@ -189,47 +187,50 @@ export function AlumniTable() {
                         <h4>{`${studentDetails.personalInfo.firstName} ${studentDetails.personalInfo.lastName}`}</h4>*/}
                         <h3>Personal Information</h3>
                         <div className={styles.profileInfo}>
-                          
                             <div>
-                              <strong>College:</strong> {studentDetails.personalInfo.college || 'N/A'}
+                              <strong>Degree:</strong> {studentDetails.personalInfo?.degree || 'N/A'}
                             </div>
                             <div>
-                              <strong>Course:</strong> {studentDetails.personalInfo.course}
+                              <strong>College:</strong> {studentDetails.personalInfo?.college || 'N/A'}
                             </div>
                             <div>
-                              <strong>Graduation Year:</strong> {studentDetails.personalInfo.graduationYear}
+                              <strong>Course:</strong> {studentDetails.personalInfo?.course}
                             </div>
                             <div>
-                              <strong>Last Name:</strong> {studentDetails.personalInfo.lastName}
+                              <strong>Graduation Year:</strong> {studentDetails.personalInfo?.gradyear}
                             </div>
                             <div>
-                              <strong>First Name:</strong> {studentDetails.personalInfo.firstName}
+                              <strong>Last Name:</strong> {studentDetails.personalInfo?.lastName}
                             </div>
                             <div>
-                              <strong>Middle Name:</strong> {studentDetails.personalInfomiddleName || 'N/A'}
+                              <strong>First Name:</strong> {studentDetails.personalInfo?.firstName}
                             </div>
                             <div>
-                              <strong>Suffix:</strong> {studentDetails.personalInfo.suffix || 'N/A'}
+                              <strong>Middle Name:</strong> {studentDetails.personalInfo?.middleName || 'N/A'}
                             </div>
                             <div>
-                              <strong>Address:</strong> {studentDetails.personalInfo.address}
+                              <strong>Suffix:</strong> {studentDetails.personalInfo?.suffix || 'N/A'}
                             </div>
                             <div>
-                              <strong>Birthday:</strong> {studentDetails.personalInfo.birthday}
+                              <strong>Address:</strong> {studentDetails.personalInfo?.address}
                             </div>
                             <div>
-                              <strong>Email:</strong> {studentDetails.personalInfo.email}
+                              <strong>Birthday:</strong> {studentDetails.personalInfo?.birthday}
                             </div>
                             <div>
-                              <strong>Contact No:</strong> {studentDetails.personalInfo.contactNumber}
+                              <strong>Email:</strong> {studentDetails.personalInfo?.email_address}
+                            </div>
+                            <div>
+                              <strong>Contact No:</strong> {studentDetails.personalInfo?.contact_no}
                             </div>
                           </div>
                         </div>
 
                         <hr className={styles.sectionDivider} />
                         {/* Employment History Section */}
-                            {/* EmploymentHistory Component */}
-                               <EmploymentHistory employmentInfo={studentDetails.employmentInfo || []} />
+                        <h3>Employment History</h3>
+                            <EmploymentHistory employmentInfo={studentDetails.employmentInfo || []} />
+        
                             <hr className={styles.sectionDivider} />
 
                             {/* Submitted Surveys Section */}
