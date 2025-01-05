@@ -52,15 +52,22 @@ router.get('/all', authenticateToken, async (req, res) => {
       { $skip: (page - 1) * limit }, // Pagination: Skip documents
       { $limit: limit }, // Pagination: Limit the number of documents
     ]);
+
+    const student = await Student.findById(userId).lean(); // Fetch graduation year and other student-specific fields
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found.' });
+    }
+
     const total = await SurveySubmission.countDocuments(query); // Total matching documents
 
-    // Map surveys to include only relevant fields for the frontend
-    const mappedSurveys = surveys.map((survey) => ({
+    // Map surveys to include only relevant fields for the frontend2wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+    const mappedSurveys = surveys.map((survey) => ({     //student
       userId: survey.userId.toString(),
+      generatedId: student.userId.toString(),
       personalInfo: {
-        first_name: survey.personalInfo.first_name,
-        last_name: survey.personalInfo.last_name,
-        email_address: survey.personalInfo.email_address,
+        firstName: studentInfo.firstName,
+        lastName: studentInfo.lastName,
+        email_address: studentInfo.email,
         college: survey.personalInfo.college,
         course: survey.personalInfo.course,
         birthday: survey.studentInfo.birthday || 'N/A',

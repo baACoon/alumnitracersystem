@@ -137,7 +137,7 @@ export function AlumniTable() {
               <th scope="col">Name</th>
               <th scope="col">College</th>
               <th scope="col">Course</th>
-              <th scope="col">email_address</th>
+              <th scope="col">Email</th>
               <th scope="col">Birthday</th>
             </tr>
           </thead>
@@ -204,13 +204,13 @@ export function AlumniTable() {
                       <strong>Graduation Year:</strong> {studentDetails.gradyear || 'N/A'}
                     </div>
                     <div>
-                      <strong>Last Name:</strong> {studentDetails.last_name || 'N/A'}
+                      <strong>Last Name:</strong> {studentDetails.lastName || 'N/A'}
                     </div>
                     <div>
-                      <strong>First Name:</strong> {studentDetails.first_name || 'N/A'}
+                      <strong>First Name:</strong> {studentDetails.firstName || 'N/A'}
                     </div>
                     <div>
-                      <strong>Middle Name:</strong> {studentDetails.middle_name || 'N/A'}
+                      <strong>Middle Name:</strong> {studentDetails.middleName || 'N/A'}
                     </div>
                     <div>
                       <strong>Address:</strong> {studentDetails.address || 'N/A'}
