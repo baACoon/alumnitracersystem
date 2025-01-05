@@ -1,6 +1,6 @@
 /* Container styling */
 .listcontainer {
-  padding: 100px 20px;
+  padding: 200px 20px 100px;
   max-width: 600px;
   margin: 0 auto;
   font-family: Arial, sans-serif;
@@ -10,7 +10,7 @@
 .back-button {
   display: inline-block;
   margin-bottom: 10px;
-  color: #1d9bf0;
+  color: #C31D3C;
   cursor: pointer;
   text-decoration: none;
   font-size: 14px;
