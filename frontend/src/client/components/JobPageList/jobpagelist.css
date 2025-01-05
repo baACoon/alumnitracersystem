@@ -1,9 +1,13 @@
 /* Container styling */
 .listcontainer {
+  flex: 1; /* This allows the content to expand and fill available space */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Push content to the top */
   padding: 200px 20px 100px;
   max-width: 600px;
   margin: 0 auto;
-  font-family: Arial, sans-serif;
 }
 
 /* Back button */
@@ -124,6 +128,8 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  height: 100%; /* Make the loader take up the remaining space */
+  width: 100%; /* Ensure the loader stretches horizontally */
 }
 
 .loader-text {
