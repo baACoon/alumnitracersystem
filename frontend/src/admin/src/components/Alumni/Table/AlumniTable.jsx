@@ -62,7 +62,7 @@ export function AlumniTable() {
       const token = localStorage.getItem('token');
       console.log('Fetching details for student ID:', alumni._id);
   
-      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/${alumni._id}`, 
+      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/update/${alumni._id}`, 
        {
         headers: { 'Authorization': `Bearer ${token}` },
         });
