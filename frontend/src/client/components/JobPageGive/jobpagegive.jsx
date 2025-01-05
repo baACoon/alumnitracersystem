@@ -104,7 +104,11 @@ function JobGiveMainPage() {
               <h5>{job.location}</h5>
               <h5>{job.type}</h5>
             </div>
-            <FontAwesomeIcon icon={faTrashCan} className="JobPageGiveIcon" />
+            <FontAwesomeIcon
+              icon={faTrashCan}
+              className="JobPageGiveIcon"
+              onClick={() => console.log(`Delete job ${job._id}`)}
+            />
           </div>
         ))
       ) : (
