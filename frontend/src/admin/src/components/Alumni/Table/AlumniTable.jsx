@@ -32,7 +32,7 @@ export function AlumniTable() {
         if (response.data?.data) {
           setAlumniData(response.data.data);
         } else {
-          console.error('Unexpected response structure:', response.data);
+          alert('No alumni data available.');
           setAlumniData([]);
         }
       } catch (error) {
@@ -57,28 +57,34 @@ export function AlumniTable() {
     setSelectedAlumni(newSelected);
   };
 
-  const openStudentDetails = async (userId) => {
-    try {
-      const token = localStorage.getItem('token');
-      console.log('Fetching details for user ID:', userId);
-  
-      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/user/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-  
-      console.log('API response data:', response.data);
-  
-      if (response.data?.data) {
-        setStudentDetails(response.data.data);
-      } else {
-        console.error('Unexpected API response structure:', response.data);
-        alert('Failed to fetch student details.');
-      }
-    } catch (error) {
-      console.error('Error fetching student details:', error);
+ const openStudentDetails = async (userId) => {
+  try {
+    const token = localStorage.getItem('token');
+    console.log('Fetching details for user ID:', userId);
+
+    const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/user/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    console.log('API response data:', response.data);
+
+    if (response.data?.data) {
+      setStudentDetails(response.data.data);
+    } else {
+      console.error('Unexpected API response structure:', response.data);
+      alert('Failed to fetch student details.');
+    }
+  } catch (error) {
+    console.error('Error fetching student details:', error);
+    if (error.response?.status === 404) {
+      alert('Alumnus not found.');
+    } else if (error.response?.status === 500) {
+      alert('Server error. Please try again later.');
+    } else {
       alert('An error occurred while fetching student details.');
     }
-  };
+  }
+};
   const filteredAlumni = alumniData.filter((alumni) =>
     `${alumni.personalInfo.firstName} ${alumni.personalInfo.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -114,7 +120,7 @@ export function AlumniTable() {
                 checked={selectedAlumni.size === alumniData.length}
               />
             </th>
-            <th>TUP-ID</th>
+            <th>USER-ID</th>
             <th>Name</th>
             <th>College</th>
             <th>Course</th>
