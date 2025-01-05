@@ -9,7 +9,7 @@ function Contact() {
   return (
     <div>
       <Header />
-      <Footer />
+ 
     </div>
   );
 }
