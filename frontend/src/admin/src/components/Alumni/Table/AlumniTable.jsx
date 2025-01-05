@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './AlumniTable.module.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 export function AlumniTable() {
   const [alumniData, setAlumniData] = useState([]);
@@ -129,6 +129,8 @@ export function AlumniTable() {
         </thead>
         <tbody>
           {filteredAlumni.map((alumni) => (
+            console.log(alumni);
+
             <tr key={alumni.id} onClick={() => openStudentDetails(alumni.id)}>
               <td>
                 <input

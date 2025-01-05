@@ -1,11 +1,10 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
-import ErrorBoundary from "./ErrorBoundary";
+import React from 'react';
+import { createRoot } from 'react-dom';
+import App from './App';
 
-ReactDOM.render(
-  <ErrorBoundary>
+const root = createRoot(document.getElementById('root')); 
+root.render(
+  <React.StrictMode>
     <App />
-  </ErrorBoundary>,
-  document.getElementById("root")
+  </React.StrictMode>
 );
