@@ -18,20 +18,18 @@ function JobPageGive() {
 }
 
 function JobGiveMainPage() {
-  const navigate = useNavigate();
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  // Fetch jobs with both "Pending" and "Published" statuses
-  useEffect(() => {
+    const navigate = useNavigate();
+    const [jobs, setJobs] = useState([]);
+    const [loading, setLoading] = useState(true);
+  
     const fetchJobs = async () => {
       const token = localStorage.getItem('token');
-
+  
       if (!token) {
         alert('You need to log in first.');
         return;
       }
-
+  
       try {
         const response = await fetch(
           'https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published',
@@ -41,16 +39,15 @@ function JobGiveMainPage() {
             },
           }
         );
-
+  
         if (!response.ok) {
           const errorData = await response.json();
           console.error('Failed to fetch jobs:', errorData);
           alert(errorData.message || 'Failed to fetch jobs.');
           return;
         }
-
+  
         const data = await response.json();
-        console.log('API Response:', data); // Debug API response
         if (Array.isArray(data)) {
           setJobs(data); // Update jobs state only if data is an array
         } else {
@@ -64,58 +61,65 @@ function JobGiveMainPage() {
         setLoading(false);
       }
     };
-
-    fetchJobs();
-  }, []);
-
-  const goToAddJob = () => {
-    navigate('/JobPageGive/addjobForm');
-  };
-
-  if (loading) {
-    return <p>Loading jobs...</p>;
-  }
-
-  console.log('Jobs State:', jobs); // Debug jobs state before rendering
-
-  return (
-    <div className="givecontainer">
-      <a className="back-button" onClick={() => navigate('/JobPage')}>
-        Back
-      </a>
-      <div className="title-container">
-        <h1 className="give-title">OPPORTUNITIES POSTED</h1>
-        <button className="add-button" onClick={goToAddJob}>
-          ADD
-        </button>
-      </div>
-
-      {jobs.length > 0 ? (
-        jobs.map((job) => (
-          <div
-            key={job._id}
-            className={`giveoption ${job.status === 'Published' ? 'published-highlight' : ''}`}
-          >
-            <h4 className={`give-status ${job.status === 'Published' ? 'published' : 'pending'}`}>
-              {job.status.toUpperCase()}
-            </h4>
-            <div className="give-details">
-              <h3>{job.title}</h3>
-              <h5>{job.location}</h5>
-              <h5>{job.type}</h5>
+  
+    useEffect(() => {
+      fetchJobs();
+  
+      // Optional: Set up polling to auto-refresh jobs every 10 seconds
+      const interval = setInterval(() => {
+        fetchJobs();
+      }, 10000);
+  
+      return () => clearInterval(interval); // Clear the interval on unmount
+    }, []);
+  
+    const goToAddJob = () => {
+      navigate('/JobPageGive/addjobForm');
+    };
+  
+    if (loading) {
+      return <p>Loading jobs...</p>;
+    }
+  
+    return (
+      <div className="givecontainer">
+        <a className="back-button" onClick={() => navigate('/JobPage')}>
+          Back
+        </a>
+        <div className="title-container">
+          <h1 className="give-title">OPPORTUNITIES POSTED</h1>
+          <button className="add-button" onClick={goToAddJob}>
+            ADD
+          </button>
+        </div>
+  
+        {jobs.length > 0 ? (
+          jobs.map((job) => (
+            <div
+              key={job._id}
+              className={`giveoption ${job.status === 'Published' ? 'published-highlight' : ''}`}
+            >
+              <h4 className={`give-status ${job.status === 'Published' ? 'published' : 'pending'}`}>
+                {job.status.toUpperCase()}
+              </h4>
+              <div className="give-details">
+                <h3>{job.title}</h3>
+                <h5>{job.location}</h5>
+                <h5>{job.type}</h5>
+              </div>
+              <FontAwesomeIcon
+                icon={faTrashCan}
+                className="JobPageGiveIcon"
+                onClick={() => console.log(`Delete job ${job._id}`)}
+              />
             </div>
-            <FontAwesomeIcon
-              icon={faTrashCan}
-              className="JobPageGiveIcon"
-              onClick={() => console.log(`Delete job ${job._id}`)}
-            />
-          </div>
-        ))
-      ) : (
-        <p>No opportunities found.</p>
-      )}
-    </div>
-  );
-}
+          ))
+        ) : (
+          <p>No opportunities found.</p>
+        )}
+      </div>
+    );
+  }
+  
 
 export default JobPageGive;

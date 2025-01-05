@@ -45,7 +45,7 @@ router.post('/:id/approve', protect, async (req, res) => {
     try {
         const job = await Job.findByIdAndUpdate(
             req.params.id,
-            { status: 'Published', reviewedBy: req.user.id },
+            { status: 'Published' },
             { new: true }
         );
 
