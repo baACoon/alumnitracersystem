@@ -10,7 +10,7 @@ const router = express.Router();
 //check mo yung convo namin ni gpt and also pwede mo naman ipaupdate yung adminlog_reg.js mo kay jpt, tulad na ginawa ko
 const studentSchema = new mongoose.Schema({
   surveys: [{
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Survey'
   }],
   gradyear: { type: Number, required: true },
