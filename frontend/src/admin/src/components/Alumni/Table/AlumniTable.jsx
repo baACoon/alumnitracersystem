@@ -70,6 +70,7 @@ export function AlumniTable() {
 
     if (response.data?.data) {
       setStudentDetails(response.data.data);
+      console.log('Student Details:', studentDetails)
     } else {
       console.error('Unexpected API response structure:', response.data);
       alert('Failed to fetch student details.');
@@ -88,6 +89,8 @@ export function AlumniTable() {
   const filteredAlumni = alumniData.filter((alumni) =>
     `${alumni.personalInfo.firstName} ${alumni.personalInfo.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  console.log('Filtered Alumni:', filteredAlumni);
 
   return (
     <section className={styles.tableSection}>
@@ -109,7 +112,6 @@ export function AlumniTable() {
           />
         </div>
       </div>
-
       <table className={styles.alumniTable}>
         <thead>
           <tr>
@@ -129,57 +131,76 @@ export function AlumniTable() {
           </tr>
         </thead>
         <tbody>
+        
           {filteredAlumni.map((alumni) => (
-            <tr key={alumni.userId} onClick={() => openStudentDetails(alumni.userId)}>
-              <td>
-                <input
-                  type="checkbox"
-                  checked={selectedAlumni.has(alumni.userId)}
-                  onChange={() => handleSelectAlumni(alumni.userId)}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </td>
-              <td>{alumni.generatedID}</td>
-              <td>{`${alumni.personalInfo.firstName} ${alumni.personalInfo.lastName}`}</td>
-              <td>{alumni.personalInfo.college || 'N/A'}</td>
-              <td>{alumni.personalInfo.course || 'N/A'}</td>
-              <td>{alumni.personalInfo.email}</td>
-              <td>{alumni.personalInfo.birthday || 'N/A'}</td>
-            </tr>
-          ))}
-        </tbody>
+            
+              <tr
+                key={alumni.userId || alumni.id}
+                onClick={() => {
+                  if (alumni.userId) {
+                    console.log('Clicked userId:', alumni.userId)
+                    openStudentDetails(alumni.userId);
+                  } else {
+                    console.error('No userId for alumnus:', alumni);
+                    alert('Error: Missing userId for selected alumnus.');
+                  }
+                }}
+              >
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={selectedAlumni.has(alumni.userId)}
+                    onChange={() => handleSelectAlumni(alumni.userId)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </td>
+                <td>{alumni.generatedID || 'N/A'}</td>
+                <td>{`${alumni.personalInfo?.firstName || 'N/A'} ${alumni.personalInfo?.lastName || 'N/A'}`}</td>
+                <td>{alumni.personalInfo?.college || 'N/A'}</td>
+                <td>{alumni.personalInfo?.course || 'N/A'}</td>
+                <td>{alumni.personalInfo?.email || 'N/A'}</td>
+                <td>{alumni.personalInfo?.birthday || 'N/A'}</td>
+              </tr>
+
+              
+            ))}
+           </tbody>
       </table>
 
       {studentDetails && (
-        <div className={styles.modalOverlay} onClick={() => setStudentDetails(null)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.closeButton} onClick={() => setStudentDetails(null)}>×</button>
-            <h2>{`${studentDetails.personalInfo.firstName} ${studentDetails.personalInfo.lastName}`}</h2>
-            <div className="student-info">
-              <h3>Personal Information</h3>
-              <p>College: {studentDetails.personalInfo.college || 'N/A'}</p>
-              <p>Course: {studentDetails.personalInfo.course || 'N/A'}</p>
-              <p>Email: {studentDetails.personalInfo.email || 'N/A'}</p>
-              <p>Birthday: {studentDetails.personalInfo.birthday || 'N/A'}</p>
-              <p>Contact: {studentDetails.personalInfo.contactNumber || 'N/A'}</p>
-              <p>Address: {studentDetails.personalInfo.address || 'N/A'}</p>
-            </div>
-            {studentDetails.surveys && studentDetails.surveys.length > 0 && (
-              <div className="employment-info">
-                <h3>Employment Information</h3>
-                {studentDetails.surveys.map((survey, index) => (
-                  <div key={index} className="employment-entry">
-                    <p>Company: {survey.employmentInfo?.company_name || 'N/A'}</p>
-                    <p>Position: {survey.employmentInfo?.position || 'N/A'}</p>
-                    <p>Status: {survey.employmentInfo?.job_status || 'N/A'}</p>
-                    <p>Year Started: {survey.employmentInfo?.year_started || 'N/A'}</p>
-                  </div>
-                ))}
-              </div>
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setStudentDetails(null)}
+        >
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className={styles.closeButton}
+              onClick={() => setStudentDetails(null)}
+            >
+              ×
+            </button>
+            {studentDetails.personalInfo ? (
+              <>
+                <h2>{`${studentDetails.personalInfo.firstName} ${studentDetails.personalInfo.lastName}`}</h2>
+                <div className="student-info">
+                  <h3>Personal Information</h3>
+                  <p>College: {studentDetails.personalInfo.college || 'N/A'}</p>
+                  <p>Course: {studentDetails.personalInfo.course || 'N/A'}</p>
+                  <p>Email: {studentDetails.personalInfo.email || 'N/A'}</p>
+                  <p>Birthday: {studentDetails.personalInfo.birthday || 'N/A'}</p>
+                  <p>Contact: {studentDetails.personalInfo.contactNumber || 'N/A'}</p>
+                  <p>Address: {studentDetails.personalInfo.address || 'N/A'}</p>
+                </div>
+              </>
+            ) : (
+              <p>Error loading student details.</p>
             )}
           </div>
         </div>
-      )}
+)}
     </section>
   );
 }
