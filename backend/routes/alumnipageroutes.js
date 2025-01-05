@@ -54,7 +54,7 @@ router.get('/all', authenticateToken, async (req, res) => {
 
     const total = await SurveySubmission.countDocuments(query); // Total matching documents
 
-    // Map surveys to include only relevant fields for the frontend
+    // Map surveys to include only relevant fields for the TABLE
     const mappedSurveys = surveys.map((survey) => ({
       userId: survey.userId.toString(),
       generatedID: survey.studentInfo.generatedID,
@@ -114,15 +114,17 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
     // Get the latest survey for college and course information
     const latestSurvey = surveys[0];
 
-    // Structure the response with fallback values
+    // Structure the response with fallback values 
     res.status(200).json({
       success: true,
       data: {
           personalInfo: {
-            first_name: latestSurvey.first_name || 'N/A',
-            last_name: latestSurvey.last_name || 'N/A',
-            email: latestSurvey.email || 'N/A',
+            firstName: latestSurvey.first_name || 'N/A',
+            lastName: latestSurvey.last_name || 'N/A',
+            middleName: latestSurvey.middle_name || 'N/A',
+            email_address: latestSurvey.email_address || 'N/A',
             birthday: student.birthday || 'N/A',
+            degree: latestSurvey.degree,
           },
           college: latestSurvey.personalInfo.college || 'N/A',
           gradyear: student.gradyear || 'N/A',
