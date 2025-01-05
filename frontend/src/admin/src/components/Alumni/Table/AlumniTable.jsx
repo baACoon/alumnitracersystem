@@ -67,17 +67,8 @@ export function AlumniTable() {
 
       console.log('API response data:', response.data);
 
-      if (response.status === 200 && response.data.data) {
-        const detailedData = response.data.data;
-
-        // Map fields to expected frontend structure
-        setStudentDetails({
-          ...detailedData,
-          personalInfo: {
-            ...detailedData.personalInfo,
-            birthday: detailedData.personalInfo.birthday, // Include birthday
-          },
-        });
+      if (response.data?.data) {
+        setStudentDetails(response.data.data);
       } else {
         console.error('Unexpected API response structure:', response.data);
         alert('Failed to fetch student details.');
@@ -150,7 +141,6 @@ export function AlumniTable() {
               <td>{alumni.generatedID}</td>
               <td>{`${alumni.personalInfo.firstName} ${alumni.personalInfo.lastName}`}</td>
               <td>{alumni.personalInfo.college || 'N/A'}</td>
-              <td>{alumni.personalInfo.department || 'N/A'}</td>
               <td>{alumni.personalInfo.course || 'N/A'}</td>
               <td>{alumni.personalInfo.email}</td>
               <td>{alumni.personalInfo.birthday || 'N/A'}</td>

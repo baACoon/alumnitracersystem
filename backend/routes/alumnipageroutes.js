@@ -29,19 +29,18 @@ router.get('/all', authenticateToken, async (req, res) => {
     if (course) query.course = course;
     if (batch) query.batch = parseInt(batch);
 
-    // Fetch alumni with optional survey data
     const alumni = await Student.aggregate([
       { $match: query },
-      { $lookup: { 
-          from: 'surveys', 
-          localField: '_id', 
-          foreignField: 'userId', 
-          as: 'surveys' 
-        } 
+      { $lookup: {
+          from: 'surveys',
+          localField: '_id',
+          foreignField: 'userId',
+          as: 'surveys'
+        }
       },
-      { $addFields: { 
-          latestSurvey: { $arrayElemAt: ['$surveys', 0] } 
-        } 
+      { $addFields: {
+          latestSurvey: { $arrayElemAt: ['$surveys', 0] }
+        }
       },
       { $sort: { registrationDate: -1 } },
       { $skip: (page - 1) * limit },
@@ -50,7 +49,6 @@ router.get('/all', authenticateToken, async (req, res) => {
 
     const total = await Student.countDocuments(query);
 
-    // Map alumni data
     const mappedAlumni = alumni.map(student => ({
       id: student._id,
       generatedID: student.generatedID || '',
@@ -59,11 +57,10 @@ router.get('/all', authenticateToken, async (req, res) => {
         lastName: student.lastName || '',
         email: student.email || '',
         college: student.college || '',
-        department: student.department || '',
         course: student.course || '',
-        birthday: student.birthday || '' // Include birthday
+        birthday: student.birthday || ''
       },
-      latestSurvey: student.latestSurvey || null // Include latest survey data
+      latestSurvey: student.latestSurvey || null
     }));
 
     res.status(200).json({
@@ -81,11 +78,11 @@ router.get('/all', authenticateToken, async (req, res) => {
   }
 });
 
-// Get details of a specific alumnus
+/// Get details of a specific alumnus
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const alumnus = await Student.findById(req.params.id)
-      .populate('surveys') // Populate linked surveys
+      .populate('surveys')
       .exec();
 
     if (!alumnus) return res.status(404).json({ error: 'Alumnus not found.' });
@@ -98,7 +95,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 });
 
 // Update an alumnus (optional endpoint if needed)
-router.get('/:id', authenticateToken, async (req, res) => {
+router.get('/update/:id', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
 
@@ -135,7 +132,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Get statistics for alumni
+ {/*// Get statistics for alumni
 router.get('/statistics', authenticateToken, async (req, res) => {
   try {
     const stats = await SurveySubmission.aggregate([
@@ -162,6 +159,6 @@ router.get('/statistics', authenticateToken, async (req, res) => {
     console.error('Error fetching statistics:', error);
     res.status(500).json({ error: 'Failed to fetch statistics.' });
   }
-});
+});*/}
 
 export default router;
