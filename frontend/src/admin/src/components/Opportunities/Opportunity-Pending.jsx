@@ -8,7 +8,6 @@ export default function OpportunityPending() {
   const [showRejectionForm, setShowRejectionForm] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Fetch pending opportunities from the backend
   useEffect(() => {
     const fetchPendingOpportunities = async () => {
       const token = localStorage.getItem("token");
@@ -30,9 +29,7 @@ export default function OpportunityPending() {
         if (!response.ok) {
           const errorData = await response.json();
           console.error("Failed to fetch pending opportunities:", errorData);
-          alert(
-            errorData.message || "Failed to fetch pending opportunities."
-          );
+          alert(errorData.message || "Failed to fetch pending opportunities.");
           return;
         }
 
@@ -50,6 +47,8 @@ export default function OpportunityPending() {
   }, []);
 
   const handlePublishClick = async () => {
+    if (!selectedOpportunity) return;
+
     const token = localStorage.getItem("token");
     if (!token) {
       alert("You need to log in first.");
@@ -90,6 +89,8 @@ export default function OpportunityPending() {
   };
 
   const handleRejectionSubmit = async () => {
+    if (!selectedOpportunity) return;
+
     const token = localStorage.getItem("token");
     if (!token) {
       alert("You need to log in first.");
@@ -130,9 +131,8 @@ export default function OpportunityPending() {
   };
 
   const handleOpportunityClick = (opportunity) => {
-    console.log("Selected Opportunity:", opportunity); // Debugging
     setSelectedOpportunity(opportunity);
-    setShowRejectionForm(false); // Reset rejection form state
+    setShowRejectionForm(false);
   };
 
   const closeModal = () => {
@@ -168,7 +168,6 @@ export default function OpportunityPending() {
         )}
       </div>
 
-      {/* Modal */}
       {selectedOpportunity && (
         <div className={styles.modalOverlay} onClick={closeModal}>
           <div
@@ -180,10 +179,10 @@ export default function OpportunityPending() {
             </button>
             <h2>{selectedOpportunity.title}</h2>
             <p>
-              <strong>College:</strong> {selectedOpportunity.college}
+              <strong>College:</strong> {selectedOpportunity.college || "N/A"}
             </p>
             <p>
-              <strong>Location:</strong> {selectedOpportunity.location}
+              <strong>Location:</strong> {selectedOpportunity.location || "N/A"}
             </p>
             <p>
               <strong>Job Status:</strong> {selectedOpportunity.status}
@@ -193,7 +192,8 @@ export default function OpportunityPending() {
               {new Date(selectedOpportunity.createdAt).toLocaleDateString()}
             </p>
             <p>
-              <strong>Job Description:</strong> {selectedOpportunity.description}
+              <strong>Job Description:</strong>{" "}
+              {selectedOpportunity.description || "N/A"}
             </p>
             <p>
               <strong>Key Responsibilities:</strong>
