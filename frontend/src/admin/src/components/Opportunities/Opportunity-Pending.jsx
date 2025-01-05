@@ -5,7 +5,7 @@ export default function OpportunityPending() {
   const [pendingOpportunities, setPendingOpportunities] = useState([]);
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
-  const [showRejectionForm, setShowRejectionForm] = useState(false); // Added state for rejection form
+  const [showRejectionForm, setShowRejectionForm] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Fetch pending opportunities from the backend
@@ -86,7 +86,7 @@ export default function OpportunityPending() {
   };
 
   const handleRejectClick = () => {
-    setShowRejectionForm(true); // Show the rejection form
+    setShowRejectionForm(true);
   };
 
   const handleRejectionSubmit = async () => {
@@ -130,6 +130,7 @@ export default function OpportunityPending() {
   };
 
   const handleOpportunityClick = (opportunity) => {
+    console.log("Selected Opportunity:", opportunity); // Debugging
     setSelectedOpportunity(opportunity);
     setShowRejectionForm(false); // Reset rejection form state
   };
@@ -145,7 +146,7 @@ export default function OpportunityPending() {
 
   return (
     <div>
-      <h2>Pending Opportunities </h2>
+      <h2>Pending Opportunities</h2>
       <div className={styles.gridContainer}>
         {pendingOpportunities.length > 0 ? (
           pendingOpportunities.map((opportunity) => (
@@ -172,7 +173,7 @@ export default function OpportunityPending() {
         <div className={styles.modalOverlay} onClick={closeModal}>
           <div
             className={styles.modalContent}
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+            onClick={(e) => e.stopPropagation()}
           >
             <button className={styles.closeButton} onClick={closeModal}>
               &times;
@@ -192,14 +193,13 @@ export default function OpportunityPending() {
               {new Date(selectedOpportunity.createdAt).toLocaleDateString()}
             </p>
             <p>
-              <strong>Job Description:</strong>{" "}
-              {selectedOpportunity.description}
+              <strong>Job Description:</strong> {selectedOpportunity.description}
             </p>
             <p>
               <strong>Key Responsibilities:</strong>
             </p>
             <ul>
-              {selectedOpportunity.responsibilities.map((resp, i) => (
+              {selectedOpportunity.responsibilities?.map((resp, i) => (
                 <li key={i}>{resp}</li>
               ))}
             </ul>
