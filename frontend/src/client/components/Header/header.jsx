@@ -67,12 +67,14 @@ function Header() {
                 OPPORTUNITIES
               </a>
             </li>
+            {/* Navbar Section 
             <li className="nav-item">
               <a onClick={() => navigate("/Contact")}
                   className={`nav-link ${isActive("/Contact") ? "active" : ""}`}>
                 CONTACT US
               </a>
             </li>
+            */}
           </ul>
           
           <div className="d-flex">
