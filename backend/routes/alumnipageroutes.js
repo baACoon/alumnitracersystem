@@ -99,26 +99,11 @@ router.get('/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'Alumnus not found.' });
     }
 
-    // Format the response to match frontend expectations
-    const formattedData = {
-      id: alumnus._id,
-      generatedID: alumnus.generatedID,
-      personalInfo: {
-        firstName: alumnus.firstName || '',
-        lastName: alumnus.lastName || '',
-        email: alumnus.email || '',
-        college: alumnus.college || '',
-        course: alumnus.course || '',
-        birthday: alumnus.birthday || '',
-        contactNumber: alumnus.contactNumber || '',
-        address: alumnus.address || ''
-      },
-      surveys: alumnus.surveys || []
-    };
-
+    
+    // Send the raw student data - frontend will handle formatting
     res.status(200).json({ 
       success: true, 
-      data: formattedData 
+      data: alumnus 
     });
 
   } catch (error) {
@@ -129,7 +114,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
     });
   }
 });
-// Update an alumnus (optional endpoint if needed)
+{/*// Update an alumnus (optional endpoint if needed)
 router.get('/update/:id', authenticateToken, async (req, res) => {
   try {
     const alumnus = await Student.findById(req.params.id);
@@ -169,7 +154,7 @@ router.get('/update/:id', authenticateToken, async (req, res) => {
           res.status(500).json({ error: 'Failed to update alumnus.' });
         }
       });
- {/*// Get statistics for alumni
+ // Get statistics for alumni
 router.get('/statistics', authenticateToken, async (req, res) => {
   try {
     const stats = await SurveySubmission.aggregate([

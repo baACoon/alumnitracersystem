@@ -65,28 +65,32 @@ export function AlumniTable() {
         navigate('/login');
         return;
       }
-
+  
       console.log('Fetching details for student ID:', id);
-
+  
       const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/${id}`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
-
+  
+      console.log('Response data:', response.data); // Add this debug log
+  
       if (response.data?.data) {
+        const student = response.data.data;
         // Transform the data to match the expected structure
         const formattedDetails = {
-          ...response.data.data,
+          id: student._id,
+          generatedID: student.generatedID,
           personalInfo: {
-            firstName: response.data.data.firstName || '',
-            lastName: response.data.data.lastName || '',
-            email: response.data.data.email || '',
-            college: response.data.data.college || '',
-            course: response.data.data.course || '',
-            birthday: response.data.data.birthday || '',
-            contactNumber: response.data.data.contactNumber || '',
-            address: response.data.data.address || ''
+            firstName: student.firstName || '',
+            lastName: student.lastName || '',
+            email: student.email || '',
+            college: student.gradyear ? `Batch ${student.gradyear}` : 'N/A', // Using gradyear as college
+            course: student.course || 'N/A',
+            birthday: student.birthday ? new Date(student.birthday).toLocaleDateString() : 'N/A',
+            contactNumber: student.contactNumber || 'N/A',
+            address: student.address || 'N/A'
           },
-          surveys: response.data.data.surveys || []
+          surveys: student.surveys || []
         };
         setStudentDetails(formattedDetails);
       } else {
@@ -94,7 +98,14 @@ export function AlumniTable() {
       }
     } catch (error) {
       console.error('Error fetching student details:', error);
-      alert('An error occurred while fetching student details. Please try again.');
+      if (error.response?.status === 401) {
+        alert('Session expired. Please log in again.');
+        navigate('/login');
+      } else if (error.response?.status === 404) {
+        alert('Student not found.');
+      } else {
+        alert('An error occurred while fetching student details. Please try again.');
+      }
     }
   };
 
