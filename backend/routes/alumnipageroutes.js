@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import { Student } from '../record.js'; // Import the existing Student schema
 import { SurveySubmission } from './surveyroutes.js'; // Import the existing SurveySubmission schema
 import jwt from 'jsonwebtoken';
@@ -99,16 +100,14 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
     }
 
     // Fetch the alumnus from the Student collection
-    const alumnus = await Student.findById(userId)
-      .populate('surveys') // Populate surveys if referenced
-      .exec();
+    const alumnus = await Student.findById(userId);
 
     if (!alumnus) {
       return res.status(404).json({ error: 'Alumnus not found.' });
     }
 
     // Fetch surveys associated with the alumnus
-    const surveys = await SurveySubmission.find({ userId }).sort({ createdAt: -1 });
+    const surveys = await SurveySubmission.find({ userId: alumnus._id }).sort({ createdAt: -1 });
 
     // Structure the response with fallback values
     res.status(200).json({
@@ -127,79 +126,12 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Error fetching alumnus details:', error.message);
+    console.error(`Error fetching alumnus details for userId ${req.params.userId}:`, error);
     res.status(500).json({ error: 'Failed to fetch alumnus details.' });
   }
 });
 
 
-{/*// Update an alumni (optional endpoint if needed)
-router.get('/update/:id', authenticateToken, async (req, res) => {
-  try {
-    const alumni = await Student.findById(req.params.id);
-    if (!alumni) return res.status(404).json({ error: 'alumni not found.' });
 
-    // Fetch user's latest survey submission
-    const latestSurvey = await SurveySubmission.findOne(
-      { userId: alumni._id },
-      {},
-      { sort: { 'createdAt': -1 } }
-    );
-
-    if (!latestSurvey) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'No survey data found' 
-      });
-    }
-
-    // Get all surveys for the completed surveys section
-    const allSurveys = await SurveySubmission.find({ userId: alumni._id })
-    .sort({ createdAt: -1 });
-
-        res.status(200).json({
-          success: true,
-          data: {
-            personalInfo: { 
-              ...alumni.personalInfo,
-              ...latestSurvey?.personalInfo
-            },
-            employmentInfo: latestSurvey?.employmentInfo || [],
-            surveys: allSurveys || []
-          }
-        });
-        } catch (error) {
-          console.error('Error updating alumni:', error);
-          res.status(500).json({ error: 'Failed to update alumni.' });
-        }
-      });
- // Get statistics for alumni
-router.get('/statistics', authenticateToken, async (req, res) => {
-  try {
-    const stats = await SurveySubmission.aggregate([
-      {
-        $group: {
-          _id: '$personalInfo.college',
-          total: { $sum: 1 },
-          jobStatus: { $addToSet: '$employmentInfo.job_status' },
-        },
-      },
-    ]);
-
-    res.status(200).json({
-        success: true,
-        data: alumni,
-        pagination: {
-          total,
-          page: parseInt(page),
-          pages: Math.ceil(total / limit),
-        },
-      });
-      
-  } catch (error) {
-    console.error('Error fetching statistics:', error);
-    res.status(500).json({ error: 'Failed to fetch statistics.' });
-  }
-});*/}
 
 export default router;
