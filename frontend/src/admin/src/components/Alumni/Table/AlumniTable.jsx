@@ -190,43 +190,43 @@ export function AlumniTable() {
                     className={styles.profileImage}
                   />
                   <h3>Personal Information</h3>
-                  <div className={styles.profileInfo}>
-                    <div>
-                      <strong>Degree:</strong> {studentDetails.degree || 'N/A'}
-                    </div>
-                    <div>
-                      <strong>College:</strong> {studentDetails.college || 'N/A'}
-                    </div>
-                    <div>
-                      <strong>Course:</strong> {studentDetails.course || 'N/A'}
-                    </div>
-                    <div>
-                      <strong>Graduation Year:</strong> {studentDetails.gradyear || 'N/A'}
-                    </div>
-                    <div>
-                      <strong>Last Name:</strong> {studentDetails.lastName || 'N/A'}
-                    </div>
-                    <div>
-                      <strong>First Name:</strong> {studentDetails.firstName || 'N/A'}
-                    </div>
-                    <div>
-                      <strong>Middle Name:</strong> {studentDetails.middleName || 'N/A'}
-                    </div>
-                    <div>
-                      <strong>Address:</strong> {studentDetails.address || 'N/A'}
-                    </div>
-                    <div>
-                      <strong>Birthday:</strong> {formatDate (studentDetails.personalInfo?.birthday) || 'N/A'}
-                    </div>
-                    <div>
-                      <strong>Email:</strong> {studentDetails.email_address || 'N/A'}
-                    </div>
-                    <div>
-                      <strong>Contact No:</strong> {studentDetails.contact_no || 'N/A'}
+                    <div className={styles.profileInfo}>
+                      <div>
+                        <strong>Degree:</strong> {studentDetails.degree || 'N/A'}
+                      </div>
+                      <div>
+                        <strong>College:</strong> {studentDetails.college || 'N/A'}
+                      </div>
+                      <div>
+                        <strong>Course:</strong> {studentDetails.course || 'N/A'}
+                      </div>
+                      <div>
+                        <strong>Graduation Year:</strong> {studentDetails.gradyear || 'N/A'}
+                      </div>
+                      <div>
+                        <strong>Last Name:</strong> {studentDetails.lastName || 'N/A'}
+                      </div>
+                      <div>
+                        <strong>First Name:</strong> {studentDetails.firstName || 'N/A'}
+                      </div>
+                      <div>
+                        <strong>Middle Name:</strong> {studentDetails.middleName || 'N/A'}
+                      </div>
+                      <div>
+                        <strong>Address:</strong> {studentDetails.address || 'N/A'}
+                      </div>
+                      <div>
+                        <strong>Birthday:</strong> {formatDate(studentDetails.birthday) || 'N/A'}
+                      </div>
+                      <div>
+                        <strong>Email:</strong> {studentDetails.email_address || 'N/A'}
+                      </div>
+                      <div>
+                        <strong>Contact No:</strong> {studentDetails.contact_no || 'N/A'}
+                      </div>
                     </div>
                   </div>
-                </div>
-  
+                    
                 <hr className={styles.sectionDivider} />
                 {/* Employment History Section */}
                 <EmploymentHistory employmentInfo={studentDetails.employmentInfo || []} />

@@ -119,21 +119,22 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        firstName: latestSurvey.personalInfo?.first_name || student.firstName || 'N/A',
-        lastName: latestSurvey.personalInfo?.last_name || student.lastName || 'N/A',
-        middleName: latestSurvey.personalInfo?.middle_name || student.middleName || 'N/A',
-        email_address: latestSurvey.personalInfo?.email_address || student.email || 'N/A',
-        birthday: student.birthday || 'N/A',
-        degree: latestSurvey.personalInfo?.degree || 'N/A',
-        college: latestSurvey.personalInfo?.college || 'N/A',
-        course: latestSurvey.personalInfo?.course || 'N/A',
-        gradyear: student.gradyear || 'N/A',
-        address: student.address || 'N/A',
-        contact_no: latestSurvey.personalInfo?.contact_no || student.contact_no || 'N/A',
-        employmentInfo: latestSurvey.employmentInfo || {},
-        surveys,
-      },
-    });
+          personalInfo: {
+            first_name: latestSurvey.personalInfo.first_name,
+            last_name: latestSurvey.personalInfo.last_name,
+            email_address: latestSurvey.personalInfo.email_address,
+            college: latestSurvey.personalInfo.college,
+            course: latestSurvey.personalInfo.course,
+            birthday: student.birthday || 'N/A',
+            degree: latestSurvey.degree,
+          },
+          college: latestSurvey.personalInfo.college || 'N/A',
+          gradyear: student.gradyear || 'N/A',
+          course:  latestSurvey.personalInfo.course || 'N/A',
+          employmentInfo: surveys.length > 0 && surveys[0].employmentInfo ? surveys[0].employmentInfo : null,
+          surveys: surveys || [],
+        },
+      });
   } catch (error) {
     console.error(`Error fetching latestSurvey details for userId ${req.params.userId}:`, error);
     res.status(500).json({ error: 'Failed to fetch latestSurvey details.' });
