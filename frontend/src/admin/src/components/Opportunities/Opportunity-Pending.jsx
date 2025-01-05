@@ -37,6 +37,7 @@ export default function OpportunityPending() {
         }
 
         const data = await response.json();
+        console.log("Fetched Pending Opportunities:", data); // Debugging
         setPendingOpportunities(data);
       } catch (error) {
         console.error("Error fetching pending opportunities:", error);
@@ -134,6 +135,7 @@ export default function OpportunityPending() {
   };
 
   const handleOpportunityClick = (opportunity) => {
+    console.log("Selected Opportunity:", opportunity); // Debugging
     setSelectedOpportunity(opportunity);
     setShowRejectionForm(false); // Reset rejection form state
   };
