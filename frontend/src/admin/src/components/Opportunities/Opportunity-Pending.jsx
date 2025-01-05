@@ -4,6 +4,8 @@ import styles from "./Opportunity-Pending.module.css";
 export default function OpportunityPending() {
   const [pendingOpportunities, setPendingOpportunities] = useState([]);
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [showRejectionForm, setShowRejectionForm] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Fetch pending opportunities from the backend
