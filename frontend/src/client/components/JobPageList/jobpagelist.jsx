@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaRegComment, FaRegThumbsUp } from "react-icons/fa";
 import "./jobpagelist.css";
 import Header from "../Header/header";
 import Footer from "../FooterClient/Footer";
@@ -20,18 +21,21 @@ function JobListMainPage() {
   const [jobs, setJobs] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState({});
+  const [likes, setLikes] = useState({});
 
-  
   const goToJobPage = () => {
-    navigate('/JobPage');
+    navigate("/JobPage");
   };
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get("https://alumnitracersystem.onrender.com/jobs/jobpost", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
+        const response = await axios.get(
+          "https://alumnitracersystem.onrender.com/jobs/jobpost",
+          {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          }
+        );
         setJobs(response.data);
       } catch (error) {
         console.error("Error fetching jobs:", error);
@@ -61,20 +65,46 @@ function JobListMainPage() {
     }
   };
 
+  const handleLike = (jobId) => {
+    setLikes((prevLikes) => ({
+      ...prevLikes,
+      [jobId]: (prevLikes[jobId] || 0) + 1,
+    }));
+  };
+
   return (
     <div className="listcontainer">
-      <a onClick={goToJobPage} className="back-button">Back</a>
-      <h1 className="list-title">Job Opportunities Feed</h1>
+      <a onClick={goToJobPage} className="back-button">
+        Back
+      </a>
+      <h1 className="list-title">JOB OPPORTUNITIES FEED</h1>
       {jobs.map((job) => (
         <div key={job.id} className="job-card">
           <div className="job-card-header">
             <h3>{job.title}</h3>
             <p>{job.datePosted}</p>
           </div>
-          <p><strong>Company:</strong> {job.company}</p>
-          <p><strong>Location:</strong> {job.location}</p>
-          <p><strong>Type:</strong> {job.type}</p>
+          <p>
+            <strong>Company:</strong> {job.company}
+          </p>
+          <p>
+            <strong>Location:</strong> {job.location}
+          </p>
+          <p>
+            <strong>Type:</strong> {job.type}
+          </p>
           <p>{job.jobDescription}</p>
+          <div className="job-card-actions">
+            <div className="action-icon" onClick={() => handleLike(job.id)}>
+              <FaRegThumbsUp /> <span>{likes[job.id] || 0} Likes</span>
+            </div>
+            <div
+              className="action-icon"
+              onClick={() => alert("Open comment input below.")}
+            >
+              <FaRegComment /> <span>Comment</span>
+            </div>
+          </div>
           <div className="comments-section">
             <h4>Comments</h4>
             {comments[job.id]?.map((comment, index) => (
