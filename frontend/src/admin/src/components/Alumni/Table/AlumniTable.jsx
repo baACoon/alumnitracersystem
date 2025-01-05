@@ -48,7 +48,7 @@ export function AlumniTable() {
   }, [navigate]);
 
   const handleSelectAll = (e) => {
-    setSelectedAlumni(e.target.checked ? new Set(alumniData.map((alumni) => alumni.id)) : new Set());
+    setSelectedAlumni(e.target.checked ? new Set(alumniData.map((alumni) => alumni.userId)) : new Set());
   };
 
   const handleSelectAlumni = (id) => {
