@@ -85,47 +85,53 @@ router.get('/all', authenticateToken, async (req, res) => {
   }
 });
 
-/// Get details of a specific alumnus
+/// Get details of a specific alumni
 router.get('/user/:userId', authenticateToken, async (req, res) => {
   try {
-    const { userId } = req.params;
 
-    // Validate ObjectId format
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ error: 'Invalid userId format' });
+    const userId = req.user.id;
+    // Fetch user's latest survey submission
+    const latestSurvey = await SurveySubmission.findOne(
+      { userId: alumni._id },
+      {},
+      { sort: { 'createdAt': -1 } }
+    );
+
+    if (!latestSurvey) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'No survey data found' 
+      });
     }
 
-    // Fetch the student by userId
-    const alumnus = await Student.findOne({ _id: userId })
-      .populate('surveys') // Populate surveys linked to this student
-      .exec();
+    const alumni = await Student.findById(userId);
+    if (!alumni) return res.status(404).json({ error: 'alumni not found.' });
+    // Get all surveys for the completed surveys section
+    const allSurveys = await SurveySubmission.find({ userId: userIdd })
+    .sort({ createdAt: -1 });
 
-    if (!alumnus) {
-      return res.status(404).json({ error: 'Alumnus not found.' });
-    }
-
-    // Return the detailed alumnus data
-    res.status(200).json({
-      success: true,
-      data: alumnus,
-    });
-  } catch (error) {
-    console.error('Error fetching alumnus details:', error.message);
-    res.status(500).json({
-      error: 'Failed to fetch alumnus details.',
-      details: error.message,
-    });
-  }
-});
-{/*// Update an alumnus (optional endpoint if needed)
+        res.status(200).json({
+          success: true,
+          data: {
+            personalInfo: { ...latestSurvey.personalInfo,birthday: alumni.birthday}, // Add birthday from the Student collection,
+        employmentInfo: latestSurvey.employmentInfo,
+        surveys: allSurveys
+          }
+        });
+        } catch (error) {
+          console.error('Error updating alumni:', error);
+          res.status(500).json({ error: 'Failed to update alumni.' });
+        }
+      });
+{/*// Update an alumni (optional endpoint if needed)
 router.get('/update/:id', authenticateToken, async (req, res) => {
   try {
-    const alumnus = await Student.findById(req.params.id);
-    if (!alumnus) return res.status(404).json({ error: 'Alumnus not found.' });
+    const alumni = await Student.findById(req.params.id);
+    if (!alumni) return res.status(404).json({ error: 'alumni not found.' });
 
     // Fetch user's latest survey submission
     const latestSurvey = await SurveySubmission.findOne(
-      { userId: alumnus._id },
+      { userId: alumni._id },
       {},
       { sort: { 'createdAt': -1 } }
     );
@@ -138,14 +144,14 @@ router.get('/update/:id', authenticateToken, async (req, res) => {
     }
 
     // Get all surveys for the completed surveys section
-    const allSurveys = await SurveySubmission.find({ userId: alumnus._id })
+    const allSurveys = await SurveySubmission.find({ userId: alumni._id })
     .sort({ createdAt: -1 });
 
         res.status(200).json({
           success: true,
           data: {
             personalInfo: { 
-              ...alumnus.personalInfo,
+              ...alumni.personalInfo,
               ...latestSurvey?.personalInfo
             },
             employmentInfo: latestSurvey?.employmentInfo || [],
@@ -153,8 +159,8 @@ router.get('/update/:id', authenticateToken, async (req, res) => {
           }
         });
         } catch (error) {
-          console.error('Error updating alumnus:', error);
-          res.status(500).json({ error: 'Failed to update alumnus.' });
+          console.error('Error updating alumni:', error);
+          res.status(500).json({ error: 'Failed to update alumni.' });
         }
       });
  // Get statistics for alumni
