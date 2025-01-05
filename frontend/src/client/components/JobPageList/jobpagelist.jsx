@@ -30,6 +30,11 @@ function JobListMainPage() {
 
   useEffect(() => {
     const fetchJobs = async () => {
+      if (!token) {
+        alert('You need to log in first.');
+        return;
+      }
+      
       try {
         const response = await axios.get(
           "https://alumnitracersystem.onrender.com/jobs/jobpost",
@@ -78,7 +83,7 @@ function JobListMainPage() {
   if (loading) {
     return (
       <div className={styles.loader}>
-        <div className={styles.loaderText}>Loading...</div>
+        <div className={styles.loaderText}>Loading....</div>
         <div className={styles.loaderBar}></div>
       </div>
     );
@@ -128,19 +133,21 @@ function JobListMainPage() {
                 <small>{comment.date}</small>
               </div>
             ))}
-            <input
-              type="text"
-              placeholder="Add a comment..."
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              className={styles.commentInput}
-            />
-            <button
-              onClick={() => handleCommentSubmit(job.id)}
-              className={styles.postButton}
-            >
-              Post
-            </button>
+            <div className={styles.commentInputContainer}>
+              <input
+                type="text"
+                placeholder="Add a comment..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                className={styles.commentInput}
+              />
+              <button
+                onClick={() => handleCommentSubmit(job.id)}
+                className={styles.postButton}
+              >
+                Post
+              </button>
+            </div>
           </div>
         </div>
       ))}

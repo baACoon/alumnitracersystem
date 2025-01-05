@@ -38,6 +38,7 @@ router.get('/jobpost', protect, async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch jobs.' });
     }
 });
+  
 
 
 // Approve a job posting
