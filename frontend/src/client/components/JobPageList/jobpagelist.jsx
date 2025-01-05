@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './jobpagelist.css';
-import Header from '../Header/header';
-import Footer from '../FooterClient/Footer';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./jobpagelist.css";
+import Header from "../Header/header";
+import Footer from "../FooterClient/Footer";
+import axios from "axios";
 
 function JobPageList() {
   return (
@@ -17,82 +17,82 @@ function JobPageList() {
 
 function JobListMainPage() {
   const navigate = useNavigate();
-  const [selectedJob, setSelectedJob] = useState(null);
   const [jobs, setJobs] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const [comments, setComments] = useState({});
 
+  
   const goToJobPage = () => {
     navigate('/JobPage');
   };
 
   useEffect(() => {
     const fetchJobs = async () => {
-        try {
-            const response = await axios.get('http://localhost:5050/jobs/', {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            });
-            setJobs(response.data);
-        } catch (error) {
-            console.error('Error fetching jobs:', error);
-        }
+      try {
+        const response = await axios.get("http://localhost:5050/jobs/", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        setJobs(response.data);
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      }
     };
     fetchJobs();
-}, []);
+  }, []);
 
-    const handleJobClick = (job) => {
-        setSelectedJob(job);
-    };
+  const handleCommentSubmit = async (jobId) => {
+    if (!newComment.trim()) return;
 
-    const closeModal = () => {
-        setSelectedJob(null);
-    };
+    try {
+      const response = await axios.post(
+        `http://localhost:5050/jobs/${jobId}/comments`,
+        { comment: newComment },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      setComments((prevComments) => ({
+        ...prevComments,
+        [jobId]: [...(prevComments[jobId] || []), response.data],
+      }));
+      setNewComment("");
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
+  };
 
   return (
     <div className="listcontainer">
       <a onClick={goToJobPage} className="back-button">Back</a>
-      <h1 className="list-title">OPPORTUNITIES</h1>
-      {jobs.map((job, index) => (
-        <div
-          key={index}
-          className="listoption"
-          onClick={() => handleJobClick(job)}
-        >
-          <div className="list-details">
+      <h1 className="list-title">Job Opportunities Feed</h1>
+      {jobs.map((job) => (
+        <div key={job.id} className="job-card">
+          <div className="job-card-header">
             <h3>{job.title}</h3>
-            <h5>{job.location}</h5>
-            <h5>{job.type}</h5>
+            <p>{job.datePosted}</p>
           </div>
-          <h4 className="list-date">{job.datePosted}</h4>
+          <p><strong>Company:</strong> {job.company}</p>
+          <p><strong>Location:</strong> {job.location}</p>
+          <p><strong>Type:</strong> {job.type}</p>
+          <p>{job.jobDescription}</p>
+          <div className="comments-section">
+            <h4>Comments</h4>
+            {comments[job.id]?.map((comment, index) => (
+              <div key={index} className="comment">
+                <p>{comment.text}</p>
+                <small>{comment.date}</small>
+              </div>
+            ))}
+            <input
+              type="text"
+              placeholder="Add a comment..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+            <button onClick={() => handleCommentSubmit(job.id)}>Post</button>
+          </div>
         </div>
       ))}
-
-      {selectedJob && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close-button" onClick={closeModal}>&times;</span>
-            <div className='jobtitle-date'>
-              <h2>{selectedJob.title}</h2>
-              <p><strong>Date Posted:</strong> {selectedJob.datePosted}</p>
-            </div>
-            <p><strong>Company:</strong> {selectedJob.company}</p>
-            <p><strong>Location:</strong> {selectedJob.location}</p>
-            <p><strong>Type:</strong> {selectedJob.type}</p>
-            <p><strong>Job Description:</strong> {selectedJob.jobDescription}</p>
-            <p><strong>Key Responsibilities:</strong></p>
-            <ul>
-              {selectedJob.keyResponsibilities.map((responsibility, idx) => (
-                <li key={idx}>{responsibility}</li>
-              ))}
-            </ul>
-            <p><strong>Qualifications:</strong></p>
-            <ul>
-              {selectedJob.qualifications.map((qualification, idx) => (
-                <li key={idx}>{qualification}</li>
-              ))}
-            </ul>
-            <p><strong>Source:</strong> <a href={selectedJob.source} target="_blank" rel="noopener noreferrer">{selectedJob.source}</a></p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
