@@ -77,8 +77,9 @@ function JobListMainPage() {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <p>Loading... Please wait.</p>
+      <div className="loader">
+        <div class="loader-text">Loading...</div>
+        <div class="loader-bar"></div>
       </div>
     );
   }
