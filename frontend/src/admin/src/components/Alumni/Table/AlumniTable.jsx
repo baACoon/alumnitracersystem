@@ -57,59 +57,28 @@ export function AlumniTable() {
     setSelectedAlumni(newSelected);
   };
 
-  const openStudentDetails = async (id) => {
+  const openStudentDetails = async (userId) => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        alert("Session expired. Please log in again.");
-        navigate('/login');
-        return;
-      }
+      console.log('Fetching details for user ID:', userId);
   
-      console.log('Fetching details for student ID:', id);
-  
-      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/${id}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
+      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/user/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
   
-      console.log('Response data:', response.data); // Add this debug log
+      console.log('API response data:', response.data);
   
       if (response.data?.data) {
-        const student = response.data.data;
-        // Transform the data to match the expected structure
-        const formattedDetails = {
-          id: student._id,
-          generatedID: student.generatedID,
-          personalInfo: {
-            firstName: student.firstName || '',
-            lastName: student.lastName || '',
-            email: student.email || '',
-            college: student.gradyear ? `Batch ${student.gradyear}` : 'N/A', // Using gradyear as college
-            course: student.course || 'N/A',
-            birthday: student.birthday ? new Date(student.birthday).toLocaleDateString() : 'N/A',
-            contactNumber: student.contactNumber || 'N/A',
-            address: student.address || 'N/A'
-          },
-          surveys: student.surveys || []
-        };
-        setStudentDetails(formattedDetails);
+        setStudentDetails(response.data.data);
       } else {
-        throw new Error('Invalid response structure');
+        console.error('Unexpected API response structure:', response.data);
+        alert('Failed to fetch student details.');
       }
     } catch (error) {
       console.error('Error fetching student details:', error);
-      if (error.response?.status === 401) {
-        alert('Session expired. Please log in again.');
-        navigate('/login');
-      } else if (error.response?.status === 404) {
-        alert('Student not found.');
-      } else {
-        alert('An error occurred while fetching student details. Please try again.');
-      }
+      alert('An error occurred while fetching student details.');
     }
   };
-
-
   const filteredAlumni = alumniData.filter((alumni) =>
     `${alumni.personalInfo.firstName} ${alumni.personalInfo.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -145,7 +114,7 @@ export function AlumniTable() {
                 checked={selectedAlumni.size === alumniData.length}
               />
             </th>
-            <th>USER-ID</th>
+            <th>TUP-ID</th>
             <th>Name</th>
             <th>College</th>
             <th>Course</th>
@@ -154,13 +123,14 @@ export function AlumniTable() {
           </tr>
         </thead>
         <tbody>
-        {filteredAlumni.map((alumni) => (
-            <tr key={alumni.id} onClick={() => openStudentDetails(alumni.id)}>
-              <td onClick={(e) => e.stopPropagation()}>
+          {filteredAlumni.map((alumni) => (
+            <tr key={alumni.userId} onClick={() => openStudentDetails(alumni.userId)}>
+              <td>
                 <input
                   type="checkbox"
-                  checked={selectedAlumni.has(alumni.id)}
-                  onChange={() => handleSelectAlumni(alumni.id)}
+                  checked={selectedAlumni.has(alumni.userId)}
+                  onChange={() => handleSelectAlumni(alumni.userId)}
+                  onClick={(e) => e.stopPropagation()}
                 />
               </td>
               <td>{alumni.generatedID}</td>

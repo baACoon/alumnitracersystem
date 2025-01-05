@@ -24,33 +24,39 @@ router.get('/all', authenticateToken, async (req, res) => {
   try {
     const { page = 1, limit = 10, college, course, batch } = req.query;
 
+    // Construct query filters
     const query = {};
     if (college) query.college = college;
     if (course) query.course = course;
     if (batch) query.batch = parseInt(batch);
 
+    // Aggregate pipeline for fetching alumni with survey data
     const alumni = await Student.aggregate([
       { $match: query },
-      { $lookup: {
+      {
+        $lookup: {
           from: 'surveys',
           localField: '_id',
           foreignField: 'userId',
-          as: 'surveys'
-        }
+          as: 'surveys',
+        },
       },
-      { $addFields: {
-          latestSurvey: { $arrayElemAt: ['$surveys', 0] }
-        }
+      {
+        $addFields: {
+          latestSurvey: { $arrayElemAt: ['$surveys', 0] },
+        },
       },
       { $sort: { registrationDate: -1 } },
       { $skip: (page - 1) * limit },
-      { $limit: parseInt(limit) }
+      { $limit: parseInt(limit) },
     ]);
 
+    // Count total documents matching the query
     const total = await Student.countDocuments(query);
 
+    // Map the alumni data
     const mappedAlumni = alumni.map(student => ({
-      id: student._id,
+      userId: student._id.toString(), // Use the `_id` as the userId
       generatedID: student.generatedID || '',
       personalInfo: {
         firstName: student.firstName || '',
@@ -58,11 +64,12 @@ router.get('/all', authenticateToken, async (req, res) => {
         email: student.email || '',
         college: student.college || '',
         course: student.course || '',
-        birthday: student.birthday || ''
+        birthday: student.birthday || '',
       },
-      latestSurvey: student.latestSurvey || null
+      latestSurvey: student.latestSurvey || null, // Include the latest survey data
     }));
 
+    // Respond with the mapped alumni data
     res.status(200).json({
       success: true,
       data: mappedAlumni,
@@ -73,44 +80,40 @@ router.get('/all', authenticateToken, async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Error fetching alumni:', error);
+    console.error('Error fetching alumni:', error.message);
     res.status(500).json({ error: 'Failed to fetch alumni data.' });
   }
 });
 
 /// Get details of a specific alumnus
-router.get('/:id', authenticateToken, async (req, res) => {
+router.get('/user/:userId', authenticateToken, async (req, res) => {
   try {
-    const { id } = req.params;
-    
+    const { userId } = req.params;
+
     // Validate ObjectId format
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid ID format' });
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'Invalid userId format' });
     }
 
-    const alumnus = await Student.findById(id)
-      .populate({
-        path: 'surveys',
-        strictPopulate: false
-      })
+    // Fetch the student by userId
+    const alumnus = await Student.findOne({ _id: userId })
+      .populate('surveys') // Populate surveys linked to this student
       .exec();
 
     if (!alumnus) {
       return res.status(404).json({ error: 'Alumnus not found.' });
     }
 
-    
-    // Send the raw student data - frontend will handle formatting
-    res.status(200).json({ 
-      success: true, 
-      data: alumnus 
+    // Return the detailed alumnus data
+    res.status(200).json({
+      success: true,
+      data: alumnus,
     });
-
   } catch (error) {
-    console.error('Error fetching alumnus details:', error);
-    res.status(500).json({ 
+    console.error('Error fetching alumnus details:', error.message);
+    res.status(500).json({
       error: 'Failed to fetch alumnus details.',
-      details: error.message 
+      details: error.message,
     });
   }
 });
