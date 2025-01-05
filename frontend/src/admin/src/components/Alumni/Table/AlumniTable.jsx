@@ -60,29 +60,44 @@ export function AlumniTable() {
   const openStudentDetails = async (id) => {
     try {
       const token = localStorage.getItem('token');
+      if (!token) {
+        alert("Session expired. Please log in again.");
+        navigate('/login');
+        return;
+      }
+
       console.log('Fetching details for student ID:', id);
 
       const response = await axios.get(`https://alumnitracersystem.onrender.com/api/alumni/${id}`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
 
-      console.log('API response data:', response.data);
-
       if (response.data?.data) {
-        setStudentDetails(response.data.data);
+        // Transform the data to match the expected structure
+        const formattedDetails = {
+          ...response.data.data,
+          personalInfo: {
+            firstName: response.data.data.firstName || '',
+            lastName: response.data.data.lastName || '',
+            email: response.data.data.email || '',
+            college: response.data.data.college || '',
+            course: response.data.data.course || '',
+            birthday: response.data.data.birthday || '',
+            contactNumber: response.data.data.contactNumber || '',
+            address: response.data.data.address || ''
+          },
+          surveys: response.data.data.surveys || []
+        };
+        setStudentDetails(formattedDetails);
       } else {
-        console.error('Unexpected API response structure:', response.data);
-        alert('Failed to fetch student details.');
+        throw new Error('Invalid response structure');
       }
     } catch (error) {
       console.error('Error fetching student details:', error);
-      alert('An error occurred while fetching student details.');
+      alert('An error occurred while fetching student details. Please try again.');
     }
   };
 
-  const closeStudentDetails = () => {
-    setStudentDetails(null);
-  };
 
   const filteredAlumni = alumniData.filter((alumni) =>
     `${alumni.personalInfo.firstName} ${alumni.personalInfo.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
@@ -128,15 +143,13 @@ export function AlumniTable() {
           </tr>
         </thead>
         <tbody>
-          {filteredAlumni.map((alumni) => (
-
+        {filteredAlumni.map((alumni) => (
             <tr key={alumni.id} onClick={() => openStudentDetails(alumni.id)}>
-              <td>
+              <td onClick={(e) => e.stopPropagation()}>
                 <input
                   type="checkbox"
                   checked={selectedAlumni.has(alumni.id)}
                   onChange={() => handleSelectAlumni(alumni.id)}
-                  onClick={(e) => e.stopPropagation()}
                 />
               </td>
               <td>{alumni.generatedID}</td>
