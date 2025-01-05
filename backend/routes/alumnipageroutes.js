@@ -98,15 +98,28 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: 'Invalid userId format.' });
     }
 
-    const student = await Student.findById(userId).lean(); // Fetch graduation year and other student-specific fields
-    if (!student) {
-      return res.status(404).json({ error: 'Student not found.' });
-    }
+    //const student = await Student.findById(userId).lean(); // Fetch graduation year and other student-specific fields
+    //if (!student) {
+     // return res.status(404).json({ error: 'Student not found.' });
+   // }
 
 
     // Fetch surveys associated with the given userId
-    const surveys = await SurveySubmission.find({ userId }).sort({ createdAt: -1 }).lean();
-
+    const surveys = await SurveySubmission.aggregate([
+      { $match: query }, // Apply the filters
+      {
+        $lookup: {
+          from: 'students', // Collection name for `Student`
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'studentInfo', // Resulting array of matched students
+        },
+      },
+      { $unwind: '$studentInfo' }, // Flatten the joined `studentInfo` array
+      { $sort: { createdAt: -1 } }, // Sort by the most recent survey
+      { $skip: (page - 1) * limit }, // Pagination: Skip documents
+      { $limit: limit }, // Pagination: Limit the number of documents
+    ]);
     if (surveys.length === 0) {
       return res.status(404).json({ error: 'No surveys found for the specified user.' });
     }
@@ -120,16 +133,17 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
       success: true,
       data: {
           personalInfo: {
-            first_name: latestSurvey.personalInfo.first_name,
-            last_name: latestSurvey.personalInfo.last_name,
+            firstName: latestSurvey.personalInfo.firstName,
+            lastName: latestSurvey.personalInfo.lastName,
+            middleName: latestSurvey.personalInfo.middleName,
             email_address: latestSurvey.personalInfo.email_address,
             college: latestSurvey.personalInfo.college,
             course: latestSurvey.personalInfo.course,
-            birthday: student.birthday || 'N/A',
+            birthday: studentInfo.birthday || 'N/A',
             degree: latestSurvey.degree,
           },
           college: latestSurvey.personalInfo.college || 'N/A',
-          gradyear: student.gradyear || 'N/A',
+          gradyear: studentInfo.gradyear || 'N/A',
           course:  latestSurvey.personalInfo.course || 'N/A',
           employmentInfo: surveys.length > 0 && surveys[0].employmentInfo ? surveys[0].employmentInfo : null,
           surveys: surveys || [],
