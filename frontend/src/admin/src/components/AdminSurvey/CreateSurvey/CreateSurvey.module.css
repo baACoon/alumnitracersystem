@@ -10,11 +10,12 @@
   }
   
   .title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #c31d3c;
-    margin-bottom: 20px;
     text-align: center;
+    text-transform: uppercase;
+    color: #c31d3c;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
   }
   
   .backButton {
@@ -78,7 +79,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-  }
+  }x
   
   .multipleChoice .option {
     display: flex;
