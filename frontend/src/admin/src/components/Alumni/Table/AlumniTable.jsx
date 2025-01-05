@@ -156,7 +156,6 @@ export function AlumniTable() {
             <div className="student-info">
               <h3>Personal Information</h3>
               <p>College: {studentDetails.personalInfo.college || 'N/A'}</p>
-              <p>Department: {studentDetails.personalInfo.department || 'N/A'}</p>
               <p>Course: {studentDetails.personalInfo.course || 'N/A'}</p>
               <p>Email: {studentDetails.personalInfo.email || 'N/A'}</p>
               <p>Birthday: {studentDetails.personalInfo.birthday || 'N/A'}</p>
