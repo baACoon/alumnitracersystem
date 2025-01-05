@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+
 //import { Chart } from 'chart.js';
 import styles from './AlumniTable.module.css'; // Adjust the path if needed
 

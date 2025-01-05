@@ -130,7 +130,7 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
           college: latestSurvey.personalInfo.college || 'N/A',
           gradyear: student.gradyear || 'N/A',
           course:  latestSurvey.personalInfo.course || 'N/A',
-          employmentInfo: surveys.length > 0 && surveys[0].employmentInfo ? surveys[0].employmentInfo : null,
+          employmentInfo: latestSurvey.employmentInfo || [],
           surveys: surveys || [],
         },
       });
