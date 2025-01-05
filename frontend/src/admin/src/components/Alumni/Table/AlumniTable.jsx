@@ -129,7 +129,6 @@ export function AlumniTable() {
         </thead>
         <tbody>
           {filteredAlumni.map((alumni) => (
-            console.log(alumni);
 
             <tr key={alumni.id} onClick={() => openStudentDetails(alumni.id)}>
               <td>
