@@ -112,95 +112,174 @@ export function AlumniTable() {
           />
         </div>
       </div>
-      <table className={styles.alumniTable}>
-        <thead>
-          <tr>
-            <th>
-              <input
-                type="checkbox"
-                onChange={handleSelectAll}
-                checked={selectedAlumni.size === alumniData.length}
-              />
-            </th>
-            <th>TUP-ID</th>
-            <th>Name</th>
-            <th>College</th>
-            <th>Course</th>
-            <th>Email</th>
-            <th>Birthday</th>
-          </tr>
-        </thead>
-        <tbody>
-        
-          {filteredAlumni.map((alumni) => (
-            
-              <tr
-                key={alumni.userId || alumni.id}
-                onClick={() => {
-                  if (alumni.userId) {
-                    console.log('Clicked userId:', alumni.userId)
-                    openStudentDetails(alumni.userId);
-                  } else {
-                    console.error('No userId for alumnus:', alumni);
-                    alert('Error: Missing userId for selected alumnus.');
-                  }
-                }}
-              >
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={selectedAlumni.has(alumni.userId)}
-                    onChange={() => handleSelectAlumni(alumni.userId)}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                </td>
-                <td>{alumni.generatedID || 'N/A'}</td>
-                <td>{`${alumni.personalInfo?.firstName || 'N/A'} ${alumni.personalInfo?.lastName || 'N/A'}`}</td>
-                <td>{alumni.personalInfo?.college || 'N/A'}</td>
-                <td>{alumni.personalInfo?.course || 'N/A'}</td>
-                <td>{alumni.personalInfo?.email || 'N/A'}</td>
-                <td>{alumni.personalInfo?.birthday || 'N/A'}</td>
-              </tr>
 
-              
-            ))}
-           </tbody>
-      </table>
+      <div className={styles.tableWrapper} role="region" aria-label="Alumni table" tabIndex="0">
+            <table className={styles.alumniTable}>
+              <thead>
+                <tr>
+                  <th scope = "col">
+                    <input
+                      type="checkbox"
+                      id="selectAll"
+                      onChange={handleSelectAll} aria-label="Select all alumni"
+                      checked={selectedAlumni.size === alumniData.length}
+                    />
+                  </th>
+                  <th scope = "col" >TUP-ID</th>
+                  <th scope = "col">Name</th>
+                  <th scope = "col">College</th>
+                  <th scope = "col">Course</th>
+                  <th scope = "col">Email</th>
+                  <th scope = "col">Birthday</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAlumni.map((alumni) => (
+                    <tr
+                      key={alumni.userId || alumni.id}
+                      onClick={() => {
+                        if (alumni.userId) {
+                          console.log('Clicked userId:', alumni.userId)
+                          openStudentDetails(alumni.userId);
+                        } else {
+                          console.error('No userId for alumnus:', alumni);
+                          alert('Error: Missing userId for selected alumnus.');
+                        }
+                      }}
+                    >
+                      <td>
+                        <input
+                          type="checkbox"
+                          id={`select-${alumni._id}`}
+                          checked={selectedAlumni.has(alumni.userId)}
+                          onChange={() => handleSelectAlumni(alumni.userId)}
+                          onClick={(e) => e.stopPropagation()}
+                          aria-label={`Select ${alumni._id}`}
+                        />
+                      </td>
+                      <td>{alumni.generatedID || 'N/A'}</td>
+                      <td>{`${alumni.personalInfo?.firstName || 'N/A'} ${alumni.personalInfo?.lastName || 'N/A'}`}</td>
+                      <td>{alumni.personalInfo?.college || 'N/A'}</td>
+                      <td>{alumni.personalInfo?.course || 'N/A'}</td>
+                      <td>{alumni.personalInfo?.email || 'N/A'}</td>
+                      <td>{alumni.personalInfo?.birthday || 'N/A'}</td>
+                    </tr>
 
-      {studentDetails && (
-        <div
-          className={styles.modalOverlay}
-          onClick={() => setStudentDetails(null)}
-        >
-          <div
-            className={styles.modalContent}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className={styles.closeButton}
-              onClick={() => setStudentDetails(null)}
-            >
-              ×
-            </button>
-            {studentDetails.personalInfo ? (
-              <>
-                <h2>{`${studentDetails.personalInfo.firstName} ${studentDetails.personalInfo.lastName}`}</h2>
-                <div className="student-info">
-                  <h3>Personal Information</h3>
-                  <p>College: {studentDetails.personalInfo.college || 'N/A'}</p>
-                  <p>Course: {studentDetails.personalInfo.course || 'N/A'}</p>
-                  <p>Email: {studentDetails.personalInfo.email || 'N/A'}</p>
-                  <p>Birthday: {studentDetails.personalInfo.birthday || 'N/A'}</p>
-                  <p>Contact: {studentDetails.personalInfo.contactNumber || 'N/A'}</p>
-                  <p>Address: {studentDetails.personalInfo.address || 'N/A'}</p>
-                </div>
-              </>
-            ) : (
-              <p>Error loading student details.</p>
-            )}
+                    
+                  ))}
+                </tbody>
+            </table>
           </div>
-        </div>
-)}
+          {studentDetails && (
+            <div className={styles.modalOverlay} onClick={() => setStudentDetails(null)}>
+              <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                <button className={styles.closeButton} onClick={() => setStudentDetails(null)}>
+                  ×
+                </button>
+                {studentDetails.personalInfo ? (
+                  <>
+                  <div className={styles.studentProfile}>
+                      <img
+                        src={studentDetails.profileImage || 'https://via.placeholder.com/150'}
+                        alt="Profile"
+                        className={styles.profileImage}
+                      />
+                      {/* Student Profile Section 
+                        <h4>{`${studentDetails.personalInfo.firstName} ${studentDetails.personalInfo.lastName}`}</h4>*/}
+                        <h3>Personal Information</h3>
+                        <div className={styles.profileInfo}>
+                          
+                            <div>
+                              <strong>College:</strong> {studentDetails.personalInfo.college || 'N/A'}
+                            </div>
+                            <div>
+                              <strong>Course:</strong> {studentDetails.personalInfo.course}
+                            </div>
+                            <div>
+                              <strong>Graduation Year:</strong> {studentDetails.personalInfo.graduationYear}
+                            </div>
+                            <div>
+                              <strong>Last Name:</strong> {studentDetails.personalInfo.lastName}
+                            </div>
+                            <div>
+                              <strong>First Name:</strong> {studentDetails.personalInfo.firstName}
+                            </div>
+                            <div>
+                              <strong>Middle Name:</strong> {studentDetails.personalInfomiddleName || 'N/A'}
+                            </div>
+                            <div>
+                              <strong>Suffix:</strong> {studentDetails.personalInfo.suffix || 'N/A'}
+                            </div>
+                            <div>
+                              <strong>Address:</strong> {studentDetails.personalInfo.address}
+                            </div>
+                            <div>
+                              <strong>Birthday:</strong> {studentDetails.personalInfo.birthday}
+                            </div>
+                            <div>
+                              <strong>Email:</strong> {studentDetails.personalInfo.email}
+                            </div>
+                            <div>
+                              <strong>Contact No:</strong> {studentDetails.personalInfo.contactNumber}
+                            </div>
+                          </div>
+                        </div>
+
+                        <hr className={styles.sectionDivider} />
+                        {/* Employment History Section */}
+                            <div className={styles.employmentHistory}>
+                              <h3 style={{ color: '#900c3f' }}>Alumni's Employment History</h3>
+                                <table className={styles.employmentTable}>
+                                  <thead>
+                                    <tr>
+                                      <th>Company</th>
+                                      <th>Years of Employment</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  {studentDetails.employmentInfo && studentDetails.employmentInfo.map((job, index) =>  (
+                                      <tr key={index}>
+                                        <td>{job.company}</td>
+                                        <td>{job.years}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                            </div>
+                            <hr className={styles.sectionDivider} />
+
+                            {/* Submitted Surveys Section */}
+                            <div className={styles.submittedSurveys}>
+                              <h3 style={{ color: '#900c3f' }}>Submitted Surveys</h3>
+                              <table className={styles.surveysTable}>
+                                <thead>
+                                  <tr>
+                                    <th>No.</th>
+                                    <th>Title</th>
+                                    <th>Date Survey Received</th>
+                                    <th>Date Survey Submitted</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                {studentDetails.surveys && studentDetails.surveys.map((survey, index) => (
+                                    <tr key={index}>
+                                      <td>{index + 1}</td>
+                                      <td>{survey.title}</td>
+                                      <td>{survey.dateReceived}</td>
+                                      <td>{survey.dateSubmitted}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                              <button className={styles.exportButton}>Export Summary</button>
+                            </div>
+                            </>
+                            ) : (
+                      <p>Error loading student details.</p>
+                    )}
+                  </div>
+                </div>
+        )}
     </section>
   );
 }
