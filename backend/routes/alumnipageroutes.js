@@ -81,19 +81,54 @@ router.get('/all', authenticateToken, async (req, res) => {
 /// Get details of a specific alumnus
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
-    const alumnus = await Student.findById(req.params.id)
-      .populate('surveys')
+    const { id } = req.params;
+    
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid ID format' });
+    }
+
+    const alumnus = await Student.findById(id)
+      .populate({
+        path: 'surveys',
+        strictPopulate: false
+      })
       .exec();
 
-    if (!alumnus) return res.status(404).json({ error: 'Alumnus not found.' });
+    if (!alumnus) {
+      return res.status(404).json({ error: 'Alumnus not found.' });
+    }
 
-    res.status(200).json({ success: true, data: alumnus });
+    // Format the response to match frontend expectations
+    const formattedData = {
+      id: alumnus._id,
+      generatedID: alumnus.generatedID,
+      personalInfo: {
+        firstName: alumnus.firstName || '',
+        lastName: alumnus.lastName || '',
+        email: alumnus.email || '',
+        college: alumnus.college || '',
+        course: alumnus.course || '',
+        birthday: alumnus.birthday || '',
+        contactNumber: alumnus.contactNumber || '',
+        address: alumnus.address || ''
+      },
+      surveys: alumnus.surveys || []
+    };
+
+    res.status(200).json({ 
+      success: true, 
+      data: formattedData 
+    });
+
   } catch (error) {
     console.error('Error fetching alumnus details:', error);
-    res.status(500).json({ error: 'Failed to fetch alumnus details.' });
+    res.status(500).json({ 
+      error: 'Failed to fetch alumnus details.',
+      details: error.message 
+    });
   }
 });
-
 // Update an alumnus (optional endpoint if needed)
 router.get('/update/:id', authenticateToken, async (req, res) => {
   try {
