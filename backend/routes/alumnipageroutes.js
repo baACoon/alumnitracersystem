@@ -28,107 +28,92 @@ router.get('/all', authenticateToken, async (req, res) => {
     const limit = Math.max(1, parseInt(req.query.limit) || 10); // Default limit is 10
     const college = req.query.college?.trim() || null;
     const course = req.query.course?.trim() || null;
-    const batch = parseInt(req.query.batch) || null;
 
     // Construct query filters
     const query = {};
-    if (college) query.college = college;
-    if (course) query.course = course;
-    if (batch) query.batch = batch;
+    if (college) query['personalInfo.college'] = college;
+    if (course) query['personalInfo.course'] = course;
 
-    // Aggregate pipeline for fetching alumni and their latest survey
-    const alumni = await Student.aggregate([
-      { $match: query }, // Match the query filters
-      {
-        $lookup: {
-          from: 'surveys',
-          localField: '_id',
-          foreignField: 'userId',
-          as: 'surveys',
-        },
-      },
-      {
-        $addFields: {
-          latestSurvey: { $arrayElemAt: ['$surveys', 0] }, // Get the first survey
-        },
-      },
-      { $sort: { registrationDate: -1 } }, // Sort by registrationDate in descending order
-      { $skip: (page - 1) * limit }, // Pagination: Skip documents
-      { $limit: limit }, // Pagination: Limit the number of documents
-    ]);
+    // Fetch survey data directly from the surveys collection
+    const surveys = await SurveySubmission.find(query)
+      .sort({ createdAt: -1 }) // Sort by most recent submission
+      .skip((page - 1) * limit) // Pagination: Skip documents
+      .limit(limit) // Pagination: Limit the number of documents
+      .lean(); // Return plain JavaScript objects instead of Mongoose documents
 
-    const total = await Student.countDocuments(query);
+    const total = await SurveySubmission.countDocuments(query); // Total matching documents
 
-    const mappedAlumni = alumni.map((student) => ({
-      userId: student._id.toString(),
-      generatedID: student.generatedID || '',
+    // Map surveys to include only relevant fields for the frontend
+    const mappedSurveys = surveys.map((survey) => ({
+      userId: survey.userId.toString(),
       personalInfo: {
-        firstName: student.firstName || '',
-        lastName: student.lastName || '',
-        email: student.email || '',
-        college: student.college || '',
-        course: student.course || '',
-        birthday: student.birthday || '',
+        firstName: survey.personalInfo.first_name,
+        lastName: survey.personalInfo.last_name,
+        email: survey.personalInfo.email_address,
+        college: survey.personalInfo.college,
+        course: survey.personalInfo.course,
+        birthday: survey.personalInfo.birthday || 'N/A',
       },
-      latestSurvey: student.latestSurvey || null,
+      employmentInfo: survey.employmentInfo || {},
+      submittedAt: survey.createdAt,
     }));
 
+    // Respond with data and pagination info
     res.status(200).json({
       success: true,
-      data: mappedAlumni,
+      data: mappedSurveys,
       pagination: {
         total,
-        page: parseInt(page),
+        page,
         pages: Math.ceil(total / limit),
       },
     });
   } catch (error) {
-    console.error('Error fetching alumni:', error.message);
-    res.status(500).json({ error: 'Failed to fetch alumni data.' });
+    console.error('Error fetching surveys:', error.message);
+    res.status(500).json({ error: 'Failed to fetch survey data.' });
   }
 });
 
 
-// Get details of a specific alumnus by userId
+// Get details of a specific latestSurvey by userId
 router.get('/user/:userId', authenticateToken, async (req, res) => {
   try {
-    const { userId } = req.params; // Correct destructuring
+    const { userId } = req.params; // Extract userId from params
 
     // Validate ObjectId format
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ error: 'Invalid userId format' });
+      return res.status(400).json({ error: 'Invalid userId format.' });
     }
 
-    // Fetch the alumnus from the Student collection
-    const alumnus = await Student.findById(userId);
+    // Fetch surveys associated with the given userId
+    const surveys = await SurveySubmission.find({ userId }).sort({ createdAt: -1 }).lean();
 
-    if (!alumnus) {
-      return res.status(404).json({ error: 'Alumnus not found.' });
+    if (surveys.length === 0) {
+      return res.status(404).json({ error: 'No surveys found for the specified user.' });
     }
 
-    // Fetch surveys associated with the alumnus
-    const surveys = await SurveySubmission.find({ userId: alumnus._id }).sort({ createdAt: -1 });
+    // Get the latest survey for college and course information
+    const latestSurvey = surveys[0];
 
-     // Get the latest survey to fetch college and course
-     const latestSurvey = surveys.length > 0 ? surveys[0] : null;
-
-      // Structure the response with fallback values
-      res.status(200).json({
-        success: true,
-        data: {
+    // Structure the response with fallback values
+    res.status(200).json({
+      success: true,
+      data: {
           personalInfo: {
-            firstName: alumnus.firstName || 'N/A',
-            lastName: alumnus.lastName || 'N/A',
-            email: alumnus.email || 'N/A',
-            birthday: alumnus.birthday || 'N/A',
+            firstName: latestSurvey.firstName || 'N/A',
+            lastName: latestSurvey.lastName || 'N/A',
+            email: latestSurvey.email || 'N/A',
+            birthday: latestSurvey.birthday || 'N/A',
           },
-          employmentInfo: surveys.map(survey => survey.employmentInfo) || [], // Fetch employment info from surveys
+          college: latestSurvey.personalInfo.college || 'N/A',
+          course:  latestSurvey.personalInfo.course || 'N/A',
+          employmentInfo: surveys.length > 0 && surveys[0].employmentInfo ? surveys[0].employmentInfo : null,
           surveys: surveys || [],
         },
       });
   } catch (error) {
-    console.error(`Error fetching alumnus details for userId ${req.params.userId}:`, error);
-    res.status(500).json({ error: 'Failed to fetch alumnus details.' });
+    console.error(`Error fetching latestSurvey details for userId ${req.params.userId}:`, error);
+    res.status(500).json({ error: 'Failed to fetch latestSurvey details.' });
   }
 });
 
