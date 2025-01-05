@@ -45,7 +45,7 @@ function JobListMainPage() {
 
     try {
       const response = await axios.post(
-        `http://localhost:5050/jobs/${jobId}/comments`,
+        `https://alumnitracersystem.onrender.com/jobs/${jobId}/comments`,
         { comment: newComment },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
