@@ -39,12 +39,12 @@ const surveySchema = new mongoose.Schema({
     position: { type: String, required: true },
     job_status: {
       type: String,
-      enum: ["Permanent", "Contractual", "Temporary", "Unemployed"],
+      enum: ["Permanent", "Contractual/Project Based", "Temporary", "Self-employed", "Unemployed"],
       required: true,
     },
     type_of_organization: {
       type: String,
-      enum: ["Private", "NGO", "Self-Employed"],
+      enum: ["Private", "Government", "NGO", "Self-Employed"],
       required: true,
     },
     work_alignment: {

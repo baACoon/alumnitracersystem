@@ -557,7 +557,7 @@ function CrossCheckSurveyForm() {
                                   >
                                       <option value="">Select Status</option>
                                       <option value="Permanent">Permanent</option>
-                                      <option value="Contractual">Contractual</option>
+                                      <option value="Contractual/Project Based">Contractual/Project Based</option>
                                       <option value="Temporary">Temporary</option>
                                       <option value="Self-employed">Self-employed</option>
                                       <option value="Unemployed">Unemployed</option>
@@ -575,10 +575,10 @@ function CrossCheckSurveyForm() {
                                       className={styles["form-select"]}
                                   >
                                       <option value="">Select Type</option>
-                                      <option value="Public">Public</option>
                                       <option value="Private">Private</option>
                                       <option value="NGO">NGO</option>
                                       <option value="Government">Government</option>
+                                      <option value="Self-employed">Self-employed</option>
                                   </select>
                               </div>
                               <div className={styles["form-group"]}>
