@@ -1,9 +1,8 @@
 .profileContainer {
-  padding: 20px;
-  font-family: 'Montserrat', sans-serif;
-  background-color: #f9f9f9;
-  max-width: 1200px;
+  font-family: Montserrat,sans-serif;
   margin: 0 auto;
+  max-width: 900px;
+  padding: 200px 20px 100px;
 }
 
 h2 {
@@ -12,6 +11,9 @@ h2 {
   margin-bottom: 10px;
 }
 
+.personalInfo, .employmentStatus, .completedSurveys{
+  margin-bottom: 30px;
+}
 .rowGroup {
   display: flex;
   gap: 20px;
