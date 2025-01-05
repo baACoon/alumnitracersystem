@@ -53,17 +53,13 @@ router.get('/all', authenticateToken, async (req, res) => {
       { $limit: limit }, // Pagination: Limit the number of documents
     ]);
 
-    const student = await Student.findById(userId).lean(); // Fetch graduation year and other student-specific fields
-    if (!student) {
-      return res.status(404).json({ error: 'Student not found.' });
-    }
 
     const total = await SurveySubmission.countDocuments(query); // Total matching documents
 
     // Map surveys to include only relevant fields for the frontend2wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
     const mappedSurveys = surveys.map((survey) => ({     //student
       userId: survey.userId.toString(),
-      generatedId: student.userId.toString(),
+      generatedId: studentInfo.generatedId,
       personalInfo: {
         firstName: studentInfo.firstName,
         lastName: studentInfo.lastName,
