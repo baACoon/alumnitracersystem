@@ -8,7 +8,6 @@ export default function OpportunityPending() {
   const [showRejectionForm, setShowRejectionForm] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Fetch pending opportunities from the backend
   useEffect(() => {
     const fetchPendingOpportunities = async () => {
       const token = localStorage.getItem("token");
@@ -30,14 +29,11 @@ export default function OpportunityPending() {
         if (!response.ok) {
           const errorData = await response.json();
           console.error("Failed to fetch pending opportunities:", errorData);
-          alert(
-            errorData.message || "Failed to fetch pending opportunities."
-          );
+          alert(errorData.message || "Failed to fetch pending opportunities.");
           return;
         }
 
         const data = await response.json();
-        console.log("Fetched Pending Opportunities:", data); // Debugging
         setPendingOpportunities(data);
       } catch (error) {
         console.error("Error fetching pending opportunities:", error);
@@ -135,9 +131,8 @@ export default function OpportunityPending() {
   };
 
   const handleOpportunityClick = (opportunity) => {
-    console.log("Selected Opportunity:", opportunity); // Debugging
     setSelectedOpportunity(opportunity);
-    setShowRejectionForm(false); // Reset rejection form state
+    setShowRejectionForm(false);
   };
 
   const closeModal = () => {
@@ -173,7 +168,6 @@ export default function OpportunityPending() {
         )}
       </div>
 
-      {/* Modal */}
       {selectedOpportunity && (
         <div className={styles.modalOverlay} onClick={closeModal}>
           <div
