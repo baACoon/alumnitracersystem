@@ -75,8 +75,7 @@ export function AlumniTable() {
           ...detailedData,
           personalInfo: {
             ...detailedData.personalInfo,
-            firstName: detailedData.personalInfo.first_name,
-            lastName: detailedData.personalInfo.last_name,
+            birthday: detailedData.personalInfo.birthday, // Include birthday
           },
         });
       } else {
@@ -94,7 +93,7 @@ export function AlumniTable() {
   };
 
   const filteredAlumni = alumniData.filter((alumni) =>
-    `${alumni.firstName} ${alumni.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
+    `${alumni.personalInfo.firstName} ${alumni.personalInfo.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -134,10 +133,11 @@ export function AlumniTable() {
             <th>Department</th>
             <th>Course</th>
             <th>Email</th>
+            <th>Birthday</th>
           </tr>
         </thead>
         <tbody>
-        {filteredAlumni.map((alumni) => (
+          {filteredAlumni.map((alumni) => (
             <tr key={alumni.id} onClick={() => openStudentDetails(alumni.id)}>
               <td>
                 <input
@@ -153,6 +153,7 @@ export function AlumniTable() {
               <td>{alumni.personalInfo.department || 'N/A'}</td>
               <td>{alumni.personalInfo.course || 'N/A'}</td>
               <td>{alumni.personalInfo.email}</td>
+              <td>{alumni.personalInfo.birthday || 'N/A'}</td>
             </tr>
           ))}
         </tbody>
@@ -169,6 +170,7 @@ export function AlumniTable() {
               <p>Department: {studentDetails.personalInfo.department || 'N/A'}</p>
               <p>Course: {studentDetails.personalInfo.course || 'N/A'}</p>
               <p>Email: {studentDetails.personalInfo.email || 'N/A'}</p>
+              <p>Birthday: {studentDetails.personalInfo.birthday || 'N/A'}</p>
               <p>Contact: {studentDetails.personalInfo.contactNumber || 'N/A'}</p>
               <p>Address: {studentDetails.personalInfo.address || 'N/A'}</p>
             </div>

@@ -29,14 +29,28 @@ router.get('/all', authenticateToken, async (req, res) => {
     if (course) query.course = course;
     if (batch) query.batch = parseInt(batch);
 
-    const alumni = await Student.find(query)
-      .sort({ registrationDate: -1 })
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit));
+    // Fetch alumni with optional survey data
+    const alumni = await Student.aggregate([
+      { $match: query },
+      { $lookup: { 
+          from: 'surveys', 
+          localField: '_id', 
+          foreignField: 'userId', 
+          as: 'surveys' 
+        } 
+      },
+      { $addFields: { 
+          latestSurvey: { $arrayElemAt: ['$surveys', 0] } 
+        } 
+      },
+      { $sort: { registrationDate: -1 } },
+      { $skip: (page - 1) * limit },
+      { $limit: parseInt(limit) }
+    ]);
 
     const total = await Student.countDocuments(query);
 
-     // In the /all endpoint, update the mapping:
+    // Map alumni data
     const mappedAlumni = alumni.map(student => ({
       id: student._id,
       generatedID: student.generatedID || '',
@@ -46,8 +60,10 @@ router.get('/all', authenticateToken, async (req, res) => {
         email: student.email || '',
         college: student.college || '',
         department: student.department || '',
-        course: student.course || ''
-      }
+        course: student.course || '',
+        birthday: student.birthday || '' // Include birthday
+      },
+      latestSurvey: student.latestSurvey || null // Include latest survey data
     }));
 
     res.status(200).json({
@@ -84,46 +100,35 @@ router.get('/:id', authenticateToken, async (req, res) => {
 // Update an alumnus (optional endpoint if needed)
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
-    // First get the student data
-    const student = await Student.findById(req.params.id);
-    if (!student) {
-      return res.status(404).json({ error: 'Alumnus not found.' });
-    }
-// Get the survey submissions for this student
-    const surveys = await SurveySubmission.find({ userId: req.params.id });
+    const userId = req.user.id;
 
-    // Create a formatted response
-    const formattedResponse = {
-      personalInfo: {
-        firstName: student.firstName,
-        lastName: student.lastName,
-        middleName: student.middleName || '',
-        suffix: student.suffix || '',
-        email: student.email,
-        college: student.college || '',
-        department: student.department || '',
-        course: student.course || '',
-        birthday: student.birthday,
-        contactNumber: student.contactNumber,
-        address: student.address,
-        graduationYear: student.gradyear
-      },
-      employmentInfo: surveys.map(survey => ({
-        company: survey.employmentInfo?.company_name || '',
-        years: survey.employmentInfo?.year_started || '',
-        position: survey.employmentInfo?.position || '',
-        jobStatus: survey.employmentInfo?.job_status || ''
-      })),
-      surveys: surveys.map(survey => ({
-        id: survey._id,
-        title: 'Alumni Survey',
-        dateReceived: survey.createdAt,
-        dateSubmitted: survey.updatedAt,
-        personalInfo: survey.personalInfo || {},
-        employmentInfo: survey.employmentInfo || {}
-      }))
-    };
-    res.status(200).json({ success: true, data: formattedResponse });
+    // Fetch user's latest survey submission
+    const latestSurvey = await SurveySubmission.findOne(
+      { userId: userId },
+      {},
+      { sort: { 'createdAt': -1 } }
+    );
+
+    if (!latestSurvey) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'No survey data found' 
+      });
+    }
+
+    // Get all surveys for the completed surveys section
+    const allSurveys = await SurveySubmission.find({ userId: userId })
+      .sort({ createdAt: -1 });
+
+    // Combine the data, using the latest survey for personal/employment info
+    res.status(200).json({
+      success: true,
+      data: {
+        personalInfo: { ...latestSurvey.personalInfo,birthday: student.birthday}, // Add birthday from the Student collection,
+        employmentInfo: latestSurvey.employmentInfo,
+        surveys: allSurveys
+      }
+    });
   } catch (error) {
     console.error('Error updating alumnus:', error);
     res.status(500).json({ error: 'Failed to update alumnus.' });
