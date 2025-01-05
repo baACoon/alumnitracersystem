@@ -1,28 +1,33 @@
 /* Container styling */
-.listcontainer {
-  padding: 200px 20px 100px;
-  max-width: 600px;
+.listContainer {
+  padding: 150px 20px 100px;
+  max-width: 800px;
   margin: 0 auto;
   font-family: Arial, sans-serif;
 }
 
 /* Back button */
-.back-button {
+.backButton {
   display: inline-block;
-  margin-bottom: 10px;
-  color: #C31D3C;
+  margin-bottom: 20px;
+  color: #c31d3c;
   cursor: pointer;
   text-decoration: none;
   font-size: 14px;
   font-weight: bold;
+  padding: 5px 10px;
+  border: 1px solid #c31d3c;
+  border-radius: 5px;
+  background-color: #fff;
 }
 
-.back-button:hover {
-  text-decoration: underline;
+.backButton:hover {
+  background-color: #c31d3c;
+  color: #fff;
 }
 
 /* Title styling */
-.list-title {
+.listTitle {
   font-size: 28px;
   font-weight: 700;
   color: #333;
@@ -31,55 +36,55 @@
 }
 
 /* Job card styling */
-.job-card {
+.jobCard {
   background-color: #ffffff;
   border: 1px solid #e1e8ed;
   border-radius: 10px;
-  padding: 15px;
+  padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
 
-.job-card:hover {
+.jobCard:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
 }
 
-.job-card-header {
+.jobCardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.job-card-header h3 {
+.jobCardHeader h3 {
   font-size: 20px;
   font-weight: bold;
   color: #333;
 }
 
-.job-card-header p {
+.jobCardHeader p {
   font-size: 14px;
   color: #999;
 }
 
 /* Job details */
-.job-card p {
+.jobCard p {
   font-size: 14px;
   color: #555;
   margin: 5px 0;
 }
 
 /* Job card actions (like and comment) */
-.job-card-actions {
+.jobCardActions {
   display: flex;
   gap: 15px;
   margin-top: 10px;
   align-items: center;
 }
 
-.action-icon {
+.actionIcon {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -88,22 +93,18 @@
   font-size: 14px;
 }
 
-.action-icon:hover {
+.actionIcon:hover {
   color: #1d9bf0;
 }
 
-.action-icon span {
-  font-size: 14px;
-}
-
 /* Comments section */
-.comments-section {
+.commentsSection {
   margin-top: 15px;
   border-top: 1px solid #e1e8ed;
   padding-top: 10px;
 }
 
-.comments-section h4 {
+.commentsSection h4 {
   margin-bottom: 10px;
   font-size: 16px;
   font-weight: bold;
@@ -117,23 +118,44 @@
   margin-bottom: 10px;
 }
 
-/* From Uiverse.io by Satwinder04 */ 
+.commentInput {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.postButton {
+  margin-top: 10px;
+  background-color: #c31d3c;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.postButton:hover {
+  background-color: #8f263a;
+}
+
+/* Loader styles */
 .loader {
-  /* background-color: blue; */
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
 
-.loader-text {
+.loaderText {
   font-size: 24px;
   color: rgb(0, 0, 0);
   margin-bottom: 20px;
   align-self: center;
 }
 
-.loader-bar {
+.loaderBar {
   width: 30%;
   height: 10px;
   border-radius: 5px;
@@ -143,17 +165,36 @@
 
 @keyframes loader-bar-animation {
   0% {
-    /* transform: translateX(-100%) rotate(270deg); */
     transform: translateX(-100%);
   }
-
   50% {
-    /* transform: translateX(100%) rotate(-90deg); */
     transform: translateX(100%);
   }
-
   100% {
-    /* transform: translateX(-100%) rotate(270deg); */
     transform: translateX(-100%);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .listContainer {
+    padding: 100px 10px 80px;
+  }
+
+  .jobCard {
+    padding: 15px;
+  }
+
+  .jobCardHeader h3 {
+    font-size: 18px;
+  }
+
+  .listTitle {
+    font-size: 22px;
+  }
+
+  .backButton {
+    font-size: 12px;
+    padding: 5px;
   }
 }
