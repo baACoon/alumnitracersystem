@@ -128,19 +128,21 @@ function JobListMainPage() {
                 <small>{comment.date}</small>
               </div>
             ))}
-            <input
-              type="text"
-              placeholder="Add a comment..."
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              className={styles.commentInput}
-            />
-            <button
-              onClick={() => handleCommentSubmit(job.id)}
-              className={styles.postButton}
-            >
-              Post
-            </button>
+            <div className={styles.commentInputContainer}>
+              <input
+                type="text"
+                placeholder="Add a comment..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                className={styles.commentInput}
+              />
+              <button
+                onClick={() => handleCommentSubmit(job.id)}
+                className={styles.postButton}
+              >
+                Post
+              </button>
+            </div>
           </div>
         </div>
       ))}
