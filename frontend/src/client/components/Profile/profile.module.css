@@ -1,0 +1,59 @@
+.profileContainer {
+  padding: 20px;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f9f9f9;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h2 {
+  font-size: 1.5rem;
+  color: #c31d3c;
+  margin-bottom: 10px;
+}
+
+.rowGroup {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  flex: 1;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.logoutBtn {
+  background-color: #c31d3c;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.logoutBtn:hover {
+  background-color: #8f263a;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .rowGroup {
+    flex-direction: column;
+  }
+}
