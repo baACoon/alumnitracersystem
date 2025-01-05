@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import './jobpagegive.css';
 
 import Header from '../Header/header';
@@ -23,9 +23,10 @@ function JobGiveMainPage() {
   const [publishedJobs, setPublishedJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Fetch jobs with "Pending" status from the backend
   useEffect(() => {
-    const fetchJobs = async () => {
-      const token = localStorage.getItem('token');
+    const fetchPendingJobs = async () => {
+      const token = localStorage.getItem('token'); // Include the token in the request
 
       if (!token) {
         alert('You need to log in first.');
@@ -33,63 +34,34 @@ function JobGiveMainPage() {
       }
 
       try {
-        const response = await fetch(
-          'https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published',
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const response = await fetch('https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending', {
+          headers: {
+            Authorization: `Bearer ${token}`, // Pass token in headers
+          },
+        });
 
         if (!response.ok) {
           const errorData = await response.json();
-          console.error('Failed to fetch jobs:', errorData);
-          alert(errorData.message || 'Failed to fetch jobs.');
+          console.error('Failed to fetch pending jobs:', errorData);
+          alert(errorData.message || 'Failed to fetch pending jobs.');
           return;
         }
 
         const data = await response.json();
-        setPendingJobs(data.filter((job) => job.status === 'Pending'));
-        setPublishedJobs(data.filter((job) => job.status === 'Published'));
+        setPendingJobs(data); // Store the pending jobs in state
       } catch (error) {
-        console.error('Error fetching jobs:', error);
-        alert('An error occurred while fetching jobs.');
+        console.error('Error fetching pending jobs:', error);
+        alert('An error occurred while fetching pending jobs.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchJobs();
+    fetchPendingJobs();
   }, []);
 
-  const approveJob = async (jobId) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('You need to log in first.');
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `https://alumnitracersystem.onrender.com/jobs/${jobId}/approve`,
-        {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        alert(errorData.message || 'Failed to approve job.');
-        return;
-      }
-
-      const updatedJob = await response.json();
-      setPendingJobs((prev) => prev.filter((job) => job._id !== jobId));
-      setPublishedJobs((prev) => [...prev, updatedJob]);
-    } catch (error) {
-      console.error('Error approving job:', error);
-      alert('Failed to approve job.');
-    }
+  const goToAddJob = () => {
+    navigate('/JobPageGive/addjobForm');
   };
 
   if (loading) {
@@ -103,9 +75,11 @@ function JobGiveMainPage() {
       </a>
       <div className="title-container">
         <h1 className="give-title">OPPORTUNITIES POSTED</h1>
+        <button className="add-button" onClick={goToAddJob}>
+          ADD
+        </button>
       </div>
 
-      <h2 className="section-title">Pending Opportunities</h2>
       {pendingJobs.length > 0 ? (
         pendingJobs.map((job) => (
           <div key={job._id} className="giveoption-pending">
@@ -115,31 +89,11 @@ function JobGiveMainPage() {
               <h5>{job.location}</h5>
               <h5>{job.type}</h5>
             </div>
-            <FontAwesomeIcon
-              icon={faCheck}
-              className="approve-icon"
-              onClick={() => approveJob(job._id)}
-            />
+            <FontAwesomeIcon icon={faTrashCan} className="JobPageGiveIcon" />
           </div>
         ))
       ) : (
         <p>No pending opportunities found.</p>
-      )}
-
-      <h2 className="section-title">Published Opportunities</h2>
-      {publishedJobs.length > 0 ? (
-        publishedJobs.map((job) => (
-          <div key={job._id} className="giveoption-published">
-            <h4 className="give-status-published">PUBLISHED</h4>
-            <div className="give-details">
-              <h3>{job.title}</h3>
-              <h5>{job.location}</h5>
-              <h5>{job.type}</h5>
-            </div>
-          </div>
-        ))
-      ) : (
-        <p>No published opportunities found.</p>
       )}
     </div>
   );
