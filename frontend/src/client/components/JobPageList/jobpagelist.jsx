@@ -38,8 +38,10 @@ function JobListMainPage() {
           }
         );
         setJobs(response.data);
+        setLoading(false); // Set loading to false after jobs are fetched
       } catch (error) {
         console.error("Error fetching jobs:", error);
+        setLoading(false); // Set loading to false even if there's an error
       }
     };
     fetchJobs();
@@ -74,7 +76,11 @@ function JobListMainPage() {
   };
 
   if (loading) {
-    return <p>Loading please wait....</p>;
+    return (
+      <div className="loading-container">
+        <p>Loading... Please wait.</p>
+      </div>
+    );
   }
 
   return (
