@@ -22,50 +22,95 @@ function JobGiveMainPage() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch jobs with both "Pending" and "Published" statuses
-  useEffect(() => {
-    const fetchJobs = async () => {
-      const token = localStorage.getItem('token');
+  const fetchJobs = async () => {
+    const token = localStorage.getItem('token');
 
-      if (!token) {
-        alert('You need to log in first.');
+    if (!token) {
+      alert('You need to log in first.');
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        'https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Failed to fetch jobs:', errorData);
+        alert(errorData.message || 'Failed to fetch jobs.');
         return;
       }
 
-      try {
-        const response = await fetch(
-          'https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error('Failed to fetch jobs:', errorData);
-          alert(errorData.message || 'Failed to fetch jobs.');
-          return;
-        }
-
-        const data = await response.json();
-        console.log('API Response:', data); // Debug API response
-        if (Array.isArray(data)) {
-          setJobs(data); // Update jobs state only if data is an array
-        } else {
-          console.error('Unexpected API response format:', data);
-          alert('Failed to fetch jobs: Invalid response format.');
-        }
-      } catch (error) {
-        console.error('Error fetching jobs:', error);
-        alert('An error occurred while fetching jobs.');
-      } finally {
-        setLoading(false);
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setJobs(data); // Update jobs state only if data is an array
+      } else {
+        console.error('Unexpected API response format:', data);
+        alert('Failed to fetch jobs: Invalid response format.');
       }
-    };
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+      alert('An error occurred while fetching jobs.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Delete Job Functionality
+  const handleDelete = async (jobId) => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      alert('You need to log in first.');
+      return;
+    }
+
+    const confirmDelete = window.confirm('Are you sure you want to delete this job?');
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(
+        `https://alumnitracersystem.onrender.com/jobs/${jobId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Failed to delete job:', errorData);
+        alert(errorData.message || 'Failed to delete job.');
+        return;
+      }
+
+      alert('Job deleted successfully.');
+
+      // Update the state to remove the deleted job
+      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+    } catch (error) {
+      console.error('Error deleting job:', error);
+      alert('An error occurred while deleting the job.');
+    }
+  };
+
+  useEffect(() => {
     fetchJobs();
+
+    // Optional: Set up polling to auto-refresh jobs every 10 seconds
+    const interval = setInterval(() => {
+      fetchJobs();
+    }, 10000);
+
+    return () => clearInterval(interval); // Clear the interval on unmount
   }, []);
 
   const goToAddJob = () => {
@@ -75,8 +120,6 @@ function JobGiveMainPage() {
   if (loading) {
     return <p>Loading jobs...</p>;
   }
-
-  console.log('Jobs State:', jobs); // Debug jobs state before rendering
 
   return (
     <div className="givecontainer">
@@ -107,7 +150,7 @@ function JobGiveMainPage() {
             <FontAwesomeIcon
               icon={faTrashCan}
               className="JobPageGiveIcon"
-              onClick={() => console.log(`Delete job ${job._id}`)}
+              onClick={() => handleDelete(job._id)}
             />
           </div>
         ))

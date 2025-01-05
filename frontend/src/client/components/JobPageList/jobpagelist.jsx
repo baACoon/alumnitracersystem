@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegComment, FaRegThumbsUp } from "react-icons/fa";
-import "./jobpagelist.css";
+import styles from "./jobpagelist.module.css";
 import Header from "../Header/header";
 import Footer from "../FooterClient/Footer";
 import axios from "axios";
@@ -38,10 +38,10 @@ function JobListMainPage() {
           }
         );
         setJobs(response.data);
-        setLoading(false); // Set loading to false after jobs are fetched
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching jobs:", error);
-        setLoading(false); // Set loading to false even if there's an error
+        setLoading(false);
       }
     };
     fetchJobs();
@@ -77,22 +77,22 @@ function JobListMainPage() {
 
   if (loading) {
     return (
-      <div className="loader">
-        <div class="loader-text">Loading...</div>
-        <div class="loader-bar"></div>
+      <div className={styles.loader}>
+        <div className={styles.loaderText}>Loading...</div>
+        <div className={styles.loaderBar}></div>
       </div>
     );
   }
 
   return (
-    <div className="listcontainer">
-      <a onClick={goToJobPage} className="back-button">
+    <div className={styles.listContainer}>
+      <button onClick={goToJobPage} className={styles.backButton}>
         Back
-      </a>
-      <h1 className="list-title">JOB OPPORTUNITIES FEED</h1>
+      </button>
+      <h1 className={styles.listTitle}>Job Opportunities Feed</h1>
       {jobs.map((job) => (
-        <div key={job.id} className="job-card">
-          <div className="job-card-header">
+        <div key={job.id} className={styles.jobCard}>
+          <div className={styles.jobCardHeader}>
             <h3>{job.title}</h3>
             <p>{job.datePosted}</p>
           </div>
@@ -106,21 +106,24 @@ function JobListMainPage() {
             <strong>Type:</strong> {job.type}
           </p>
           <p>{job.jobDescription}</p>
-          <div className="job-card-actions">
-            <div className="action-icon" onClick={() => handleLike(job.id)}>
+          <div className={styles.jobCardActions}>
+            <div
+              className={styles.actionIcon}
+              onClick={() => handleLike(job.id)}
+            >
               <FaRegThumbsUp /> <span>{likes[job.id] || 0} Likes</span>
             </div>
             <div
-              className="action-icon"
+              className={styles.actionIcon}
               onClick={() => alert("Open comment input below.")}
             >
               <FaRegComment /> <span>Comment</span>
             </div>
           </div>
-          <div className="comments-section">
+          <div className={styles.commentsSection}>
             <h4>Comments</h4>
             {comments[job.id]?.map((comment, index) => (
-              <div key={index} className="comment">
+              <div key={index} className={styles.comment}>
                 <p>{comment.text}</p>
                 <small>{comment.date}</small>
               </div>
@@ -130,8 +133,14 @@ function JobListMainPage() {
               placeholder="Add a comment..."
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
+              className={styles.commentInput}
             />
-            <button onClick={() => handleCommentSubmit(job.id)}>Post</button>
+            <button
+              onClick={() => handleCommentSubmit(job.id)}
+              className={styles.postButton}
+            >
+              Post
+            </button>
           </div>
         </div>
       ))}
