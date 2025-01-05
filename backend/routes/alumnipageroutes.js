@@ -97,11 +97,12 @@ router.get('/:id', authenticateToken, async (req, res) => {
 // Update an alumnus (optional endpoint if needed)
 router.get('/update/:id', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const alumnus = await Student.findById(req.params.id);
+    if (!alumnus) return res.status(404).json({ error: 'Alumnus not found.' });
 
     // Fetch user's latest survey submission
     const latestSurvey = await SurveySubmission.findOne(
-      { userId: userId },
+      { userId: alumnus._id },
       {},
       { sort: { 'createdAt': -1 } }
     );
@@ -114,24 +115,25 @@ router.get('/update/:id', authenticateToken, async (req, res) => {
     }
 
     // Get all surveys for the completed surveys section
-    const allSurveys = await SurveySubmission.find({ userId: userId })
-      .sort({ createdAt: -1 });
+    const allSurveys = await SurveySubmission.find({ userId: alumnus._id })
+    .sort({ createdAt: -1 });
 
-    // Combine the data, using the latest survey for personal/employment info
-    res.status(200).json({
-      success: true,
-      data: {
-        personalInfo: { ...latestSurvey.personalInfo,birthday: student.birthday}, // Add birthday from the Student collection,
-        employmentInfo: latestSurvey.employmentInfo,
-        surveys: allSurveys
-      }
-    });
-  } catch (error) {
-    console.error('Error updating alumnus:', error);
-    res.status(500).json({ error: 'Failed to update alumnus.' });
-  }
-});
-
+        res.status(200).json({
+          success: true,
+          data: {
+            personalInfo: { 
+              ...alumnus.personalInfo,
+              ...latestSurvey?.personalInfo
+            },
+            employmentInfo: latestSurvey?.employmentInfo || [],
+            surveys: allSurveys || []
+          }
+        });
+        } catch (error) {
+          console.error('Error updating alumnus:', error);
+          res.status(500).json({ error: 'Failed to update alumnus.' });
+        }
+      });
  {/*// Get statistics for alumni
 router.get('/statistics', authenticateToken, async (req, res) => {
   try {
