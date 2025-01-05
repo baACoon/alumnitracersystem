@@ -12,7 +12,7 @@ const studentSchema = new mongoose.Schema({
   surveys: [{
     type: Schema.Types.ObjectId,
     ref: 'Survey'
-  }]
+  }],
   gradyear: { type: Number, required: true },
   email: { type: String, required: true },
   firstName: { type: String, required: true },
