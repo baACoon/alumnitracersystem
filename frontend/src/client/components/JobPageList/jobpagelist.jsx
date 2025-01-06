@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegComment, FaRegThumbsUp } from "react-icons/fa";
-import "./jobpagelist.module.css";
+import "./jobpagelist.css";
 import Header from "../Header/header";
 import Footer from "../FooterClient/Footer";
 import axios from "axios";
