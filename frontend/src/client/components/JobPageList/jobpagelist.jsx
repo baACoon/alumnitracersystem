@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegComment, FaRegThumbsUp } from "react-icons/fa";
-import styles from "./jobpagelist.module.css";
+import "./jobpagelist.css";
 import Header from "../Header/header";
 import Footer from "../FooterClient/Footer";
 import axios from "axios";
@@ -22,31 +22,28 @@ function JobListMainPage() {
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState({});
   const [likes, setLikes] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const goToJobPage = () => {
     navigate("/JobPage");
   };
 
   useEffect(() => {
-    if (!token) {
-      alert('You need to log in first.')
-      return;
-    }
-
     const fetchJobs = async () => {
       try {
         const response = await axios.get(
-          "https://alumnitracersystem.onrender.com/jobs/jobpost?status=Published",
+          "https://alumnitracersystem.onrender.com/jobs/jobpost",
           {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
           }
         );
         setJobs(response.data);
+        setLoading(false); // Set loading to false after jobs are fetched
       } catch (error) {
         console.error("Error fetching jobs:", error);
+        setLoading(false); // Set loading to false even if there's an error
       }
     };
-
     fetchJobs();
   }, []);
 
@@ -78,73 +75,77 @@ function JobListMainPage() {
     }));
   };
 
+  if (loading) {
+    return (
+      <div className="loaders">
+        <div class="loader-texts">Loading...</div>
+        <div class="loader-bars"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className={styles.listContainer}>
-      <button onClick={goToJobPage} className={styles.backButton}>
+    <div className="listcontainer">
+      <a onClick={goToJobPage} className="back-button">
         Back
-      </button>
-      <h1 className={styles.listTitle}>Job Opportunities Feed</h1>
-      {jobs.length > 0 ? (
-        jobs.map((job) => (
-          <div key={job._id} className={styles.jobCard}>
-            <div className={styles.jobCardHeader}>
-              <h3>{job.title}</h3>
-              <p>{new Date(job.datePosted).toLocaleDateString()}</p>
+      </a>
+      <h1 className="list-title">JOB OPPORTUNITIES FEED</h1>
+      {jobs.map((job) => (
+        <div key={job.id} className="job-card">
+          <div className="job-card-header">
+            <h3>{job.title}</h3>
+            <p>{job.datePosted}</p>
+          </div>
+          <p>
+            <strong>Company:</strong> {job.company}
+          </p>
+          <p>
+            <strong>Location:</strong> {job.location}
+          </p>
+          <p>
+            <strong>Type:</strong> {job.type}
+          </p>
+          <p>{job.jobDescription}</p>
+          <div className="job-card-actions">
+            <div className="action-icon" onClick={() => handleLike(job.id)}>
+
+
+
+              <FaRegThumbsUp /> <span>{likes[job.id] || 0} Likes</span>
             </div>
-            <p>
-              <strong>Company:</strong> {job.company}
-            </p>
-            <p>
-              <strong>Location:</strong> {job.location}
-            </p>
-            <p>
-              <strong>Type:</strong> {job.type}
-            </p>
-            <p>{job.jobDescription}</p>
-            <div className={styles.jobCardActions}>
-              <div
-                className={styles.actionIcon}
-                onClick={() => handleLike(job._id)}
-              >
-                <FaRegThumbsUp /> <span>{likes[job._id] || 0} Likes</span>
-              </div>
-              <div
-                className={styles.actionIcon}
-                onClick={() => alert("Open comment input below.")}
-              >
-                <FaRegComment /> <span>Comment</span>
-              </div>
-            </div>
-            <div className={styles.commentsSection}>
-              <h4>Comments</h4>
-              {comments[job._id]?.map((comment, index) => (
-                <div key={index} className={styles.comment}>
-                  <p>{comment.text}</p>
-                  <small>{new Date(comment.date).toLocaleDateString()}</small>
-                </div>
-              ))}
-              <div className={styles.commentInputContainer}>
-                <input
-                  type="text"
-                  placeholder="Add a comment..."
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  className={styles.commentInput}
-                />
-                <button
-                  onClick={() => handleCommentSubmit(job._id)}
-                  className={styles.postButton}
-                >
-                  Post
-                </button>
-              </div>
+            <div
+              className="action-icon"
+              onClick={() => alert("Open comment input below.")}
+            >
+              <FaRegComment /> <span>Comment</span>
             </div>
           </div>
-        ))
-      ) : (
-        <p>No published opportunities available.</p>
-      )}
+          <div className="comments-section">
+            <h4>Comments</h4>
+            {comments[job.id]?.map((comment, index) => (
+              <div key={index} className="comment">
+                <p>{comment.text}</p>
+                <small>{comment.date}</small>
+              </div>
+            ))}
+            <input
+              type="text"
+              placeholder="Add a comment..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+
+            />
+            <button onClick={() => handleCommentSubmit(job.id)}>Post</button>
+
+
+
+
+
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
+
 export default JobPageList;

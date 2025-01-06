@@ -23,25 +23,22 @@ router.post('/jobpost', protect, async (req, res) => {
 
 router.get('/jobpost', protect, async (req, res) => {
     try {
-      const { status } = req.query; // Get status filter from query params
-      const filter = {};
-  
-      if (status) {
-        filter.status = { $in: status.split(',') }; // Allow filtering by multiple statuses
-      } else {
-        filter.status = 'Published'; // Default to Published if no status is provided
-      }
-  
-      const jobs = await Job.find(filter)
-        .populate('createdBy', 'name email') // Optional: Populate user details
-        .sort({ createdAt: -1 }); // Sort by most recent
-  
-      res.status(200).json(jobs);
+        const { status } = req.query; // Optional query param for filtering by status
+        const filter = status
+        ? { status: { $in: status.split(',') } } // Split status into an array for multiple statuses
+        : {};
+
+        const jobs = await Job.find(filter)
+            .populate('createdBy', 'name email') // Populate user details (optional)
+            .sort({ createdAt: -1 }); // Sort by most recent
+
+        res.status(200).json(jobs);
     } catch (error) {
-      console.error('Error fetching jobs:', error.message);
-      res.status(500).json({ error: 'Failed to fetch jobs.' });
+        console.error('Error Fetching Jobs:', error.message);
+        res.status(500).json({ error: 'Failed to fetch jobs.' });
     }
-  });
+});
+  
   
 
 // Approve a job posting
