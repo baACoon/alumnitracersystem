@@ -85,10 +85,15 @@ const EmploymentHistory = ({ employmentInfo }) => {
           },
           scales: {
             x: {
-              beginAtZero: true,
+              beginAtZero: false,
               title: {
                 display: true,
                 text: 'Year Started'
+              },
+              ticks: {
+                callback: function(value) {
+                  return value; // Display the actual year
+                }
               }
             },
             y: {
@@ -148,7 +153,8 @@ const EmploymentHistory = ({ employmentInfo }) => {
           scales: {
             y: {
               beginAtZero: true,
-              max: 100,
+              min: 0,
+              max: 100, // Maximum alignment score
               title: {
                 display: true,
                 text: 'Alignment Score (%)'
