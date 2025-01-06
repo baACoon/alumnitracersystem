@@ -34,7 +34,7 @@ const AdminRegister = () => {
       if (response.ok) {
         setMessage(data.message); // Show success message
         localStorage.setItem('token', data.token); // Save token
-        navigate("/alumni-page"); // Redirect
+        navigate("/Dashboard"); // Redirect
       } else {
         setMessage(data.error || "Registration failed."); // Show error message
       }
