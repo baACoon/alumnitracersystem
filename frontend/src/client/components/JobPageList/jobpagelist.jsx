@@ -22,7 +22,7 @@ function JobListMainPage() {
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState({});
   const [likes, setLikes] = useState({});
-  const [loading, setLoading] = useState(true);
+  
 
   const goToJobPage = () => {
     navigate("/JobPage");
@@ -43,10 +43,10 @@ function JobListMainPage() {
           }
         );
         setJobs(response.data);
-        setLoading(false);
+        
       } catch (error) {
         console.error("Error fetching jobs:", error);
-        setLoading(false);
+       
       }
     };
     fetchJobs();
@@ -80,14 +80,6 @@ function JobListMainPage() {
     }));
   };
 
-  if (loading) {
-    return (
-      <div className={styles.loader}>
-        <div className={styles.loaderText}>Loading....</div>
-        <div className={styles.loaderBar}></div>
-      </div>
-    );
-  }
 
   return (
     <div className={styles.listContainer}>
