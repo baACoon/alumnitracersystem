@@ -122,14 +122,14 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
       success: true,
       data: {
         personalInfo: {
-          first_name: latestSurvey.first_name || 'N/A',
+          first_name: student.first_name || 'N/A',
           last_name: latestSurvey.last_name || 'N/A',
           middle_name: latestSurvey.middle_name || 'N/A',
-          email_address: latestSurvey.email_address || 'N/A',
           birthdate: latestSurvey.birthdate || 'N/A',
           address: latestSurvey.address || 'N/A', // Ensure this field is returned
           contact_no: latestSurvey.contact_no || 'N/A', // Ensure this field is returned
         },
+        email_address: student.email_address || 'N/A',
         degree: latestSurvey.degree || 'N/A',
         college: latestSurvey.college || 'N/A',
         gradyear: student.gradyear || 'N/A',
