@@ -192,37 +192,37 @@ export function AlumniTable() {
                   <h3>Personal Information</h3>
                     <div className={styles.profileInfo}>
                       <div>
-                        <strong>Degree:</strong> {studentDetails.personalInfo.degree || 'N/A'}
+                        <strong>Degree:</strong> {studentDetails.degree || 'N/A'}
                       </div>
                       <div>
-                        <strong>College:</strong> {studentDetails.personalInfo.college || 'N/A'}
+                        <strong>College:</strong> {studentDetails.college || 'N/A'}
                       </div>
                       <div>
-                        <strong>Course:</strong> {studentDetails.personalInfo.course || 'N/A'}
+                        <strong>Course:</strong> {studentDetails.course || 'N/A'}
                       </div>
                       <div>
                         <strong>Graduation Year:</strong> {studentDetails.gradyear || 'N/A'}
                       </div>
                       <div>
-                        <strong>Last Name:</strong> {studentDetails.personalInfo.lastName || 'N/A'}
+                        <strong>Last Name:</strong> {studentDetails.lastName || 'N/A'}
                       </div>
                       <div>
-                        <strong>First Name:</strong> {studentDetails.personalInfo.firstName || 'N/A'}
+                        <strong>First Name:</strong> {studentDetails.firstName || 'N/A'}
                       </div>
                       <div>
-                        <strong>Middl Name:</strong> {studentDetails.personalInfo.middleName || 'N/A'}
+                        <strong>Middle Name:</strong> {studentDetails.middleName || 'N/A'}
                       </div>
                       <div>
-                        <strong>Address:</strong> {studentDetails.personalInfo.address || 'N/A'}
+                        <strong>Address:</strong> {studentDetails.address || 'N/A'}
                       </div>
                       <div>
                         <strong>Birthday:</strong> {formatDate(studentDetails.birthday) || 'N/A'}
                       </div>
                       <div>
-                        <strong>Email:</strong> {studentDetails.personalInfo.email_address || 'N/A'}
+                        <strong>Email:</strong> {studentDetails.email_address || 'N/A'}
                       </div>
                       <div>
-                        <strong>Contact No:</strong> {studentDetails.personalInfo.contact_no || 'N/A'}
+                        <strong>Contact No:</strong> {studentDetails.contact_no || 'N/A'}
                       </div>
                     </div>
                   </div>
