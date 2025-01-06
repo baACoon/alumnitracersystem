@@ -147,7 +147,7 @@ router.post("/login", async (req, res) => {
       { 
         id: user._id,
         generatedID: user.generatedID,
-        lastName: newUser.lastName
+        lastName: user.lastName
       },
       process.env.JWT_SECRET, // Make sure to set this in your .env file
       { expiresIn: '24h' }
