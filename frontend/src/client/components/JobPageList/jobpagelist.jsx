@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegComment, FaRegThumbsUp } from "react-icons/fa";
-import styles from "./jobpagelist.module.css";
+import "./jobpagelist.css";
 import Header from "../Header/header";
 import Footer from "../FooterClient/Footer";
 import axios from "axios";
@@ -30,11 +30,6 @@ function JobListMainPage() {
 
   useEffect(() => {
     const fetchJobs = async () => {
-      if (!token) {
-        alert('You need to log in first.');
-        return;
-      }
-      
       try {
         const response = await axios.get(
           "https://alumnitracersystem.onrender.com/jobs/jobpost",
@@ -43,10 +38,10 @@ function JobListMainPage() {
           }
         );
         setJobs(response.data);
-        setLoading(false);
+        setLoading(false); // Set loading to false after jobs are fetched
       } catch (error) {
         console.error("Error fetching jobs:", error);
-        setLoading(false);
+        setLoading(false); // Set loading to false even if there's an error
       }
     };
     fetchJobs();
@@ -82,22 +77,22 @@ function JobListMainPage() {
 
   if (loading) {
     return (
-      <div className={styles.loader}>
-        <div className={styles.loaderText}>Loading....</div>
-        <div className={styles.loaderBar}></div>
+      <div className="loaders">
+        <div class="loader-texts">Loading...</div>
+        <div class="loader-bars"></div>
       </div>
     );
   }
 
   return (
-    <div className={styles.listContainer}>
-      <button onClick={goToJobPage} className={styles.backButton}>
+    <div className="listcontainer">
+      <a onClick={goToJobPage} className="back-button">
         Back
-      </button>
-      <h1 className={styles.listTitle}>Job Opportunities Feed</h1>
+      </a>
+      <h1 className="list-title">JOB OPPORTUNITIES FEED</h1>
       {jobs.map((job) => (
-        <div key={job.id} className={styles.jobCard}>
-          <div className={styles.jobCardHeader}>
+        <div key={job.id} className="job-card">
+          <div className="job-card-header">
             <h3>{job.title}</h3>
             <p>{job.datePosted}</p>
           </div>
@@ -111,43 +106,41 @@ function JobListMainPage() {
             <strong>Type:</strong> {job.type}
           </p>
           <p>{job.jobDescription}</p>
-          <div className={styles.jobCardActions}>
-            <div
-              className={styles.actionIcon}
-              onClick={() => handleLike(job.id)}
-            >
+          <div className="job-card-actions">
+            <div className="action-icon" onClick={() => handleLike(job.id)}>
+
+
+
               <FaRegThumbsUp /> <span>{likes[job.id] || 0} Likes</span>
             </div>
             <div
-              className={styles.actionIcon}
+              className="action-icon"
               onClick={() => alert("Open comment input below.")}
             >
               <FaRegComment /> <span>Comment</span>
             </div>
           </div>
-          <div className={styles.commentsSection}>
+          <div className="comments-section">
             <h4>Comments</h4>
             {comments[job.id]?.map((comment, index) => (
-              <div key={index} className={styles.comment}>
+              <div key={index} className="comment">
                 <p>{comment.text}</p>
                 <small>{comment.date}</small>
               </div>
             ))}
-            <div className={styles.commentInputContainer}>
-              <input
-                type="text"
-                placeholder="Add a comment..."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                className={styles.commentInput}
-              />
-              <button
-                onClick={() => handleCommentSubmit(job.id)}
-                className={styles.postButton}
-              >
-                Post
-              </button>
-            </div>
+            <input
+              type="text"
+              placeholder="Add a comment..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+
+            />
+            <button onClick={() => handleCommentSubmit(job.id)}>Post</button>
+
+
+
+
+
           </div>
         </div>
       ))}

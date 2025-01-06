@@ -39,7 +39,7 @@ router.get('/jobpost', protect, async (req, res) => {
     }
 });
   
-
+  
 
 // Approve a job posting
 router.post('/:id/approve', protect, async (req, res) => {
