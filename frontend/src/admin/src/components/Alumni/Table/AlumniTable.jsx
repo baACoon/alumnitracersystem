@@ -216,7 +216,7 @@ export function AlumniTable() {
                         <strong>Address:</strong> {studentDetails.personalInfo.address || 'N/A'}
                       </div>
                       <div>
-                        <strong>Birthday:</strong> {formatDate(studentDetails.personalInfo.birthday) || 'N/A'}
+                        <strong>Birthday:</strong> {formatDate(studentDetails.birthday) || 'N/A'}
                       </div>
                       <div>
                         <strong>Email:</strong> {studentDetails.personalInfo.email_address || 'N/A'}
