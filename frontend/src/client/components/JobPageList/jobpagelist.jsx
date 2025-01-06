@@ -82,9 +82,9 @@ function JobListMainPage() {
 
   if (loading) {
     return (
-      <div className="loader">
-        <div className="loaderText">Loading....</div>
-        <div className="loaderBar"></div>
+      <div className="loaders">
+        <div className="loaderTexts">Loading....</div>
+        <div className="loaderBars"></div>
       </div>
     );
   }
