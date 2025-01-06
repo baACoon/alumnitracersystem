@@ -152,6 +152,10 @@ const EmploymentHistory = ({ employmentInfo }) => {
               title: {
                 display: true,
                 text: 'Alignment Score (%)'
+              },
+              font:{
+                size: 16,
+                weight:'bold'
               }
             }
           },
@@ -207,10 +211,10 @@ const EmploymentHistory = ({ employmentInfo }) => {
     <div className={styles.employmentHistory}>
       {employmentInfo && Object.keys(employmentInfo).length > 0 ? (
         <div>
-          <div style={{ height: '300px', width: '100%', marginBottom: '2rem' }}>
+          <div style={{ height: '250px', width: '100%', marginBottom: '1rem' }}>
             <canvas ref={timelineChartRef}></canvas>
           </div>
-          <div style={{ height: '300px', width: '100%' }}>
+          <div style={{ height: '250px', width: '100%' }}>
             <canvas ref={alignmentChartRef}></canvas>
           </div>
           <div className={styles.legendContainer}>
