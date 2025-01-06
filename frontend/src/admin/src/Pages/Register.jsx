@@ -18,8 +18,6 @@ const AdminRegister = () => {
   };
 
   const handleSubmit = async (e) => {
-  
-
     try {
       const response = await fetch('https://alumnitracersystem.onrender.com/adminlog_reg/adminregister', {
         method: "POST",
@@ -34,7 +32,7 @@ const AdminRegister = () => {
       if (response.ok) {
         setMessage(data.message); // Show success message
         localStorage.setItem('token', data.token); // Save token
-        navigate("/Dashboard"); // Redirect
+        navigate("/alumni-page"); // Redirect
       } else {
         setMessage(data.error || "Registration failed."); // Show error message
       }
