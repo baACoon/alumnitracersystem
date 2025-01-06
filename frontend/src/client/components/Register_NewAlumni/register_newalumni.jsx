@@ -4,11 +4,7 @@ import styles from './register_newalumni.module.css'; // Import module styles
 
 const Register_NewAlumni = ({ closeModal }) => {
     const [gradyear, setYear] = useState('');
-    const [email, setEmail] = useState('');
     const [lastName, setLastName] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [middleName, setMiddleName] = useState('');
-    const [birthday, setBirthday] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [generatedID, setGeneratedID] = useState(null); // To display the generated unique ID
@@ -31,7 +27,7 @@ const Register_NewAlumni = ({ closeModal }) => {
         }
 
         // Additional frontend validation (e.g., check for missing fields)
-        if (!gradyear|| !email || !firstName || !lastName || !middleName || !birthday || !password || !confirmPassword) {
+        if (!gradyear||  !lastName || !password || !confirmPassword) {
            alert("All fields are required");
             return;
         }
@@ -39,11 +35,7 @@ const Register_NewAlumni = ({ closeModal }) => {
 
         const formData = {
             gradyear,
-            email,
-            firstName,
-            middleName,
             lastName,
-            birthday,
             password,
             confirmPassword,
         };
@@ -95,41 +87,9 @@ const Register_NewAlumni = ({ closeModal }) => {
                         />
                         <input
                             type="text"
-                            placeholder="EMAIL"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className={styles.inputFieldNewAlumni}
-                        />
-                        <input
-                            type="text"
-                            placeholder="FIRST NAME"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            required
-                            className={styles.inputFieldNewAlumni}
-                        />
-                        <input
-                            type="text"
-                            placeholder="MIDDLE NAME"
-                            value={middleName}
-                            onChange={(e) => setMiddleName(e.target.value)}
-                            required
-                            className={styles.inputFieldNewAlumni}
-                        />
-                        <input
-                            type="text"
                             placeholder="LAST NAME"
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
-                            required
-                            className={styles.inputFieldNewAlumni}
-                        />
-                        <input
-                            type="date"
-                            placeholder="Birthday"
-                            value={birthday}
-                            onChange={(e) => setBirthday(e.target.value)}
                             required
                             className={styles.inputFieldNewAlumni}
                         />

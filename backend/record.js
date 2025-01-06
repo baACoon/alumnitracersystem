@@ -11,12 +11,8 @@ const router = express.Router();
 const studentSchema = new mongoose.Schema({
   surveys: [{type: mongoose.Schema.Types.ObjectId, ref: 'Survey'}],
   gradyear: { type: Number, required: true },
-  email: { type: String, required: true },
-  firstName: { type: String, required: true },
-  middleName: { type: String, required: true },
   lastName: { type: String, required: true },
   generatedID: { type: String, required: true, unique: true },
-  birthday: { type: Date, required: true },
   password: { type: String, required: true },
   registrationDate: { type: Date, default: Date.now },
 });
@@ -27,11 +23,7 @@ const Student = mongoose.model("Student", studentSchema);
 router.post("/register", async (req, res) => {
   const {
     gradyear,
-    email,
-    firstName,
-    middleName,
     lastName,
-    birthday,
     password,
     confirmPassword,
   } = req.body;
@@ -40,7 +32,7 @@ router.post("/register", async (req, res) => {
 
   try {
     // Validate input fields
-    if (!gradyear || !email || !firstName || !lastName || !middleName || !birthday || !password || !confirmPassword) {
+    if (!gradyear || !lastName || !password || !confirmPassword) {
       console.log("Error: Missing fields");
       return res.status(400).json({ error: "All fields are required." });
     }
@@ -68,12 +60,8 @@ router.post("/register", async (req, res) => {
     // Create and save the new user
     const newUser = new Student({
       gradyear,
-      email,
-      firstName,
-      middleName,
       lastName,
       generatedID, // Store the unique ID
-      birthday: new Date(birthday), // Ensure birthday is stored as a Date object
       password: hashedPassword,
       registrationDate: new Date(),
     });
@@ -85,7 +73,7 @@ router.post("/register", async (req, res) => {
       { 
         id: newUser._id,
         generatedID: newUser.generatedID,
-        email: newUser.email 
+        lastName: newUser.lastName 
       },
       process.env.JWT_SECRET, // Ensure this is set in your .env file
       { expiresIn: '24h' }
@@ -98,9 +86,7 @@ router.post("/register", async (req, res) => {
       user: {
         id: newUser._id.toString(),
         generatedID,
-        firstName: newUser.firstName,
         lastName: newUser.lastName,
-        email: newUser.email
       }
     });
 
@@ -110,9 +96,7 @@ router.post("/register", async (req, res) => {
       user: {
         id: newUser._id.toString(),
         generatedID,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        email: newUser.email
+        lastName: newUser.lastName
       }
     });
   } catch (error) {
@@ -163,7 +147,7 @@ router.post("/login", async (req, res) => {
       { 
         id: user._id,
         generatedID: user.generatedID,
-        email: user.email 
+        lastName: newUser.lastName
       },
       process.env.JWT_SECRET, // Make sure to set this in your .env file
       { expiresIn: '24h' }
@@ -177,9 +161,7 @@ router.post("/login", async (req, res) => {
       user: {
         id: user._id,
         generatedID: user.generatedID,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email
+        lastName: user.lastName
       }
     });
   } catch (error) {
