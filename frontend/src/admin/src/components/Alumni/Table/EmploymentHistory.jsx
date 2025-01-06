@@ -6,7 +6,8 @@ import {
   LinearScale,
   BarElement,
   Title,
-  Tooltip
+  Tooltip,
+  Legend
 } from 'chart.js';
 import styles from './AlumniTable.module.css';
 
@@ -17,62 +18,140 @@ Chart.register(
   LinearScale,
   BarElement,
   Title,
-  Tooltip
+  Tooltip,
+  Legend
 );
 
 const EmploymentHistory = ({ employmentInfo }) => {
-  const chartRef = useRef(null);
-  const chartInstance = useRef(null);
+  const timelineChartRef = useRef(null);
+  const alignmentChartRef = useRef(null);
+  const timelineInstance = useRef(null);
+  const alignmentInstance = useRef(null);
 
   useEffect(() => {
-    // Destroy previous chart instance if it exists
-    if (chartInstance.current) {
-      chartInstance.current.destroy();
+    // Cleanup previous instances
+    if (timelineInstance.current) {
+      timelineInstance.current.destroy();
+    }
+    if (alignmentInstance.current) {
+      alignmentInstance.current.destroy();
     }
 
-    // Only create chart if we have employment info
     if (employmentInfo && Object.keys(employmentInfo).length > 0) {
-      const ctx = chartRef.current.getContext('2d');
+      // Timeline Chart
+      const timelineCtx = timelineChartRef.current.getContext('2d');
       
-      chartInstance.current = new Chart(ctx, {
+      timelineInstance.current = new Chart(timelineCtx, {
         type: 'bar',
         data: {
           labels: [employmentInfo.company_name || 'N/A'],
           datasets: [{
-            label: 'Year Started',
+            label: 'Employment Timeline',
             data: [employmentInfo.year_started || 0],
-            backgroundColor: '#ff385c',
-            borderColor: '#ff385c',
+            backgroundColor: getColorByOrgType(employmentInfo.type_of_organization),
+            borderColor: getColorByOrgType(employmentInfo.type_of_organization),
             borderWidth: 1
           }]
         },
         options: {
-          indexAxis: 'y',  // This makes the bars horizontal
+          indexAxis: 'y',
           responsive: true,
           plugins: {
             legend: {
-              display: false
+              display: true,
+              position: 'top'
             },
             title: {
               display: true,
-              text: "Alumni's Employment History",
+              text: "Employment Timeline",
               color: '#900c3f',
               font: {
                 size: 16,
                 weight: 'bold'
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return [
+                    `Position: ${employmentInfo.position}`,
+                    `Status: ${employmentInfo.job_status}`,
+                    `Organization: ${employmentInfo.type_of_organization}`,
+                    `Started: ${employmentInfo.year_started}`
+                  ];
+                }
               }
             }
           },
           scales: {
             x: {
               beginAtZero: true,
-              grid: {
-                drawBorder: false
+              title: {
+                display: true,
+                text: 'Year Started'
               }
             },
             y: {
-              grid: {
-                display: false
+              title: {
+                display: true,
+                text: 'Company'
+              }
+            }
+          },
+          maintainAspectRatio: false
+        }
+      });
+
+      // Alignment Chart
+      const alignmentCtx = alignmentChartRef.current.getContext('2d');
+      
+      alignmentInstance.current = new Chart(alignmentCtx, {
+        type: 'bar',
+        data: {
+          labels: [employmentInfo.company_name || 'N/A'],
+          datasets: [{
+            label: 'Work Alignment',
+            data: [getAlignmentScore(employmentInfo.work_alignment)],
+            backgroundColor: getColorByAlignment(employmentInfo.work_alignment),
+            borderColor: getColorByAlignment(employmentInfo.work_alignment),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top'
+            },
+            title: {
+              display: true,
+              text: "Course Alignment",
+              color: '#900c3f',
+              font: {
+                size: 16,
+                weight: 'bold'
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return [
+                    `Alignment: ${employmentInfo.work_alignment}`,
+                    `Position: ${employmentInfo.position}`,
+                    `Occupation: ${employmentInfo.occupation}`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              title: {
+                display: true,
+                text: 'Alignment Score (%)'
               }
             }
           },
@@ -81,23 +160,84 @@ const EmploymentHistory = ({ employmentInfo }) => {
       });
     }
 
-    // Cleanup function to destroy chart when component unmounts
     return () => {
-      if (chartInstance.current) {
-        chartInstance.current.destroy();
+      if (timelineInstance.current) {
+        timelineInstance.current.destroy();
+      }
+      if (alignmentInstance.current) {
+        alignmentInstance.current.destroy();
       }
     };
   }, [employmentInfo]);
 
+  // Helper functions
+  const getColorByOrgType = (type) => {
+    const colors = {
+      'Private': '#FF6384',
+      'Government': '#36A2EB',
+      'NGO': '#FFCE56',
+      'Self-Employed': '#4BC0C0'
+    };
+    return colors[type] || '#cccccc';
+  };
+
+  const getColorByAlignment = (alignment) => {
+    const colors = {
+      'Very much aligned': '#00ff00',
+      'Aligned': '#90EE90',
+      'Averagely Aligned': '#FFCE56',
+      'Somehow Aligned': '#FFA07A',
+      'Unaligned': '#FF6384'
+    };
+    return colors[alignment] || '#cccccc';
+  };
+
+  const getAlignmentScore = (alignment) => {
+    const scores = {
+      'Very much aligned': 100,
+      'Aligned': 80,
+      'Averagely Aligned': 60,
+      'Somehow Aligned': 40,
+      'Unaligned': 20
+    };
+    return scores[alignment] || 0;
+  };
+
   return (
     <div className={styles.employmentHistory}>
-      <div style={{ height: '300px', width: '100%' }}>
-        {employmentInfo && Object.keys(employmentInfo).length > 0 ? (
-          <canvas ref={chartRef}></canvas>
-        ) : (
-          <p>No employment history available.</p>
-        )}
-      </div>
+      {employmentInfo && Object.keys(employmentInfo).length > 0 ? (
+        <div>
+          <div style={{ height: '300px', width: '100%', marginBottom: '2rem' }}>
+            <canvas ref={timelineChartRef}></canvas>
+          </div>
+          <div style={{ height: '300px', width: '100%' }}>
+            <canvas ref={alignmentChartRef}></canvas>
+          </div>
+          <div className={styles.legendContainer}>
+            <h4>Organization Types</h4>
+            <div className={styles.legendItems}>
+              <span className={styles.legendItem}>
+                <span className={styles.colorBox} style={{backgroundColor: '#FF6384'}}></span>
+                Private
+              </span>
+              <span className={styles.legendItem}>
+                <span className={styles.colorBox} style={{backgroundColor: '#36A2EB'}}></span>
+                Government
+              </span>
+              <span className={styles.legendItem}>
+                <span className={styles.colorBox} style={{backgroundColor: '#FFCE56'}}></span>
+                NGO
+              </span>
+              <span className={styles.legendItem}>
+                <span className={styles.colorBox} style={{backgroundColor: '#4BC0C0'}}></span>
+                Self-Employed
+              </span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <p>No employment history available.</p>
+      )}
     </div>
   );
 };
