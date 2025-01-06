@@ -210,7 +210,7 @@ export function AlumniTable() {
                         <strong>First Name:</strong> {studentDetails.personalInfo.firstName || 'N/A'}
                       </div>
                       <div>
-                        <strong>Middle Name:</strong> {studentDetails.personalInfo.middleName || 'N/A'}
+                        <strong>Middl Name:</strong> {studentDetails.personalInfo.middleName || 'N/A'}
                       </div>
                       <div>
                         <strong>Address:</strong> {studentDetails.personalInfo.address || 'N/A'}
