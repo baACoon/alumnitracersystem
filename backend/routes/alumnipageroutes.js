@@ -126,7 +126,7 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
             lastName: surveys.last_name || 'N/A',
             middleName: surveys.middle_name || 'N/A',
             email_address: surveys.email_address || 'N/A',
-            birthday: surveys.birthday || 'N/A',
+            birthday: surveys.personalInfo.birthday || 'N/A',
             degree: surveys.degree,
             college: surveys.personalInfo.college || 'N/A',
             course:  surveys.personalInfo.course || 'N/A',
