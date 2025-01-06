@@ -52,11 +52,46 @@ export default function CreateOpportunity({ onClose }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Opportunity Created Successfully!");
-    console.log("Form Data Submitted:", formData);
-    onClose(); // Close the modal after submission
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("You need to log in first.");
+        return;
+      }
+
+      const response = await fetch("https://alumnitracersystem.onrender.com/jobs/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          jobTitle: formData.jobTitle,
+          college: formData.college,
+          course: formData.course,
+          location: formData.location,
+          jobDescription: formData.jobDescription,
+          keyResponsibilities: formData.keyResponsibilities,
+          requirements: formData.requirements,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Failed to create job:", errorData);
+        alert(errorData.error || "Failed to create job.");
+        return;
+      }
+
+      alert("Opportunity Created Successfully!");
+      onClose(); // Close the modal after submission
+    } catch (error) {
+      console.error("Error creating opportunity:", error);
+      alert("An error occurred while creating the opportunity.");
+    }
   };
 
   return (
@@ -86,7 +121,7 @@ export default function CreateOpportunity({ onClose }) {
               value={formData.college}
               onChange={handleChange}
             >
-              <option value="">All Colleges</option>
+              <option value="">Select College</option>
               {Object.keys(coursesByCollege).map((collegeName) => (
                 <option key={collegeName} value={collegeName}>
                   {collegeName}
@@ -103,7 +138,7 @@ export default function CreateOpportunity({ onClose }) {
               onChange={handleChange}
               disabled={!formData.college}
             >
-              <option value="">All Courses</option>
+              <option value="">Select Course</option>
               {formData.college &&
                 coursesByCollege[formData.college].map((courseName) => (
                   <option key={courseName} value={courseName}>

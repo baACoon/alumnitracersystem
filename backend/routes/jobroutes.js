@@ -160,6 +160,33 @@ router.delete('/:id', protect, async (req, res) => {
       res.status(500).json({ message: 'Failed to delete job.' });
     }
   });
+
+// Create a new job - Admin only
+router.post('/create', protect, async (req, res) => {
+    try {
+      const { jobTitle, college, course, location, jobDescription, keyResponsibilities, requirements } = req.body;
+  
+      // Create the job with the status set to 'Published' for admin-created jobs
+      const newJob = new Job({
+        title: jobTitle,
+        college,
+        course,
+        location,
+        jobDescription,
+        keyResponsibilities: keyResponsibilities.split('\n'), // Convert the responsibilities to an array
+        requirements: requirements.split('\n'), // Convert the requirements to an array
+        status: 'Published', // Admin-created jobs are automatically published
+        createdBy: req.user._id, // The admin who created the job
+      });
+  
+      await newJob.save(); // Save the job to the database
+  
+      res.status(201).json({ message: 'Job created successfully!', job: newJob });
+    } catch (error) {
+      console.error('Error creating job:', error);
+      res.status(500).json({ error: 'Failed to create job.' });
+    }
+  });
   
 
 export default router;
