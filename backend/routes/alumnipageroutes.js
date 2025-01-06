@@ -112,7 +112,7 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
     }
 
     // Get the latest survey for college and course information
-    const latestSurvey = surveys[0];
+    //const latestSurvey = surveys[0];
     // Add console.log to debug
     console.log('Employment Info:', latestSurvey.employmentInfo);
 
@@ -121,18 +121,18 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-            firstName: latestSurvey.first_name || 'N/A',
-            lastName: latestSurvey.last_name || 'N/A',
-            middleName: latestSurvey.middle_name || 'N/A',
+            first_name: latestSurvey.first_name || 'N/A',
+            last_name: latestSurvey.last_name || 'N/A',
+            middle_name: latestSurvey.middle_name || 'N/A',
             email_address: latestSurvey.email_address || 'N/A',
-            birthday: student.birthday || 'N/A',
+            birthday: latestSurvey.birthday || 'N/A',
             degree: latestSurvey.degree,
-          college: latestSurvey.personalInfo.college || 'N/A',
-          gradyear: student.gradyear || 'N/A',
-          course:  latestSurvey.personalInfo.course || 'N/A',
-          employmentInfo: latestSurvey.employmentInfo ||{},
-          surveys: surveys || [],
-        },
+            college: latestSurvey.personalInfo.college || 'N/A',
+            gradyear: student.gradyear || 'N/A',
+            course:  latestSurvey.personalInfo.course || 'N/A',
+            employmentInfo: latestSurvey.employmentInfo ||{},
+            surveys: surveys || [],
+          },
       });
   } catch (error) {
     console.error(`Error fetching latestSurvey details for userId ${req.params.userId}:`, error);

@@ -204,19 +204,19 @@ export function AlumniTable() {
                         <strong>Graduation Year:</strong> {studentDetails.gradyear || 'N/A'}
                       </div>
                       <div>
-                        <strong>Last Name:</strong> {studentDetails.lastName || 'N/A'}
+                        <strong>Last Name:</strong> {studentDetails.last_name || 'N/A'}
                       </div>
                       <div>
-                        <strong>First Name:</strong> {studentDetails.firstName || 'N/A'}
+                        <strong>First Name:</strong> {studentDetails.first_name || 'N/A'}
                       </div>
                       <div>
-                        <strong>Middle Name:</strong> {studentDetails.middleName || 'N/A'}
+                        <strong>Middle Name:</strong> {studentDetails.middle_name || 'N/A'}
                       </div>
                       <div>
                         <strong>Address:</strong> {studentDetails.address || 'N/A'}
                       </div>
                       <div>
-                        <strong>Birthday:</strong> {formatDate(studentDetails.personalInfo.birthday) || 'N/A'}
+                        <strong>Birthday:</strong> {formatDate(studentDetails.birthday) || 'N/A'}
                       </div>
                       <div>
                         <strong>Email:</strong> {studentDetails.email_address || 'N/A'}
