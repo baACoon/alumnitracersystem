@@ -113,6 +113,8 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
 
     // Get the latest survey for college and course information
     const latestSurvey = surveys[0];
+    // Add console.log to debug
+    console.log('Employment Info:', latestSurvey.employmentInfo);
 
     // Structure the response with fallback values 
     //Modal
@@ -130,7 +132,7 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
           college: latestSurvey.personalInfo.college || 'N/A',
           gradyear: student.gradyear || 'N/A',
           course:  latestSurvey.personalInfo.course || 'N/A',
-          employmentInfo: latestSurvey.employmentInfo || [],
+          employmentInfo: latestSurvey.employmentInfo ||{},
           surveys: surveys || [],
         },
       });

@@ -105,7 +105,7 @@ export function AlumniTable() {
         <button
           onClick={() => setSelectedAlumni(new Set())}
           className={styles.deleteButton}
-          disabled={selectedAlumni.size === 0}
+          disabled= 'true' //{selectedAlumni.size === 0}
         >
           DELETE
         </button>
@@ -229,8 +229,7 @@ export function AlumniTable() {
                     
                 <hr className={styles.sectionDivider} />
                 {/* Employment History Section */}
-                <EmploymentHistory employmentInfo={studentDetails.employmentInfo || []} />
-  
+                    <EmploymentHistory employmentInfo={studentDetails?.employmentInfo || {}} />        
                 <hr className={styles.sectionDivider} />
   
                 {/* Submitted Surveys Section */}
