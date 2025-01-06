@@ -204,25 +204,25 @@ export function AlumniTable() {
                         <strong>Graduation Year:</strong> {studentDetails.gradyear || 'N/A'}
                       </div>
                       <div>
-                        <strong>Last Name:</strong> {studentDetails.last_name || 'N/A'}
+                        <strong>Last Name:</strong> {studentDetails.personalInfo?.last_name || 'N/A'}
                       </div>
                       <div>
-                        <strong>First Name:</strong> {studentDetails.first_name || 'N/A'}
+                        <strong>First Name:</strong> {studentDetails.personalInfo?.first_name || 'N/A'}
                       </div>
                       <div>
-                        <strong>Middle Name:</strong> {studentDetails.middle_name || 'N/A'}
+                        <strong>Middle Name:</strong> {studentDetails.personalInfo?.middle_name || 'N/A'}
                       </div>
                       <div>
-                        <strong>Address:</strong> {studentDetails.address || 'N/A'}
+                        <strong>Address:</strong> {studentDetails.personalInfo?.address || 'N/A'}
                       </div>
                       <div>
-                        <strong>Birthday:</strong> {formatDate(studentDetails.birthdate) || 'N/A'}
+                        <strong>Birthday:</strong> {formatDate(studentDetails.personalInfo?.birthdate) || 'N/A'}
                       </div>
                       <div>
-                        <strong>Email:</strong> {studentDetails.email_address || 'N/A'}
+                        <strong>Email:</strong> {studentDetails.personalInfo?.email_address || 'N/A'}
                       </div>
                       <div>
-                        <strong>Contact No:</strong> {studentDetails.contact_no || 'N/A'}
+                        <strong>Contact No:</strong> {studentDetails.personalInfo?.contact_no || 'N/A'}
                       </div>
                     </div>
                   </div>
