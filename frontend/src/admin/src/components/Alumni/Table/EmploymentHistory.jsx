@@ -174,6 +174,7 @@ const EmploymentHistory = ({ employmentInfo }) => {
       if (timelineInstance.current) {
         timelineInstance.current.destroy();
       }
+      
       if (alignmentInstance.current) {
         alignmentInstance.current.destroy();
       }
