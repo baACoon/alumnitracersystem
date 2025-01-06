@@ -168,7 +168,7 @@ export function AlumniTable() {
                 <td>{alumni.personalInfo?.college || 'N/A'}</td>
                 <td>{alumni.personalInfo?.course || 'N/A'}</td>
                 <td>{alumni.personalInfo?.email_address || 'N/A'}</td>
-                <td>{formatDate(alumni.personalInfo?.birthday) || 'N/A'}</td>
+                <td>{formatDate(alumni.personalInfo?.birthdate) || 'N/A'}</td>
               </tr>
             ))}
           </tbody>
@@ -216,7 +216,7 @@ export function AlumniTable() {
                         <strong>Address:</strong> {studentDetails.address || 'N/A'}
                       </div>
                       <div>
-                        <strong>Birthday:</strong> {formatDate(studentDetails.birthday) || 'N/A'}
+                        <strong>Birthday:</strong> {formatDate(studentDetails.birthdate) || 'N/A'}
                       </div>
                       <div>
                         <strong>Email:</strong> {studentDetails.email_address || 'N/A'}

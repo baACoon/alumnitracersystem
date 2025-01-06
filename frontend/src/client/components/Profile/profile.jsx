@@ -114,7 +114,7 @@ function ProfilePage() {
           </div>
           <div className={styles.row}>
             <label>Birthday</label>
-            <input type="text" value={formatDate(profileData.personalInfo?.birthday) || ''} readOnly />
+            <input type="text" value={formatDate(profileData.personalInfo?.birthdate) || ''} readOnly />
           </div>
           <div className={styles.row}>
             <label>Email</label>

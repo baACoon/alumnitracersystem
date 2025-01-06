@@ -22,6 +22,7 @@ const surveySchema = new mongoose.Schema({
     contact_no: { type: String, required: true },
     nationality: { type: String, required: true },
     sex: { type: String, enum: ["Male", "Female"], required: true },
+    birthdate: { type: Date, required: true },
     birthplace: { type: String, required: true },
     address: { type: String, required: true },
     degree: {
