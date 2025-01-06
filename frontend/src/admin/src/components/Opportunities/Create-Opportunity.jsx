@@ -54,14 +54,16 @@ export default function CreateOpportunity({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const token = localStorage.getItem("token");
       if (!token) {
         alert("You need to log in first.");
         return;
       }
-
+  
+      console.log("Submitting Form Data:", formData);
+  
       const response = await fetch("https://alumnitracersystem.onrender.com/jobs/create", {
         method: "POST",
         headers: {
@@ -69,23 +71,23 @@ export default function CreateOpportunity({ onClose }) {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          jobTitle: formData.jobTitle,
-          college: formData.college,
-          course: formData.course,
+          title: formData.jobTitle,
+          company: "Admin-created", // Hardcode for now or add a field for it in the form
           location: formData.location,
-          jobDescription: formData.jobDescription,
-          keyResponsibilities: formData.keyResponsibilities,
-          requirements: formData.requirements,
+          type: "full-time", // Default type
+          description: formData.jobDescription,
+          responsibilities: formData.keyResponsibilities,
+          qualifications: formData.requirements,
         }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Failed to create job:", errorData);
         alert(errorData.error || "Failed to create job.");
         return;
       }
-
+  
       alert("Opportunity Created Successfully!");
       onClose(); // Close the modal after submission
     } catch (error) {
@@ -93,6 +95,7 @@ export default function CreateOpportunity({ onClose }) {
       alert("An error occurred while creating the opportunity.");
     }
   };
+  
 
   return (
     <div className={styles.modalOverlay}>
