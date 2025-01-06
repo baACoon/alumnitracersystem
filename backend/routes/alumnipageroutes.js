@@ -121,14 +121,12 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-          personalInfo: {
             firstName: latestSurvey.first_name || 'N/A',
             lastName: latestSurvey.last_name || 'N/A',
             middleName: latestSurvey.middle_name || 'N/A',
             email_address: latestSurvey.email_address || 'N/A',
             birthday: student.birthday || 'N/A',
             degree: latestSurvey.degree,
-          },
           college: latestSurvey.personalInfo.college || 'N/A',
           gradyear: student.gradyear || 'N/A',
           course:  latestSurvey.personalInfo.course || 'N/A',
