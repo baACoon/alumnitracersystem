@@ -30,11 +30,6 @@ function JobListMainPage() {
 
   useEffect(() => {
     const fetchJobs = async () => {
-      if (!token) {
-        alert('You need to log in first.');
-        return;
-      }
-      
       try {
         const response = await axios.get(
           "https://alumnitracersystem.onrender.com/jobs/jobpost",
@@ -43,10 +38,10 @@ function JobListMainPage() {
           }
         );
         setJobs(response.data);
-        setLoading(false);
+        setLoading(false); // Set loading to false after jobs are fetched
       } catch (error) {
         console.error("Error fetching jobs:", error);
-        setLoading(false);
+        setLoading(false); // Set loading to false even if there's an error
       }
     };
     fetchJobs();
@@ -83,21 +78,21 @@ function JobListMainPage() {
   if (loading) {
     return (
       <div className="loaders">
-        <div className="loaderTexts">Loading....</div>
-        <div className="loaderBars"></div>
+        <div class="loader-texts">Loading...</div>
+        <div class="loader-bars"></div>
       </div>
     );
   }
 
   return (
-    <div className="listContainer">
-      <button onClick={goToJobPage} className="backButton">
+    <div className="listcontainer">
+      <a onClick={goToJobPage} className="back-button">
         Back
-      </button>
-      <h1 className="listTitle">Job Opportunities Feed</h1>
+      </a>
+      <h1 className="list-title">JOB OPPORTUNITIES FEED</h1>
       {jobs.map((job) => (
-        <div key={job.id} className="jobCard">
-          <div className="jobCardHeader">
+        <div key={job.id} className="job-card">
+          <div className="job-card-header">
             <h3>{job.title}</h3>
             <p>{job.datePosted}</p>
           </div>
@@ -111,21 +106,21 @@ function JobListMainPage() {
             <strong>Type:</strong> {job.type}
           </p>
           <p>{job.jobDescription}</p>
-          <div className="jobCardActions">
-            <div
-              className="actionIcon"
-              onClick={() => handleLike(job.id)}
-            >
+          <div className="job-card-actions">
+            <div className="action-icon" onClick={() => handleLike(job.id)}>
+
+
+
               <FaRegThumbsUp /> <span>{likes[job.id] || 0} Likes</span>
             </div>
             <div
-              className="actionIcon"
+              className="action-icon"
               onClick={() => alert("Open comment input below.")}
             >
               <FaRegComment /> <span>Comment</span>
             </div>
           </div>
-          <div className="commentsSection">
+          <div className="comments-section">
             <h4>Comments</h4>
             {comments[job.id]?.map((comment, index) => (
               <div key={index} className="comment">
@@ -133,21 +128,23 @@ function JobListMainPage() {
                 <small>{comment.date}</small>
               </div>
             ))}
-            <div className="commentInputContainer">
-              <input
-                type="text"
-                placeholder="Add a comment..."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                className="commentInput"
-              />
-              <button
-                onClick={() => handleCommentSubmit(job.id)}
-                className="postButton"
-              >
-                Post
+            <div className="comment-input-container">
+            <input
+              type="text"
+              placeholder="Add a comment..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              className="comment-input"
+            />
+            <button 
+            className="post-button"
+            onClick={() => handleCommentSubmit(job.id)}>
+              Post
               </button>
+
+
             </div>
+          
           </div>
         </div>
       ))}

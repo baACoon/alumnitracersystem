@@ -7,7 +7,7 @@
 }
 
 /* Back button */
-.backButton {
+.back-button {
   display: inline-block;
   margin-bottom: 20px;
   color: #c31d3c;
@@ -21,13 +21,13 @@
   background-color: #fff;
 }
 
-.backButton:hover {
+.back-button:hover {
   background-color: #c31d3c;
   color: #fff;
 }
 
 /* Title styling */
-.listTitle {
+.list-title {
   font-size: 28px;
   font-weight: 700;
   color: #333;
@@ -36,7 +36,7 @@
 }
 
 /* Job card styling */
-.jobCard {
+.job-card {
   background-color: #ffffff;
   border: 1px solid #e1e8ed;
   border-radius: 10px;
@@ -46,45 +46,45 @@
   transition: all 0.3s ease;
 }
 
-.jobCard:hover {
+.job-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
 }
 
-.jobCardHeader {
+.job-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.jobCardHeader h3 {
+.job-card-header h3 {
   font-size: 20px;
   font-weight: bold;
   color: #333;
 }
 
-.jobCardHeader p {
+.job-card-header p {
   font-size: 14px;
   color: #999;
 }
 
 /* Job details */
-.jobCard p {
+.job-card p {
   font-size: 14px;
   color: #555;
   margin: 5px 0;
 }
 
 /* Job card actions (like and comment) */
-.jobCardActions {
+.job-card-actions {
   display: flex;
   gap: 15px;
   margin-top: 10px;
   align-items: center;
 }
 
-.actionIcon {
+.action-icon {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -93,18 +93,18 @@
   font-size: 14px;
 }
 
-.actionIcon:hover {
+.action-icon:hover {
   color: #1d9bf0;
 }
 
 /* Comments section */
-.commentsSection {
+.comments-section {
   margin-top: 15px;
   border-top: 1px solid #e1e8ed;
   padding-top: 10px;
 }
 
-.commentsSection h4 {
+.comments-section h4 {
   margin-bottom: 10px;
   font-size: 16px;
   font-weight: bold;
@@ -119,7 +119,7 @@
 }
 
 /* Comment input and post button container */
-.commentInputContainer {
+.comment-input-container {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -127,7 +127,7 @@
   flex-wrap: wrap;
 }
 
-.commentInput {
+.comment-input {
   flex: 1;
   padding: 10px;
   border: 1px solid #ccc;
@@ -135,7 +135,7 @@
   min-width: 200px;
 }
 
-.postButton {
+.post-button {
   background-color: #c31d3c;
   color: #fff;
   border: none;
@@ -145,7 +145,7 @@
   white-space: nowrap;
 }
 
-.postButton:hover {
+.post-button:hover {
   background-color: #8f263a;
 }
 
@@ -188,23 +188,23 @@
 
 /* Medium screens (tablets) */
 @media (max-width: 1024px) {
-  .listContainer {
+  .list-container {
     padding: 100px 15px 80px;
   }
 
-  .jobCard {
+  .job-card {
     padding: 15px;
   }
 
-  .jobCardHeader h3 {
+  .job-card-header h3 {
     font-size: 18px;
   }
 
-  .listTitle {
+  .list-title {
     font-size: 24px;
   }
 
-  .backButton {
+  .back-button {
     font-size: 13px;
     padding: 5px;
   }
@@ -212,37 +212,37 @@
 
 /* Small screens (mobile) */
 @media (max-width: 768px) {
-  .listContainer {
+  .list-container {
     padding: 80px 10px 60px;
   }
 
-  .jobCard {
+  .job-card {
     padding: 10px;
   }
 
-  .jobCardHeader {
+  .job-card-header {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .jobCardHeader h3 {
+  .job-card-header h3 {
     font-size: 16px;
   }
 
-  .jobCard p {
+  .job-card p {
     font-size: 12px;
   }
 
-  .commentInputContainer {
+  .comment-input-container {
     flex-direction: column;
     gap: 5px;
   }
 
-  .commentInput {
+  .comment-input {
     width: 100%;
   }
 
-  .postButton {
+  .post-button {
     width: 100%;
     text-align: center;
   }
