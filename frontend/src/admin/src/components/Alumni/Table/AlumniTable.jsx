@@ -192,7 +192,7 @@ export function AlumniTable() {
                   <h3>Personal Information</h3>
                     <div className={styles.profileInfo}>
                       <div>
-                        <strong>Degree:</strong> {studentDetails.degree || 'N/A'}
+                        <strong>Degree:</strong> {studentDetails.personalInfo.degree || 'N/A'}
                       </div>
                       <div>
                         <strong>College:</strong> {studentDetails.college || 'N/A'}
