@@ -1,3 +1,21 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaRegComment, FaRegThumbsUp } from "react-icons/fa";
+import styles from "./jobpagelist.module.css";
+import Header from "../Header/header";
+import Footer from "../FooterClient/Footer";
+import axios from "axios";
+
+function JobPageList() {
+  return (
+    <div>
+      <Header />
+      <JobListMainPage />
+      <Footer />
+    </div>
+  );
+}
+
 function JobListMainPage() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
@@ -10,6 +28,11 @@ function JobListMainPage() {
   };
 
   useEffect(() => {
+    if (!token) {
+      alert('You need to log in first.')
+      return;
+    }
+
     const fetchJobs = async () => {
       try {
         const response = await axios.get(
@@ -124,3 +147,4 @@ function JobListMainPage() {
     </div>
   );
 }
+export default JobPageList;
