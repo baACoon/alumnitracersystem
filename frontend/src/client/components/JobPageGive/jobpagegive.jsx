@@ -22,53 +22,56 @@ function JobGiveMainPage() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchJobs = async () => {
+  useEffect(() => {
+    // Get user credentials from localStorage
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId'); // Kunin ang user ID
-    const userRole = localStorage.getItem('userRole'); // Kunin ang role
-  
+    const userId = localStorage.getItem('userId');
+    const userRole = localStorage.getItem('userRole');
+
+    // If user is not logged in, redirect to login page
     if (!token || !userId || !userRole) {
-      alert('You need to log in first.');
+      console.warn('User not logged in. Redirecting to login page...');
+      navigate('/login');
       return;
     }
-  
+
+    fetchJobs(token, userId, userRole);
+  }, []);
+
+  const fetchJobs = async (token, userId, userRole) => {
     try {
       let url = `https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published`;
-  
-      // Regular user: Makikita lang niya ang sariling jobs
+
+      // If user is not an admin, only show their own jobs
       if (userRole !== 'admin') {
         url += `&createdBy=${userId}`;
       }
-  
+
       const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Failed to fetch jobs:', errorData);
-        alert(errorData.message || 'Failed to fetch jobs.');
         return;
       }
-  
+
       const data = await response.json();
       if (Array.isArray(data)) {
         setJobs(data);
       } else {
         console.error('Unexpected API response format:', data);
-        alert('Failed to fetch jobs: Invalid response format.');
       }
     } catch (error) {
       console.error('Error fetching jobs:', error);
-      alert('An error occurred while fetching jobs.');
     } finally {
       setLoading(false);
     }
   };
-  
-  // Delete Job Functionality
+
   const handleDelete = async (jobId) => {
     const token = localStorage.getItem('token');
 
@@ -77,8 +80,7 @@ function JobGiveMainPage() {
       return;
     }
 
-    const confirmDelete = window.confirm('Are you sure you want to delete this job?');
-    if (!confirmDelete) return;
+    if (!window.confirm('Are you sure you want to delete this job?')) return;
 
     try {
       const response = await fetch(
@@ -92,32 +94,16 @@ function JobGiveMainPage() {
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Failed to delete job:', errorData);
-        alert(errorData.message || 'Failed to delete job.');
+        console.error('Failed to delete job');
         return;
       }
 
       alert('Job deleted successfully.');
-
-      // Update the state to remove the deleted job
       setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
     } catch (error) {
       console.error('Error deleting job:', error);
-      alert('An error occurred while deleting the job.');
     }
   };
-
-  useEffect(() => {
-    fetchJobs();
-
-    // Optional: Set up polling to auto-refresh jobs every 10 seconds
-    const interval = setInterval(() => {
-      fetchJobs();
-    }, 10000);
-
-    return () => clearInterval(interval); // Clear the interval on unmount
-  }, []);
 
   const goToAddJob = () => {
     navigate('/JobPageGive/addjobForm');
