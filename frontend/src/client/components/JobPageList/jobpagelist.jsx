@@ -31,32 +31,19 @@ function JobListMainPage() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await fetch(
-          'https://alumnitracersystem.onrender.com/jobs/jobpost?status=Published'
+        const response = await axios.get(
+          "https://alumnitracersystem.onrender.com/jobs/jobpost",
+          {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          }
         );
-    
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error('Failed to fetch jobs:', errorData);
-          alert(errorData.message || 'Failed to fetch jobs.');
-          return;
-        }
-    
-        const data = await response.json();
-        if (Array.isArray(data)) {
-          setJobs(data);
-        } else {
-          console.error('Unexpected API response format:', data);
-          alert('Failed to fetch jobs: Invalid response format.');
-        }
+        setJobs(response.data);
+        setLoading(false); // Set loading to false after jobs are fetched
       } catch (error) {
-        console.error('Error fetching jobs:', error);
-        alert('An error occurred while fetching jobs.');
-      } finally {
-        setLoading(false);
+        console.error("Error fetching jobs:", error);
+        setLoading(false); // Set loading to false even if there's an error
       }
     };
-    
     fetchJobs();
   }, []);
 
