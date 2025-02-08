@@ -24,32 +24,38 @@ function JobGiveMainPage() {
 
   const fetchJobs = async () => {
     const token = localStorage.getItem('token');
-
-    if (!token) {
+    const userId = localStorage.getItem('userId'); // Kunin ang user ID
+    const userRole = localStorage.getItem('userRole'); // Kunin ang role
+  
+    if (!token || !userId || !userRole) {
       alert('You need to log in first.');
       return;
     }
-
+  
     try {
-      const response = await fetch(
-        'https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      let url = `https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published`;
+  
+      // Regular user: Makikita lang niya ang sariling jobs
+      if (userRole !== 'admin') {
+        url += `&createdBy=${userId}`;
+      }
+  
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Failed to fetch jobs:', errorData);
         alert(errorData.message || 'Failed to fetch jobs.');
         return;
       }
-
+  
       const data = await response.json();
       if (Array.isArray(data)) {
-        setJobs(data); // Update jobs state only if data is an array
+        setJobs(data);
       } else {
         console.error('Unexpected API response format:', data);
         alert('Failed to fetch jobs: Invalid response format.');
@@ -61,7 +67,7 @@ function JobGiveMainPage() {
       setLoading(false);
     }
   };
-
+  
   // Delete Job Functionality
   const handleDelete = async (jobId) => {
     const token = localStorage.getItem('token');
