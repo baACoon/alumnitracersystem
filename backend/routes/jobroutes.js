@@ -1,3 +1,4 @@
+JOBROUTES 
 import express from 'express';
 import { protect } from '../middlewares/authmiddleware.js';
 import Job from '../models/job.js';
@@ -8,14 +9,12 @@ router.post('/jobpost', protect, async (req, res) => {
     try {
         const job = new Job({
             ...req.body,
-            createdBy: req.user.id,
-            status: 'Pending' // ✅ Ensure "Pending" status on job creation
+            createdBy: req.user.id, // Attach user ID directly from middleware
+            status: 'Pending',
         });
 
-        console.log("New Job Created:", job); // DEBUGGING
-
         await job.save();
-        res.status(201).json({ message: 'Job posted successfully. Pending admin approval.', job });
+        res.status(201).json({ message: 'Job posted successfully. Pending admin approval.' });
     } catch (error) {
         console.error('Error posting job:', error);
         res.status(500).json({ message: 'Failed to post the job.' });
@@ -23,35 +22,16 @@ router.post('/jobpost', protect, async (req, res) => {
 });
 
 
-
-
 router.get('/jobpost', protect, async (req, res) => {
     try {
-        const { status } = req.query;
-
-        console.log("Logged-in User ID:", req.user.id);
-        console.log("User Role:", req.user.role);
-
-        let filter = {};
-
-        if (req.user.role === 'admin') {
-            //  Admin can see ALL jobs (Pending & Published)
-            filter = status ? { status: { $in: status.split(',') } } : {};
-        } else {
-            // Regular users only see their own "Published" jobs
-            filter = {
-                createdBy: req.user.id,
-                status: 'Published' //  Regular users can only see published jobs
-            };
-        }
-
-        console.log("Filter Used:", filter);
+        const { status } = req.query; // Optional query param for filtering by status
+        const filter = status
+        ? { status: { $in: status.split(',') } } // Split status into an array for multiple statuses
+        : {};
 
         const jobs = await Job.find(filter)
-            .populate('createdBy', 'name email')
-            .sort({ createdAt: -1 });
-
-        console.log("Jobs Fetched:", jobs); // DEBUGGING
+            .populate('createdBy', 'name email') // Populate user details (optional)
+            .sort({ createdAt: -1 }); // Sort by most recent
 
         res.status(200).json(jobs);
     } catch (error) {
@@ -59,22 +39,15 @@ router.get('/jobpost', protect, async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch jobs.' });
     }
 });
-
-
-
   
   
 
 // Approve a job posting
 router.post('/:id/approve', protect, async (req, res) => {
     try {
-        if (req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'Only admins can approve jobs.' });
-        }
-
         const job = await Job.findByIdAndUpdate(
             req.params.id,
-            { status: 'Published', reviewedBy: req.user.id }, // ✅ Admin approves the job
+            { status: 'Published' },
             { new: true }
         );
 
@@ -82,15 +55,12 @@ router.post('/:id/approve', protect, async (req, res) => {
             return res.status(404).json({ message: 'Job not found.' });
         }
 
-        console.log("Job Approved:", job); // DEBUGGING
-
         res.status(200).json({ message: 'Job approved successfully.', job });
     } catch (error) {
         console.error('Error approving job:', error.message);
         res.status(500).json({ message: 'Failed to approve job.' });
     }
 });
-
 
 router.delete('/:id', protect, async (req, res) => {
     try {
