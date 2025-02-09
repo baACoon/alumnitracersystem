@@ -2,7 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose"; // Also wag mo to kalimutan i addd
 import jwt from 'jsonwebtoken';
-import { protect } from "../middlewares/authmiddleware.js";
+import { protect } from "./middlewares/authmiddleware";
 
 const router = express.Router();
 
