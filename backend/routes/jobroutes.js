@@ -8,8 +8,8 @@ router.post('/jobpost', protect, async (req, res) => {
     try {
         const job = new Job({
             ...req.body,
-            createdBy: req.user.id, // Attach user ID directly from middleware
-            status: 'Pending',
+            createdBy: req.user.id, // Attach user ID
+            status: 'Pending', // Always set to "Pending"
         });
 
         await job.save();
@@ -21,19 +21,28 @@ router.post('/jobpost', protect, async (req, res) => {
 });
 
 
+
 router.get('/jobpost', protect, async (req, res) => {
     try {
         const { status } = req.query;
 
-        // DEBUG: I-log ang req.user.id at filter
         console.log("Logged-in User ID:", req.user.id);
+        console.log("User Role:", req.user.role);
 
-        const filter = {
-            ...(req.user.role !== 'admin' && { createdBy: req.user.id }), // Admin can see all
-            ...(status && { status: { $in: status.split(',') } }) // Optional status filter
-        };
+        let filter = {};
 
-        console.log("Filter Used:", filter); // DEBUG: I-log ang filter
+        if (req.user.role === 'admin') {
+            //  Admin can see ALL jobs (Pending & Published)
+            filter = status ? { status: { $in: status.split(',') } } : {};
+        } else {
+            // Users can ONLY see their own jobs (Pending or Published)
+            filter = {
+                createdBy: req.user.id,
+                ...(status && { status: { $in: status.split(',') } })
+            };
+        }
+
+        console.log("Filter Used:", filter);
 
         const jobs = await Job.find(filter)
             .populate('createdBy', 'name email')
@@ -46,15 +55,20 @@ router.get('/jobpost', protect, async (req, res) => {
     }
 });
 
+
   
   
 
 // Approve a job posting
 router.post('/:id/approve', protect, async (req, res) => {
     try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Only admins can approve jobs.' });
+        }
+
         const job = await Job.findByIdAndUpdate(
             req.params.id,
-            { status: 'Published' },
+            { status: 'Published' }, //  Change status to "Published"
             { new: true }
         );
 
@@ -68,6 +82,7 @@ router.post('/:id/approve', protect, async (req, res) => {
         res.status(500).json({ message: 'Failed to approve job.' });
     }
 });
+
 
 router.delete('/:id', protect, async (req, res) => {
     try {
