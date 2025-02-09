@@ -24,32 +24,35 @@ function JobGiveMainPage() {
 
   const fetchJobs = async () => {
     const token = localStorage.getItem('token');
-
-    if (!token) {
+    const userId = localStorage.getItem('userId'); // Kunin ang user ID
+  
+    if (!token || !userId) {
       alert('You need to log in first.');
       return;
     }
-
+  
     try {
-      const response = await fetch(
-        'https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      let url = `https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published`;
+  
+      // I-filter para makita lang ng user ang sarili niyang posts sa JobPageGive
+      url += `&createdBy=${userId}`;
+  
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Failed to fetch jobs:', errorData);
         alert(errorData.message || 'Failed to fetch jobs.');
         return;
       }
-
+  
       const data = await response.json();
       if (Array.isArray(data)) {
-        setJobs(data); // Update jobs state only if data is an array
+        setJobs(data);
       } else {
         console.error('Unexpected API response format:', data);
         alert('Failed to fetch jobs: Invalid response format.');
@@ -61,6 +64,7 @@ function JobGiveMainPage() {
       setLoading(false);
     }
   };
+  
 
   // Delete Job Functionality
   const handleDelete = async (jobId) => {
@@ -95,7 +99,7 @@ function JobGiveMainPage() {
       alert('Job deleted successfully.');
 
       // Update the state to remove the deleted job
-      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+      setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobId));
     } catch (error) {
       console.error('Error deleting job:', error);
       alert('An error occurred while deleting the job.');
@@ -136,7 +140,7 @@ function JobGiveMainPage() {
       {jobs.length > 0 ? (
         jobs.map((job) => (
           <div
-            key={job._id}
+            key={job.id}
             className={`giveoption ${job.status === 'Published' ? 'published-highlight' : ''}`}
           >
             <h4 className={`give-status ${job.status === 'Published' ? 'published' : 'pending'}`}>
@@ -150,7 +154,7 @@ function JobGiveMainPage() {
             <FontAwesomeIcon
               icon={faTrashCan}
               className="JobPageGiveIcon"
-              onClick={() => handleDelete(job._id)}
+              onClick={() => handleDelete(job.id)}
             />
           </div>
         ))
