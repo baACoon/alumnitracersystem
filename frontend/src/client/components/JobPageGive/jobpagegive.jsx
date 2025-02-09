@@ -23,47 +23,59 @@ function JobGiveMainPage() {
   const [loading, setLoading] = useState(true);
 
   const fetchJobs = async () => {
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId'); // Kunin ang user ID
+    const token = localStorage.getItem("token");
   
-    if (!token || !userId) {
-      alert('You need to log in first.');
+    if (!token) {
+      alert("You need to log in first.");
       return;
     }
   
     try {
-      let url = `https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published`;
+      //  Get the logged-in user ID from the token
+      const userResponse = await fetch(
+        "https://alumnitracersystem.onrender.com/record/me",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
   
-      // I-filter para makita lang ng user ang sarili niyang posts sa JobPageGive
-      url += `&createdBy=${userId}`;
-  
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Failed to fetch jobs:', errorData);
-        alert(errorData.message || 'Failed to fetch jobs.');
+      if (!userResponse.ok) {
+        console.error("Failed to fetch user data");
         return;
       }
   
-      const data = await response.json();
-      if (Array.isArray(data)) {
-        setJobs(data);
-      } else {
-        console.error('Unexpected API response format:', data);
-        alert('Failed to fetch jobs: Invalid response format.');
+      const userData = await userResponse.json();
+      const userId = userData._id; // Assume _id is the user ID
+  
+      // 2️⃣ Get only the jobs posted by the logged-in user
+      const jobsResponse = await fetch(
+        `https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published&userId=${userId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+  
+      if (!jobsResponse.ok) {
+        const errorData = await jobsResponse.json();
+        console.error("Failed to fetch jobs:", errorData);
+        alert(errorData.message || "Failed to fetch jobs.");
+        return;
       }
+  
+      const jobsData = await jobsResponse.json();
+      
+      // Filter jobs where the owner is the logged-in user
+      const userJobs = jobsData.filter((job) => job.userId === userId);
+      setJobs(userJobs);
+  
     } catch (error) {
-      console.error('Error fetching jobs:', error);
-      alert('An error occurred while fetching jobs.');
+      console.error("Error fetching jobs:", error);
+      alert("An error occurred while fetching jobs.");
     } finally {
       setLoading(false);
     }
   };
+  
   
 
   // Delete Job Functionality
