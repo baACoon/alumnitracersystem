@@ -24,10 +24,16 @@ router.post('/jobpost', protect, async (req, res) => {
 router.get('/jobpost', protect, async (req, res) => {
     try {
         const { status } = req.query;
+
+        // DEBUG: I-log ang req.user.id at filter
+        console.log("Logged-in User ID:", req.user.id);
+
         const filter = {
-            createdBy: req.user.id,  // Kunin lang ang jobs ng logged-in user
+            ...(req.user.role !== 'admin' && { createdBy: req.user.id }), // Admin can see all
             ...(status && { status: { $in: status.split(',') } }) // Optional status filter
         };
+
+        console.log("Filter Used:", filter); // DEBUG: I-log ang filter
 
         const jobs = await Job.find(filter)
             .populate('createdBy', 'name email')
@@ -39,6 +45,7 @@ router.get('/jobpost', protect, async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch jobs.' });
     }
 });
+
   
   
 
