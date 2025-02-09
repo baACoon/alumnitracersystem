@@ -8,17 +8,20 @@ router.post('/jobpost', protect, async (req, res) => {
     try {
         const job = new Job({
             ...req.body,
-            createdBy: req.user.id, // Attach user ID
-            status: 'Pending', // Always set to "Pending"
+            createdBy: req.user.id,
+            status: 'Pending' // ✅ Ensure "Pending" status on job creation
         });
 
+        console.log("New Job Created:", job); // DEBUGGING
+
         await job.save();
-        res.status(201).json({ message: 'Job posted successfully. Pending admin approval.' });
+        res.status(201).json({ message: 'Job posted successfully. Pending admin approval.', job });
     } catch (error) {
         console.error('Error posting job:', error);
         res.status(500).json({ message: 'Failed to post the job.' });
     }
 });
+
 
 
 
@@ -35,10 +38,10 @@ router.get('/jobpost', protect, async (req, res) => {
             //  Admin can see ALL jobs (Pending & Published)
             filter = status ? { status: { $in: status.split(',') } } : {};
         } else {
-            // Users can ONLY see their own jobs (Pending or Published)
+            // Regular users only see their own "Published" jobs
             filter = {
                 createdBy: req.user.id,
-                ...(status && { status: { $in: status.split(',') } })
+                status: 'Published' //  Regular users can only see published jobs
             };
         }
 
@@ -48,12 +51,15 @@ router.get('/jobpost', protect, async (req, res) => {
             .populate('createdBy', 'name email')
             .sort({ createdAt: -1 });
 
+        console.log("Jobs Fetched:", jobs); // DEBUGGING
+
         res.status(200).json(jobs);
     } catch (error) {
         console.error('Error Fetching Jobs:', error.message);
         res.status(500).json({ error: 'Failed to fetch jobs.' });
     }
 });
+
 
 
   
@@ -68,13 +74,15 @@ router.post('/:id/approve', protect, async (req, res) => {
 
         const job = await Job.findByIdAndUpdate(
             req.params.id,
-            { status: 'Published' }, //  Change status to "Published"
+            { status: 'Published', reviewedBy: req.user.id }, // ✅ Admin approves the job
             { new: true }
         );
 
         if (!job) {
             return res.status(404).json({ message: 'Job not found.' });
         }
+
+        console.log("Job Approved:", job); // DEBUGGING
 
         res.status(200).json({ message: 'Job approved successfully.', job });
     } catch (error) {
