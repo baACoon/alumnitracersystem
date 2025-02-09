@@ -1,4 +1,3 @@
-JOBROUTES 
 import express from 'express';
 import { protect } from '../middlewares/authmiddleware.js';
 import Job from '../models/job.js';
