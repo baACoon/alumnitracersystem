@@ -121,7 +121,7 @@ const Register_NewAlumni = ({ closeModal }) => {
                             <strong>{generatedID}</strong>
                         </p>
                         <p>Please save this ID. This serves as your username to login.</p>
-                        <button onClick={handleCrossCheckSurveyFormClick} className={styles.submitButton}>
+                        <button onClick={handleCrossCheckSurveyFormClick} className={styles.submitButtonNewAlumni}>
                             Go to Survey
                         </button>
                     </div>

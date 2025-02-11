@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './styles.module.css';
-import { PendingSurvey } from '../Surveys/PendingSurvey';
-import { CompletedSurvey } from '../Surveys/CompletedSurvey';
+import { PendingSurvey } from './PendingSurvey';
+import { CompletedSurvey } from './CompletedSurvey';
 import Header from "../Header/header";
 import Footer from "../FooterClient/Footer";
 
