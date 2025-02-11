@@ -34,7 +34,7 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
             html: `
                 <h2>${articleTitle}</h2>
                 <p>${articleContent}</p>
-                <p><a href="https://tupalumni.com/news">Read more</a></p>
+                <p><a href="https://tupalumni.com">Read more</a></p>
             `,
         };
 
