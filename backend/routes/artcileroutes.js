@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import Article from '../models/article.js'; // Import the model
+import { sendArticleNotification } from '../emailservice.js';
 
 const router = express.Router();
 
@@ -29,7 +30,11 @@ router.post('/add', upload.single('image'), async (req, res) => {
     try {
         const article = new Article({ title, content, image });
         await article.save();
-        res.status(201).json({ message: 'Article added successfully!' });
+
+        // Send email notification to users
+        await sendArticleNotification(title, content);
+
+        res.status(201).json({ message: 'Article added and Notication Sent!' });
     } catch (error) {
         console.error('Error saving article:', error);
         res.status(500).json({ message: 'Error creating article', error });
