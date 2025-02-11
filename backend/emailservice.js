@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import { SurveySubmission } from "./routes/surveyroutes";
+import { SurveySubmission } from "./routes/surveyroutes.js";
 
 dotenv.config();
 
@@ -36,8 +36,8 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
 
                 // Send email
                 await transporter.sendMail(mailOptions);
-                console.log("✅ Email notifications sent successfully!");
+                console.log(" Email notifications sent successfully!");
             } catch (error) {
-                console.error("❌ Error sending email notifications:", error);
+                console.error(" Error sending email notifications:", error);
             }
     }
