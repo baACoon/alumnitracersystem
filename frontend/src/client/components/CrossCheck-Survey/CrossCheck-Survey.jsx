@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"; // Correct way to import useNavi
 import styles from "./CrossCheck-Survey.module.css";
 import Tuplogo from "../../components/image/Tuplogo.png";
 import Alumnilogo from "../../components/image/alumniassoc_logo.png";
+import nationalities from "./nationalities"; 
 
 const colleges = {
   "College of Engineering": [
@@ -384,16 +385,21 @@ function CrossCheckSurveyForm() {
                               </div>
 
                               <div className={styles["form-group"]}>
-                                  <label htmlFor="nationality">Nationality: *</label>
-                                  <input
-                                      type="text"
-                                      id="nationality"
-                                      name="nationality"
-                                      value={formData.nationality}
-                                      onChange={handleChange}
-                                      required
-                                      className={styles["form-input"]}
-                                  />
+                                <select
+                                  id="nationality"
+                                  name="nationality"
+                                  value={formData.nationality}
+                                  onChange={handleChange}
+                                  required
+                                  className={styles["form-input"]}
+                                >
+                                  <option value="" disabled>Select your nationality</option>
+                                  {nationalities.map((nation, index) => (
+                                    <option key={index} value={nation}>
+                                      {nation}
+                                    </option>
+                                  ))}
+                                </select>
                               </div>
 
                               <div className={styles["form-group"]}>
