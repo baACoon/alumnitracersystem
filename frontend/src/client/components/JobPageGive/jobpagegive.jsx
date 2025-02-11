@@ -47,27 +47,16 @@ function JobGiveMainPage() {
       const userData = await userResponse.json();
       const userId = userData._id; // Assume _id is the user ID
   
-      // 2️⃣ Get only the jobs posted by the logged-in user
+      //  Get only the jobs posted by the logged-in user
       const jobsResponse = await fetch(
-        `https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published&userId=${userId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published&createdBy=${userId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-  
-      if (!jobsResponse.ok) {
-        const errorData = await jobsResponse.json();
-        console.error("Failed to fetch jobs:", errorData);
-        alert(errorData.message || "Failed to fetch jobs.");
-        return;
-      }
-  
+
+      if (!jobsResponse.ok) throw new Error("Failed to fetch jobs");
       const jobsData = await jobsResponse.json();
-      
-      // Filter jobs where the owner is the logged-in user
-      const userJobs = jobsData.filter((job) => job.userId === userId);
-      setJobs(userJobs);
-  
+
+      setJobs(jobsData);
     } catch (error) {
       console.error("Error fetching jobs:", error);
       alert("An error occurred while fetching jobs.");

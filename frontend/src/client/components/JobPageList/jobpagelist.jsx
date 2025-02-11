@@ -31,17 +31,12 @@ function JobListMainPage() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get(
-          "https://alumnitracersystem.onrender.com/jobs/jobpost",
-          {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          }
-        );
+        const response = await axios.get("https://alumnitracersystem.onrender.com/jobs/jobpost?status=Published");
         setJobs(response.data);
-        setLoading(false); // Set loading to false after jobs are fetched
       } catch (error) {
         console.error("Error fetching jobs:", error);
-        setLoading(false); // Set loading to false even if there's an error
+      } finally {
+        setLoading(false);
       }
     };
     fetchJobs();
