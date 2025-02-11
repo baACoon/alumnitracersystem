@@ -46,12 +46,12 @@ function Header() {
             <li className="nav-item">
               <a onClick={() => navigate("/Home")}
                   className={`nav-link ${isActive("/Home") ? "active" : ""}`} aria-current="page">
-                HOME
+                OME
               </a>
             </li>
             <li className="nav-item">
-              <a onClick={() => navigate("/SurveyPage")}
-                  className={`nav-link ${isActive("/SurveyPage") ? "active" : ""}`}>
+              <a onClick={() => navigate("/Survey")}
+                  className={`nav-link ${isActive("/Survey") ? "active" : ""}`}>
                 SURVEYS
               </a>
             </li>
