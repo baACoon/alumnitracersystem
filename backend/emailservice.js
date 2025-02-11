@@ -14,7 +14,8 @@ const transporter = nodemailer.createTransport({
 
 export const sendArticleNotification = async (articleTitle, articleContent) => {
     try {
-        const users = await SurveySubmission.find({}, "personalInfo.email_address:");
+        console.log("Fetching user emails...");
+        const users = await SurveySubmission.find({}, "personalInfo.email_address");
         console.log("Users fetched:", users);
 
         const emails = users.map((user) => user.personalInfo.email_address);
@@ -26,10 +27,10 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
         }
 
         //email content 
-        const mailOption ={ 
+        const mailOptions ={ 
             from: "hostingersiasia@gmail.com",
             to: emails.join(","),
-            subject: 'New Article: ${articleTitle}',
+            subject: `New Article: ${articleTitle}`,
             html: `
                 <h2>${articleTitle}</h2>
                 <p>${articleContent}</p>
@@ -38,6 +39,7 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
         };
 
                 // Send email
+                console.log("Sending email to:", emails);
                 await transporter.sendMail(mailOptions);
                 console.log(" Email notifications sent successfully!");
             } catch (error) {
