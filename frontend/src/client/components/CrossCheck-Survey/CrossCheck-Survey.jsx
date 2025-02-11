@@ -534,7 +534,7 @@ function CrossCheckSurveyForm() {
                                       onChange={handleChange}
                                       required
                                       min="1900"
-                                      max="2024"
+                                      max={new Date().getFullYear()}
                                       className={styles["form-input"]}
                                   />
                               </div>
