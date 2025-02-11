@@ -57,4 +57,10 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
             } catch (error) {
                 console.error("Error sending email notifications:", error);
             }
-    }
+    };
+
+    // Function para i-validate ang email format
+        const validateEmail = (email) => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        };
