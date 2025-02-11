@@ -26,23 +26,35 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
             return;
         }
 
-        //email content 
-        const mailOptions ={ 
-            from: "hostingersiasia@gmail.com",
-            to: emails.join(","),
-            subject: `New Article: ${articleTitle}`,
-            html: `
-                <h2>${articleTitle}</h2>
-                <p>${articleContent}</p>
-                <p><a href="https://tupalumni.com">Read more</a></p>
-            `,
-        };
+      
+        // **padala ng emails isa-isa**
+        for (const email of emails) {
+            try {
+                // check kung valid ang email format
+                if (!validateEmail(email)) {
+                    console.warn(`Skipping invalid email: ${email}`);
+                    continue; // Skip invalid email
+                }
 
-                // Send email
-                console.log("Sending email to:", emails);
+                // Email content
+                const mailOptions = {
+                    from: process.env.EMAIL_USER,
+                    to: email,
+                    subject: `New Article: ${articleTitle}`,
+                    html: `
+                        <h2>${articleTitle}</h2>
+                        <p>${articleContent}</p>
+                        <p><a href="https://tupalumni.com">Read more</a></p>
+                    `,
+                };
+
                 await transporter.sendMail(mailOptions);
-                console.log(" Email notifications sent successfully!");
+                console.log(`Email sent successfully to: ${email}`);
             } catch (error) {
-                console.error(" Error sending email notifications:", error);
+                console.error(`Failed to send email to ${email}:`, error.message);
+            }
+        }
+            } catch (error) {
+                console.error("Error sending email notifications:", error);
             }
     }
