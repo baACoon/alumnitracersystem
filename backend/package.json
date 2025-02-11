@@ -26,6 +26,7 @@
     "mysql": "^2.18.1",
     "nodemailer": "^6.10.0",
     "touch": "^3.1.1",
+    "twilio": "^5.4.4",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
