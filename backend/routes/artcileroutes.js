@@ -34,7 +34,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
         // Send email notification to users
         await sendArticleNotification(title, content);
 
-        res.status(201).json({ message: 'Article added and Notication Sent!' });
+        res.status(201).json({ message: 'Article added and Notification Sent!' });
     } catch (error) {
         console.error('Error saving article:', error);
         res.status(500).json({ message: 'Error creating article', error });

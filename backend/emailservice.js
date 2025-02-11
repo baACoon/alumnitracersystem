@@ -8,14 +8,17 @@ const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
         user: "hostingersiasia@gmail.com",
-        pass: "adminpassword",
+        pass: "gfrixatxurpwymwz",
     },
 });
 
 export const sendArticleNotification = async (articleTitle, articleContent) => {
     try {
         const users = await SurveySubmission.find({}, "personalInfo.email_address:");
+        console.log("Users fetched:", users);
+
         const emails = users.map((user) => user.personalInfo.email_address);
+        console.log("Emails to send:", emails);
         
         if (emails.length === 0){
             console.log("No emails found, skipping notifications. ");
@@ -30,7 +33,7 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
             html: `
                 <h2>${articleTitle}</h2>
                 <p>${articleContent}</p>
-                <p><a href="https://yourwebsite.com/news">Read more</a></p>
+                <p><a href="https://tupalumni.com/news">Read more</a></p>
             `,
         };
 
