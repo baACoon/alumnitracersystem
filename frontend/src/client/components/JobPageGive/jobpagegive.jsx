@@ -23,49 +23,50 @@ function JobGiveMainPage() {
   const [loading, setLoading] = useState(true);
 
   const fetchJobs = async () => {
-    const token = localStorage.getItem("token");
-  
+    const token = localStorage.getItem('token');
+
     if (!token) {
-      alert("You need to log in first.");
+
+
+      alert('You need to log in first.');
       return;
     }
-  
+
     try {
-      //  Get the logged-in user ID from the token
-      const userResponse = await fetch(
-        "https://alumnitracersystem.onrender.com/record/me",
+      const response = await fetch(
+        'https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published',
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
-  
-      if (!userResponse.ok) {
-        console.error("Failed to fetch user data");
+
+
+
+
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Failed to fetch jobs:', errorData);
+        alert(errorData.message || 'Failed to fetch jobs.');
         return;
       }
-  
-      const userData = await userResponse.json();
-      const userId = userData._id; // Assume _id is the user ID
-  
-      //  Get only the jobs posted by the logged-in user
-      const jobsResponse = await fetch(
-        `https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published&createdBy=${userId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
 
-      if (!jobsResponse.ok) throw new Error("Failed to fetch jobs");
-      const jobsData = await jobsResponse.json();
-
-      setJobs(jobsData);
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setJobs(data); // Update jobs state only if data is an array
+      } else {
+        console.error('Unexpected API response format:', data);
+        alert('Failed to fetch jobs: Invalid response format.');
+      }
     } catch (error) {
-      console.error("Error fetching jobs:", error);
-      alert("An error occurred while fetching jobs.");
+      console.error('Error fetching jobs:', error);
+      alert('An error occurred while fetching jobs.');
     } finally {
       setLoading(false);
     }
   };
-  
-  
 
   // Delete Job Functionality
   const handleDelete = async (jobId) => {
@@ -100,7 +101,7 @@ function JobGiveMainPage() {
       alert('Job deleted successfully.');
 
       // Update the state to remove the deleted job
-      setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobId));
+      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
     } catch (error) {
       console.error('Error deleting job:', error);
       alert('An error occurred while deleting the job.');
@@ -141,7 +142,7 @@ function JobGiveMainPage() {
       {jobs.length > 0 ? (
         jobs.map((job) => (
           <div
-            key={job.id}
+            key={job._id}
             className={`giveoption ${job.status === 'Published' ? 'published-highlight' : ''}`}
           >
             <h4 className={`give-status ${job.status === 'Published' ? 'published' : 'pending'}`}>
@@ -155,7 +156,7 @@ function JobGiveMainPage() {
             <FontAwesomeIcon
               icon={faTrashCan}
               className="JobPageGiveIcon"
-              onClick={() => handleDelete(job.id)}
+              onClick={() => handleDelete(job._id)}
             />
           </div>
         ))
@@ -165,5 +166,6 @@ function JobGiveMainPage() {
     </div>
   );
 }
+
 
 export default JobPageGive;
