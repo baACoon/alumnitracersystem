@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import mongoose from "mongoose"; // Also wag mo to kalimutan i addd
 import jwt from 'jsonwebtoken';
 
-
 const router = express.Router();
 
 //database to az. Pwede mo tong iseparate ng file pero pwede mo rin sila ipagsama nalang
@@ -19,7 +18,6 @@ const studentSchema = new mongoose.Schema({
 });
 
 const Student = mongoose.model("Student", studentSchema);
-
 
 // Register a new user
 router.post("/register", async (req, res) => {
