@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import multer from "multer";
 import path from "path";
+import { sendEventNotification } from "../emailservice.js";
 
 const router = express.Router();
 
@@ -70,6 +71,15 @@ router.post("/create", upload.single("image"), async (req, res) => {
 
     await newEvent.save();
     res.status(201).json({ message: "Event created successfully!", event: newEvent });
+
+    // **Send Email Notification to Users**
+    await sendEventNotification(title, description, date);
+
+    res.status(201).json({
+      message: "Event created successfully & notifications sent!",
+      event: newEvent,
+    });
+
   } catch (error) {
     console.error("Error creating event:", error); // Log the error
     res.status(500).json({ error: "Failed to create event." });

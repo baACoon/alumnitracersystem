@@ -72,3 +72,52 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return emailRegex.test(email);
         };
+
+
+        export const sendEventNotification = async (eventTitle, eventDetails, eventDate) => {
+            try {
+                console.log("Fetching user emails for event notification...");
+                const users = await SurveySubmission.find({}, "personalInfo.email_address");
+        
+                const emails = users.map((user) => user.personalInfo.email_address);
+                console.log("Emails to send event notification:", emails);
+        
+                if (emails.length === 0) {
+                    console.log("No emails found, skipping event notifications.");
+                    return;
+                }
+        
+                // **one at a time email**
+                for (const email of emails) {
+                    try {
+                        // **Check kung nasa blacklist**
+                        const isBlacklisted = await Blacklist.findOne({ email });
+                        if (isBlacklisted) {
+                            console.warn(`Skipping blacklisted email: ${email}`);
+                            continue;
+                        }
+        
+                        // Email content
+                        const mailOptions = {
+                            from: "zoetobypalomo@gmail.com",
+                            to: email,
+                            subject: `New Event: ${eventTitle}`,
+                            html: `
+                                <h2>${eventTitle}</h2>
+                                <p>${eventDetails}</p>
+                                <p><strong>Date:</strong> ${eventDate}</p>
+                                <p><a href="https://tupalumni.com">View Event Details</a></p>
+                            `,
+                        };
+        
+                        await transporter.sendMail(mailOptions);
+                        console.log(`Event email sent successfully to: ${email}`);
+                    } catch (error) {
+                        console.error(`Failed to send event email to ${email}:`, error.message);
+                    }
+                }
+            } catch (error) {
+                console.error("Error sending event notifications:", error);
+            }
+        };
+        
