@@ -20,22 +20,6 @@ const studentSchema = new mongoose.Schema({
 
 const Student = mongoose.model("Student", studentSchema);
 
-// Middleware for Authentication
-const protect = async (req, res, next) => {
-  let token = req.headers.authorization?.split(" ")[1];
-
-  if (!token) {
-    return res.status(401).json({ error: "Not authorized, no token" });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await Student.findById(decoded.id).select("-password");
-    next();
-  } catch (error) {
-    return res.status(401).json({ error: "Not authorized, token failed" });
-  }
-};
 
 // Register a new user
 router.post("/register", async (req, res) => {
