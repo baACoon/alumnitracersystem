@@ -8,8 +8,8 @@ dotenv.config();
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: "hostingersiasia@gmail.com",
-        pass: "gfrixatxurpwymwz",
+        user: "zoetobypalomo@gmail.com",
+        pass: "rfrqdqqviczerxxx",
     },
 });
 
@@ -46,7 +46,7 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
 
                 // Email content
                 const mailOptions = {
-                    from: "hostingersiasia@gmail.com",
+                    from: "zoetobypalomo@gmail.com",
                     to: email,
                     subject: `New Article: ${articleTitle}`,
                     html: `
