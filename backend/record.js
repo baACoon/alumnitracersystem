@@ -121,6 +121,8 @@ router.post("/login", async (req, res) => {
     // Find user by alumni ID
     const user = await Student.findOne({ generatedID: alumniID });
     
+
+
     if (!user) {
       console.log(`Error: User not found with ID: ${alumniID}`);
       return res.status(401).json({ error: "Invalid Alumni ID or password." });
