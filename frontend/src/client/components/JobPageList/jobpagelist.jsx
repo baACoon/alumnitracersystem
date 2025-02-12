@@ -32,11 +32,12 @@ function JobListMainPage() {
     const fetchJobs = async () => {
       try {
         const response = await axios.get(
-          "https://alumnitracersystem.onrender.com/jobs/jobpost",
+          "https://alumnitracersystem.onrender.com/jobs/jobpost?status=Published",
           {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
           }
         );
+        
         setJobs(response.data);
         setLoading(false); // Set loading to false after jobs are fetched
       } catch (error) {
