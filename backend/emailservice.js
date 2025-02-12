@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import Blacklist from "./models/blacklist.js";
+
 import { SurveySubmission } from "./routes/surveyroutes.js";
 
 dotenv.config();
@@ -35,13 +35,6 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
                 if (!validateEmail(email)) {
                     console.warn(`Skipping invalid email: ${email}`);
                     continue; // Skip invalid email
-                }
-
-                // **Check kung nasa blacklist**
-                const isBlacklisted = await Blacklist.findOne({ email });
-                if (isBlacklisted) {
-                    console.warn(`Skipping blacklisted email: ${email}`);
-                    continue;
                 }
 
                 // Email content
@@ -90,12 +83,6 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
                 // **one at a time email**
                 for (const email of emails) {
                     try {
-                        // **Check kung nasa blacklist**
-                        const isBlacklisted = await Blacklist.findOne({ email });
-                        if (isBlacklisted) {
-                            console.warn(`Skipping blacklisted email: ${email}`);
-                            continue;
-                        }
         
                         // Email content
                         const mailOptions = {
