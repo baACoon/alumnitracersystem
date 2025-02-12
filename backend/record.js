@@ -168,11 +168,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// GET LOGGED-IN USER ("/me")
-router.get("/me", protect, async (req, res) => {
-  res.json(req.user);
-});
-
 export { Student };
 
 export default router;
