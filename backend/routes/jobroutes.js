@@ -22,16 +22,16 @@ router.post('/jobpost', protect, async (req, res) => {
 
 
 router.get('/jobpost', protect, async (req, res) => {
+    
     try {
-        const { status } = req.query;
-        const filter = {
-            createdBy: req.user.id,  // Kunin lang ang jobs ng logged-in user
-            ...(status && { status: { $in: status.split(',') } }) // Optional status filter
-        };
+        const { status } = req.query; // Optional query param for filtering by status
+        const filter = status
+        ? { status: { $in: status.split(',') } } // Split status into an array for multiple statuses
+        : {};
 
         const jobs = await Job.find(filter)
-            .populate('createdBy', 'name email')
-            .sort({ createdAt: -1 });
+            .populate('createdBy', 'name email') // Populate user details (optional)
+            .sort({ createdAt: -1 }); // Sort by most recent
 
         res.status(200).json(jobs);
     } catch (error) {
@@ -39,6 +39,7 @@ router.get('/jobpost', protect, async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch jobs.' });
     }
 });
+
   
   
 
