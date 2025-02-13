@@ -1,51 +1,53 @@
-import React from 'react'
-import styles from './styles.module.css';
-import { PendingSurvey } from '../Surveys/PendingSurvey';
-import { CompletedSurvey } from '../Surveys/CompletedSurvey';
-import Header from "../Header/header";
-import Footer from "../FooterClient/Footer";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './surveys.css';
+import Header from '../Header/header';
+import Sidebar from '../Sidebar/sidebar';
 
-function SurveyPage(){
-    return (
-        <div className={styles.surveyContainer}>
-            <Header />
-            <SurveyMainPage />
-            <Footer />
+
+function Survey() {
+  return (
+    <div>
+      <Header />
+      <Sidebar/>
+      <SurveyMainPage/>
+    </div>
+  );
+}
+
+
+function SurveyMainPage() {
+  const navigate = useNavigate();
+
+  const goToForm = () => {
+    navigate ('/SurveyForm')
+  }
+
+  return (
+      <div className='survey-body'>
+                {/* Main Content */}
+        <div className="survey-table-container">
+          <h2>Pending Surveys</h2>
+          <table className="survey-table">
+            <thead>
+              <tr>
+                <th>No. </th>
+                <th>TITLE</th>
+                <th>DATE SURVEY RECEIVED</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>testing</td>
+                <td>
+                  <a onClick={goToForm}>Tracer Survey Form (2024)</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-    )
+      </div>
+  )
 }
 
-function SurveyMainPage () {
-    const [activeTab, setActiveTab] = useState('pending');
-
-    return ( 
-        <section>
-            <div className={styles.surveyMainPage}>
-                <div className={styles.buttonContainer}>
-                    <button 
-                        role='tab'
-                        aria-selected={activeTab === 'pending'}
-                        className={`${styles.pendingButton} ${activeTab === 'pending' ? styles.activeTab : ''}`}
-                        onClick={() => setActiveTab('pending')}
-                    >
-                        Pending Survey
-                    </button>
-                    <button 
-                        role='tab'
-                        aria-selected={activeTab === 'existing'}
-                        className={`${styles.pendingButton} ${activeTab === 'pending' ? styles.activeTab : ''}`}
-                        onClick={() => setActiveTab('existing')}
-                    >
-                        Completed Survey
-                    </button>
-                </div>
-                <div>
-                    {activeTab === 'pending' && <PendingSurvey />}
-                    {activeTab === 'completed' && <CompletedSurvey />} 
-                </div>
-            </div>
-        </section>  
-    )
-}
-
-export default SurveyPage;
+export default Survey;
