@@ -11,7 +11,7 @@ export default function DashboardCards() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const totalRes = await fetch("/dashboard/total-alumni");
+        const totalRes = await fetch("/total-alumni");
         const employedRes = await fetch("/dashboard/employed-alumni");
         const alignedRes = await fetch("/dashboard/course-aligned-alumni");
 
