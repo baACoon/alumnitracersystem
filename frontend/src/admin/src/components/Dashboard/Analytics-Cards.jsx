@@ -2,7 +2,7 @@ import React, { useState , useEffect } from "react";
 import styles from "./Analytics-Cards.module.css";
 
 export default function DashboardCards() {
-  const [stats, setStats]= useState({
+  const [stats, setStats] = useState({
     totalAlumni: 0,
     employedAlumni: 0,
     alignedAlumni: 0,
@@ -11,13 +11,14 @@ export default function DashboardCards() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const totalRes = await fetch("/dashboard/total-alumni");
-        const employedRes = await fetch("/dashboard/employed-alumni");
-        const alignedRes = await fetch("/dashboard/course-aligned-alumni");
+        const baseURL = "https://alumnitracersystem.onrender.com/dashboard"; // Change this in production
+        const responses = await Promise.all([
+          fetch(`${baseURL}/total-alumni`),
+          fetch(`${baseURL}/employed-alumni`),
+          fetch(`${baseURL}/course-aligned-alumni`),
+        ]);
 
-        const totalData = await totalRes.json();
-        const employedData = await employedRes.json();
-        const alignedData = await alignedRes.json();
+        const [totalData, employedData, alignedData] = await Promise.all(responses.map(res => res.json()));
 
         setStats({
           totalAlumni: totalData.totalAlumni || 0,
@@ -31,6 +32,7 @@ export default function DashboardCards() {
 
     fetchStats();
   }, []);
+
 
   const data = [
     {
