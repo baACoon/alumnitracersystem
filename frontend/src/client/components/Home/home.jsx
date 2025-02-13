@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+  import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './home.module.css'; // Import CSS module
 import Header from '../Header/header';
@@ -32,7 +32,7 @@ function Home() {
     const closePopup = () => {
         setShowPopup(false);
     };
-
+       
     return (
         <div className={showPopup ? styles.popupVisible : ''}>
             <Header />
@@ -61,16 +61,55 @@ function Home() {
 }
 
 function HomePage() {
+
+    const [stats, setStats] = useState({
+        totalAlumni: 0,
+        employedAlumni: 0,
+        alignedAlumni: 0,
+    });
+
+    useEffect(() => {
+        const fetchStats = async () => {
+          try {
+            const baseURL = "https://alumnitracersystem.onrender.com/dashboard";
+            const responses = await Promise.all([
+              fetch(`${baseURL}/total-alumni`),
+              fetch(`${baseURL}/employed-alumni`),
+              fetch(`${baseURL}/course-aligned-alumni`),
+            ]);
+    
+            if (!responses.every(res => res.ok)) {
+              throw new Error("One or more requests failed");
+            }
+    
+            const [totalData, employedData, alignedData] = await Promise.all(responses.map(res => res.json()));
+    
+            setStats({
+              totalAlumni: totalData.totalAlumni || 0,
+              employedAlumni: employedData.employedAlumni || 0,
+              alignedAlumni: alignedData.alignedAlumni || 0,
+            });
+          } catch (error) {
+            console.error("Error fetching home page data:", error);
+          }
+        };
+    
+        fetchStats();
+      }, []);
+
+    const employmentRate = stats.totalAlumni ? Math.round((stats.employedAlumni / stats.totalAlumni) * 100) : 0;
+    const alignmentRate = stats.totalAlumni ? Math.round((stats.alignedAlumni / stats.totalAlumni) * 100) : 0;
+
     return (
         <div className={styles.homebg}>
             <div className={styles.homePercentage}>
                 <div className={styles.percent1}>
-                    <h1>97%</h1>
+                    <h1>{employmentRate}%</h1>
                     <h2>Employability Rate of TUP Alumni</h2>
                 </div>
 
                 <div className={styles.percent2}>
-                    <h1>81%</h1>
+                    <h1>{alignmentRate}%</h1>
                     <h2>Aligned with Specialized Course</h2>
                 </div>
             </div>
