@@ -5,14 +5,14 @@ import './sidebarmodal.css';
 
 export function Sidebar({ isOpen, toggleSidebar }) {
   const navigate = useNavigate();
-  const [showDropdown, setShowDropdown] = useState(false);
+  
   const [userName, setUserName] = useState("Admin"); // Default name
 
   useEffect(() => {
     // Fetch the username from localStorage
     const storedUser = localStorage.getItem("username"); 
     if (storedUser) {
-      setUserName(storedUser); // ✅ Update the username dynamically
+      setUserName(storedUser); 
     }
   }, []);
 
@@ -47,22 +47,6 @@ export function Sidebar({ isOpen, toggleSidebar }) {
           OPPORTUNITIES
         </NavLink>
       </nav>
-
-      {/* User Profile Dropdown */}
-      <hr className="userDivider" />
-      <div className="profileContainer">
-        <button className="userProfile" onClick={() => setShowDropdown(!showDropdown)}>
-          {userName}
-        </button>
-
-        {showDropdown && (
-          <div className="dropdownMenu">
-            <button className="logoutButton" onClick={handleLogout}>Logout</button>
-          </div>
-        )}
-      </div>
-
-
         <div class="select">
           <div
             class="selected"
@@ -82,7 +66,6 @@ export function Sidebar({ isOpen, toggleSidebar }) {
           <div class="options">
             <div title="all">
               <input id="all" name="option" type="radio" checked="" />
-              <label class="option" for="all"> {userName}</label>
               <button className="logoutButton" onClick={handleLogout}>Logout</button>
             </div>
           </div>
