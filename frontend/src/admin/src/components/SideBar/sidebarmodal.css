@@ -7,6 +7,7 @@
     width: 100%;
     border-radius: 5px;
   }
+
   
   .logoutButton:hover {
     background: #5D0E1D;
@@ -26,7 +27,7 @@
   }
   
   .selected {
-    background-color: #c31d3c;
+    background-color: #ffffff;
     padding: 5px;
     margin-bottom: 3px;
     border-radius: 5px;
