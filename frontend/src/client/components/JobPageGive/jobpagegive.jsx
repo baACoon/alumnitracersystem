@@ -21,8 +21,10 @@ function JobGiveMainPage() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
+  const [showJobModal, setShowJobModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
 
   const fetchJobs = async () => {
     const token = localStorage.getItem('token');
@@ -97,7 +99,7 @@ function JobGiveMainPage() {
       console.error('Error deleting job:', error);
       alert('An error occurred while deleting the job.');
     } finally {
-      setShowModal(false);
+      setShowDeleteModal(false);
       setSelectedJobId(null);
     }
   };
@@ -135,6 +137,10 @@ function JobGiveMainPage() {
           <div
             key={job._id}
             className={`giveoption ${job.status === 'Published' ? 'published-highlight' : ''}`}
+            onClick={() => {
+              setSelectedJob(job);
+              setShowJobModal(true);
+            }}
           >
             <h4 className={`give-status ${job.status === 'Published' ? 'published' : 'pending'}`}>
               {job.status.toUpperCase()}
@@ -147,9 +153,10 @@ function JobGiveMainPage() {
             <FontAwesomeIcon
               icon={faTrashCan}
               className="JobPageGiveIcon"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setSelectedJobId(job._id);
-                setShowModal(true);
+                setShowDeleteModal(true);
               }}
             />
           </div>
@@ -158,19 +165,27 @@ function JobGiveMainPage() {
         <p>No opportunities found.</p>
       )}
 
-      {showModal && (
+      {showJobModal && selectedJob && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <h3>Are you sure you want to delete this job?</h3>
-            <div className="modal-buttons">
-              <button onClick={handleDelete} className="confirm-delete">Yes, Delete</button>
-              <button onClick={() => setShowModal(false)} className="cancel-delete">Cancel</button>
-            </div>
+            <h2>{selectedJob.title}</h2>
+            <p><strong>College:</strong> {selectedJob.college || 'N/A'}</p>
+            <p><strong>Location:</strong> {selectedJob.location}</p>
+            <p><strong>Job Status:</strong> {selectedJob.status}</p>
+            <p><strong>Date Published:</strong> {selectedJob.datePublished || 'N/A'}</p>
+            <p><strong>Job Description:</strong> {selectedJob.description}</p>
+            <p><strong>Key Responsibilities:</strong></p>
+            <ul>
+              {selectedJob.responsibilities?.map((resp, index) => (
+                <li key={index}>{resp}</li>
+              )) || <li>N/A</li>}
+            </ul>
+            <button onClick={() => setShowJobModal(false)}>Close</button>
           </div>
         </div>
       )}
     </div>
-  );  
+  );
 }
 
 export default JobPageGive;
