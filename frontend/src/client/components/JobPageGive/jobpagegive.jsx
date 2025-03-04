@@ -21,13 +21,13 @@ function JobGiveMainPage() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState(null);
 
   const fetchJobs = async () => {
     const token = localStorage.getItem('token');
 
     if (!token) {
-
-
       alert('You need to log in first.');
       return;
     }
@@ -42,7 +42,6 @@ function JobGiveMainPage() {
         }
       );
 
-
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Failed to fetch jobs:', errorData);
@@ -52,7 +51,7 @@ function JobGiveMainPage() {
 
       const data = await response.json();
       if (Array.isArray(data)) {
-        setJobs(data); // Update jobs state only if data is an array
+        setJobs(data);
       } else {
         console.error('Unexpected API response format:', data);
         alert('Failed to fetch jobs: Invalid response format.');
@@ -65,8 +64,8 @@ function JobGiveMainPage() {
     }
   };
 
-  // Delete Job Functionality
-  const handleDelete = async (jobId) => {
+  const handleDelete = async () => {
+    if (!selectedJobId) return;
     const token = localStorage.getItem('token');
 
     if (!token) {
@@ -74,12 +73,9 @@ function JobGiveMainPage() {
       return;
     }
 
-    const confirmDelete = window.confirm('Are you sure you want to delete this job?');
-    if (!confirmDelete) return;
-
     try {
       const response = await fetch(
-        `https://alumnitracersystem.onrender.com/jobs/${jobId}`,
+        `https://alumnitracersystem.onrender.com/jobs/${selectedJobId}`,
         {
           method: 'DELETE',
           headers: {
@@ -96,24 +92,22 @@ function JobGiveMainPage() {
       }
 
       alert('Job deleted successfully.');
-
-      // Update the state to remove the deleted job
-      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== selectedJobId));
     } catch (error) {
       console.error('Error deleting job:', error);
       alert('An error occurred while deleting the job.');
+    } finally {
+      setShowModal(false);
+      setSelectedJobId(null);
     }
   };
 
   useEffect(() => {
     fetchJobs();
-
-    // Optional: Set up polling to auto-refresh jobs every 10 seconds
     const interval = setInterval(() => {
       fetchJobs();
     }, 10000);
-
-    return () => clearInterval(interval); // Clear the interval on unmount
+    return () => clearInterval(interval);
   }, []);
 
   const goToAddJob = () => {
@@ -153,16 +147,30 @@ function JobGiveMainPage() {
             <FontAwesomeIcon
               icon={faTrashCan}
               className="JobPageGiveIcon"
-              onClick={() => handleDelete(job._id)}
+              onClick={() => {
+                setSelectedJobId(job._id);
+                setShowModal(true);
+              }}
             />
           </div>
         ))
       ) : (
         <p>No opportunities found.</p>
       )}
-    </div>
-  );
-}
 
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Are you sure you want to delete this job?</h3>
+            <div className="modal-buttons">
+              <button onClick={handleDelete} className="confirm-delete">Yes, Delete</button>
+              <button onClick={() => setShowModal(false)} className="cancel-delete">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );  
+}
 
 export default JobPageGive;
