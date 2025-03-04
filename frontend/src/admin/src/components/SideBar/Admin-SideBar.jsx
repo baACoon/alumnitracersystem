@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import styles from "./Admin-SideBar.module.css";
-import styles from "./sidebarmodal.css"
+import './sidebarmodal.css'
 
 export function Sidebar({ isOpen, toggleSidebar }) {
   const [activeTab, setActiveTab] = useState(null);
@@ -70,9 +70,9 @@ export function Sidebar({ isOpen, toggleSidebar }) {
         </NavLink>
       </nav>
               {/* User Profile Dropdown */}
-            <div className={styles.profileContainer}>
+            <div className="profileContainer">
             <button
-              className={styles.userProfile}
+              className="userProfile"
               aria-label="User profile"
               onClick={() => setShowDropdown(!showDropdown)}
             >
@@ -80,8 +80,8 @@ export function Sidebar({ isOpen, toggleSidebar }) {
             </button>
 
             {showDropdown && (
-              <div className={styles.dropdownMenu}>
-                <button className={styles.logoutButton} onClick={handleLogout}>Logout</button>
+              <div className="dropdownMenu">
+                <button className="logoutButton" onClick={handleLogout}>Logout</button>
               </div>
             )}
         </div>
