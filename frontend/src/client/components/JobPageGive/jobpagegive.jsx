@@ -181,8 +181,6 @@ function JobGiveMainPage() {
                 <li key={index}>{resp}</li>
               )) || <li>N/A</li>}
             </ul>
-            <p><strong>Qualifications:</strong> {selectedJob.qualifications}</p>
-            <p><strong>Source:</strong> {selectedJob.source}</p>
             <button onClick={() => setShowJobModal(false)}>Close</button>
           </div>
         </div>
