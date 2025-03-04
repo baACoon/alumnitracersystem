@@ -66,7 +66,7 @@ export function Sidebar({ isOpen, toggleSidebar }) {
           <div class="options">
             <div title="all">
               <input id="all" name="option" type="radio" checked="" />
-              <label class="optio"></label>
+              <label class="option"></label>
               <button className="logoutButton" onClick={handleLogout}>Logout</button>
             </div>
           </div>

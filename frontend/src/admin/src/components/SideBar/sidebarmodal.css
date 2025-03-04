@@ -22,10 +22,11 @@
     transition: 300ms;
     color: white;
     overflow: hidden;
+    font-weight: 800;
   }
   
   .selected {
-    background-color: #2a2f3b;
+    background-color: #c31d3c;
     padding: 5px;
     margin-bottom: 3px;
     border-radius: 5px;
@@ -53,7 +54,7 @@
     flex-direction: column;
     border-radius: 5px;
     padding: 5px;
-    background-color: #2a2f3b;
+    background-color: #c31d3c;
     position: relative;
     top: -100px;
     opacity: 0;
@@ -73,14 +74,11 @@
     border-radius: 5px;
     padding: 5px;
     transition: 300ms;
-    background-color: #2a2f3b;
+    background-color: #c31d3c;
     width: 150px;
     font-size: 15px;
   }
-  .option:hover {
-    background-color: #323741;
-  }
-  
+
   .options input[type="radio"] {
     display: none;
   }
