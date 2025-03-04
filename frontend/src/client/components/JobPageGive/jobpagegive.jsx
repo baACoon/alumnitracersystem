@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import './jobpagegive.css';
+import '.jobpagemodal.css';
 
 import Header from '../Header/header';
 import Footer from '../FooterClient/Footer';
