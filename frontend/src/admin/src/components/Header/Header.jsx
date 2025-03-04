@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import styles from './Header.module.css';
 
 export function Header() {
+  const [showDropdown, setShowDropdown] = useState('')
   return (
     <header className={styles.headerBox} role="banner">
       <div className={styles.headerContent}>
@@ -49,10 +50,24 @@ export function Header() {
             OPPORTUNITIES
           </NavLink>
         </nav>
+
+            {/* User Profile Dropdown */}
+            <div className={styles.profileContainer}>
+            <button
+              className={styles.userProfile}
+              aria-label="User profile"
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              TESTING
+            </button>
+
+            {showDropdown && (
+              <div className={styles.dropdownMenu}>
+                <button className={styles.logoutButton} onClick={handleLogout}>Logout</button>
+              </div>
+            )}
+        </div>
       </div>
-      <button className={styles.userProfile} aria-label="User profile">
-        GARCIA, J
-      </button>
     </header>
   );
 }
