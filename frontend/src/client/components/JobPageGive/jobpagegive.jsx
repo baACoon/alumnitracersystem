@@ -173,7 +173,7 @@ function JobGiveMainPage() {
             <p><strong>College:</strong> {selectedJob.college || 'N/A'}</p>
             <p><strong>Location:</strong> {selectedJob.location}</p>
             <p><strong>Job Status:</strong> {selectedJob.status}</p>
-            <p><strong>Date Published:</strong> {selectedJob.datePublished || 'N/A'}</p>
+            <p><strong>Date Published:</strong> {selectedJob.createdAt ? new Date(selectedJob.createdAt).toLocaleDateString() : 'N/A'}</p>
             <p><strong>Job Description:</strong> {selectedJob.description}</p>
             <p><strong>Key Responsibilities:</strong></p>
             <ul>
