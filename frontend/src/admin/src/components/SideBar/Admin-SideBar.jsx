@@ -49,6 +49,7 @@ export function Sidebar({ isOpen, toggleSidebar }) {
       </nav>
 
       {/* User Profile Dropdown */}
+      <hr className="userDivider" />
       <div className="profileContainer">
         <button className="userProfile" onClick={() => setShowDropdown(!showDropdown)}>
           {userName}

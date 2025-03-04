@@ -10,8 +10,20 @@
     padding: 8px 12px;
     font-size: 16px;
     color: white;
+    font-weight: 700;
   }
   
+  .userDivider {
+    position: absolute;
+    bottom: 55px; 
+    left: 10%;
+    width: 80%; 
+    border: none;
+    height: 1px;
+    background-color: white; 
+    opacity: 0.5;
+  }
+
   .dropdownMenu {
     position: absolute;
     right: 0;
