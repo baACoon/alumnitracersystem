@@ -73,16 +73,16 @@ export function Sidebar({ isOpen, toggleSidebar }) {
               height="1em"
               viewBox="0 0 512 512"
               class="arrow"
-            >
+            >  {userName}
               <path
                 d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"
-              > {userName} </path>
+              ></path>
             </svg>
           </div>
           <div class="options">
             <div title="all">
               <input id="all" name="option" type="radio" checked="" />
-              <label class="option" for="all" data-txt="All"></label>
+              <label class="option" for="all"> {userName}</label>
               <button className="logoutButton" onClick={handleLogout}>Logout</button>
             </div>
           </div>
