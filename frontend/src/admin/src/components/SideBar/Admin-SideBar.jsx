@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import styles from "./Admin-SideBar.module.css";
-import './sidebarmodal.css';
+import styles from "./sidebarmodal.css"
 
 export function Sidebar({ isOpen, toggleSidebar }) {
   const [activeTab, setActiveTab] = useState(null);
