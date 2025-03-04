@@ -4,6 +4,7 @@ import styles from "./Admin-SideBar.module.css";
 
 export function Sidebar({ isOpen, toggleSidebar }) {
   const [activeTab, setActiveTab] = useState(null);
+  const [showDropdown, setShowDropdown] = useState ('')
 
   const toggleTab = (tab) => {
     setActiveTab((prevTab) => (prevTab === tab ? null : tab)); // Toggle between open/close
@@ -67,9 +68,23 @@ export function Sidebar({ isOpen, toggleSidebar }) {
           OPPORTUNITIES
         </NavLink>
       </nav>
-      <button className={styles.userProfile} aria-label="User profile">
-        GARCIA, J
-      </button>
+              {/* User Profile Dropdown */}
+            <div className={styles.profileContainer}>
+            <button
+              className={styles.userProfile}
+              aria-label="User profile"
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              TESTING
+            </button>
+
+            {showDropdown && (
+              <div className={styles.dropdownMenu}>
+                <button className={styles.logoutButton} onClick={handleLogout}>Logout</button>
+              </div>
+            )}
+        </div>
+
     </aside>
   );
 }
