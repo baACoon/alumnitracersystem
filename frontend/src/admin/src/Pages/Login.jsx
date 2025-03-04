@@ -26,9 +26,12 @@ export default function Login() {
       });
 
       const data = await response.json();
+      console.log("Login Response:", data); // Debugging: Check API response
 
       if (response.ok) {
-        localStorage.setItem("token", data.token);    // set token
+        localStorage.setItem("token", data.token); // Store JWT token
+        localStorage.setItem("username", formData.username); // Store admin's username
+
         setMessage("Login successful!");
         navigate("/alumni-page"); // Redirect on success
       } else {

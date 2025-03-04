@@ -6,13 +6,13 @@ import './sidebarmodal.css';
 export function Sidebar({ isOpen, toggleSidebar }) {
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [userName, setUserName] = useState("Admin"); // Default if no username is found
+  const [userName, setUserName] = useState("Admin"); // Default name
 
   useEffect(() => {
-    // Fetch username from localStorage (stored after login)
-    const storedUser = localStorage.getItem("username"); // Assuming backend sends `username`
+    // Fetch the username from localStorage
+    const storedUser = localStorage.getItem("username"); 
     if (storedUser) {
-      setUserName(storedUser); // Set the username dynamically
+      setUserName(storedUser); // ✅ Update the username dynamically
     }
   }, []);
 
@@ -51,12 +51,12 @@ export function Sidebar({ isOpen, toggleSidebar }) {
       {/* User Profile Dropdown */}
       <div className="profileContainer">
         <button className="userProfile" onClick={() => setShowDropdown(!showDropdown)}>
-          {userName} 
+          {userName}
         </button>
 
         {showDropdown && (
           <div className="dropdownMenu">
-            <button className="styles.logoutButton" onClick={handleLogout}>Logout</button>
+            <button className="logoutButton" onClick={handleLogout}>Logout</button>
           </div>
         )}
       </div>
