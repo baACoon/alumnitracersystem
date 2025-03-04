@@ -1,14 +1,25 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import styles from "./Admin-SideBar.module.css";
-import './sidebarmodal.css'
+import './sidebarmodal.css';
 
 export function Sidebar({ isOpen, toggleSidebar }) {
-  const [activeTab, setActiveTab] = useState(null);
-  const [showDropdown, setShowDropdown] = useState ('')
+  const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [userName, setUserName] = useState("Admin"); // Default if no username is found
 
-  const toggleTab = (tab) => {
-    setActiveTab((prevTab) => (prevTab === tab ? null : tab)); // Toggle between open/close
+  useEffect(() => {
+    // Fetch username from localStorage (stored after login)
+    const storedUser = localStorage.getItem("username"); // Assuming backend sends `username`
+    if (storedUser) {
+      setUserName(storedUser); // Set the username dynamically
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Remove token
+    localStorage.removeItem("username"); // Remove username
+    navigate("/login"); // Redirect to login page
   };
 
   return (
@@ -20,72 +31,35 @@ export function Sidebar({ isOpen, toggleSidebar }) {
         <h1 className={styles.logo}>TUPATS</h1>
       </div>
       <nav className={styles.navigation}>
-        {/* Dashboard Tab */}
-        <NavLink
-          to="/Dashboard"
-          className={({ isActive }) =>
-            isActive ? styles.mainTabActive : styles.mainTab
-          }
-        >
+        <NavLink to="/Dashboard" className={({ isActive }) => isActive ? styles.mainTabActive : styles.mainTab}>
           DASHBOARD
         </NavLink>
-
-        <div>
-          <NavLink
-            to="/alumni-page"
-            className={({ isActive }) =>
-              isActive ? styles.mainTabActive : styles.mainTab
-            }
-          >
-            ALUMNI
-          </NavLink>
-        </div>
-
-        <NavLink
-          to="/SurveyContent"
-          className={({ isActive }) =>
-            isActive ? styles.mainTabActive : styles.mainTab
-          }
-        >
+        <NavLink to="/alumni-page" className={({ isActive }) => isActive ? styles.mainTabActive : styles.mainTab}>
+          ALUMNI
+        </NavLink>
+        <NavLink to="/SurveyContent" className={({ isActive }) => isActive ? styles.mainTabActive : styles.mainTab}>
           SURVEYS
         </NavLink>
-        
-        {/* Events Tab */}
-        <NavLink
-          to="/EventTabs"
-          className={({ isActive }) =>
-            isActive ? styles.mainTabActive : styles.mainTab
-          }
-        >
+        <NavLink to="/EventTabs" className={({ isActive }) => isActive ? styles.mainTabActive : styles.mainTab}>
           EVENTS
         </NavLink>
-
-        <NavLink
-          to="/Opportunities"
-          className={({ isActive }) =>
-            isActive ? styles.mainTabActive : styles.mainTab
-          }
-        >
+        <NavLink to="/Opportunities" className={({ isActive }) => isActive ? styles.mainTabActive : styles.mainTab}>
           OPPORTUNITIES
         </NavLink>
       </nav>
-              {/* User Profile Dropdown */}
-            <div className="profileContainer">
-            <button
-              className="userProfile"
-              aria-label="User profile"
-              onClick={() => setShowDropdown(!showDropdown)}
-            >
-              TESTING
-            </button>
 
-            {showDropdown && (
-              <div className="dropdownMenu">
-                <button className="logoutButton" onClick={handleLogout}>Logout</button>
-              </div>
-            )}
-        </div>
+      {/* User Profile Dropdown */}
+      <div className="profileContainer">
+        <button className="userProfile" onClick={() => setShowDropdown(!showDropdown)}>
+          {userName} 
+        </button>
 
+        {showDropdown && (
+          <div className="dropdownMenu">
+            <button className="styles.logoutButton" onClick={handleLogout}>Logout</button>
+          </div>
+        )}
+      </div>
     </aside>
   );
 }
