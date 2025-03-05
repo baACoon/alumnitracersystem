@@ -10,7 +10,7 @@
 
   
   .logoutButton:hover {
-    background: #5D0E1D;
+    background: #ec516d;
   }
   
 
@@ -75,7 +75,7 @@
     border-radius: 5px;
     padding: 5px;
     transition: 300ms;
-    background-color: #ffffff;
+    background-color: #5D0E1D;
     width: 150px;
     font-size: 15px;
   }
