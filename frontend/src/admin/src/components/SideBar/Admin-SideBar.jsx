@@ -64,7 +64,7 @@ export function Sidebar({ isOpen, toggleSidebar }) {
             </svg>
           </div>
           <div class="options">
-            <div title="all">
+            <div title="">
               <input id="all" name="option" type="radio" checked="" />
               <label class="option"></label>
               <button className="logoutButton" onClick={handleLogout}>Logout</button>
