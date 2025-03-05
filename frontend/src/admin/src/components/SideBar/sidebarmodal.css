@@ -55,7 +55,7 @@
     flex-direction: column;
     border-radius: 5px;
     padding: 5px;
-    background-color: #c31d3c;
+    background-color: #ffffff;
     position: relative;
     top: -100px;
     opacity: 0;
@@ -75,7 +75,7 @@
     border-radius: 5px;
     padding: 5px;
     transition: 300ms;
-    background-color: #474747;
+    background-color: #c31d3c;
     width: 150px;
     font-size: 15px;
   }
