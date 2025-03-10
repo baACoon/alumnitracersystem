@@ -1,28 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import styles from './PendingSurvey.module.css';
 
 export const PendingSurvey = () => {
     const navigate = useNavigate();
+    const [pendingSurveys, setPendingSurveys]= useState([]);
 
-    const goToForm = () => {
-        navigate('/SurveyForm');
+    useEffect(() => {
+        const fetchPendingSurveys = async () => {
+            const token = localStorage.getItem("token");
+            const userId = localStorage.getItem("userId");
+            
+            const response = await axios.get(`https://alumnitracersystem.onrender.com/surveys/pending/${userId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setPendingSurveys(response.data.surveys);
+        };
+
+        fetchPendingSurveys();
+    }, []);
+
+    const goToForm = (surveyId) => {
+        navigate(`/SurveyForm/${surveyId}`);
     };
-
-    // Example survey data (replace with actual data from props or API)
-    const surveys = [
-        { id: 1, title: "Tracer Survey Form (2024)", dateReceived: "Feb 15, 2024" },
-        { id: 2, title: "Alumni Feedback Survey", dateReceived: "Jan 28, 2024" },
-        { id: 3, title: "Post-Graduate Employment Survey", dateReceived: "Mar 3, 2024" }
-    ];
-
+    
     return (
         <div className={styles.surveyContainer}>
             <h2>PENDING SURVEYS</h2>
             <div className={styles.surveyList}>
-                {surveys.map((survey) => (
+                {pendingSurveys.map((survey) => (
                     <div key={survey.id} className={styles.surveyCard}>
-                        <h3 className={styles.surveyTitle} onClick={goToForm}>
+                        <h3 className={styles.surveyTitle} onClick={() => goToForm(survey.id)}>
                             {survey.title}
                             <p className={styles.surveyDate}>Received: {survey.dateReceived}</p>
                         </h3>
