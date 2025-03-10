@@ -25,21 +25,26 @@ export const PendingSurvey = () => {
     const goToForm = (surveyId) => {
         navigate(`/SurveyForm/${surveyId}`);
     };
-    
+
     return (
         <div className={styles.surveyContainer}>
             <h2>PENDING SURVEYS</h2>
             <div className={styles.surveyList}>
-                {pendingSurveys.map((survey) => (
-                    <div key={survey.id} className={styles.surveyCard}>
-                        <h3 className={styles.surveyTitle} onClick={() => goToForm(survey.id)}>
-                            {survey.title}
-                            <p className={styles.surveyDate}>Received: {survey.dateReceived}</p>
-                        </h3>
-                    </div>
-                ))}
+                {pendingSurveys.length > 0 ? (
+                    pendingSurveys.map((survey) => (
+                        <div key={survey.id} className={styles.surveyCard}>
+                            <h3 className={styles.surveyTitle} onClick={() => goToForm(survey.id)}>
+                                {survey.title}
+                                <p className={styles.surveyDate}>Received: {survey.dateReceived}</p>
+                            </h3>
+                        </div>
+                    ))
+                ) : (
+                    <p>No pending surveys available.</p>
+                )}
             </div>
         </div>
+
     );
 };
 

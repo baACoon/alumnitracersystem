@@ -178,6 +178,52 @@ router.get("/user-surveys", authenticateToken, async (req, res) => {
   }
 });
 
+// Get Pending Surveys by User ID
+router.get("/pending/:userId", authenticateToken, async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const completedSurveyIds = await SurveySubmission.find({ userId }).distinct('_id');
+
+    // Fetch all surveys available (you could also define available surveys elsewhere in DB)
+    const allSurveys = [
+      { id: "tracer2024", title: "Tracer Survey Form (2024)", dateReceived: "Feb 15, 2024" },
+      { id: "alumniFeedback", title: "Alumni Feedback Survey", dateReceived: "Jan 28, 2024" },
+      { id: "postGradEmployment", title: "Post-Graduate Employment Survey", dateReceived: "Mar 3, 2024" },
+    ];
+
+    // Return surveys NOT yet submitted by user
+    const pendingSurveys = allSurveys.filter(survey => !completedSurveyIds.includes(survey.id));
+
+    res.status(200).json({ surveys: pendingSurveys });
+  } catch (error) {
+    console.error("Error fetching pending surveys:", error);
+    res.status(500).json({ message: "Failed to fetch pending surveys." });
+  }
+});
+
+// Get Completed Surveys by User ID
+router.get("/completed/:userId", authenticateToken, async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const submissions = await SurveySubmission.find({ userId }).sort({ createdAt: -1 });
+
+    // Map submissions to a format frontend expects
+    const completedSurveys = submissions.map(survey => ({
+      id: survey._id,
+      title: "Tracer Survey Form (2024)", // This could be dynamic based on submission
+      dateCompleted: survey.createdAt.toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric'
+      }),
+    }));
+
+    res.status(200).json({ surveys: completedSurveys });
+  } catch (error) {
+    console.error("Error fetching completed surveys:", error);
+    res.status(500).json({ message: "Failed to fetch completed surveys." });
+  }
+});
+
+
 // Get statistics
 router.get("/statistics", async (req, res) => {
   try {
