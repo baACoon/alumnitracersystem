@@ -111,6 +111,60 @@
     padding-right: 1em; /* Adds some spacing on the right */
 }
 
+/* Profile Dropdown */
+.profile-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Profile Button */
+.profile-btn {
+    color: white;
+    cursor: pointer;
+    padding: 10px 20px;
+    display: inline-block;
+}
+
+.profile-btn:hover {
+    background-color: #5D0E1D;
+    color: white;
+    border-radius: 5px;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    padding: 10px 0;
+}
+
+/* Dropdown Items */
+.dropdown-item {
+    background: none;
+    border: none;
+    color: #333;
+    padding: 10px 20px;
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    display: block;
+    text-decoration: none;
+}
+
+.dropdown-item:hover {
+    background-color: #f5f5f5;
+}
+
+
 .d-flex a{
     color: white;
     cursor: pointer;
