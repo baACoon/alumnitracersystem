@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../../components/Styles/popup.css';
 import '../Header/header.css';
@@ -10,11 +10,20 @@ function Header() {
     const location = useLocation();
     const isActive = (path) => location.pathname === path;
     const [showDropdown, setShowDropdown] = useState(false);
+    const [userName, setUserName] = useState("User"); // Default username
+
+    useEffect(() => {
+        // Fetch the user name from localStorage (or API in the future)
+        const storedUser = localStorage.getItem("userName");
+        if (storedUser) {
+            setUserName(storedUser);
+        }
+    }, []);
 
     const handleLogout = () => {
         localStorage.clear();
         alert("You have been logged out.");
-        navigate("/login");
+        navigate("/frontpage");
     };
 
     const handleChangePassword = () => {
@@ -77,26 +86,33 @@ function Header() {
                             </li>
                         </ul>
 
-                        {/* Profile Dropdown */}
-                        <div className="profile-dropdown">
-                            <a
-                                href="#"
-                                className="nav-link profile-btn"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    setShowDropdown(!showDropdown);
-                                }}
-                            >
-                                PROFILE ▼
-                            </a>
-
+                        {/* Custom Profile Dropdown */}
+                        <div className="select" onClick={() => setShowDropdown(!showDropdown)}>
+                            <div className={`selected ${showDropdown ? 'active' : ''}`} data-one="profile">
+                                {userName}
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    height="1em"
+                                    viewBox="0 0 512 512"
+                                    className={`arrow ${showDropdown ? 'rotate' : ''}`}
+                                >
+                                    <path
+                                        d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"
+                                    ></path>
+                                </svg>
+                            </div>
                             {showDropdown && (
-                                <div className="dropdown-menu show">
-                                    <a onClick={handleChangePassword} className="dropdown-item">Change Password</a>
-                                    <a onClick={handleLogout} className="dropdown-item">Logout</a>
+                                <div className="options">
+                                    <div>
+                                        <input id="profile" name="option" type="radio" checked="" />
+                                        <label className="option"></label>
+                                        <button className="dropdownButton" onClick={handleChangePassword}>Change Password</button>
+                                        <button className="dropdownButton" onClick={handleLogout}>Logout</button>
+                                    </div>
                                 </div>
                             )}
                         </div>
+
                     </div>
                 </div>
             </nav>

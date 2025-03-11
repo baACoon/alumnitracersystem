@@ -125,11 +125,7 @@
     display: inline-block;
 }
 
-.profile-btn:hover {
-    background-color: #5D0E1D;
-    color: white;
-    border-radius: 5px;
-}
+
 
 /* Dropdown Menu */
 .dropdown-menu {
