@@ -51,4 +51,43 @@ router.get('/user-profile', authenticateToken, async (req, res) => {
   }
 });
 
+// ✅ Route to change user password
+router.post('/change-password', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { oldPassword, newPassword } = req.body;
+
+    // Validate input
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ success: false, message: 'All fields are required' });
+    }
+
+    // Find user in Student collection
+    const student = await Student.findById(userId);
+    if (!student) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Compare old password with hashed password
+    const isMatch = await bcrypt.compare(oldPassword, student.password);
+    if (!isMatch) {
+      return res.status(400).json({ success: false, message: 'Old password is incorrect' });
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update user's password
+    student.password = hashedPassword;
+    await student.save();
+
+    res.status(200).json({ success: true, message: 'Password changed successfully' });
+
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).json({ success: false, message: 'Failed to change password', error: error.message });
+  }
+});
+
 export default router;
