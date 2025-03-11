@@ -105,6 +105,40 @@ router.post("/register", async (req, res) => {
   }
 });
 
+//forgot password 
+router.post("/forgot-password", async (req, res) => {
+  const { alumniID } = req.body;
+
+  console.log("Received forgot password request for:", alumniID);
+
+  try {
+    if (!alumniID) {
+      return res.status(400).json({ error: "Alumni ID is required." });
+    }
+
+    // Find user by Alumni ID
+    const user = await Student.findOne({ generatedID: alumniID });
+
+    if (!user) {
+      console.log("Error: User not found with ID:", alumniID);
+      return res.status(404).json({ error: "Alumni ID not found." });
+    }
+
+    // Generate a reset token (valid for 15 minutes)
+    const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
+
+    // Send reset link (Assuming an email system is in place)
+    console.log(`Password reset token for ${alumniID}: ${resetToken}`);
+    // Here, you would send the reset link via email using a mailing service like Nodemailer.
+
+    res.status(200).json({ message: "Password reset link sent. Check your email.", resetToken });
+  } catch (error) {
+    console.error("Error during password reset request:", error);
+    res.status(500).json({ error: "Error processing password reset request." });
+  }
+});
+
+
 // Login an existing user
 router.post("/login", async (req, res) => {
   const { alumniID, password } = req.body;
