@@ -51,21 +51,22 @@ export function Header() {
           </NavLink>
         </nav>
 
-            {/* User Profile Dropdown */}
-            <div className={styles.profileContainer}>
-            <button
-              className={styles.userProfile}
-              aria-label="User profile"
-              onClick={() => setShowDropdown(!showDropdown)}
-            >
-              TESTING
-            </button>
+              {/* User Profile Dropdown */}
+              <div className={styles.profileContainer}>
+                  <button
+                    className={styles.userProfile}
+                    aria-label="User profile"
+                    onClick={() => setShowDropdown(!showDropdown)}
+                  >
+                    Profile ▼
+                  </button>
 
-            {showDropdown && (
-              <div className={styles.dropdownMenu}>
-                <button className={styles.logoutButton} onClick={handleLogout}>Logout</button>
-              </div>
-            )}
+              {showDropdown && (
+                <div className={styles.dropdownMenu}>
+                  <button onClick={handleChangePassword} className={styles.dropdownItem}>Change Password</button>
+                  <button onClick={handleLogout} className={styles.dropdownItem}>Logout</button>
+                </div>
+              )}
         </div>
       </div>
     </header>
