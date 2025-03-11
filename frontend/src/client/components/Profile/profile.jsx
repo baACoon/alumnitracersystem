@@ -24,6 +24,11 @@ function ProfilePage() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false); // For Change Password modal
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -79,6 +84,46 @@ function ProfilePage() {
   const handleLogout = () => {
     localStorage.clear();
     navigate('/frontpage');
+  };
+
+  const handleChangePassword = async () => {
+    setPasswordError('');
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      setPasswordError('Please fill in all fields.');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New password and confirm password do not match.');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('https://alumnitracersystem.onrender.com/profile/change-password', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          oldPassword,
+          newPassword,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Password change failed');
+
+      alert('Password changed successfully!');
+      setShowModal(false);
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error) {
+      setPasswordError(error.message);
+    }
   };
 
   if (loading) return <div>Loading...</div>;
@@ -177,7 +222,37 @@ function ProfilePage() {
       <button className={styles.logoutBtn} onClick={handleLogout}>
         Logout
       </button>
-    </div>
+      <button className={styles.changepass} onClick={() => setShowModal(true)}>
+        Change Password
+      </button>
+
+      
+            {/* Change Password Modal */}
+            {showModal && (
+            <div className={styles.modalOverlay}>
+              <div className={styles.modal}>
+                <h2>Change Password</h2>
+                {passwordError && <p className={styles.error}>{passwordError}</p>}
+                <div className={styles.inputGroup}>
+                  <label>Old Password</label>
+                  <input type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
+                </div>
+                <div className={styles.inputGroup}>
+                  <label>New Password</label>
+                  <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+                </div>
+                <div className={styles.inputGroup}>
+                  <label>Confirm New Password</label>
+                  <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                </div>
+                <div className={styles.modalActions}>
+                  <button className={styles.saveBtn} onClick={handleChangePassword}>Save</button>
+                  <button className={styles.cancelBtn} onClick={() => setShowModal(false)}>Cancel</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
   );
 }
 
