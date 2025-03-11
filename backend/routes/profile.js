@@ -1,4 +1,5 @@
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import { authenticateToken } from '../routes/surveyroutes.js';
 import { Student } from '../record.js';
 import { SurveySubmission } from '../routes/surveyroutes.js'; // Add this import
@@ -53,7 +54,7 @@ router.get('/user-profile', authenticateToken, async (req, res) => {
 
 router.post('/change-password', authenticateToken, async (req, res) => {
   try {
-    console.log('Request Body:', req.body); // Log request body
+    console.log('bcrypt:', bcrypt); // Debug bcrypt
 
     const userId = req.user.id;
     const { oldPassword, newPassword } = req.body;
@@ -62,23 +63,23 @@ router.post('/change-password', authenticateToken, async (req, res) => {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
-    // Find user in Student collection
     const student = await Student.findById(userId);
     if (!student) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    // Compare old password with hashed password
+    if (!student.password) {
+      return res.status(500).json({ success: false, message: 'Password not set for this user' });
+    }
+
     const isMatch = await bcrypt.compare(oldPassword, student.password);
     if (!isMatch) {
       return res.status(400).json({ success: false, message: 'Old password is incorrect' });
     }
 
-    // Hash new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-    // Update user's password
     student.password = hashedPassword;
     await student.save();
 
@@ -89,5 +90,6 @@ router.post('/change-password', authenticateToken, async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to change password', error: error.message });
   }
 });
+
 
 export default router;
