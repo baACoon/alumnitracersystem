@@ -46,7 +46,16 @@ function Home() {
         </div>
     );
 
+    function Popup({ message, onClose }) {
+        return (
+            <div className={styles.popBackground} id="popBackground">
+                <div className={styles.popup} id="welcomePopup">
+                    <p>{message}</p>
 
+                </div>
+            </div>
+        );
+    }
 }
 
 function HomePage() {
