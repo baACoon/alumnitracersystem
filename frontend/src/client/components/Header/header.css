@@ -11,6 +11,13 @@
     z-index: 1;
 }
 
+.header-container {
+    position: relative;
+    overflow: visible !important;
+    z-index: 10; /* Keeps header above other content */
+}
+
+
 .header-logo-banner {
     display: flex; /* Flexbox for horizontal alignment */
     align-items: center; /* Vertically align items */
@@ -145,7 +152,7 @@
 
 
   /* From Uiverse.io by 3bdel3ziz-T */ 
-.select {
+  .select {
     width: fit-content;
     cursor: pointer;
     position: relative;
@@ -153,9 +160,9 @@
     color: white;
     overflow: hidden;
     font-weight: 800;
-  }
+}
   
-  .selected {
+.selected {
     background-color: #c31d3c;
     padding: 5px;
     margin-bottom: 3px;
@@ -166,7 +173,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
+}
   
   .arrow {
     position: relative;
@@ -185,10 +192,16 @@
     border-radius: 5px;
     padding: 5px;
     background-color: #5D0E1D;
-    position: relative;
-    top: -100px;
+    position: absolute; /* This fixes the issue */
+    top: 100%;
+    right: 0;
+    z-index: 9999; /* Ensures it's on top */
+    width: 160px;
     opacity: 0;
-    transition: 300ms;
+    transform: translateY(-10px); /* Smooth transition */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds shadow */
+
   }
   
   .select:hover > .options {
@@ -200,14 +213,24 @@
     transform: rotate(0deg);
   }
   
-  .option {
+/* Option Items */
+.option, .dropdownButton {
     border-radius: 5px;
-    padding: 5px;
+    padding: 8px 12px;
     transition: 300ms;
     background-color: #5D0E1D;
-    width: 150px;
-    font-size: 15px;
-  }
+    width: 100%;
+    font-size: 14px;
+    color: white;
+    text-align: left;
+    border: none;
+    cursor: pointer;
+}
+
+/* Hover Effect */
+.option:hover, .dropdownButton:hover {
+    background-color: #ec516d;
+}
 
   .options input[type="radio"] {
     display: none;
