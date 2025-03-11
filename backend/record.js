@@ -106,6 +106,7 @@ router.post("/register", async (req, res) => {
 });
 
 //forgot password 
+// Password Reset Request (Step 1)
 router.post("/forgot-password", async (req, res) => {
   const { alumniID } = req.body;
 
@@ -127,17 +128,57 @@ router.post("/forgot-password", async (req, res) => {
     // Generate a reset token (valid for 15 minutes)
     const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
 
-    // Send reset link (Assuming an email system is in place)
     console.log(`Password reset token for ${alumniID}: ${resetToken}`);
-    // Here, you would send the reset link via email using a mailing service like Nodemailer.
 
-    res.status(200).json({ message: "Password reset link sent. Check your email.", resetToken });
+    res.status(200).json({ message: "Proceed to reset your password.", resetToken });
   } catch (error) {
     console.error("Error during password reset request:", error);
     res.status(500).json({ error: "Error processing password reset request." });
   }
 });
 
+// Reset Password (Step 2)
+router.post("/reset-password", async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  console.log("Received reset password request:", { token, newPassword });
+
+  try {
+    if (!token || !newPassword) {
+      return res.status(400).json({ error: "Token and new password are required." });
+    }
+
+    // Verify token
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (error) {
+      console.log("Invalid or expired token");
+      return res.status(400).json({ error: "Invalid or expired token." });
+    }
+
+    // Find user by decoded token
+    const user = await Student.findById(decoded.id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user's password
+    user.password = hashedPassword;
+    await user.save();
+
+    console.log(`Password updated successfully for: ${user.generatedID}`);
+    res.status(200).json({ message: "Password reset successfully. You can now log in with your new password." });
+
+  } catch (error) {
+    console.error("Error during password reset:", error);
+    res.status(500).json({ error: "Error resetting password." });
+  }
+});
 
 // Login an existing user
 router.post("/login", async (req, res) => {

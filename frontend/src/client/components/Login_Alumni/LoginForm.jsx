@@ -6,15 +6,15 @@ const TestLoginForm = ({ closeModal }) => {
   const [alumniID, setAlumniID] = useState('');
   const [password, setPassword] = useState('');
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
   const [resetAlumniID, setResetAlumniID] = useState('');
+  const [resetToken, setResetToken] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     const formData = { alumniID, password };
-
-    console.log('Login attempt with:', formData); // Debug log
 
     try {
       const response = await fetch('https://alumnitracersystem.onrender.com/record/login', {
@@ -24,10 +24,8 @@ const TestLoginForm = ({ closeModal }) => {
       });
 
       const data = await response.json();
-      console.log('Server response:', response.status, data); // Debug log
 
       if (response.ok) {
-        console.log("Storing userId in localStorage:", data.user.id);
         localStorage.clear();
         localStorage.setItem("userId", data.user.id);
         localStorage.setItem("token", data.token);
@@ -57,16 +55,43 @@ const TestLoginForm = ({ closeModal }) => {
       });
 
       const data = await response.json();
-      console.log('Forgot Password Response:', data);
 
       if (response.ok) {
-        alert("A password reset link has been sent to your email.");
+        setResetToken(data.resetToken);
         setShowForgotPassword(false);
+        setShowResetPassword(true);
       } else {
         alert(`Error: ${data.error || 'Password reset failed'}`);
       }
     } catch (error) {
-      console.error('Error during password reset:', error);
+      console.error('Error during password reset request:', error);
+      alert('There was an error with the password reset request.');
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!newPassword) {
+      alert("Please enter a new password.");
+      return;
+    }
+
+    try {
+      const response = await fetch('https://alumnitracersystem.onrender.com/record/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: resetToken, newPassword }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Password reset successful! You can now log in.");
+        setShowResetPassword(false);
+      } else {
+        alert(`Error: ${data.error || 'Failed to reset password'}`);
+      }
+    } catch (error) {
+      console.error('Error resetting password:', error);
       alert('There was an error with the password reset request.');
     }
   };
@@ -77,7 +102,7 @@ const TestLoginForm = ({ closeModal }) => {
         <button className={styles.closeButtonLogin} onClick={closeModal}>&times;</button>
         <h2 className={styles.modalTitleLogin}>LOGIN</h2>
 
-        {!showForgotPassword ? (
+        {!showForgotPassword && !showResetPassword ? (
           <>
             <form onSubmit={handleLogin} className={styles.loginForm}>
               <h5>Alumni ID</h5>
@@ -105,21 +130,17 @@ const TestLoginForm = ({ closeModal }) => {
               Forgot Password?
             </button>
           </>
-        ) : (
-          <div className={styles.forgotPasswordContainer}>
+        ) : showForgotPassword ? (
+          <div>
             <h4>Reset Password</h4>
-            <input
-              type="text"
-              placeholder="Enter your Alumni ID"
-              value={resetAlumniID}
-              onChange={(e) => setResetAlumniID(e.target.value)}
-              required
-              className={styles.inputFieldLogin}
-            />
-            <button onClick={handleForgotPassword} className={styles.submitButtonLogin}>Submit</button>
-            <button onClick={() => setShowForgotPassword(false)} className={styles.cancelButtonLogin}>
-              Cancel
-            </button>
+            <input type="text" placeholder="Enter Alumni ID" value={resetAlumniID} onChange={(e) => setResetAlumniID(e.target.value)} />
+            <button onClick={handleForgotPassword}>Next</button>
+          </div>
+        ) : (
+          <div>
+            <h4>Enter New Password</h4>
+            <input type="password" placeholder="New Password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+            <button onClick={handleResetPassword}>Reset Password</button>
           </div>
         )}
       </div>
