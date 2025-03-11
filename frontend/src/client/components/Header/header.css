@@ -11,13 +11,6 @@
     z-index: 1;
 }
 
-.header-container {
-    position: relative;
-    overflow: visible !important;
-    z-index: 10; /* Keeps header above other content */
-}
-
-
 .header-logo-banner {
     display: flex; /* Flexbox for horizontal alignment */
     align-items: center; /* Vertically align items */
@@ -117,7 +110,6 @@
     position: relative; /* Changed from absolute to relative */
     padding-right: 1em; /* Adds some spacing on the right */
 }
-
 
 .d-flex a{
     color: white;
