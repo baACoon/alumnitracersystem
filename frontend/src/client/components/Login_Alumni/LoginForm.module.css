@@ -92,6 +92,38 @@
     background-color: #220107;
 }
 
+.nextbutton{
+    padding: 12px;
+    background-color: #C12542;
+    color: white;
+    border: none;
+    width: 40%;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.nextbutton:hover{
+    background-color: #220107;
+}
+
+.resetbutton{
+    padding: 12px;
+    background-color: #C12542;
+    color: white;
+    border: none;
+    width: 40%;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.resetbutton:hover{
+    background-color: #220107;
+}
+
 /* Responsive design for login modal */
 @media (max-width: 500px) {
     .modalContentLogin {

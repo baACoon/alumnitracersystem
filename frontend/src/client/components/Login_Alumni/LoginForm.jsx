@@ -126,21 +126,25 @@ const TestLoginForm = ({ closeModal }) => {
               <button type="submit" className={styles.submitButtonLogin}>Login</button>
             </form>
 
-            <button className={styles.forgotPasswordButton} onClick={() => setShowForgotPassword(true)}>
+            <a 
+              href="#" 
+              className={styles.forgotPasswordLink} 
+              onClick={(e) => { e.preventDefault(); setShowForgotPassword(true); }}
+            >
               Forgot Password?
-            </button>
+            </a>
           </>
         ) : showForgotPassword ? (
           <div>
             <h4>Reset Password</h4>
             <input type="text" placeholder="Enter Alumni ID" value={resetAlumniID} onChange={(e) => setResetAlumniID(e.target.value)} />
-            <button onClick={handleForgotPassword}>Next</button>
+            <button className={styles.nextbutton} onClick={handleForgotPassword}>Next</button>
           </div>
         ) : (
           <div>
             <h4>Enter New Password</h4>
             <input type="password" placeholder="New Password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-            <button onClick={handleResetPassword}>Reset Password</button>
+            <button className={styles.resetbutton} onClick={handleResetPassword}>Reset Password</button>
           </div>
         )}
       </div>
