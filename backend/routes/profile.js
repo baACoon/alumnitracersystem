@@ -51,13 +51,13 @@ router.get('/user-profile', authenticateToken, async (req, res) => {
   }
 });
 
-// ✅ Route to change user password
 router.post('/change-password', authenticateToken, async (req, res) => {
   try {
+    console.log('Request Body:', req.body); // Log request body
+
     const userId = req.user.id;
     const { oldPassword, newPassword } = req.body;
 
-    // Validate input
     if (!oldPassword || !newPassword) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }

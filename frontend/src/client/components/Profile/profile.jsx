@@ -87,18 +87,14 @@ function ProfilePage() {
   };
 
   const handleChangePassword = async () => {
-    setPasswordError('');
-
-    if (!oldPassword || !newPassword || !confirmPassword) {
-      setPasswordError('Please fill in all fields.');
+    console.log('Old Password:', oldPassword);
+    console.log('New Password:', newPassword);
+  
+    if (!oldPassword || !newPassword) {
+      setPasswordError('All fields are required.');
       return;
     }
-
-    if (newPassword !== confirmPassword) {
-      setPasswordError('New password and confirm password do not match.');
-      return;
-    }
-
+  
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('https://alumnitracersystem.onrender.com/profile/change-password', {
@@ -112,16 +108,19 @@ function ProfilePage() {
           newPassword,
         }),
       });
-
+  
       const result = await response.json();
+      console.log('Server Response:', result); // Debug response
+  
       if (!response.ok) throw new Error(result.message || 'Password change failed');
-
+  
       alert('Password changed successfully!');
       setShowModal(false);
       setOldPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (error) {
+      console.error('Error:', error);
       setPasswordError(error.message);
     }
   };
@@ -235,7 +234,7 @@ function ProfilePage() {
                 {passwordError && <p className={styles.error}>{passwordError}</p>}
                 <div className={styles.inputGroup}>
                   <label>Old Password</label>
-                  <input type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
+                  <input type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)}  />
                 </div>
                 <div className={styles.inputGroup}>
                   <label>New Password</label>
