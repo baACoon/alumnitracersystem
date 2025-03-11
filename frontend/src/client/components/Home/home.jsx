@@ -46,18 +46,7 @@ function Home() {
         </div>
     );
 
-    function Popup({ message, onClose }) {
-        return (
-            <div className={styles.popBackground} id="popBackground">
-                <div className={styles.popup} id="welcomePopup">
-                    <p>{message}</p>
-                    <button className={styles.popButton} onClick={onClose}>
-                        Go to Survey
-                    </button>
-                </div>
-            </div>
-        );
-    }
+
 }
 
 function HomePage() {
