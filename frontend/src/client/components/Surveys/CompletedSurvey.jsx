@@ -22,16 +22,15 @@ export const CompletedSurvey = () => {
                 setCompletedSurveys(response.data.surveys);
             } catch (error) {
                 console.error("Error fetching completed surveys:", error);
-                setCompletedSurveys([]); // fallback to empty array
+                setCompletedSurveys([]);
             }
         };
 
         fetchCompletedSurveys();
     }, []);
 
-    
-    // Filter surveys based on search term
-    const filteredSurveys = surveys.filter(survey =>
+    // Corrected reference: completedSurveys (not surveys)
+    const filteredSurveys = completedSurveys.filter(survey =>
         survey.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -48,29 +47,25 @@ export const CompletedSurvey = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
-            
             </div>
-            
 
             {/* Survey List */}
-            <div className={styles.surveyContainer}>
-                    <h2>COMPLETED SURVEYS</h2>
-                    <div className={styles.surveyList}>
-                        {completedSurveys.length > 0 ? (
-                            completedSurveys.map((survey) => (
-                                <div key={survey.id} className={styles.surveyCard}>
-                                    <h3 className={styles.surveyTitle}>
-                                        {survey.title}
-                                        <p className={styles.surveyDate}>Completed on: {survey.dateCompleted}</p>
-                                    </h3>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No completed surveys available.</p>
-                        )}
-                    </div>
-                </div>
-                            
+            <div className={styles.surveyList}>
+                {filteredSurveys.length > 0 ? (
+                    filteredSurveys.map((survey) => (
+                        <div key={survey.id} className={styles.surveyCard}>
+                            <h3 className={styles.surveyTitle}>
+                                {survey.title}
+                                <p className={styles.surveyDate}>
+                                    Completed on: {survey.dateCompleted}
+                                </p>
+                            </h3>
+                        </div>
+                    ))
+                ) : (
+                    <p>No completed surveys available.</p>
+                )}
+            </div>
         </div>
     );
 };
