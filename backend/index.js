@@ -4,6 +4,7 @@ import path from "path";
 import { connectToDatabase } from '../backend/db/connection.js';
 import records from './record.js';
 import surveyRoutes from './routes/surveyroutes.js'; // Import survey routes
+import dynamicSurveyRoutes from './routes/dynamicSurveyRoutes.js'
 import adminlogreg from './models/adminlog_reg.js';
 import eventRoutes from './models/event.js'
 //import userProfile from './models/profile.js'
@@ -13,6 +14,8 @@ import jobRoutes from './routes/jobroutes.js';
 import profileRoutes from './routes/profile.js';
 import alumnipage from './routes/alumnipageroutes.js';
 import dashboardRoutes from './routes/dashboardroutes.js';
+import uploadRoutes from './routes/uploadroutes.js';
+import fs from 'fs';
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -30,6 +33,7 @@ app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 // Routes
 app.use("/record", records); // Existing records routes
 app.use("/surveys", surveyRoutes); // Add survey routes
+app.use("/api/surveys", dynamicSurveyRoutes);
 app.use("/adminlog_reg", adminlogreg);
 app.use("/event", eventRoutes);
 //app.use("/user", userProfile);
