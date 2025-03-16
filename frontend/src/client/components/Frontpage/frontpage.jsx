@@ -96,12 +96,12 @@ const TestFrontPage = () => {
   
             {/* Make sure the {styles.letter}s are visible */}
             <div className={styles.tupatsContainer}>
-              <span className="letter">T</span>
-              <span className="letter">U</span>
-              <span className="letter">P</span>
-              <span className="letter">A</span>
-              <span className="letter">T</span>
-              <span className="letter">S</span>
+              <h1 className="letter">T</h1>
+              <h1 className="letter">U</h1>
+              <h1 className="letter">P</h1>
+              <h1 className="letter">A</h1>
+              <h1 className="letter">T</h1>
+              <h1 className="letter">S</h1>
             </div>
         </div>
       );
