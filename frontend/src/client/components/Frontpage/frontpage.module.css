@@ -382,7 +382,7 @@
 }
 
 /* Individual letters animation */
-.letter {
+.tupatsContainer .letter {
   font-size: 60px;
   font-weight: bold;
   color: white;
