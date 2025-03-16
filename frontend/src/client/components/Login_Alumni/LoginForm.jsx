@@ -129,19 +129,21 @@ const TestLoginForm = ({ closeModal }) => {
                 className={styles.inputFieldLogin}
                 disabled={loading}
               />
-              <button type="submit" className={styles.submitButtonLogin}>Login</button>
+                        <button type="submit" className={styles.submitButtonLogin} disabled={loading}>
+                            {loading ? "Logging in..." : "Login"}
+                        </button>
             </form>
 
             {/* Overlay Loader */}
               {loading && (
                 <div className={styles.loadingOverlay}>
                   <div className={styles.loaderContainer}>
-                    <svg viewBox="0 0 240 240" height="240" width="240" class="pl">
-                      <circle stroke-linecap="round" stroke-dashoffset="-330" stroke-dasharray="0 660" stroke-width="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className="pl__ring pl__ring--a"></circle>
-                      <circle stroke-linecap="round" stroke-dashoffset="-110" stroke-dasharray="0 220" stroke-width="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className="pl__ring pl__ring--b"></circle>
-                      <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className="pl__ring pl__ring--c"></circle>
-                      <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className="pl__ring pl__ring--d"></circle>
-                    </svg>
+                  <svg viewBox="0 0 240 240" height="80" width="80" className={styles.loader}>
+                    <circle strokeLinecap="round" strokeDashoffset="-330" strokeDasharray="0 660" strokeWidth="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className={`${styles.pl__ring} ${styles.pl__ringA}`}></circle>
+                    <circle strokeLinecap="round" strokeDashoffset="-110" strokeDasharray="0 220" strokeWidth="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className={`${styles.pl__ring} ${styles.pl__ringB}`}></circle>
+                    <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className={`${styles.pl__ring} ${styles.pl__ringC}`}></circle>
+                    <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className={`${styles.pl__ring} ${styles.pl__ringD}`}></circle>
+                  </svg>
                     <p>Logging in...</p>
                   </div>
                 </div>
