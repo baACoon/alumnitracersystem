@@ -103,7 +103,6 @@ const TestFrontPage = () => {
             <span className="letter">T</span>
             <span className="letter">S</span>
           </div>
-          <h1>helo</h1>
         </div>
       );
     }

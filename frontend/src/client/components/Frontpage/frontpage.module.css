@@ -378,7 +378,7 @@
   transform: translateX(-50%);
   display: flex;
   gap: 15px;
-  z-index: 1000; /* Ensures it's above the background */
+  z-index: 100000; /* Ensures it's above the background */
 }
 
 /* Individual letters animation */
