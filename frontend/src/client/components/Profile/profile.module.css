@@ -60,6 +60,7 @@ input {
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+  margin-left: 15px;
 }
 
 .changepass:hover{
