@@ -10,13 +10,15 @@ const TestLoginForm = ({ closeModal }) => {
   const [resetAlumniID, setResetAlumniID] = useState('');
   const [resetToken, setResetToken] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const formData = { alumniID, password };
 
-    try {
+    try { 
       const response = await fetch('https://alumnitracersystem.onrender.com/record/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -38,6 +40,8 @@ const TestLoginForm = ({ closeModal }) => {
     } catch (error) {
       console.error('Error during login:', error);
       alert('There was an error with the login request.');
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -113,6 +117,7 @@ const TestLoginForm = ({ closeModal }) => {
                 onChange={(e) => setAlumniID(e.target.value)}
                 required
                 className={styles.inputFieldLogin}
+                disabled={loading}
               />
               <h5>Enter Password</h5>
               <input
@@ -122,8 +127,23 @@ const TestLoginForm = ({ closeModal }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className={styles.inputFieldLogin}
+                disabled={loading}
               />
-              <button type="submit" className={styles.submitButtonLogin}>Login</button>
+
+              {/* SHOW LOADER IF LOADING */}
+              {loading ? (
+                <div className={styles.loaderContainer}>
+                  <svg viewBox="0 0 240 240" height="80" width="80" className={styles.loader}>
+                    <circle strokeLinecap="round" strokeDashoffset="-330" strokeDasharray="0 660" strokeWidth="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className="pl__ring pl__ring--a"></circle>
+                    <circle strokeLinecap="round" strokeDashoffset="-110" strokeDasharray="0 220" strokeWidth="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className="pl__ring pl__ring--b"></circle>
+                    <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className="pl__ring pl__ring--c"></circle>
+                    <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className="pl__ring pl__ring--d"></circle>
+                  </svg>
+                  <p>Logging in...</p>
+                </div>
+              ) : (
+                <button type="submit" className={styles.submitButtonLogin}>Login</button>
+              )}
             </form>
 
             <a 
