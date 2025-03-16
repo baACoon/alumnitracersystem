@@ -69,22 +69,22 @@
   }
   
   .pl__ringA {
-    stroke: #000000;
+    stroke: #5D0E1D;
     animation-name: ringA;
   }
   
   .pl__ringB {
-    stroke: #7e7e7e;
+    stroke: white;
     animation-name: ringB;
   }
   
   .pl__ringC {
-    stroke: #686868;
+    stroke: white;
     animation-name: ringC;
   }
   
   .pl__ringD {
-    stroke: #000000;
+    stroke: #5D0E1D;
     animation-name: ringD;
   }
   
