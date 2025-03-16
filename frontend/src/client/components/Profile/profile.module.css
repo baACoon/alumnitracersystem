@@ -114,14 +114,16 @@ input {
   padding: 8px 15px;
   border: none;
   cursor: pointer;
+  border-radius: 5px;
 }
 
 .cancelBtn {
-  background: red;
+  background: #c31d3c;
   color: white;
   padding: 8px 15px;
   border: none;
   cursor: pointer;
+  border-radius: 5px;
 }
 
 
