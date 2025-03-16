@@ -370,10 +370,10 @@
       transform: rotate(150deg);
     }
   
- /* Make sure the text appears below the gears */
+/* Make sure the text appears below the gears */
 .tupatsContainer {
   position: absolute;
-  bottom: 5%; /* Ensures it's visible */
+  bottom: 10%; /* Ensures it's visible */
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -382,7 +382,7 @@
 }
 
 /* Individual letters animation */
-.tupatsContainer .letter {
+.tupatsContainer span {
   font-size: 60px;
   font-weight: bold;
   color: white;
@@ -391,5 +391,6 @@
   transform: translateY(50px); /* Start below */
   transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 }
+
 
  
