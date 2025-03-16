@@ -14,7 +14,7 @@ const TestFrontPage = () => {
   useEffect(() => {
     // Ensure the elements are present before animating
     setTimeout(() => {
-      gsap.to(".letter", {
+      gsap.to(".{styles.letter}", {
         opacity: 1,
         y: -10,
         duration: 0.5,
@@ -22,7 +22,7 @@ const TestFrontPage = () => {
         ease: "power4.out",
       });
 
-      gsap.to(".letter", {
+      gsap.to(".{styles.letter}", {
         y: 0,
         repeat: 1,
         yoyo: true,
@@ -94,14 +94,14 @@ const TestFrontPage = () => {
             </div>
           </div>
   
-            {/* Make sure the letters are visible */}
+            {/* Make sure the {styles.letter}s are visible */}
           <div className={styles.tupatsContainer}>
-            <span className="letter">T</span>
-            <span className="letter">U</span>
-            <span className="letter">P</span>
-            <span className="letter">A</span>
-            <span className="letter">T</span>
-            <span className="letter">S</span>
+            <span className={styles.letter}>T</span>
+            <span className={styles.letter}>U</span>
+            <span className={styles.letter}>P</span>
+            <span className={styles.letter}>A</span>
+            <span className={styles.letter}>T</span>
+            <span className={styles.letter}>S</span>
           </div>
         </div>
       );
