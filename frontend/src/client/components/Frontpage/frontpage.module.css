@@ -221,7 +221,7 @@
       align-items: center;
   }
   
-  
+  /*
     .gearbox {
       background: #5D0E1D;
       height: 150px;
@@ -232,7 +232,7 @@
       border-radius: 6px;
       box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.1);
     }
-    
+    */
     .gearbox .overlay {
       border-radius: 6px;
       content: "";
