@@ -95,7 +95,7 @@ const TestFrontPage = () => {
           </div>
   
             {/* Make sure the {styles.letter}s are visible */}
-            <div className="tupatsContainer">
+            <div className={styles.tupatsContainer}>
               <span className="letter">T</span>
               <span className="letter">U</span>
               <span className="letter">P</span>
