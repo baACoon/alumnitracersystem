@@ -12,41 +12,33 @@ const TestFrontPage = () => {
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    // Animate "TUPATS" dropping one by one
-    gsap.to(".letter", {
-      opacity: 1,
-      y: -10, // Bounce effect upwards
-      duration: 0.5,
-      stagger: 0.2, // One by one effect
-      ease: "power4.out"
-    });
-
-    gsap.to(".letter", {
-      y: 0, // Settle into position
-      repeat: 1,
-      yoyo: true,
-      delay: 0.5,
-      stagger: 0.2,
-      ease: "bounce.out"
-    });
     
-    gsap.fromTo(
-      ".gear-inner",
-      { rotate: 0 },
-      { rotate: 360, duration: 3, repeat: -1, ease: "linear" }
-    );
-
-    // Animate "TUPATS" letters after a short delay
     setTimeout(() => {
+      gsap.to(".letter", {
+        opacity: 1,
+        y: -10,
+        duration: 0.5,
+        stagger: 0.2,
+        ease: "power4.out",
+      });
+
+      gsap.to(".letter", {
+        y: 0,
+        repeat: 1,
+        yoyo: true,
+        delay: 0.5,
+        stagger: 0.2,
+        ease: "bounce.out",
+      });
+
       gsap.fromTo(
-        ".letter",
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.2, ease: "bounce.out" }
+        ".gear-inner",
+        { rotate: 0 },
+        { rotate: 360, duration: 3, repeat: -1, ease: "linear" }
       );
-    }, 500); // Small delay so it appears after gears start rotating
+    }, 500);
 
-
-    // Simulate loading time (e.g., 3 seconds)
+    // Simulate a loading time (3 seconds)
     setTimeout(() => {
       setLoading(false);
     }, 3000);
