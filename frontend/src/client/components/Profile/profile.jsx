@@ -127,8 +127,8 @@ function ProfilePage() {
 
   if (loading) {
     return (
-      <div className={styles.loading-Overlay}>
-        <div className={styles.loader-Container}>
+      <div className={styles.loadingOverlay}>
+        <div className={styles.loaderContainer}>
           <svg viewBox="0 0 240 240" height="80" width="80" className={styles.loader}>
             <circle strokeLinecap="round" strokeDashoffset="-330" strokeDasharray="0 660" strokeWidth="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className={`${styles.pl__ring} ${styles.pl__ringA}`}></circle>
             <circle strokeLinecap="round" strokeDashoffset="-110" strokeDasharray="0 220" strokeWidth="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className={`${styles.pl__ring} ${styles.pl__ringB}`}></circle>
