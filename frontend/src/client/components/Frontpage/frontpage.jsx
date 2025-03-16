@@ -1,10 +1,10 @@
-import React, { use, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './frontpage.module.css';// Import module-based styles
 import LoginForm from '../Login_Alumni/LoginForm';  // Login Form Modal
 import Register_NewAlumni from '../Register_NewAlumni/register_newalumni';  // Form for users without Alumni ID
 import Tuplogo from '../../components/image/Tuplogo.png';
 import Alumnilogo from '../../components/image/alumniassoc_logo.png';
-import gsap from gsap
+import gsap from "gsap";
 
 const TestFrontPage = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
