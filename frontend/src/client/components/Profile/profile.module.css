@@ -53,6 +53,19 @@ input {
   background-color: #8f263a;
 }
 
+.changepass {
+  background-color: #c31d3c;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.changepass:hover{
+  background-color: #8f263a;
+}
+
 .modalOverlay {
   position: fixed;
   top: 35px;
