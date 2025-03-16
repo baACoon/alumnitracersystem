@@ -222,26 +222,24 @@
   }
   
   
-    .gearbox {
+  .gearbox {
+    background: #5D0E1D;
+    height: 150px;
+    width: 200px;
+    position: relative;
 
-      position: relative;
-      border: none;
-      overflow: hidden;
-
-    }
-    
-    .gearbox .overlay {
-      border-radius: 6px;
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 10;
-      box-shadow: inset 0px 0px 20px black;
-      transition: background 0.2s;
-    }
+  }
+  
+  .gearbox .overlay {
+    border-radius: 6px;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    box-shadow: inset 0px 0px 20px black;
+    transition: background 0.2s;
+  }
     
     .gearbox .overlay {
       background: transparent;
