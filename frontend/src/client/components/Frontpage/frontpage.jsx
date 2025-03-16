@@ -29,6 +29,22 @@ const TestFrontPage = () => {
       stagger: 0.2,
       ease: "bounce.out"
     });
+    
+    gsap.fromTo(
+      ".gear-inner",
+      { rotate: 0 },
+      { rotate: 360, duration: 3, repeat: -1, ease: "linear" }
+    );
+
+    // Animate "TUPATS" letters after a short delay
+    setTimeout(() => {
+      gsap.fromTo(
+        ".letter",
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 0.6, stagger: 0.2, ease: "bounce.out" }
+      );
+    }, 500); // Small delay so it appears after gears start rotating
+
 
     // Simulate loading time (e.g., 3 seconds)
     setTimeout(() => {
@@ -88,12 +104,12 @@ const TestFrontPage = () => {
   
           {/* TUPATS text bouncing below the gears */}
           <div className={styles.tupatsContainer}>
-            <span className={styles.letter}>T</span>
-            <span className={styles.letter}>U</span>
-            <span className={styles.letter}>P</span>
-            <span className={styles.letter}>A</span>
-            <span className={styles.letter}>T</span>
-            <span className={styles.letter}>S</span>
+            <span className="letter">T</span>
+            <span className="letter">U</span>
+            <span className="letter">P</span>
+            <span className="letter">A</span>
+            <span className="letter">T</span>
+            <span className="letter">S</span>
           </div>
         </div>
       );
