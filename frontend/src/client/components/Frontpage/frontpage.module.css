@@ -370,24 +370,26 @@
       transform: rotate(150deg);
     }
   
-    /* Center the "TUPATS" BELOW the gearbox */
-  .tupatsContainer {
-      position: absolute;
-      bottom: 10%; /* Ensures it's below the gear */
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 10px;
-  }
-  
-  /* Individual letters */
-  .letter {
-      font-size: 60px;
-      font-weight: bold;
-      color: #ffffff;
-      display: inline-block;
-      opacity: 0;
-      transform: translateY(200px); /* Starts hidden BELOW */
-  }
-  
+ /* Make sure the text appears below the gears */
+.tupatsContainer {
+  position: absolute;
+  bottom: 5%; /* Ensures it's visible */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+  z-index: 1000; /* Ensures it's above the background */
+}
+
+/* Individual letters animation */
+.letter {
+  font-size: 60px;
+  font-weight: bold;
+  color: white;
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(50px); /* Start below */
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
  

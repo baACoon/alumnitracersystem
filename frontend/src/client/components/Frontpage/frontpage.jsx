@@ -12,7 +12,7 @@ const TestFrontPage = () => {
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    
+    // Ensure the elements are present before animating
     setTimeout(() => {
       gsap.to(".letter", {
         opacity: 1,
@@ -36,7 +36,7 @@ const TestFrontPage = () => {
         { rotate: 0 },
         { rotate: 360, duration: 3, repeat: -1, ease: "linear" }
       );
-    }, 500);
+    }, 1000); // Ensure a slight delay before animation
 
     // Simulate a loading time (3 seconds)
     setTimeout(() => {
@@ -94,7 +94,7 @@ const TestFrontPage = () => {
             </div>
           </div>
   
-          {/* TUPATS text bouncing below the gears */}
+            {/* Make sure the letters are visible */}
           <div className={styles.tupatsContainer}>
             <span className="letter">T</span>
             <span className="letter">U</span>
