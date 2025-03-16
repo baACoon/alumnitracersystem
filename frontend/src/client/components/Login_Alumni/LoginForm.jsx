@@ -31,7 +31,7 @@ const TestLoginForm = ({ closeModal }) => {
         localStorage.clear();
         localStorage.setItem("userId", data.user.id);
         localStorage.setItem("token", data.token);
-        alert("Login successful!");
+        
         closeModal();
         navigate("/home");
       } else {
