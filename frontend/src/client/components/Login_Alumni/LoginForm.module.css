@@ -74,12 +74,12 @@
   }
   
   .pl__ringB {
-    stroke: white;
+    stroke: rgb(185, 179, 179);
     animation-name: ringB;
   }
   
   .pl__ringC {
-    stroke: white;
+    stroke: rgb(185, 179, 179);
     animation-name: ringC;
   }
   
