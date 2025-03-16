@@ -95,13 +95,13 @@ const TestFrontPage = () => {
           </div>
   
             {/* Make sure the {styles.letter}s are visible */}
-            <div className={styles.tupatsContainer}>
-              <span className={styles.letter}>T</span>
-              <span className={styles.letter}>U</span>
-              <span className={styles.letter}>P</span>
-              <span className={styles.letter}>A</span>
-              <span className={styles.letter}>T</span>
-              <span className={styles.letter}>S</span>
+            <div className="tupatsContainer">
+              <span className="letter">T</span>
+              <span className="letter">U</span>
+              <span className="letter">P</span>
+              <span className="letter">A</span>
+              <span className="letter">T</span>
+              <span className="letter">S</span>
             </div>
         </div>
       );
