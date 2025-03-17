@@ -126,7 +126,8 @@
     top: 0;
     left: 0;
     background: #5D0E1D;
-  
+    transform: translateY(50px); /* Start below */
+    font-size: 60px;
     height: 100%;
     width: 100%;
     display: flex;
