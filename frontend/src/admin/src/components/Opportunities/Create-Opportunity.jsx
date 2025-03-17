@@ -56,59 +56,58 @@ export default function CreateOpportunity({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // 🔄 Show loading state
-    setLoading(true);
+    setLoading(true); // Show loading state
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("You need to log in first.");
-        setLoading(false);
-        return;
-      }
-
-      console.log("Submitting Form Data:", formData); // ✅ Log form data before sending
-
-      const response = await fetch(
-        "https://alumnitracersystem.onrender.com/jobs/create",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            title: formData.jobTitle,
-            company: "Admin-created", // Hardcoded, adjust if needed
-            location: formData.location,
-            type: "full-time", // Default job type
-            description: formData.jobDescription,
-            responsibilities: formData.keyResponsibilities.split("\n"), // Convert string to array
-            qualifications: formData.requirements.split("\n"), // Convert string to array
-          }),
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("You need to log in first.");
+            setLoading(false);
+            return;
         }
-      );
 
-      const responseData = await response.json();
-      console.log("Server Response:", responseData); // ✅ Log API response
+        console.log("Submitting Form Data:", formData); // ✅ Log form data before sending
 
-      if (!response.ok) {
-        console.error("Failed to create job:", responseData);
-        alert(responseData.error || "Failed to create job.");
-        setLoading(false);
-        return;
-      }
+        const response = await fetch(
+            "https://alumnitracersystem.onrender.com/jobs/create",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    title: formData.jobTitle,
+                    company: "Admin-created", // Hardcoded for now
+                    location: formData.location,
+                    type: "full-time", // Default job type
+                    description: formData.jobDescription,
+                    responsibilities: formData.keyResponsibilities.split("\n"),
+                    qualifications: formData.requirements.split("\n"),
+                }),
+            }
+        );
 
-      alert("Opportunity Created Successfully!");
-      onClose(); // Close the modal after submission
+        const responseData = await response.json();
+        console.log("Full Server Response:", responseData); // ✅ Log full server response
+
+        if (!response.ok) {
+            console.error("Failed to create job:", responseData);
+            alert(`Error: ${responseData.error || "Failed to create job."}`);
+            setLoading(false);
+            return;
+        }
+
+        alert("Opportunity Created Successfully!");
+        onClose(); // Close the modal after submission
     } catch (error) {
-      console.error("Error creating opportunity:", error);
-      alert("An error occurred while creating the opportunity.");
+        console.error("Error creating opportunity:", error);
+        alert("An error occurred while creating the opportunity.");
     } finally {
-      setLoading(false); // 🔄 Hide loading state
+        setLoading(false); // Hide loading state
     }
-  };
+};
+
 
   return (
     <div className={styles.modalOverlay}>
