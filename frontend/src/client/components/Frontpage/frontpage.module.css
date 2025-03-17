@@ -370,18 +370,18 @@
       transform: rotate(150deg);
     }
   
- /* Make sure the text appears below the gears */
+/* Center the text below the gears */
 .tupatsContainer {
   position: absolute;
-  bottom: 5%; /* Ensures it's visible */
+  bottom: 10%; /* Adjust as needed */
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 15px;
-  z-index: 1000; /* Ensures it's above the background */
+  gap: 10px;
+  z-index: 1000; /* Ensure it's on top */
 }
 
-/* Individual letters animation */
+/* Animate individual letters */
 .letter {
   font-size: 60px;
   font-weight: bold;
@@ -389,6 +389,12 @@
   display: inline-block;
   opacity: 0;
   transform: translateY(50px); /* Start below */
+}
+
+/* Ensure animation kicks in */
+.letter.animated {
+  opacity: 1 !important;
+  transform: translateY(0px) !important;
   transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 }
 

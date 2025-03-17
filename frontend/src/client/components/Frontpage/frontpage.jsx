@@ -14,7 +14,7 @@ const TestFrontPage = () => {
   useEffect(() => {
     // Ensure the elements are present before animating
     setTimeout(() => {
-      gsap.to(".{styles.letter}", {
+      gsap.to(".letter", {
         opacity: 1,
         y: -10,
         duration: 0.5,
@@ -22,7 +22,7 @@ const TestFrontPage = () => {
         ease: "power4.out",
       });
 
-      gsap.to(".{styles.letter}", {
+      gsap.to(".letter", {
         y: 0,
         repeat: 1,
         yoyo: true,
@@ -44,6 +44,30 @@ const TestFrontPage = () => {
     }, 3000);
   }, []);
 
+
+  useEffect(() => {
+    if (loading) return;
+  
+    gsap.to(".letter", {
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      stagger: 0.2,
+      ease: "power4.out",
+      onComplete: () => {
+        document.querySelectorAll(".letter").forEach(letter => {
+          letter.classList.add("animated"); // Add CSS animation
+        });
+      }
+    });
+  
+    gsap.fromTo(
+      ".gear-inner",
+      { rotate: 0 },
+      { rotate: 360, duration: 3, repeat: -1, ease: "linear" }
+    );
+  }, [loading]);
+  
 
   const handleLoginClick = () => setShowLoginModal(true);
   const openRegister_NewAlumniModal = () => setShowRegister_NewAlumniModal(true);
