@@ -12,46 +12,51 @@ const TestFrontPage = () => {
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    // Animation to fade out the loading screen
-    gsap.fromTo(
-      ".loadingPage",
-      { opacity: 1 },
-      {
+    // Ensure animations apply after component is mounted
+    setTimeout(() => {
+      // Animation to fade out the loading screen
+      gsap.to(".loadingPage", {
         opacity: 0,
-        display: "none",
         duration: 1.5,
         delay: 3.5, // Loading screen lasts for 3.5 seconds
-        onComplete: () => setLoading(false),
-      }
-    );
-
-    // Animation for "TUPATS" letters (Angry Bounce Effect)
-    gsap.to(".letter", {
-      opacity: 1,
-      y: -10, // Angry bounce UP
-      duration: 0.5,
-      stagger: 0.2, // One-by-one delay
-      ease: "power4.out",
-    });
-
-    gsap.to(".letter", {
-      y: 0, // Settle in final position
-      repeat: 1,
-      yoyo: true,
-      delay: 0.5,
-      stagger: 0.2,
-      ease: "bounce.out",
-    });
-
-    // Animation for logo name
-    gsap.fromTo(
-      ".logo-name",
-      { y: 50, opacity: 0 },
-      { y: 0, opacity: 1, duration: 2, delay: 0.5 }
-    );
+        onComplete: () => {
+          setLoading(false);
+          document.querySelector(".loadingPage").style.display = "none"; // Hide it after animation completes
+        },
+      });
+  
+      // Animation for "TUPATS" letters (Angry Bounce Effect)
+      gsap.to(".letter", {
+        opacity: 1,
+        y: -10, // Angry bounce UP
+        duration: 0.5,
+        stagger: 0.2, // One-by-one delay
+        ease: "power4.out",
+      });
+  
+      gsap.to(".letter", {
+        y: 0, // Settle in final position
+        repeat: 1,
+        yoyo: true,
+        delay: 0.5,
+        stagger: 0.2,
+        ease: "bounce.out",
+      });
+  
+      // Animation for logo name
+      gsap.fromTo(
+        ".logo-name",
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 2, delay: 0.5 }
+      );
+  
+      // Add class to ensure visibility
+      document.querySelectorAll(".letter").forEach((letter) => {
+        letter.classList.add("animated");
+      });
+    }, 500); // Small delay ensures DOM is ready
   }, []);
-
-
+  
   const handleLoginClick = () => setShowLoginModal(true);
   const openRegister_NewAlumniModal = () => setShowRegister_NewAlumniModal(true);
 
