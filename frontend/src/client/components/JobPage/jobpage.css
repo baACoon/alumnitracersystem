@@ -3,8 +3,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 700px; /* Centers the boxes vertically */
+    height: 100vh; /* Centers the boxes vertically */
     gap: 40px; /* Space between the two boxes */
+    max-width: 100%; 
+    overflow: hidden; 
+    padding: 20px;
   }
   
   /* Common box styling */
@@ -54,3 +57,11 @@
     color: #ffffff; /* Text color on hover */
   }
   
+  /* Responsive Fix */
+@media (max-height: 500px) {
+  .JobPageContainer {
+      flex-direction: column; /* Stack items vertically on smaller screens */
+      height: auto; /* Allow natural height */
+      padding-top: 50px; /* Adds space from the top */
+  }
+}
