@@ -12,6 +12,8 @@ export default function CreateOpportunity({ onClose }) {
     requirements: "",
   });
 
+  const [loading, setLoading] = useState(false); // 🔄 Add loading state
+
   const coursesByCollege = {
     "College of Engineering": [
       "Bachelor of Science in Civil Engineering",
@@ -54,48 +56,59 @@ export default function CreateOpportunity({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
+    // 🔄 Show loading state
+    setLoading(true);
+
     try {
       const token = localStorage.getItem("token");
       if (!token) {
         alert("You need to log in first.");
+        setLoading(false);
         return;
       }
-  
-      console.log("Submitting Form Data:", formData);
-  
-      const response = await fetch("https://alumnitracersystem.onrender.com/jobs/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: formData.jobTitle,
-          company: "Admin-created", // Hardcode for now or add a field for it in the form
-          location: formData.location,
-          type: "full-time", // Default type
-          description: formData.jobDescription,
-          responsibilities: formData.keyResponsibilities,
-          qualifications: formData.requirements,
-        }),
-      });
-  
+
+      console.log("Submitting Form Data:", formData); // ✅ Log form data before sending
+
+      const response = await fetch(
+        "https://alumnitracersystem.onrender.com/jobs/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title: formData.jobTitle,
+            company: "Admin-created", // Hardcoded, adjust if needed
+            location: formData.location,
+            type: "full-time", // Default job type
+            description: formData.jobDescription,
+            responsibilities: formData.keyResponsibilities.split("\n"), // Convert string to array
+            qualifications: formData.requirements.split("\n"), // Convert string to array
+          }),
+        }
+      );
+
+      const responseData = await response.json();
+      console.log("Server Response:", responseData); // ✅ Log API response
+
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Failed to create job:", errorData);
-        alert(errorData.error || "Failed to create job.");
+        console.error("Failed to create job:", responseData);
+        alert(responseData.error || "Failed to create job.");
+        setLoading(false);
         return;
       }
-  
+
       alert("Opportunity Created Successfully!");
       onClose(); // Close the modal after submission
     } catch (error) {
       console.error("Error creating opportunity:", error);
       alert("An error occurred while creating the opportunity.");
+    } finally {
+      setLoading(false); // 🔄 Hide loading state
     }
   };
-  
 
   return (
     <div className={styles.modalOverlay}>
@@ -106,7 +119,9 @@ export default function CreateOpportunity({ onClose }) {
         <h2>Create Opportunity</h2>
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
-            <label className={styles.oppLabel} htmlFor="jobTitle">Job Title</label>
+            <label className={styles.oppLabel} htmlFor="jobTitle">
+              Job Title
+            </label>
             <input
               type="text"
               id="jobTitle"
@@ -114,15 +129,19 @@ export default function CreateOpportunity({ onClose }) {
               value={formData.jobTitle}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
           <div className={styles.formGroup}>
-            <label className={styles.oppLabel} htmlFor="college">College</label>
+            <label className={styles.oppLabel} htmlFor="college">
+              College
+            </label>
             <select
               id="college"
               name="college"
               value={formData.college}
               onChange={handleChange}
+              disabled={loading}
             >
               <option value="">Select College</option>
               {Object.keys(coursesByCollege).map((collegeName) => (
@@ -133,13 +152,15 @@ export default function CreateOpportunity({ onClose }) {
             </select>
           </div>
           <div className={styles.formGroup}>
-            <label className={styles.oppLabel} htmlFor="course">Course</label>
+            <label className={styles.oppLabel} htmlFor="course">
+              Course
+            </label>
             <select
               id="course"
               name="course"
               value={formData.course}
               onChange={handleChange}
-              disabled={!formData.college}
+              disabled={!formData.college || loading}
             >
               <option value="">Select Course</option>
               {formData.college &&
@@ -151,7 +172,9 @@ export default function CreateOpportunity({ onClose }) {
             </select>
           </div>
           <div className={styles.formGroup}>
-            <label className={styles.oppLabel} htmlFor="location">Location</label>
+            <label className={styles.oppLabel} htmlFor="location">
+              Location
+            </label>
             <input
               type="text"
               id="location"
@@ -159,40 +182,50 @@ export default function CreateOpportunity({ onClose }) {
               value={formData.location}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
           <div className={styles.formGroup}>
-            <label className={styles.oppLabel} htmlFor="jobDescription">Job Description</label>
+            <label className={styles.oppLabel} htmlFor="jobDescription">
+              Job Description
+            </label>
             <textarea
               id="jobDescription"
               name="jobDescription"
               value={formData.jobDescription}
               onChange={handleChange}
               required
+              disabled={loading}
             ></textarea>
           </div>
           <div className={styles.formGroup}>
-            <label className={styles.oppLabel} htmlFor="keyResponsibilities">Key Responsibilities</label>
+            <label className={styles.oppLabel} htmlFor="keyResponsibilities">
+              Key Responsibilities
+            </label>
             <textarea
               id="keyResponsibilities"
               name="keyResponsibilities"
               value={formData.keyResponsibilities}
               onChange={handleChange}
               required
+              disabled={loading}
             ></textarea>
           </div>
           <div className={styles.formGroup}>
-            <label className={styles.oppLabel} htmlFor="requirements">Requirements</label>
+            <label className={styles.oppLabel} htmlFor="requirements">
+              Requirements
+            </label>
             <textarea
               id="requirements"
               name="requirements"
               value={formData.requirements}
               onChange={handleChange}
               required
+              disabled={loading}
             ></textarea>
           </div>
-          <button type="submit" className={styles.submitButton}>
-            Create Opportunity
+          <button type="submit" className={styles.submitButton} disabled={loading}>
+            {loading ? "Creating..." : "Create Opportunity"}
           </button>
         </form>
       </div>
