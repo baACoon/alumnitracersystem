@@ -9,6 +9,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    animation: fadeIn 0.3s forwards;
     z-index: 999;
 }
 
@@ -20,6 +21,8 @@
     width: 450px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: relative;
+    transform: translateY(50px);
+    animation: slideUp 0.4s ease-out forwards;
 }
 
 .modalContentLogin h2{
@@ -44,6 +47,7 @@
     background: transparent;
     border: none;
     cursor: pointer;
+    transition: color 0.2s;
 }
 
 .closeButtonLogin:hover {
@@ -220,6 +224,56 @@
 .resetbutton:hover{
     background-color: #220107;
 }
+
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Fade Out */
+.modalOverlayLogin.fadeOut {
+  animation: fadeOut 0.3s forwards;
+}
+
+.modalContentLogin.fadeOut {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(50px);
+  }
+}
+
 
 /* Responsive design for login modal */
 @media (max-width: 500px) {
