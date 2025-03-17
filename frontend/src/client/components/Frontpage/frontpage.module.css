@@ -126,7 +126,7 @@
     top: 0;
     left: 0;
     background: #5D0E1D;
-    transform: translateY(50px); /* Start below */
+  
     height: 100%;
     width: 100%;
     display: flex;
@@ -140,9 +140,8 @@
   .tupats {
       height: auto;
       width: auto;
+      
   }
-
-
   
   #svg {
     height: 150px;
@@ -399,6 +398,4 @@
   transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 }
 
-.loadingPage .letter{
-  font-size: 60px;
-}
+ 
