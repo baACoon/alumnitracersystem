@@ -12,62 +12,45 @@ const TestFrontPage = () => {
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    // Ensure the elements are present before animating
-    setTimeout(() => {
-      gsap.to(".letter", {
-        opacity: 1,
-        y: -10,
-        duration: 0.5,
-        stagger: 0.2,
-        ease: "power4.out",
-      });
+    // Animation to fade out the loading screen
+    gsap.fromTo(
+      ".loadingPage",
+      { opacity: 1 },
+      {
+        opacity: 0,
+        display: "none",
+        duration: 1.5,
+        delay: 3.5, // Loading screen lasts for 3.5 seconds
+        onComplete: () => setLoading(false),
+      }
+    );
 
-      gsap.to(".letter", {
-        y: 0,
-        repeat: 1,
-        yoyo: true,
-        delay: 0.5,
-        stagger: 0.2,
-        ease: "bounce.out",
-      });
-
-      gsap.fromTo(
-        ".gear-inner",
-        { rotate: 0 },
-        { rotate: 360, duration: 3, repeat: -1, ease: "linear" }
-      );
-    }, 1000); // Ensure a slight delay before animation
-
-    // Simulate a loading time (3 seconds)
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  }, []);
-
-
-  useEffect(() => {
-    if (loading) return;
-  
+    // Animation for "TUPATS" letters (Angry Bounce Effect)
     gsap.to(".letter", {
       opacity: 1,
-      y: 0,
+      y: -10, // Angry bounce UP
       duration: 0.5,
-      stagger: 0.2,
+      stagger: 0.2, // One-by-one delay
       ease: "power4.out",
-      onComplete: () => {
-        document.querySelectorAll(".letter").forEach(letter => {
-          letter.classList.add("animated"); // Add CSS animation
-        });
-      }
     });
-  
+
+    gsap.to(".letter", {
+      y: 0, // Settle in final position
+      repeat: 1,
+      yoyo: true,
+      delay: 0.5,
+      stagger: 0.2,
+      ease: "bounce.out",
+    });
+
+    // Animation for logo name
     gsap.fromTo(
-      ".gear-inner",
-      { rotate: 0 },
-      { rotate: 360, duration: 3, repeat: -1, ease: "linear" }
+      ".logo-name",
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 2, delay: 0.5 }
     );
-  }, [loading]);
-  
+  }, []);
+
 
   const handleLoginClick = () => setShowLoginModal(true);
   const openRegister_NewAlumniModal = () => setShowRegister_NewAlumniModal(true);
