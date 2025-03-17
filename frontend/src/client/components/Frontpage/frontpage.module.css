@@ -135,7 +135,16 @@
     align-items: center;
     justify-content: center;
     color: #ffffff;
-  }
+    opacity: 1; /* Start fully visible */
+    transition: opacity 1.5s ease-out; /* Smooth fade-out transition */
+}
+
+/* Fade-out effect */
+.loadingPage.fade-out {
+    opacity: 0;
+    pointer-events: none; /* Prevent interaction while fading out */
+}
+  
   
   .tupats {
       height: auto;
@@ -399,7 +408,7 @@
 }
 
 .loadingPage .letter{
-  font-size: 60px;
+  font-size: 60px !important;
 }
 
  
