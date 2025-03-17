@@ -50,6 +50,7 @@ function JobPageMainPage() {
               <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className="pl__ring pl__ringC"></circle>
               <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className="pl__ring pl__ringD"></circle>
             </svg>
+            <p>Loading...please wait</p>
           </div>
         </div>
       ) : (
