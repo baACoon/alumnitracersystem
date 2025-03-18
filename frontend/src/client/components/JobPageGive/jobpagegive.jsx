@@ -38,7 +38,7 @@ function JobGiveMainPage() {
 
     try {
       const response = await fetch(
-        'https://alumnitracersystem.onrender.com/jobs/jobpost?status=Pending,Published',
+        'https://localhost:5050/jobs/jobpost?status=Pending,Published',
         {
           headers: {
             Authorization: `Bearer ${token}`,
