@@ -23,7 +23,7 @@ const app = express();
 dotenv.config();
 
 // Middleware
-app.use(cors({ origin: ['https://tupalumni.com', 'https://admin.tupalumni.com', 'http://localhost:3000','http://localhost:5050'}));
+app.use(cors({ origin: ['https://tupalumni.com', 'https://admin.tupalumni.com', 'http://localhost:3000','http://localhost:5050']}));
 app.use(express.json());
 
 // Serve static files (uploaded images)
