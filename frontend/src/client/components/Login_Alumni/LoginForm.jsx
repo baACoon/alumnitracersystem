@@ -18,15 +18,10 @@ const TestLoginForm = ({ closeModal }) => {
     setLoading(true);
     const formData = { alumniID, password };
 
-<<<<<<< HEAD
-    try { 
-      const response = await fetch('https://localhost:5050.onrender.com/record/login', {
-=======
     console.log('Login attempt with:', formData); // Debug log
 
     try {
       const response = await fetch('https://localhost:5050/record/login', {
->>>>>>> 74300c549d4b62eedc125c5bce3a23ce0605cf7a
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
