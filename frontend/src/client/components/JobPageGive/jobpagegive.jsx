@@ -79,7 +79,7 @@ function JobGiveMainPage() {
 
     try {
       const response = await fetch(
-        `https://alumnitracersystem.onrender.com/jobs/${selectedJobId}`,
+        `https://localhost:5050.onrender.com/jobs/${selectedJobId}`,
         {
           method: 'DELETE',
           headers: {

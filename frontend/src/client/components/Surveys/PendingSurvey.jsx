@@ -12,7 +12,7 @@ export const PendingSurvey = () => {
             const token = localStorage.getItem("token");
             const userId = localStorage.getItem("userId");
             
-            const response = await axios.get(`https://alumnitracersystem.onrender.com/surveys/pending/${userId}`, {
+            const response = await axios.get(`https://localhost:5050.onrender.com/surveys/pending/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

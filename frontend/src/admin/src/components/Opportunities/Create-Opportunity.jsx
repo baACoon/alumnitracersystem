@@ -69,7 +69,7 @@ export default function CreateOpportunity({ onClose }) {
         console.log("Submitting Form Data:", formData); // ✅ Log form data before sending
 
         const response = await fetch(
-            "https://alumnitracersystem.onrender.com/jobs/create",
+            "https://localhost:5050.onrender.com/jobs/create",
             {
                 method: "POST",
                 headers: {

@@ -52,11 +52,8 @@ export default function Login() {
 
       {/* Title Section */}
       <div className={styles.adminLoginTitle}>
-<<<<<<< HEAD
         <h3 className={styles.adminSystemTitle1}>TUPATSssss</h3>
-=======
         <h3 className={styles.adminSystemTitle1}>TUPATSKI</h3>
->>>>>>> 74300c549d4b62eedc125c5bce3a23ce0605cf7a
         <h4 className={styles.adminSystemTitle2}>The Technological University of the Philippines Alumni Tracer System</h4>
         <h5 className={styles.adminSystemTitle3}>ADMIN RECESS</h5>
       </div>
