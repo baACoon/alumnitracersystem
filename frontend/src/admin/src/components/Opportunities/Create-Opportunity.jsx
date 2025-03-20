@@ -59,7 +59,13 @@ export default function CreateOpportunity({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Show loading state
+    setLoading(true);
+
+    if (!formData.college || !formData.course) {
+        alert("College and Course are required!");
+        setLoading(false);
+        return;
+    }
 
     try {
         const token = localStorage.getItem("token");
@@ -69,7 +75,7 @@ export default function CreateOpportunity({ onClose }) {
             return;
         }
 
-        console.log("Submitting Form Data:", formData); // Debugging log
+        console.log("Submitting Form Data:", formData);
 
         const response = await fetch(
             "https://alumnitracersystem.onrender.com/jobs/create",
@@ -81,21 +87,21 @@ export default function CreateOpportunity({ onClose }) {
                 },
                 body: JSON.stringify({
                     title: formData.jobTitle,
-                    company: formData.company || "Admin-created", // Now admin can enter company name
+                    company: formData.company || "Admin-created",
                     location: formData.location,
-                    type: formData.type || "full-time", 
+                    type: formData.type || "full-time",
                     description: formData.jobDescription,
-                    responsibilities: formData.keyResponsibilities.split("\n"),
-                    qualifications: formData.requirements.split("\n"),
+                    responsibilities: formData.keyResponsibilities ? formData.keyResponsibilities.split("\n") : [],
+                    qualifications: formData.requirements ? formData.requirements.split("\n") : [],
                     college: formData.college,
                     course: formData.course,
-                    source: formData.source,
+                    source: formData.source
                 }),
             }
         );
 
         const responseData = await response.json();
-        console.log("Full Server Response:", responseData); // Debugging log
+        console.log("Full Server Response:", responseData);
 
         if (!response.ok) {
             console.error("Failed to create job:", responseData);
@@ -105,14 +111,14 @@ export default function CreateOpportunity({ onClose }) {
         }
 
         alert("Opportunity Created Successfully!");
-        onClose(); // Close the modal after submission
+        onClose();
     } catch (error) {
         console.error("Error creating opportunity:", error);
         alert("An error occurred while creating the opportunity.");
     } finally {
-        setLoading(false); // Hide loading state
+        setLoading(false);
     }
-  };
+};
 
   return (
     <div className={styles.modalOverlay}>
