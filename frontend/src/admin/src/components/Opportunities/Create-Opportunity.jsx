@@ -61,7 +61,7 @@ export default function CreateOpportunity({ onClose }) {
     e.preventDefault();
     setLoading(true);
 
-    if (!formData.college || !formData.course || !formData.description) {
+    if (!formData.college || !formData.course || !formData.jobDescription) {
         alert("College, Course, and Description are required!");
         setLoading(false);
         return;
@@ -75,7 +75,20 @@ export default function CreateOpportunity({ onClose }) {
             return;
         }
 
-        console.log("Submitting Form Data:", formData);
+        // ✅ Log the exact data being sent to the backend
+        console.log("📤 Sending Job Data:", JSON.stringify({
+            title: formData.jobTitle,
+            company: formData.company,
+            college: formData.college,
+            course: formData.course,
+            location: formData.location,
+            type: formData.type || "full-time",
+            description: formData.jobDescription,
+            responsibilities: formData.keyResponsibilities ? formData.keyResponsibilities.split("\n") : [],
+            qualifications: formData.requirements ? formData.requirements.split("\n") : [],
+            source: formData.source,
+            status: "Published",
+        }));
 
         const response = await fetch(
             "https://alumnitracersystem.onrender.com/jobs/create",
@@ -102,10 +115,10 @@ export default function CreateOpportunity({ onClose }) {
         );
 
         const responseData = await response.json();
-        console.log("Full Server Response:", responseData);
+        console.log("📥 Full Server Response:", responseData);
 
         if (!response.ok) {
-            console.error("Failed to create job:", responseData);
+            console.error(" Failed to create job:", responseData);
             alert(`Error: ${responseData.error || "Failed to create job."}`);
             setLoading(false);
             return;
@@ -114,12 +127,13 @@ export default function CreateOpportunity({ onClose }) {
         alert("Job opportunity published successfully!");
         onClose();
     } catch (error) {
-        console.error("Error creating opportunity:", error);
+        console.error(" Error creating opportunity:", error);
         alert("An error occurred while creating the opportunity.");
     } finally {
         setLoading(false);
     }
 };
+
 
 
   return (
