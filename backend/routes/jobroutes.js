@@ -36,7 +36,7 @@ router.post('/jobpost', protect, async (req, res) => {
 });
 
 
-// ✅ Fetch all jobs (with optional filtering by status)
+// Fetch all jobs (with optional filtering by status)
 router.get('/jobpost', protect, async (req, res) => {
     try {
         const { status } = req.query;
@@ -176,31 +176,32 @@ router.delete('/:id', protect, async (req, res) => {
  // Admin only - Create Job
 router.post('/create', protect, async (req, res) => {
     try {
-        const { title, company, college, course, location, type, description, responsibilities, qualifications, source } = req.body;
+        const { title, company, location, type, description, responsibilities, qualifications, source, college, course } = req.body;
 
-        if (!title || !company || !college || !course || !location || !description) {
-            return res.status(400).json({ message: "All fields are required!" });
+        if (!college || !course) {
+            return res.status(400).json({ message: "College and Course are required fields." });
         }
 
-        const newJob = new Job({
+        const job = new Job({
             title,
             company,
-            college,
-            course,
             location,
-            type: type || "full-time", // Default to full-time if not provided
+            type,
             description,
-            responsibilities: responsibilities || [],
-            qualifications: qualifications || [],
+            responsibilities,
+            qualifications,
             source,
-            status: 'Published', // Directly set status to 'Published' for admin
-            createdBy: req.user._id,
+            college,  
+            course,   
+            createdBy: req.user.id, 
+            status: status || 'Pending',
         });
 
-        await newJob.save();
-        res.status(201).json({ message: 'Job created successfully!', job: newJob });
+        await job.save();
+        res.status(201).json({ message: 'Job posted successfully. Pending admin approval.' });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to create job.' });
+        console.error('Error posting job:', error);
+        res.status(500).json({ message: 'Failed to post the job.' });
     }
 });
 

@@ -62,7 +62,7 @@ export default function CreateOpportunity({ onClose }) {
     e.preventDefault();
     setLoading(true);
 
-    // ✅ Ensure all required fields are provided
+    // Check if all required fields are filled
     if (!formData.title || !formData.company || !formData.college || !formData.course || !formData.location || !formData.description) {
         alert("Title, Company, College, Course, Location, and Description are required!");
         setLoading(false);
@@ -77,11 +77,15 @@ export default function CreateOpportunity({ onClose }) {
             return;
         }
 
-        // Convert responsibilities and qualifications into arrays
+        // Check if the user is admin and set status accordingly
+        const role = localStorage.getItem('role'); // Assuming role is saved in localStorage
+        const status = role === 'admin' ? 'Published' : 'Pending'; // Set status based on role
+
+        // Format responsibilities and qualifications into arrays
         const formattedResponsibilities = formData.responsibilities ? formData.responsibilities.split("\n").map(item => item.trim()) : [];
         const formattedQualifications = formData.qualifications ? formData.qualifications.split("\n").map(item => item.trim()) : [];
 
-        console.log(" Sending Job Data:", JSON.stringify({
+        console.log("Sending Job Data:", JSON.stringify({
             title: formData.title,
             company: formData.company,
             college: formData.college,
@@ -92,7 +96,7 @@ export default function CreateOpportunity({ onClose }) {
             responsibilities: formattedResponsibilities,
             qualifications: formattedQualifications,
             source: formData.source,
-            status: "Published", // Ensure job status is automatically "Published"
+            status: status, // Pass status dynamically
         }));
 
         const response = await fetch("https://alumnitracersystem.onrender.com/jobs/create", {
@@ -112,24 +116,24 @@ export default function CreateOpportunity({ onClose }) {
                 responsibilities: formattedResponsibilities,
                 qualifications: formattedQualifications,
                 source: formData.source,
-                status: "Published", // Set status to Published directly for admin-created jobs
+                status: status, // Dynamically set status here
             }),
         });
 
         const responseData = await response.json();
-        console.log("📥 Full Server Response:", responseData);
+        console.log("Full Server Response:", responseData);
 
         if (!response.ok) {
-            console.error(" Failed to create job:", responseData);
+            console.error("Failed to create job:", responseData);
             alert(`Error: ${responseData.error || "Failed to create job."}`);
             setLoading(false);
             return;
         }
 
-        alert(" Job opportunity published successfully!");
+        alert("Job opportunity posted successfully!");
         onClose(); // Close modal after submission
     } catch (error) {
-        console.error(" Error creating opportunity:", error);
+        console.error("Error creating opportunity:", error);
         alert("An error occurred while creating the opportunity.");
     } finally {
         setLoading(false);
