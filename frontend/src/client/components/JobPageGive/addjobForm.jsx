@@ -21,6 +21,37 @@ function AddjobFormMainPage() {
         navigate('/JobPageGive');
     };
 
+    const coursesByCollege = {
+        "College of Engineering": [
+            "Bachelor of Science in Civil Engineering",
+            "Bachelor of Science in Electrical Engineering",
+            "Bachelor of Science in Electronics Engineering",
+            "Bachelor of Science in Mechanical Engineering",
+        ],
+        "College of Science": [
+            "Bachelor of Applied Science in Laboratory Technology",
+            "Bachelor of Science in Computer Science",
+            "Bachelor of Science in Environmental Science",
+            "Bachelor of Science in Information System",
+            "Bachelor of Science in Information Technology",
+        ],
+        "College of Industrial Education": [
+            "Bachelor of Science Industrial Education Major in Information and Communication Technology",
+            "Bachelor of Science Industrial Education Major in Home Economics",
+            "Bachelor of Science Industrial Education Major in Industrial Arts",
+        ],
+        "College of Liberal Arts": [
+            "Bachelor of Science in Business Management Major in Industrial Management",
+            "Bachelor of Science in Entrepreneurship",
+            "Bachelor of Science in Hospitality Management",
+        ],
+        "College of Architecture and Fine Arts": [
+            "Bachelor of Science in Architecture",
+            "Bachelor of Fine Arts",
+            "Bachelor of Graphic Technology Major in Architecture Technology",
+        ],
+    };
+
     const [formData, setFormData] = useState({
         title: '',
         company: '',
@@ -30,12 +61,19 @@ function AddjobFormMainPage() {
         responsibilities: '',
         qualifications: '',
         source: '',
+        college: '',
+        course: '',
     });
 
     const [message, setMessage] = useState('');
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+            ...(name === "college" ? { course: "" } : {}), // Reset course if college changes
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -47,13 +85,12 @@ function AddjobFormMainPage() {
             return;
         }
 
-
         try {
             const response = await fetch("https://alumnitracersystem.onrender.com/jobs/jobpost", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`, 
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(formData),
             });
@@ -66,10 +103,9 @@ function AddjobFormMainPage() {
                 return;
             }
 
-
             console.log('Response Data:', data);
-
             setMessage('Job posted successfully. Pending admin approval.');
+            
             setFormData({
                 title: '',
                 company: '',
@@ -79,6 +115,8 @@ function AddjobFormMainPage() {
                 responsibilities: '',
                 qualifications: '',
                 source: '',
+                college: '',
+                course: '',
             });
         } catch (error) {
             console.error('Error posting the job:', error);
@@ -91,7 +129,7 @@ function AddjobFormMainPage() {
             <a onClick={goToJobPageGive} className="back-button">
                 Back
             </a>
-            <h1 className="form-title">POST A JOB OPPORTUNITY </h1>
+            <h1 className="form-title">POST A JOB OPPORTUNITY</h1>
             <form className="opportunity-form" onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="title">Title:</label>
@@ -116,6 +154,29 @@ function AddjobFormMainPage() {
                         required
                         placeholder="Enter company name"
                     />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="college">College:</label>
+                    <select id="college" name="college" value={formData.college} onChange={handleChange}>
+                        <option value="">Select College</option>
+                        {Object.keys(coursesByCollege).map((collegeName) => (
+                            <option key={collegeName} value={collegeName}>
+                                {collegeName}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="course">Course:</label>
+                    <select id="course" name="course" value={formData.course} onChange={handleChange} disabled={!formData.college}>
+                        <option value="">Select Course</option>
+                        {formData.college &&
+                            coursesByCollege[formData.college].map((courseName) => (
+                                <option key={courseName} value={courseName}>
+                                    {courseName}
+                                </option>
+                            ))}
+                    </select>
                 </div>
                 <div className="form-group">
                     <label htmlFor="location">Location:</label>

@@ -6,9 +6,24 @@ const router = express.Router();
 
 router.post('/jobpost', protect, async (req, res) => {
     try {
+        const { title, company, location, type, description, responsibilities, qualifications, source, college, course } = req.body;
+
+        if (!college || !course) {
+            return res.status(400).json({ message: "College and Course are required fields." });
+        }
+
         const job = new Job({
-            ...req.body,
-            createdBy: req.user.id, // Attach user ID directly from middleware
+            title,
+            company,
+            location,
+            type,
+            description,
+            responsibilities,
+            qualifications,
+            source,
+            college,  
+            course,   
+            createdBy: req.user.id, 
             status: 'Pending',
         });
 
@@ -21,28 +36,23 @@ router.post('/jobpost', protect, async (req, res) => {
 });
 
 
+// ✅ Fetch all jobs (with optional filtering by status)
 router.get('/jobpost', protect, async (req, res) => {
-    
     try {
-        const { status } = req.query; // Optional query param for filtering by status
-        const filter = status
-        ? { status: { $in: status.split(',') } } // Split status into an array for multiple statuses
-        : {};
+        const { status } = req.query;
+        const filter = status ? { status: { $in: status.split(',') } } : {};
 
         const jobs = await Job.find(filter)
-            .populate('createdBy', 'name email') // Populate user details (optional)
-            .sort({ createdAt: -1 }); // Sort by most recent
+            .populate('createdBy', 'name email') 
+            .sort({ createdAt: -1 });
 
         res.status(200).json(jobs);
     } catch (error) {
-        console.error('Error Fetching Jobs:', error.message);
+        console.error('Error fetching jobs:', error.message);
         res.status(500).json({ error: 'Failed to fetch jobs.' });
     }
 });
-
   
-  
-
 // Approve a job posting
 router.post('/:id/approve', protect, async (req, res) => {
     try {
