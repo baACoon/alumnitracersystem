@@ -62,79 +62,80 @@ export default function CreateOpportunity({ onClose }) {
     e.preventDefault();
     setLoading(true);
 
-    // ✅ Check required fields before sending request
-    if (!formData.college || !formData.course || !formData.description || !formData.location) {
-      alert("College, Course, Location, and Description are required!");
-      setLoading(false);
-      return;
+    // ✅ Ensure all required fields are provided
+    if (!formData.title || !formData.company || !formData.college || !formData.course || !formData.location || !formData.description) {
+        alert("Title, Company, College, Course, Location, and Description are required!");
+        setLoading(false);
+        return;
     }
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("You need to log in first.");
-        setLoading(false);
-        return;
-      }
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("You need to log in first.");
+            setLoading(false);
+            return;
+        }
 
-      //  Ensuring responsibilities and qualifications are arrays
-      const formattedResponsibilities = formData.responsibilities ? formData.responsibilities.split("\n") : [];
-      const formattedQualifications = formData.qualifications ? formData.qualifications.split("\n") : [];
+        // Convert responsibilities and qualifications into arrays
+        const formattedResponsibilities = formData.responsibilities ? formData.responsibilities.split("\n").map(item => item.trim()) : [];
+        const formattedQualifications = formData.qualifications ? formData.qualifications.split("\n").map(item => item.trim()) : [];
 
-      console.log("📤 Sending Job Data:", JSON.stringify({
-        title: formData.title,
-        company: formData.company,
-        college: formData.college,
-        course: formData.course,
-        location: formData.location,
-        type: formData.type || "full-time",
-        description: formData.description,
-        responsibilities: formattedResponsibilities,
-        qualifications: formattedQualifications,
-        source: formData.source,
-        status: "Published",
-      }));
+        console.log(" Sending Job Data:", JSON.stringify({
+            title: formData.title,
+            company: formData.company,
+            college: formData.college,
+            course: formData.course,
+            location: formData.location,
+            type: formData.type || "full-time",
+            description: formData.description,
+            responsibilities: formattedResponsibilities,
+            qualifications: formattedQualifications,
+            source: formData.source,
+            status: "Published", // Ensure job status is automatically "Published"
+        }));
 
-      const response = await fetch("https://alumnitracersystem.onrender.com/jobs/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: formData.title,
-          company: formData.company,
-          college: formData.college,
-          course: formData.course,
-          location: formData.location,
-          type: formData.type || "full-time",
-          description: formData.description,
-          responsibilities: formattedResponsibilities,
-          qualifications: formattedQualifications,
-          source: formData.source,
-          status: "Published",
-        }),
-      });
+        const response = await fetch("https://alumnitracersystem.onrender.com/jobs/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                title: formData.title,
+                company: formData.company,
+                college: formData.college,
+                course: formData.course,
+                location: formData.location,
+                type: formData.type || "full-time",
+                description: formData.description,
+                responsibilities: formattedResponsibilities,
+                qualifications: formattedQualifications,
+                source: formData.source,
+                status: "Published", // Set status to Published directly for admin-created jobs
+            }),
+        });
 
-      const responseData = await response.json();
-      console.log(" Full Server Response:", responseData);
+        const responseData = await response.json();
+        console.log("📥 Full Server Response:", responseData);
 
-      if (!response.ok) {
-        console.error(" Failed to create job:", responseData);
-        alert(`Error: ${responseData.error || "Failed to create job."}`);
-        setLoading(false);
-        return;
-      }
+        if (!response.ok) {
+            console.error(" Failed to create job:", responseData);
+            alert(`Error: ${responseData.error || "Failed to create job."}`);
+            setLoading(false);
+            return;
+        }
 
-      alert("Job opportunity published successfully!");
-      onClose();
+        alert(" Job opportunity published successfully!");
+        onClose(); // Close modal after submission
     } catch (error) {
-      console.error(" Error creating opportunity:", error);
-      alert("An error occurred while creating the opportunity.");
+        console.error(" Error creating opportunity:", error);
+        alert("An error occurred while creating the opportunity.");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   return (
     <div className={styles.modalOverlay}>
@@ -146,57 +147,120 @@ export default function CreateOpportunity({ onClose }) {
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
             <label htmlFor="title">Job Title</label>
-            <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required disabled={loading} />
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value={formData.title}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter Job Title"
+                    />
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="company">Company</label>
-            <input type="text" id="company" name="company" value={formData.company} onChange={handleChange} required disabled={loading} />
+                    <input
+                        type="text"
+                        id="company"
+                        name="company"
+                        value={formData.company}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter company name"
+                    />
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="college">College</label>
-            <select id="college" name="college" value={formData.college} onChange={handleChange} disabled={loading}>
-              <option value="">Select College</option>
-              {Object.keys(coursesByCollege).map((collegeName) => (
-                <option key={collegeName} value={collegeName}>{collegeName}</option>
-              ))}
-            </select>
+            <select id="college" name="college" value={formData.college} onChange={handleChange}>
+                        <option value="">Select College</option>
+                        {Object.keys(coursesByCollege).map((collegeName) => (
+                            <option key={collegeName} value={collegeName}>
+                                {collegeName}
+                            </option>
+                        ))}
+              </select>
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="course">Course</label>
-            <select id="course" name="course" value={formData.course} onChange={handleChange} disabled={!formData.college || loading}>
-              <option value="">Select Course</option>
-              {formData.college && coursesByCollege[formData.college].map((courseName) => (
-                <option key={courseName} value={courseName}>{courseName}</option>
-              ))}
-            </select>
+            <select id="course" name="course" value={formData.course} onChange={handleChange} disabled={!formData.college}>
+                        <option value="">Select Course</option>
+                        {formData.college &&
+                            coursesByCollege[formData.college].map((courseName) => (
+                                <option key={courseName} value={courseName}>
+                                    {courseName}
+                                </option>
+                            ))}
+                    </select>
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="location">Location</label>
-            <input type="text" id="location" name="location" value={formData.location} onChange={handleChange} required disabled={loading} />
+            <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        value={formData.location}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter job location"
+                    />
           </div>
+
+          <div className="form-group">
+                    <label htmlFor="type">Type:</label>
+                    <select id="type" name="type" value={formData.type} onChange={handleChange}>
+                        <option value="full-time">Full Time</option>
+                        <option value="part-time">Part Time</option>
+                    </select>
+                </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="description">Job Description</label>
-            <textarea id="description" name="description" value={formData.description} onChange={handleChange} required disabled={loading}></textarea>
+                    <textarea
+                        id="description"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter job description"
+                    ></textarea>
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="responsibilities">Key Responsibilities</label>
-            <textarea id="responsibilities" name="responsibilities" value={formData.responsibilities} onChange={handleChange} disabled={loading}></textarea>
+                    <textarea
+                        id="responsibilities"
+                        name="responsibilities"
+                        value={formData.responsibilities}
+                        onChange={handleChange}
+                        placeholder="Enter key responsibilities"
+                    ></textarea>
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="qualifications">Qualifications</label>
-            <textarea id="qualifications" name="qualifications" value={formData.qualifications} onChange={handleChange} disabled={loading}></textarea>
+                    <textarea
+                        id="qualifications"
+                        name="qualifications"
+                        value={formData.qualifications}
+                        onChange={handleChange}
+                        placeholder="Enter required qualifications"
+                    ></textarea>
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="source">Source</label>
-            <input type="text" id="source" name="source" value={formData.source} onChange={handleChange} required disabled={loading} />
+            <input
+                        type="text"
+                        id="source"
+                        name="source"
+                        value={formData.source}
+                        onChange={handleChange}
+                        placeholder="Enter the source or link"
+                    />
           </div>
 
           <button type="submit" className={styles.submitButton} disabled={loading}>

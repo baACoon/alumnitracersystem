@@ -173,63 +173,34 @@ router.delete('/:id', protect, async (req, res) => {
     }
   });
 
-  router.post('/create', protect, async (req, res) => {
+ // Admin only - Create Job
+router.post('/create', protect, async (req, res) => {
     try {
-        console.log("📥 Incoming Request Body:", req.body); // Log the received request
+        const { title, company, college, course, location, type, description, responsibilities, qualifications, source } = req.body;
 
-        const { 
-            title, 
-            company, 
-            college, 
-            course, 
-            location, 
-            type, 
-            description, 
-            responsibilities, 
-            qualifications, 
-            source 
-        } = req.body;
-
-        //  Step 1: Ensure required fields exist
         if (!title || !company || !college || !course || !location || !description) {
-            console.log(" Missing Fields:", { title, company, college, course, location, description });
-            return res.status(400).json({ message: "All required fields must be filled!" });
+            return res.status(400).json({ message: "All fields are required!" });
         }
 
-        //  Step 2: Validate that responsibilities & qualifications are arrays
-        if (!Array.isArray(responsibilities) || !Array.isArray(qualifications)) {
-            console.log(" Invalid Data Types: responsibilities/qualifications should be arrays.");
-            return res.status(400).json({ message: "Responsibilities and Qualifications must be arrays!" });
-        }
-
-        //  Step 3: Create the new job
         const newJob = new Job({
             title,
             company,
             college,
             course,
             location,
-            type: type || "full-time",
+            type: type || "full-time", // Default to full-time if not provided
             description,
             responsibilities: responsibilities || [],
             qualifications: qualifications || [],
             source,
-            status: "Published", //  Auto-publish for admin
+            status: 'Published', // Directly set status to 'Published' for admin
             createdBy: req.user._id,
         });
 
-        console.log("🚀 Saving Job to Database:", newJob);
-
         await newJob.save();
-        console.log(" Job Created Successfully!");
-
-        res.status(201).json({ message: "Job created successfully!", job: newJob });
-
+        res.status(201).json({ message: 'Job created successfully!', job: newJob });
     } catch (error) {
-        console.error(" Error creating job:", error);
-
-        // **Send the full error message back for debugging**
-        res.status(500).json({ error: error.message || "Failed to create job." });
+        res.status(500).json({ error: 'Failed to create job.' });
     }
 });
 
