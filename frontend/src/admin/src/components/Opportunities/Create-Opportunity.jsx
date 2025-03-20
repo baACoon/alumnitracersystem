@@ -12,7 +12,7 @@ export default function CreateOpportunity({ onClose }) {
     requirements: "",
   });
 
-  const [loading, setLoading] = useState(false); // 🔄 Add loading state
+  const [loading, setLoading] = useState(false); //  Add loading state
 
   const coursesByCollege = {
     "College of Engineering": [
@@ -66,7 +66,7 @@ export default function CreateOpportunity({ onClose }) {
             return;
         }
 
-        console.log("Submitting Form Data:", formData); // ✅ Log form data before sending
+        console.log("Submitting Form Data:", formData); //  Log form data before sending
 
         const response = await fetch(
             "https://alumnitracersystem.onrender.com/jobs/create",
@@ -89,7 +89,7 @@ export default function CreateOpportunity({ onClose }) {
         );
 
         const responseData = await response.json();
-        console.log("Full Server Response:", responseData); // ✅ Log full server response
+        console.log("Full Server Response:", responseData); //  Log full server response
 
         if (!response.ok) {
             console.error("Failed to create job:", responseData);
