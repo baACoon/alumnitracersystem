@@ -174,12 +174,13 @@ router.delete('/:id', protect, async (req, res) => {
   });
 
  // Admin only - Create Job
-router.post('/create', protect, async (req, res) => {
+ router.post('/create', protect, async (req, res) => {
     try {
         const { title, company, location, type, description, responsibilities, qualifications, source, college, course } = req.body;
 
-        if (!college || !course) {
-            return res.status(400).json({ message: "College and Course are required fields." });
+        // Check for required fields
+        if (!college || !course || !title || !company || !location || !description) {
+            return res.status(400).json({ message: "All required fields must be provided!" });
         }
 
         const job = new Job({
@@ -194,16 +195,17 @@ router.post('/create', protect, async (req, res) => {
             college,  
             course,   
             createdBy: req.user.id, 
-            status: status || 'Pending',
+            status: 'Published', // Always set status to Published for admin
         });
 
         await job.save();
         res.status(201).json({ message: 'Job posted successfully. Pending admin approval.' });
     } catch (error) {
-        console.error('Error posting job:', error);
-        res.status(500).json({ message: 'Failed to post the job.' });
+        console.error('Error posting job:', error.message);
+        res.status(500).json({ message: 'Failed to post the job.', error: error.message }); // Include error message for debugging
     }
 });
+
 
 
 export default router;
