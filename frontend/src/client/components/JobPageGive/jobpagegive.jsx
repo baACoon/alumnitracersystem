@@ -71,12 +71,12 @@ function JobGiveMainPage() {
   const handleDelete = async () => {
     if (!selectedJobId) return;
     const token = localStorage.getItem('token');
-
+  
     if (!token) {
       alert('You need to log in first.');
       return;
     }
-
+  
     try {
       const response = await fetch(
         `https://alumnitracersystem.onrender.com/jobs/${selectedJobId}`,
@@ -87,25 +87,28 @@ function JobGiveMainPage() {
           },
         }
       );
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Failed to delete job:', errorData);
         alert(errorData.message || 'Failed to delete job.');
         return;
       }
-
-      alert('Job deleted successfully.');
+  
+      // After successful deletion from the database, update the UI
       setJobs((prevJobs) => prevJobs.filter((job) => job._id !== selectedJobId));
+  
+      alert('Job deleted successfully.');
     } catch (error) {
       console.error('Error deleting job:', error);
       alert('An error occurred while deleting the job.');
     } finally {
+      // Close the modal and reset the selectedJobId
       setShowDeleteModal(false);
       setSelectedJobId(null);
     }
   };
-
+  
   useEffect(() => {
     fetchJobs();
     const interval = setInterval(() => {
@@ -201,6 +204,21 @@ function JobGiveMainPage() {
           </div>
         </div>
       )}
+
+          {showDeleteModal && selectedJob && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <h2>Are you sure you want to delete this job?</h2>
+                <p>{selectedJob.title}</p>
+                <div>
+                  <button onClick={handleDelete}>Yes, Delete</button>
+                  <button onClick={() => setShowDeleteModal(false)}>Cancel</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+
     </div>
   );
 }
