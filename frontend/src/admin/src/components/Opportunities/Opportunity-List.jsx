@@ -65,11 +65,15 @@ export default function OpportunityList() {
                             className={styles.opportunityBox}
                             onClick={() => handleOpportunityClick(opportunity)}
                         >
-                            <p><strong>College:</strong> {opportunity.college}</p>
-                            <p><strong>Job Title:</strong> {opportunity.title}</p>
-                            <p><strong>Location:</strong> {opportunity.location}</p>
-                            <p><strong>Job Status:</strong> {opportunity.status}</p>
-                            <p><strong>Date Published:</strong> {new Date(opportunity.createdAt).toLocaleDateString()}</p>
+                            <p><strong>Company:</strong> {opportunity.company || "N/A"}</p>
+                            <p><strong>College:</strong> {opportunity.college || "N/A"}</p>
+                            <p><strong>Course:</strong> {opportunity.course || "N/A"}</p>
+                            <p><strong>Job Title:</strong> {opportunity.title || "N/A"}</p>
+                            <p><strong>Location:</strong> {opportunity.location || "N/A"}</p>
+                            <p><strong>Job Type:</strong> {opportunity.type || "N/A"}</p>
+                            <p><strong>Source:</strong> {opportunity.source || "N/A"}</p>
+                            <p><strong>Job Status:</strong> {opportunity.status || "N/A"}</p>
+                            <p><strong>Date Published:</strong> {opportunity.createdAt ? new Date(opportunity.createdAt).toLocaleDateString() : "N/A"}</p>
                         </div>
                     ))
                 ) : (
@@ -87,17 +91,28 @@ export default function OpportunityList() {
                         <button className={styles.closeButton} onClick={closeModal}>
                             &times;
                         </button>
-                        <h2>{selectedOpportunity.title}</h2>
-                        <p><strong>College:</strong> {selectedOpportunity.college}</p>
-                        <p><strong>Location:</strong> {selectedOpportunity.location}</p>
-                        <p><strong>Job Status:</strong> {selectedOpportunity.status}</p>
-                        <p><strong>Date Published:</strong> {new Date(selectedOpportunity.createdAt).toLocaleDateString()}</p>
-                        <p><strong>Job Description:</strong> {selectedOpportunity.description}</p>
+                        <h2>{selectedOpportunity.title || "N/A"}</h2>
+                        <p><strong>Company:</strong> {selectedOpportunity.company || "N/A"}</p>
+                        <p><strong>College:</strong> {selectedOpportunity.college || "N/A"}</p>
+                        <p><strong>Course:</strong> {selectedOpportunity.course || "N/A"}</p>
+                        <p><strong>Location:</strong> {selectedOpportunity.location || "N/A"}</p>
+                        <p><strong>Job Type:</strong> {selectedOpportunity.type || "N/A"}</p>
+                        <p><strong>Source:</strong> {selectedOpportunity.source || "N/A"}</p>
+                        <p><strong>Job Status:</strong> {selectedOpportunity.status || "N/A"}</p>
+                        <p>
+                            <strong>Date Published:</strong>{" "}
+                            {selectedOpportunity.createdAt ? new Date(selectedOpportunity.createdAt).toLocaleDateString() : "N/A"}
+                        </p>
+                        <p><strong>Job Description:</strong> {selectedOpportunity.description || "N/A"}</p>
                         <p><strong>Key Responsibilities:</strong></p>
                         <ul>
-                            {selectedOpportunity.responsibilities.map((resp, i) => (
-                                <li key={i}>{resp}</li>
-                            ))}
+                            {selectedOpportunity.responsibilities && selectedOpportunity.responsibilities.length > 0 ? (
+                                selectedOpportunity.responsibilities.map((resp, i) => (
+                                    <li key={i}>{resp}</li>
+                                ))
+                            ) : (
+                                <li>N/A</li>
+                            )}
                         </ul>
                     </div>
                 </div>

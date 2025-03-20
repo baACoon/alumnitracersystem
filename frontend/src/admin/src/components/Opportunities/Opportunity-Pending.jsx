@@ -178,26 +178,19 @@ export default function OpportunityPending() {
               &times;
             </button>
             <h2>{selectedOpportunity.title}</h2>
-            <p>
-              <strong>College:</strong> {selectedOpportunity.college || "N/A"}
-            </p>
-            <p>
-              <strong>Location:</strong> {selectedOpportunity.location || "N/A"}
-            </p>
-            <p>
-              <strong>Job Status:</strong> {selectedOpportunity.status}
-            </p>
+            <p><strong>Company:</strong> {selectedOpportunity.company || "N/A"}</p>
+            <p><strong>College:</strong> {selectedOpportunity.college || "N/A"}</p>
+            <p><strong>Course:</strong> {selectedOpportunity.course || "N/A"}</p>
+            <p><strong>Location:</strong> {selectedOpportunity.location || "N/A"}</p>
+            <p><strong>Job Type:</strong> {selectedOpportunity.type || "N/A"}</p>
+            <p><strong>Source:</strong> {selectedOpportunity.source || "N/A"}</p>
+            <p><strong>Job Status:</strong> {selectedOpportunity.status}</p>
             <p>
               <strong>Date Requested:</strong>{" "}
               {new Date(selectedOpportunity.createdAt).toLocaleDateString()}
             </p>
-            <p>
-              <strong>Job Description:</strong>{" "}
-              {selectedOpportunity.description || "N/A"}
-            </p>
-            <p>
-              <strong>Key Responsibilities:</strong>
-            </p>
+            <p><strong>Job Description:</strong> {selectedOpportunity.description || "N/A"}</p>
+            <p><strong>Key Responsibilities:</strong></p>
             <ul>
               {selectedOpportunity.responsibilities?.map((resp, i) => (
                 <li key={i}>{resp}</li>
