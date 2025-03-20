@@ -61,69 +61,66 @@ export default function CreateOpportunity({ onClose }) {
     e.preventDefault();
     setLoading(true);
 
-    if (!formData.college || !formData.course) {
-      alert("College and Course are required!");
-      setLoading(false);
-      return;
+    if (!formData.college || !formData.course || !formData.description) {
+        alert("College, Course, and Description are required!");
+        setLoading(false);
+        return;
     }
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("You need to log in first.");
-        setLoading(false);
-        return;
-      }
-
-      console.log("Submitting Form Data:", formData);
-
-      const response = await fetch(
-        "https://alumnitracersystem.onrender.com/jobs/create",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            title: formData.jobTitle,
-            company: formData.company,
-            college: formData.college,
-            course: formData.course,
-            location: formData.location,
-            type: formData.type || "full-time",
-            description: formData.jobDescription,
-            responsibilities: formData.keyResponsibilities
-              ? formData.keyResponsibilities.split("\n")
-              : [],
-            qualifications: formData.requirements
-              ? formData.requirements.split("\n")
-              : [],
-            source: formData.source,
-            status: "Published", // ✅ Admin-created jobs are immediately published
-          }),
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("You need to log in first.");
+            setLoading(false);
+            return;
         }
-      );
 
-      const responseData = await response.json();
-      console.log("Full Server Response:", responseData);
+        console.log("Submitting Form Data:", formData);
 
-      if (!response.ok) {
-        console.error("Failed to create job:", responseData);
-        alert(`Error: ${responseData.error || "Failed to create job."}`);
-        setLoading(false);
-        return;
-      }
+        const response = await fetch(
+            "https://alumnitracersystem.onrender.com/jobs/create",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    title: formData.jobTitle,
+                    company: formData.company,
+                    college: formData.college,
+                    course: formData.course,
+                    location: formData.location,
+                    type: formData.type || "full-time",
+                    description: formData.jobDescription,
+                    responsibilities: formData.keyResponsibilities ? formData.keyResponsibilities.split("\n") : [],
+                    qualifications: formData.requirements ? formData.requirements.split("\n") : [],
+                    source: formData.source,
+                    status: "Published",
+                }),
+            }
+        );
 
-      alert("Job opportunity published successfully!");
-      onClose();
+        const responseData = await response.json();
+        console.log("Full Server Response:", responseData);
+
+        if (!response.ok) {
+            console.error("Failed to create job:", responseData);
+            alert(`Error: ${responseData.error || "Failed to create job."}`);
+            setLoading(false);
+            return;
+        }
+
+        alert("Job opportunity published successfully!");
+        onClose();
     } catch (error) {
-      console.error("Error creating opportunity:", error);
-      alert("An error occurred while creating the opportunity.");
+        console.error("Error creating opportunity:", error);
+        alert("An error occurred while creating the opportunity.");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   return (
     <div className={styles.modalOverlay}>
