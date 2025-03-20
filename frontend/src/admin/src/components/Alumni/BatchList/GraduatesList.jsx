@@ -144,7 +144,7 @@ export function GraduatesList() {
   };
 
   // Filter graduates for selected batch
-  const filteredGraduates = graduates.filter((grad) => grad.gradYear === selectedBatch);
+  const filteredGraduates = graduates.filter((grad) => Number(grad.gradYear) === Number(selectedBatch));
 
   // Calculate total pages
   const totalPages = Math.ceil(filteredGraduates.length / graduatesPerPage);
