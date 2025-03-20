@@ -15,7 +15,7 @@ export default function CreateOpportunity({ onClose }) {
     source: "",
   });
 
-  const [loading, setLoading] = useState(false); //  Add loading state
+  const [loading, setLoading] = useState(false);
 
   const coursesByCollege = {
     "College of Engineering": [
@@ -62,63 +62,68 @@ export default function CreateOpportunity({ onClose }) {
     setLoading(true);
 
     if (!formData.college || !formData.course) {
-        alert("College and Course are required!");
-        setLoading(false);
-        return;
+      alert("College and Course are required!");
+      setLoading(false);
+      return;
     }
 
     try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            alert("You need to log in first.");
-            setLoading(false);
-            return;
-        }
-
-        console.log("Submitting Form Data:", formData);
-
-        const response = await fetch(
-            "https://alumnitracersystem.onrender.com/jobs/create",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    title: formData.jobTitle,
-                    company: formData.company || "Admin-created",
-                    location: formData.location,
-                    type: formData.type || "full-time",
-                    description: formData.jobDescription,
-                    responsibilities: formData.keyResponsibilities ? formData.keyResponsibilities.split("\n") : [],
-                    qualifications: formData.requirements ? formData.requirements.split("\n") : [],
-                    college: formData.college,
-                    course: formData.course,
-                    source: formData.source
-                }),
-            }
-        );
-
-        const responseData = await response.json();
-        console.log("Full Server Response:", responseData);
-
-        if (!response.ok) {
-            console.error("Failed to create job:", responseData);
-            alert(`Error: ${responseData.error || "Failed to create job."}`);
-            setLoading(false);
-            return;
-        }
-
-        alert("Opportunity Created Successfully!");
-        onClose();
-    } catch (error) {
-        console.error("Error creating opportunity:", error);
-        alert("An error occurred while creating the opportunity.");
-    } finally {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("You need to log in first.");
         setLoading(false);
+        return;
+      }
+
+      console.log("Submitting Form Data:", formData);
+
+      const response = await fetch(
+        "https://alumnitracersystem.onrender.com/jobs/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title: formData.jobTitle,
+            company: formData.company,
+            college: formData.college,
+            course: formData.course,
+            location: formData.location,
+            type: formData.type || "full-time",
+            description: formData.jobDescription,
+            responsibilities: formData.keyResponsibilities
+              ? formData.keyResponsibilities.split("\n")
+              : [],
+            qualifications: formData.requirements
+              ? formData.requirements.split("\n")
+              : [],
+            source: formData.source,
+            status: "Published", // ✅ Admin-created jobs are immediately published
+          }),
+        }
+      );
+
+      const responseData = await response.json();
+      console.log("Full Server Response:", responseData);
+
+      if (!response.ok) {
+        console.error("Failed to create job:", responseData);
+        alert(`Error: ${responseData.error || "Failed to create job."}`);
+        setLoading(false);
+        return;
+      }
+
+      alert("Job opportunity published successfully!");
+      onClose();
+    } catch (error) {
+      console.error("Error creating opportunity:", error);
+      alert("An error occurred while creating the opportunity.");
+    } finally {
+      setLoading(false);
     }
-};
+  };
 
   return (
     <div className={styles.modalOverlay}>
@@ -160,7 +165,13 @@ export default function CreateOpportunity({ onClose }) {
             <label className={styles.oppLabel} htmlFor="college">
               College
             </label>
-            <select id="college" name="college" value={formData.college} onChange={handleChange} disabled={loading}>
+            <select
+              id="college"
+              name="college"
+              value={formData.college}
+              onChange={handleChange}
+              disabled={loading}
+            >
               <option value="">Select College</option>
               {Object.keys(coursesByCollege).map((collegeName) => (
                 <option key={collegeName} value={collegeName}>
@@ -173,7 +184,13 @@ export default function CreateOpportunity({ onClose }) {
             <label className={styles.oppLabel} htmlFor="course">
               Course
             </label>
-            <select id="course" name="course" value={formData.course} onChange={handleChange} disabled={!formData.college || loading}>
+            <select
+              id="course"
+              name="course"
+              value={formData.course}
+              onChange={handleChange}
+              disabled={!formData.college || loading}
+            >
               <option value="">Select Course</option>
               {formData.college &&
                 coursesByCollege[formData.college].map((courseName) => (
@@ -184,24 +201,16 @@ export default function CreateOpportunity({ onClose }) {
             </select>
           </div>
           <div className={styles.formGroup}>
-            <label className={styles.oppLabel} htmlFor="location">
-              Location
-            </label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              required
-              disabled={loading}
-            />
-          </div>
-          <div className={styles.formGroup}>
             <label className={styles.oppLabel} htmlFor="type">
               Job Type
             </label>
-            <select id="type" name="type" value={formData.type} onChange={handleChange} disabled={loading}>
+            <select
+              id="type"
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+              disabled={loading}
+            >
               <option value="full-time">Full Time</option>
               <option value="part-time">Part Time</option>
             </select>
