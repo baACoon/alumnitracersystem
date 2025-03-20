@@ -77,11 +77,10 @@ export default function CreateOpportunity({ onClose }) {
         return;
       }
 
-      // ✅ Ensuring responsibilities and qualifications are arrays
+      //  Ensuring responsibilities and qualifications are arrays
       const formattedResponsibilities = formData.responsibilities ? formData.responsibilities.split("\n") : [];
       const formattedQualifications = formData.qualifications ? formData.qualifications.split("\n") : [];
 
-      // ✅ Logging sent data for debugging
       console.log("📤 Sending Job Data:", JSON.stringify({
         title: formData.title,
         company: formData.company,
@@ -118,10 +117,10 @@ export default function CreateOpportunity({ onClose }) {
       });
 
       const responseData = await response.json();
-      console.log("📥 Full Server Response:", responseData);
+      console.log(" Full Server Response:", responseData);
 
       if (!response.ok) {
-        console.error("❌ Failed to create job:", responseData);
+        console.error(" Failed to create job:", responseData);
         alert(`Error: ${responseData.error || "Failed to create job."}`);
         setLoading(false);
         return;
@@ -130,7 +129,7 @@ export default function CreateOpportunity({ onClose }) {
       alert("Job opportunity published successfully!");
       onClose();
     } catch (error) {
-      console.error("❌ Error creating opportunity:", error);
+      console.error(" Error creating opportunity:", error);
       alert("An error occurred while creating the opportunity.");
     } finally {
       setLoading(false);

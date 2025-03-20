@@ -14,8 +14,8 @@ const JobSchema = new mongoose.Schema({
     location: { type: String, required: true },
     type: { type: String, default: "full-time" },
     description: { type: String, required: true },
-    responsibilities: { type: [String], default: [] },
-    qualifications: { type: [String], default: [] },
+    responsibilities: { type: [String], default: [] },  //  Must be an array
+    qualifications: { type: [String], default: [] },  //  Must be an array
     source: { type: String },
     status: { type: String, enum: ["Pending", "Published", "Denied"], default: "Pending" },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
