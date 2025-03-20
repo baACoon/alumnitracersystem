@@ -176,14 +176,30 @@ router.delete('/:id', protect, async (req, res) => {
 // Create a new job - Admin only
 router.post('/create', protect, async (req, res) => {
     try {
-        console.log(" Incoming Request Body:", req.body); // ✅ Log entire request body
+        console.log("📥 Incoming Request Body:", req.body); //  Log incoming request
 
-        const { title, company, college, course, location, type, description, responsibilities, qualifications, source } = req.body;
+        const { 
+            title, 
+            company, 
+            college, 
+            course, 
+            location, 
+            type, 
+            description, 
+            responsibilities, 
+            qualifications, 
+            source 
+        } = req.body;
 
+        // ✅ Ensure required fields exist
         if (!title || !company || !college || !course || !location || !description) {
             console.log(" Missing Fields:", { title, company, college, course, location, description });
-            return res.status(400).json({ message: "All fields are required!" });
+            return res.status(400).json({ message: "All required fields must be filled!" });
         }
+
+        // ✅ Ensure `responsibilities` & `qualifications` are arrays
+        const formattedResponsibilities = Array.isArray(responsibilities) ? responsibilities : [];
+        const formattedQualifications = Array.isArray(qualifications) ? qualifications : [];
 
         const newJob = new Job({
             title,
@@ -193,19 +209,19 @@ router.post('/create', protect, async (req, res) => {
             location,
             type: type || "full-time",
             description,
-            responsibilities: responsibilities || [],
-            qualifications: qualifications || [],
+            responsibilities: formattedResponsibilities,
+            qualifications: formattedQualifications,
             source,
-            status: 'Published',
+            status: "Published", //  Admin-created jobs are auto-published
             createdBy: req.user._id,
         });
 
         await newJob.save();
         console.log(" Job created successfully:", newJob);
-        res.status(201).json({ message: 'Job created successfully!', job: newJob });
+        res.status(201).json({ message: "Job created successfully!", job: newJob });
     } catch (error) {
-        console.error(' Error creating job:', error);
-        res.status(500).json({ error: 'Failed to create job.' });
+        console.error(" Error creating job:", error);
+        res.status(500).json({ error: "Failed to create job." });
     }
 });
 
