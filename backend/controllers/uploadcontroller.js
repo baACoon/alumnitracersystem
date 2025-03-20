@@ -18,8 +18,9 @@ export const uploadCSV = async (req, res) => {
     ensureBatchListDirectoryExists();
     
     if (!req.file) {
+      console.log("No file received"); // ✅ Log error
       return res.status(400).json({ error: "No file uploaded" });
-    }
+  }
     
     console.log("File received:", req.file);
     
@@ -31,15 +32,12 @@ export const uploadCSV = async (req, res) => {
         console.log("Parsed CSV row:", row);
 
         const graduate = {
-          lastName: row["Last Name"] ? row["Last Name"].trim() : "Unknown",
-          firstName: row["First Name"] ? row["First Name"].trim() : "Unknown",
-          middleName: row["Middle Initial"] ? row["Middle Initial"].trim() : "N/A",
-          contact: row["Contact No."] ? row["Contact No."].trim() : "N/A",
-          email: row["Email"] ? row["Email"].trim() : "N/A",
-          course: row["Course"] ? row["Course"].trim() : "Unknown",
-          gradYear: row["Year Graduated"] && !isNaN(row["Year Graduated"])
-            ? parseInt(row["Year Graduated"])
-            : null,
+          lastName: row["lastName"] || "Unknown",
+          firstName: row["firstName"] || "Unknown",
+          middleName: row["middleName"] || "N/A",
+          email: row["email"] || "N/A",
+          course: row["course"] || "Unknown",
+          gradYear: row["gradYear"] ? parseInt(row["gradYear"]) : null,
         };
 
         // Validate gradYear before pushing
@@ -62,8 +60,8 @@ export const uploadCSV = async (req, res) => {
           await Graduate.insertMany(results);
           console.log(`Inserted ${results.length} records successfully`);
 
-          // Delete file after processing
-          fs.unlinkSync(req.file.path);
+          /**  Delete file after processing
+          fs.unlinkSync(req.file.path);*/
 
           res.json({
             message: "Upload successful",
