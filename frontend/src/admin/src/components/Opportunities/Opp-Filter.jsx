@@ -11,6 +11,21 @@ export function OpportunityFilters() {
   const [course, setCourse] = useState("");
   const [activeFilter, setActiveFilter] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [opportunities, setOpportunities] = useState([]);
+
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        const response = await fetch("https://alumnitracersystem.onrender.com/jobs");
+        const data = await response.json();
+        setOpportunities(data); // Store the data from the API
+      } catch (error) {
+        console.error("Error fetching opportunities:", error);
+      }
+    };
+
+    fetchOpportunities();
+  }, []);
 
   const coursesByCollege = {
     "College of Engineering": [
@@ -65,6 +80,16 @@ export function OpportunityFilters() {
   const closeCreateModal = () => {
     setShowCreateModal(false); // Close the create opportunity modal
   };
+
+    // Filter the opportunities based on the selected college and course
+    const filteredOpportunities = opportunities.filter((opportunity) => {
+      return (
+        (college ? opportunity.college === college : true) &&
+        (course ? opportunity.course === course : true) &&
+        (activeTab === "published" ? opportunity.status === "Published" : opportunity.status === "Pending")
+      );
+    });
+  
 
   return (
     <SidebarLayout>
@@ -157,8 +182,13 @@ export function OpportunityFilters() {
         </div>
 
         {/* Conditional Rendering */}
-        {activeTab === "published" && <OpportunityList />}
-        {activeTab === "pending" && <OpportunityPending />}
+        {activeTab === "published" && (
+          <OpportunityList opportunities={filteredOpportunities} />
+        )}
+        
+        {activeTab === "pending" && (
+          <OpportunityPending opportunities={filteredOpportunities} />
+        )}
 
         {/* Create Opportunity Modal */}
         {showCreateModal && (
