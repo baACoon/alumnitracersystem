@@ -15,10 +15,32 @@ export function OpportunityFilters() {
 
   useEffect(() => {
     const fetchOpportunities = async () => {
+      const token = localStorage.getItem("token"); // Ensure token is fetched
+  
+      if (!token) {
+        alert("You need to log in first.");
+        return;
+      }
+  
       try {
-        const response = await fetch("https://alumnitracersystem.onrender.com/jobs/jobpost?status=Published");
+        const response = await fetch(
+          "https://alumnitracersystem.onrender.com/jobs/jobpost?status=Published", 
+          {
+            headers: {
+              "Authorization": `Bearer ${token}`,
+            },
+          }
+        );
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Failed to fetch published opportunities:", errorData);
+          alert(errorData.message || "Failed to fetch published opportunities.");
+          return;
+        }
+  
         const data = await response.json();
-        console.log("Fetched Opportunities: ", data);  // Log fetched data for debugging
+        console.log("Fetched Opportunities: ", data); // Log fetched data for debugging
         setOpportunities(data); // Store the data from the API
       } catch (error) {
         console.error("Error fetching opportunities:", error);
@@ -27,7 +49,6 @@ export function OpportunityFilters() {
   
     fetchOpportunities();
   }, []);
-  
 
   const coursesByCollege = {
     "College of Engineering": [
