@@ -16,7 +16,7 @@ export function OpportunityFilters() {
   useEffect(() => {
     const fetchOpportunities = async () => {
       try {
-        const response = await fetch("https://alumnitracersystem.onrender.com/jobs");
+        const response = await fetch("https://alumnitracersystem.onrender.com/jobs/jobpost?status=Published");
         const data = await response.json();
         console.log("Fetched Opportunities: ", data);  // Log fetched data for debugging
         setOpportunities(data); // Store the data from the API
@@ -24,9 +24,10 @@ export function OpportunityFilters() {
         console.error("Error fetching opportunities:", error);
       }
     };
-
+  
     fetchOpportunities();
   }, []);
+  
 
   const coursesByCollege = {
     "College of Engineering": [
