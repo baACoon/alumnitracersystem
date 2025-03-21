@@ -65,10 +65,10 @@ export default function OpportunityList() {
                             className={styles.opportunityBox}
                             onClick={() => handleOpportunityClick(opportunity)}
                         >
+                            <p><strong>Job Title:</strong> {opportunity.title || "N/A"}</p>
                             <p><strong>Company:</strong> {opportunity.company || "N/A"}</p>
                             <p><strong>College:</strong> {opportunity.college || "N/A"}</p>
                             <p><strong>Course:</strong> {opportunity.course || "N/A"}</p>
-                            <p><strong>Job Title:</strong> {opportunity.title || "N/A"}</p>
                             <p><strong>Location:</strong> {opportunity.location || "N/A"}</p>
                             <p><strong>Job Type:</strong> {opportunity.type || "N/A"}</p>
                             <p><strong>Source:</strong> {opportunity.source || "N/A"}</p>

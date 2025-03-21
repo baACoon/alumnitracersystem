@@ -50,3 +50,16 @@
     color: white;
   }
   
+  .closejobmodal {
+    background-color: #c31d3c;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .closejobmodal:hover{
+    background-color: #8f263a;
+  }
+  

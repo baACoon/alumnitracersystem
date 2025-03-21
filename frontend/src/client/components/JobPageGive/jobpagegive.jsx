@@ -200,7 +200,7 @@ function JobGiveMainPage() {
             </ul>
             <p><strong>Qualifications:</strong> {selectedJob.qualifications}</p>
             <p><strong>Souce:</strong> {selectedJob.source}</p>
-            <button onClick={() => setShowJobModal(false)}>Close</button>
+            <button className= "closejobmodal" onClick={() => setShowJobModal(false)}>Close</button>
           </div>
         </div>
       )}
