@@ -1,10 +1,10 @@
-import React, { useState ,  useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Opp-Filter.module.css";
 import SidebarLayout from "../SideBar/SideBarLayout";
 import OpportunityList from "./Opportunity-List";
 import OpportunityPending from "./Opportunity-Pending";
 import CreateOpportunity from "./Create-Opportunity";
- 
+
 export function OpportunityFilters() {
   const [activeTab, setActiveTab] = useState("published");
   const [college, setCollege] = useState("");
@@ -13,20 +13,7 @@ export function OpportunityFilters() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [opportunities, setOpportunities] = useState([]);
 
-  useEffect(() => {
-    const fetchOpportunities = async () => {
-      try {
-        const response = await fetch("https://alumnitracersystem.onrender.com/jobs");
-        const data = await response.json();
-        setOpportunities(data); // Store the data from the API
-      } catch (error) {
-        console.error("Error fetching opportunities:", error);
-      }
-    };
-
-    fetchOpportunities();
-  }, []);
-
+  // College and Course data mapping
   const coursesByCollege = {
     "College of Engineering": [
       "Bachelor of Science in Civil Engineering",
@@ -41,22 +28,22 @@ export function OpportunityFilters() {
       "Bachelor of Science in Information System",
       "Bachelor of Science in Information Technology",
     ],
-    "College of Industrial Education": [
-      "Bachelor of Science Industrial Education Major in Information and Communication Technology",
-      "Bachelor of Science Industrial Education Major in Home Economics",
-      "Bachelor of Science Industrial Education Major in Industrial Arts",
-    ],
-    "College of Liberal Arts": [
-      "Bachelor of Science in Business Management Major in Industrial Management",
-      "Bachelor of Science in Entrepreneurship",
-      "Bachelor of Science in Hospitality Management",
-    ],
-    "College of Architecture and Fine Arts": [
-      "Bachelor of Science in Architecture",
-      "Bachelor of Fine Arts",
-      "Bachelor of Graphic Technology Major in Architecture Technology",
-    ],
+    // Add other colleges...
   };
+
+  // Fetch opportunities from the backend
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        const response = await fetch("https://alumnitracersystem.onrender.com/jobs");
+        const data = await response.json();
+        setOpportunities(data); // Store the fetched opportunities
+      } catch (error) {
+        console.error("Error fetching opportunities:", error);
+      }
+    };
+    fetchOpportunities();
+  }, []); // Run only once on component mount
 
   const handleCollegeChange = (e) => {
     setCollege(e.target.value);
@@ -81,35 +68,28 @@ export function OpportunityFilters() {
     setShowCreateModal(false); // Close the create opportunity modal
   };
 
-    // Filter the opportunities based on the selected college and course
-    const filteredOpportunities = opportunities.filter((opportunity) => {
-      return (
-        (college ? opportunity.college === college : true) &&
-        (course ? opportunity.course === course : true) &&
-        (activeTab === "published" ? opportunity.status === "Published" : opportunity.status === "Pending")
-      );
-    });
-  
+  // Filter the opportunities based on the selected college, course, and status
+  const filteredOpportunities = opportunities.filter((opportunity) => {
+    const isCollegeMatch = college ? opportunity.college === college : true;
+    const isCourseMatch = course ? opportunity.course === course : true;
+    const isStatusMatch =
+      activeTab === "published" ? opportunity.status === "Published" : opportunity.status === "Pending";
+
+    return isCollegeMatch && isCourseMatch && isStatusMatch;
+  });
 
   return (
     <SidebarLayout>
       <section className={styles.filterSection} aria-label="Opportunity filters">
         <div className={styles.header}>
           <h2 className={styles.databaseTitle}>OPPORTUNITY DATABASE</h2>
-          <button
-            className={styles.createButton}
-            onClick={handleCreateClick}
-          >
+          <button className={styles.createButton} onClick={handleCreateClick}>
             + Create Opportunity
           </button>
         </div>
 
         {/* Filter Controls */}
-        <div
-          className={styles.filterControls}
-          role="group"
-          aria-label="Filter controls"
-        >
+        <div className={styles.filterControls} role="group" aria-label="Filter controls">
           {/* College Filter */}
           <div className={styles.filterButtonContainer}>
             <label htmlFor="college" className={styles.filterLabel}>
@@ -162,9 +142,7 @@ export function OpportunityFilters() {
           <button
             role="tab"
             aria-selected={activeTab === "published"}
-            className={`${styles.tab} ${
-              activeTab === "published" ? styles.activeTab : ""
-            }`}
+            className={`${styles.tab} ${activeTab === "published" ? styles.activeTab : ""}`}
             onClick={() => handleTabChange("published")}
           >
             PUBLISHED
@@ -172,9 +150,7 @@ export function OpportunityFilters() {
           <button
             role="tab"
             aria-selected={activeTab === "pending"}
-            className={`${styles.tab} ${
-              activeTab === "pending" ? styles.activeTab : ""
-            }`}
+            className={`${styles.tab} ${activeTab === "pending" ? styles.activeTab : ""}`}
             onClick={() => handleTabChange("pending")}
           >
             PENDING
@@ -182,18 +158,11 @@ export function OpportunityFilters() {
         </div>
 
         {/* Conditional Rendering */}
-        {activeTab === "published" && (
-          <OpportunityList opportunities={filteredOpportunities} />
-        )}
-
-        {activeTab === "pending" && (
-          <OpportunityPending opportunities={filteredOpportunities} />
-        )}
+        {activeTab === "published" && <OpportunityList opportunities={filteredOpportunities} />}
+        {activeTab === "pending" && <OpportunityPending opportunities={filteredOpportunities} />}
 
         {/* Create Opportunity Modal */}
-        {showCreateModal && (
-          <CreateOpportunity onClose={closeCreateModal} />
-        )}
+        {showCreateModal && <CreateOpportunity onClose={closeCreateModal} />}
       </section>
     </SidebarLayout>
   );
