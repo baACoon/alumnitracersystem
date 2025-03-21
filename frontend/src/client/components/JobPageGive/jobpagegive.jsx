@@ -64,6 +64,10 @@ function JobGiveMainPage() {
       console.error('Error fetching jobs:', error);
       alert('An error occurred while fetching jobs.');
     } finally {
+      setShowDeleteModal(false);  
+      setSelectedJobId(null);     
+      setSelectedJob(null);      
+      console.log("Delete modal closed and job deleted.");
       setLoading(false);
     }
   };
@@ -133,7 +137,7 @@ function JobGiveMainPage() {
         </button>
       </div>
 
-      {/* 🔄 Show Loading Animation */}
+      {/*  Show Loading Animation */}
       {loading ? (
         <div className="loadingOverlay">
           <div className="loaderContainer">
@@ -171,8 +175,9 @@ function JobGiveMainPage() {
                   className="JobPageGiveIcon"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelectedJobId(job._id);
-                    setShowDeleteModal(true);
+                    setSelectedJobId(job._id);  // Set selected job ID
+                    setSelectedJob(job);        // Set the selected job for the modal
+                    setShowDeleteModal(true); 
                   }}
                 />
               </div>
