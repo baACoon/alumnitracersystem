@@ -9,7 +9,6 @@ export function OpportunityFilters() {
   const [activeTab, setActiveTab] = useState("published");
   const [college, setCollege] = useState("");
   const [course, setCourse] = useState("");
-  const [status, setStatus] = useState("All"); // Status dropdown: All, Published, Pending
   const [activeFilter, setActiveFilter] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [opportunities, setOpportunities] = useState([]);
@@ -17,38 +16,17 @@ export function OpportunityFilters() {
   useEffect(() => {
     const fetchOpportunities = async () => {
       try {
-        let url = "https://alumnitracersystem.onrender.com/jobs/jobpost?";
-
-        // Add query parameters to the URL based on selected filters
-        if (college) {
-          url += `college=${college}&`;
-        }
-        if (course) {
-          url += `course=${course}&`;
-        }
-        if (status !== "All") {
-          url += `status=${status}`;
-        }
-
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-          console.error(`Error fetching opportunities: ${response.statusText}`);
-          alert("Failed to fetch opportunities");
-          return;
-        }
-
+        const response = await fetch("https://alumnitracersystem.onrender.com/jobs");
         const data = await response.json();
-        console.log("Fetched Opportunities:", data); // For debugging
-        setOpportunities(data); // Store the data in state
+        console.log("Fetched Opportunities: ", data);  // Log fetched data for debugging
+        setOpportunities(data); // Store the data from the API
       } catch (error) {
         console.error("Error fetching opportunities:", error);
-        alert("An error occurred while fetching opportunities.");
       }
     };
 
     fetchOpportunities();
-  }, [college, course, status]); // Re-run when filters change
+  }, []);
 
   const coursesByCollege = {
     "College of Engineering": [
@@ -92,8 +70,8 @@ export function OpportunityFilters() {
     setActiveFilter("course");
   };
 
-  const handleStatusChange = (e) => {
-    setStatus(e.target.value);
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
   };
 
   const handleCreateClick = () => {
@@ -104,25 +82,33 @@ export function OpportunityFilters() {
     setShowCreateModal(false); // Close the create opportunity modal
   };
 
+  // Filter the opportunities based on the selected college and course
+  const filteredOpportunities = opportunities.filter((opportunity) => {
+    // Check if the opportunity matches the selected college and course
+    const matchesCollege = college ? opportunity.college === college : true;
+    const matchesCourse = course ? opportunity.course === course : true;
+
+    // Check if the opportunity matches the selected status (Published or Pending)
+    const matchesStatus =
+      activeTab === "published"
+        ? opportunity.status === "Published"
+        : opportunity.status === "Pending";
+
+    return matchesCollege && matchesCourse && matchesStatus;
+  });
+
   return (
     <SidebarLayout>
       <section className={styles.filterSection} aria-label="Opportunity filters">
         <div className={styles.header}>
           <h2 className={styles.databaseTitle}>OPPORTUNITY DATABASE</h2>
-          <button
-            className={styles.createButton}
-            onClick={handleCreateClick}
-          >
+          <button className={styles.createButton} onClick={handleCreateClick}>
             + Create Opportunity
           </button>
         </div>
 
         {/* Filter Controls */}
-        <div
-          className={styles.filterControls}
-          role="group"
-          aria-label="Filter controls"
-        >
+        <div className={styles.filterControls} role="group" aria-label="Filter controls">
           {/* College Filter */}
           <div className={styles.filterButtonContainer}>
             <label htmlFor="college" className={styles.filterLabel}>
@@ -130,9 +116,7 @@ export function OpportunityFilters() {
             </label>
             <select
               id="college"
-              className={`${styles.filterButton} ${
-                activeFilter === "college" ? styles.filterButtonActive : ""
-              }`}
+              className={`${styles.filterButton} ${activeFilter === "college" ? styles.filterButtonActive : ""}`}
               value={college}
               onChange={handleCollegeChange}
             >
@@ -152,9 +136,7 @@ export function OpportunityFilters() {
             </label>
             <select
               id="course"
-              className={`${styles.filterButton} ${
-                activeFilter === "course" ? styles.filterButtonActive : ""
-              }`}
+              className={`${styles.filterButton} ${activeFilter === "course" ? styles.filterButtonActive : ""}`}
               value={course}
               onChange={handleCourseChange}
               disabled={!college}
@@ -168,25 +150,6 @@ export function OpportunityFilters() {
                 ))}
             </select>
           </div>
-
-          {/* Status Filter */}
-          <div className={styles.filterButtonContainer}>
-            <label htmlFor="status" className={styles.filterLabel}>
-              Status:
-            </label>
-            <select
-              id="status"
-              className={`${styles.filterButton} ${
-                activeFilter === "status" ? styles.filterButtonActive : ""
-              }`}
-              value={status}
-              onChange={handleStatusChange}
-            >
-              <option value="All">All</option>
-              <option value="Published">Published</option>
-              <option value="Pending">Pending</option>
-            </select>
-          </div>
         </div>
 
         {/* Tabs for Published and Pending Opportunities */}
@@ -194,35 +157,24 @@ export function OpportunityFilters() {
           <button
             role="tab"
             aria-selected={activeTab === "published"}
-            className={`${styles.tab} ${
-              activeTab === "published" ? styles.activeTab : ""
-            }`}
-            onClick={() => setActiveTab("published")}
+            className={`${styles.tab} ${activeTab === "published" ? styles.activeTab : ""}`}
+            onClick={() => handleTabChange("published")}
           >
             PUBLISHED
           </button>
           <button
             role="tab"
             aria-selected={activeTab === "pending"}
-            className={`${styles.tab} ${
-              activeTab === "pending" ? styles.activeTab : ""
-            }`}
-            onClick={() => setActiveTab("pending")}
+            className={`${styles.tab} ${activeTab === "pending" ? styles.activeTab : ""}`}
+            onClick={() => handleTabChange("pending")}
           >
             PENDING
           </button>
         </div>
 
         {/* Conditional Rendering */}
-        <div>
-          {status === "All" || status === "Published" ? (
-            <OpportunityList opportunities={opportunities} />
-          ) : null}
-
-          {status === "All" || status === "Pending" ? (
-            <OpportunityPending opportunities={opportunities} />
-          ) : null}
-        </div>
+        {activeTab === "published" && <OpportunityList opportunities={filteredOpportunities} />}
+        {activeTab === "pending" && <OpportunityPending opportunities={filteredOpportunities} />}
 
         {/* Create Opportunity Modal */}
         {showCreateModal && <CreateOpportunity onClose={closeCreateModal} />}
