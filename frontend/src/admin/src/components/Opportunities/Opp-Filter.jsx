@@ -15,40 +15,41 @@ export function OpportunityFilters() {
 
   useEffect(() => {
     const fetchOpportunities = async () => {
-      const token = localStorage.getItem("token"); // Ensure token is fetched
-  
-      if (!token) {
-        alert("You need to log in first.");
-        return;
-      }
-  
       try {
-        const response = await fetch(
-          "https://alumnitracersystem.onrender.com/jobs/jobpost?status=Published", 
-          {
-            headers: {
-              "Authorization": `Bearer ${token}`,
-            },
-          }
-        );
-        
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Failed to fetch published opportunities:", errorData);
-          alert(errorData.message || "Failed to fetch published opportunities.");
-          return;
+        // Start constructing the URL for the fetch request
+        let url = "https://alumnitracersystem.onrender.com/jobs?";
+  
+        // Append filters to the URL if they are set
+        if (college) {
+          url += `college=${college}&`;
+        }
+        if (course) {
+          url += `course=${course}&`;
+        }
+        if (activeTab === "published") {
+          url += "status=Published";
+        } else if (activeTab === "pending") {
+          url += "status=Pending";
         }
   
+        // Fetch the data from the API
+        const response = await fetch(url);
         const data = await response.json();
-        console.log("Fetched Opportunities: ", data); // Log fetched data for debugging
-        setOpportunities(data); // Store the data from the API
+        
+        if (response.ok) {
+          setOpportunities(data);  // Store the fetched data in state
+        } else {
+          console.error("Error fetching opportunities:", data);
+        }
       } catch (error) {
         console.error("Error fetching opportunities:", error);
       }
     };
   
+    // Call the fetch function
     fetchOpportunities();
-  }, []);
+  }, [college, course, activeTab]); // Re-fetch when filters change
+  
 
   const coursesByCollege = {
     "College of Engineering": [
