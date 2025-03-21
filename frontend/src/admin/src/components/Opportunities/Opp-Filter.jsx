@@ -1,10 +1,10 @@
-import React, { useState ,  useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Opp-Filter.module.css";
 import SidebarLayout from "../SideBar/SideBarLayout";
 import OpportunityList from "./Opportunity-List";
 import OpportunityPending from "./Opportunity-Pending";
 import CreateOpportunity from "./Create-Opportunity";
- 
+
 export function OpportunityFilters() {
   const [activeTab, setActiveTab] = useState("published");
   const [college, setCollege] = useState("");
@@ -84,10 +84,16 @@ export function OpportunityFilters() {
 
   // Filter the opportunities based on the selected college and course
   const filteredOpportunities = opportunities.filter((opportunity) => {
+    // Check if the opportunity matches the selected college and course
     const matchesCollege = college ? opportunity.college === college : true;
     const matchesCourse = course ? opportunity.course === course : true;
-    const matchesStatus = activeTab === "published" ? opportunity.status === "Published" : opportunity.status === "Pending";
-    
+
+    // Check if the opportunity matches the selected status (Published or Pending)
+    const matchesStatus =
+      activeTab === "published"
+        ? opportunity.status === "Published"
+        : opportunity.status === "Pending";
+
     return matchesCollege && matchesCourse && matchesStatus;
   });
 
@@ -96,10 +102,7 @@ export function OpportunityFilters() {
       <section className={styles.filterSection} aria-label="Opportunity filters">
         <div className={styles.header}>
           <h2 className={styles.databaseTitle}>OPPORTUNITY DATABASE</h2>
-          <button
-            className={styles.createButton}
-            onClick={handleCreateClick}
-          >
+          <button className={styles.createButton} onClick={handleCreateClick}>
             + Create Opportunity
           </button>
         </div>
@@ -108,7 +111,9 @@ export function OpportunityFilters() {
         <div className={styles.filterControls} role="group" aria-label="Filter controls">
           {/* College Filter */}
           <div className={styles.filterButtonContainer}>
-            <label htmlFor="college" className={styles.filterLabel}>College:</label>
+            <label htmlFor="college" className={styles.filterLabel}>
+              College:
+            </label>
             <select
               id="college"
               className={`${styles.filterButton} ${activeFilter === "college" ? styles.filterButtonActive : ""}`}
@@ -126,7 +131,9 @@ export function OpportunityFilters() {
 
           {/* Course Filter */}
           <div className={styles.filterButtonContainer}>
-            <label htmlFor="course" className={styles.filterLabel}>Course:</label>
+            <label htmlFor="course" className={styles.filterLabel}>
+              Course:
+            </label>
             <select
               id="course"
               className={`${styles.filterButton} ${activeFilter === "course" ? styles.filterButtonActive : ""}`}
@@ -168,7 +175,7 @@ export function OpportunityFilters() {
         {/* Conditional Rendering */}
         {activeTab === "published" && <OpportunityList opportunities={filteredOpportunities} />}
         {activeTab === "pending" && <OpportunityPending opportunities={filteredOpportunities} />}
-        
+
         {/* Create Opportunity Modal */}
         {showCreateModal && <CreateOpportunity onClose={closeCreateModal} />}
       </section>
