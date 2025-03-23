@@ -86,39 +86,6 @@ export const SurveyFilters = () => {
             </button>
           </div>
 
-          {/* Filter Controls */}
-          <div className={styles.filterControls} role="group" aria-label="Filter Controls">
-            <div className={styles.filterButtonContainer}>
-              <label htmlFor="year" className={styles.filterLabel}>Year:</label>
-              <select
-                id="year"
-                className={`${styles.filterButton} ${activeFilter === 'year' ? styles.filterButtonActive : ''}`}
-                value={year}
-                onChange={handleYearChange}
-              >
-                <option value="">All Years</option>
-                {Array.from({ length: 10 }, (_, i) => 2024 - i).map((yearOption) => (
-                  <option key={yearOption} value={yearOption}>{yearOption}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className={styles.filterButtonContainer}>
-              <label htmlFor="college" className={styles.filterLabel}>College:</label>
-              <select
-                id="college"
-                className={`${styles.filterButton} ${activeFilter === 'college' ? styles.filterButtonActive : ''}`}
-                value={college}
-                onChange={handleCollegeChange}
-              >
-                <option value="">All Colleges</option>
-                {Object.keys(coursesByCollege).map((collegeName) => (
-                  <option key={collegeName} value={collegeName}>{collegeName}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
           {/* Tabs Section */}
           <div className={styles.tabSection} role="tablist">
             <button
