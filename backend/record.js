@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose"; // Also wag mo to kalimutan i addd
 import jwt from 'jsonwebtoken';
+import Graduate from "./models/Graduate.js"; // ✅ Make sure this file exists and is correctly defined
 
 const router = express.Router();
 
@@ -23,16 +24,16 @@ const Student = mongoose.model("Student", studentSchema);
 router.post("/register", async (req, res) => {
   const {
     gradyear,
+    firstName,
     lastName,
     password,
     confirmPassword,
   } = req.body;
-
   console.log("Received registration data:", req.body);
 
   try {
     // Validate input fields
-    if (!gradyear || !lastName || !password || !confirmPassword) {
+    if (!gradyear || !firstName || !lastName || !password || !confirmPassword) {
       console.log("Error: Missing fields");
       return res.status(400).json({ error: "All fields are required." });
     }
@@ -41,6 +42,21 @@ router.post("/register", async (req, res) => {
     if (password !== confirmPassword) {
       console.log("Error: Passwords do not match");
       return res.status(400).json({ error: "Passwords do not match." });
+    }
+
+    // ✅ Graduate Verification Step with full name
+    const fullName = `${firstName} ${lastName}`;
+    const graduate = await Graduate.findOne({
+      firstName: { $regex: new RegExp(`^${firstName}$`, "i") },
+      lastName: { $regex: new RegExp(`^${lastName}$`, "i") },
+      gradYear: parseInt(gradyear),
+    });
+    
+
+    if (!graduate) {
+      return res.status(401).json({
+        error: "Verification failed. Your credentials do not match our graduate list."
+      });
     }
 
     // Generate unique user ID
@@ -246,5 +262,4 @@ router.post("/login", async (req, res) => {
 });
 
 export { Student };
-
 export default router;

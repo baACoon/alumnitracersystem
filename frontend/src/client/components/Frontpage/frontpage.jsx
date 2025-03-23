@@ -21,8 +21,11 @@ const TestFrontPage = () => {
         delay: 3.5, // Loading screen lasts for 3.5 seconds
         onComplete: () => {
           setLoading(false);
-          document.querySelector(".loadingPage").style.display = "none"; // Hide it after animation completes
-        },
+          const loadingEl = document.querySelector(".loadingPage");
+          if (loadingEl) {
+            loadingEl.style.display = "none";
+          }
+        },        
       });
   
       // Animation for "TUPATS" letters (Angry Bounce Effect)
