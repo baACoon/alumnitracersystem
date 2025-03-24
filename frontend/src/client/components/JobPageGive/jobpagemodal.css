@@ -64,9 +64,14 @@
   }
 
   /* DELETE MODAL BUTTON */
+.delmodal-btn{
+  display: flex;
+  justify-content: space-between;
+}
+
 
 .yesdel-btn{
-  background-color: #c31d3c;
+  background-color: #27a543;
   color: white;
   border: none;
   border-radius: 5px;
@@ -81,6 +86,7 @@
   border-radius: 5px;
   cursor: pointer;
   padding: 5px 10px;
-  margin-left: 2em;
 }
+
+
   

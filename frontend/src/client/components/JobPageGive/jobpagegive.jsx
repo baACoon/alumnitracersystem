@@ -215,7 +215,7 @@ function JobGiveMainPage() {
               <div className="modal-content">
                 <h2>Are you sure you want to delete this post?</h2>
                 <p>{selectedJob.title}</p>
-                <div>
+                <div className='delmodal-btn'>
                   <button className='yesdel-btn' onClick={handleDelete}>Yes, Delete</button>
                   <button className='canceldel-btn' onClick={() => setShowDeleteModal(false)}>Cancel</button>
                 </div>
