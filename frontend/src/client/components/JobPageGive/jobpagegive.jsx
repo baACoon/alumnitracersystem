@@ -213,11 +213,11 @@ function JobGiveMainPage() {
           {showDeleteModal && selectedJob && (
             <div className="modal-overlay">
               <div className="modal-content">
-                <h2>Are you sure you want to delete this job?</h2>
+                <h2>Are you sure you want to delete this post?</h2>
                 <p>{selectedJob.title}</p>
                 <div>
-                  <button onClick={handleDelete}>Yes, Delete</button>
-                  <button onClick={() => setShowDeleteModal(false)}>Cancel</button>
+                  <button className='yesdel-btn' onClick={handleDelete}>Yes, Delete</button>
+                  <button className='canceldel-btn' onClick={() => setShowDeleteModal(false)}>Cancel</button>
                 </div>
               </div>
             </div>

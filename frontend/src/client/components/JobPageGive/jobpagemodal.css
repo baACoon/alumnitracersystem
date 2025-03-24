@@ -62,4 +62,24 @@
   .closejobmodal:hover{
     background-color: #8f263a;
   }
+
+  /* DELETE MODAL BUTTON */
+
+.yesdel-btn{
+  background-color: #c31d3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.canceldel-btn{
+  background-color: #c31d3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
+}
   
