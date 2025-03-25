@@ -4,14 +4,15 @@ import path from 'path';
 import multer from 'multer';
 import Article from '../models/article.js'; 
 import { sendArticleNotification } from '../emailservice.js';
-import cloudinary from '../config/cloudinary.js' 
-import  { uploadToCloudinary} from '../config/multerConfig.js';
-import upload from '../config/multerConfig.js'; 
-import multerConfig from '../config/cloudinary.js'
+import { uploadToCloudinary } from '../config/multerConfig.js';
 
 dotenv.config();
 
 const router = express.Router();
+
+const storage = multer.memoryStorage();
+const upload = multer({storage});
+
 
 // POST: Add a new article
 router.post('/add', upload.single('image'), async (req, res) => {
@@ -20,24 +21,24 @@ router.post('/add', upload.single('image'), async (req, res) => {
 
     try {
         if (req.file) {
-            const publicId = `article_images_${Date.now()}`; // Generate a unique public ID
+            const publicId = `article_images_${Date.now()}`; // Unique identifier for the image
             const result = await uploadToCloudinary(req.file.buffer, publicId); // Upload to Cloudinary
-            imageUrl = result.secure_url; // Get the URL of the uploaded image
+            imageUrl = result.secure_url; // Get the secure URL of the uploaded image
         }
 
         if (!title || !content) {
             return res.status(400).json({ message: 'Title and content are required' });
         }
 
-        const article = new Article({ title, content, image: imageUrl });
+        const article = new Article({ title, content, image: imageUrl }); // Store the URL of the image
         await article.save();
 
-        await sendArticleNotification(title, content);
+        await sendArticleNotification(title, content); // Send email notification
 
         res.status(201).json({ message: 'Article added successfully and notification sent!' });
     } catch (error) {
         console.error('Error saving article:', error);
-        res.status(500).json({ message: 'Error creating article', error: error.message || error });
+        res.status(500).json({ message: 'Error creating article', error });
     }
 });
 
