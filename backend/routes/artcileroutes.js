@@ -42,7 +42,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
 });
 
 // PUT: Update article
-router.put('/update/:id', multerConfig.single('image'), async (req, res) => {
+router.put('/update/:id', upload.single('image'), async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
     let imageUrl = undefined;
@@ -50,12 +50,11 @@ router.put('/update/:id', multerConfig.single('image'), async (req, res) => {
     try {
         const updatedFields = { title, content };
 
-        // If there is a new image uploaded, upload it to Cloudinary
         if (req.file) {
-            const publicId = `article_images/${Date.now()}`; // Optional: use a unique identifier for the image
+            const publicId = `article_images/${Date.now()}`;
             const result = await uploadToCloudinary(req.file.buffer, publicId);
-            imageUrl = result.secure_url; // Get the image URL from Cloudinary response
-            updatedFields.image = imageUrl; // Set the image URL to the update fields
+            imageUrl = result.secure_url;
+            updatedFields.image = imageUrl;
         }
 
         const article = await Article.findByIdAndUpdate(id, updatedFields, { new: true });
@@ -65,10 +64,10 @@ router.put('/update/:id', multerConfig.single('image'), async (req, res) => {
 
         res.status(200).json({ message: 'Article updated successfully!' });
     } catch (error) {
-        console.error('Error updating article:', error);
-        res.status(500).json({ message: 'Error updating article', error });
+        res.status(500).json({ message: 'Error updating article', error: error.message || error });
     }
 });
+
 
 // DELETE: Delete article
 router.delete('/delete/:id', async (req, res) => {
