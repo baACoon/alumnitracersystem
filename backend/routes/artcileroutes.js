@@ -4,7 +4,7 @@ import multer from 'multer';
 import path from 'path';
 import Article from '../models/article.js'; 
 import { sendArticleNotification } from '../emailservice.js';
-import cloudinary from '../config/cloudinaryConfig'; 
+import cloudinary from '../config/cloudinary.js' 
 
 const router = express.Router();
 
