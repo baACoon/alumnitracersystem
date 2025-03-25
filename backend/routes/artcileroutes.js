@@ -17,35 +17,35 @@ const upload = multer({ storage });
 router.post('/add', upload.single('image'), async (req, res) => {
     const { title, content } = req.body;
     let imageUrl = null;
-
-    console.log('Request Body:', req.body);  // Log form data
-    console.log('Uploaded File:', req.file);  // Log uploaded file
-
+  
     try {
-        // If an image is uploaded, send it to Cloudinary
-        if (req.file) {
-            // Upload image to Cloudinary using the buffer data from multer
-            const result = await cloudinary.uploader.upload(req.file.buffer, {
-                resource_type: 'auto',  // Cloudinary automatically detects the file type
-            });
-
-            // Save the image URL provided by Cloudinary
-            imageUrl = result.secure_url; // This is the full URL to the image on Cloudinary
-        }
-
-        // Create a new article with the Cloudinary URL
-        const article = new Article({ title, content, image: imageUrl });
-        await article.save();  // Save article in the database
-
-        // Send email notification to users
-        await sendArticleNotification(title, content);
-
-        res.status(201).json({ message: 'Article added successfully and Notification Sent!' });
+      // If there is an image, upload it to Cloudinary
+      if (req.file) {
+        const result = await cloudinary.uploader.upload(req.file.buffer, {
+          resource_type: "auto",  // Automatically detect file type (image, video, etc.)
+        });
+  
+        imageUrl = result.secure_url;  // Get the secure URL from Cloudinary
+      }
+  
+      // Ensure the title and content are provided
+      if (!title || !content) {
+        return res.status(400).json({ message: 'Title and content are required' });
+      }
+  
+      // Save the article to the database
+      const article = new Article({ title, content, image: imageUrl });
+      await article.save();
+  
+      // Send email notification
+      await sendArticleNotification(title, content);
+  
+      res.status(201).json({ message: 'Article added successfully and notification sent!' });
     } catch (error) {
-        console.error('Error saving article:', error);
-        res.status(500).json({ message: 'Error creating article', error });
+      console.error('Error saving article:', error);
+      res.status(500).json({ message: 'Error creating article', error: error.message || error });
     }
-});
+  });
 
 // PUT: Update article
 router.put('/update/:id', upload.single('image'), async (req, res) => {
