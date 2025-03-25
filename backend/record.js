@@ -2,7 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose"; // Also wag mo to kalimutan i addd
 import jwt from 'jsonwebtoken';
-import Graduate from "./models/Graduate.js"; // ✅ Make sure this file exists and is correctly defined
+import Graduate from "./models/graduateModels.js"; // ✅ Make sure this file exists and is correctly defined
 
 const router = express.Router();
 
