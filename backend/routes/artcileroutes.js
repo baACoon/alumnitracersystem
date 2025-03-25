@@ -10,42 +10,41 @@ import multerConfig, { uploadToCloudinary } from '../config/multerConfig.js';
 dotenv.config();
 
 const router = express.Router();
-const storage = multer.memoryStorage(); // Using memory storage as Cloudinary will handle the file
-const upload = multer({ storage });
 
 // POST: Add a new article
-router.post('/add', multerConfig.single('image'), async (req, res) => {
+router.post('/add', upload.single('image'), async (req, res) => {
     const { title, content } = req.body;
     let imageUrl = null;
-  
+
     try {
-      // If there's an image, upload it to Cloudinary
-      if (req.file) {
-        const result = await uploadToCloudinary(req.file.buffer);
-        imageUrl = result.secure_url;  // Get the secure URL from Cloudinary
-      }
-  
-      // Ensure the title and content are provided
-      if (!title || !content) {
-        return res.status(400).json({ message: 'Title and content are required' });
-      }
-  
-      // Save the article to the database
-      const article = new Article({ title, content, image: imageUrl });
-      await article.save();
-  
-      // Send email notification
-      await sendArticleNotification(title, content);
-  
-      res.status(201).json({ message: 'Article added successfully and notification sent!' });
+        // If there's an image, upload it to Cloudinary
+        if (req.file) {
+            const publicId = `article_images/${Date.now()}`; // Optional: use a unique identifier for the image
+            const result = await uploadToCloudinary(req.file.buffer, publicId);
+            imageUrl = result.secure_url;  // Get the secure URL from Cloudinary
+        }
+
+        // Ensure the title and content are provided
+        if (!title || !content) {
+            return res.status(400).json({ message: 'Title and content are required' });
+        }
+
+        // Save the article to the database
+        const article = new Article({ title, content, image: imageUrl });
+        await article.save();
+
+        // Send email notification
+        await sendArticleNotification(title, content);
+
+        res.status(201).json({ message: 'Article added successfully and notification sent!' });
     } catch (error) {
-      console.error('Error saving article:', error);
-      res.status(500).json({ message: 'Error creating article', error: error.message || error });
+        console.error('Error saving article:', error);
+        res.status(500).json({ message: 'Error creating article', error: error.message || error });
     }
-  });
+});
 
 // PUT: Update article
-router.put('/update/:id', multerConfig.single('image'), async (req, res) => {
+router.put('/update/:id', upload.single('image'), async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
     let imageUrl = undefined;
@@ -55,7 +54,8 @@ router.put('/update/:id', multerConfig.single('image'), async (req, res) => {
 
         // If there is a new image uploaded, upload it to Cloudinary
         if (req.file) {
-            const result = await uploadToCloudinary(req.file.buffer);
+            const publicId = `article_images/${Date.now()}`; // Optional: use a unique identifier for the image
+            const result = await uploadToCloudinary(req.file.buffer, publicId);
             imageUrl = result.secure_url; // Get the image URL from Cloudinary response
             updatedFields.image = imageUrl; // Set the image URL to the update fields
         }
@@ -67,10 +67,10 @@ router.put('/update/:id', multerConfig.single('image'), async (req, res) => {
 
         res.status(200).json({ message: 'Article updated successfully!' });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating article', error });
+        console.error('Error updating article:', error);
+        res.status(500).json({ message: 'Error updating article', error: error.message || error });
     }
 });
-
 
 // DELETE: Delete article
 router.delete('/delete/:id', async (req, res) => {
