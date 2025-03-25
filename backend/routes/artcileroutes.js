@@ -20,9 +20,9 @@ router.post('/add', upload.single('image'), async (req, res) => {
 
     try {
         if (req.file) {
-            const publicId = `article_images_${Date.now()}`; // Prefix with 'imagepost' in upload function
-            const result = await uploadToCloudinary(req.file.buffer, publicId);
-            imageUrl = result.secure_url; // Get the secure URL for the image
+            const publicId = `article_images_${Date.now()}`; // Generate a unique public ID
+            const result = await uploadToCloudinary(req.file.buffer, publicId); // Upload to Cloudinary
+            imageUrl = result.secure_url; // Get the URL of the uploaded image
         }
 
         if (!title || !content) {
@@ -40,6 +40,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
         res.status(500).json({ message: 'Error creating article', error: error.message || error });
     }
 });
+
 
 // PUT: Update article
 router.put('/update/:id', upload.single('image'), async (req, res) => {

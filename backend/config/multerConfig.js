@@ -17,19 +17,20 @@ const storage = multer.memoryStorage();
 
 const upload = multer({ storage });
 
+
 const uploadToCloudinary = async (fileBuffer, publicId) => {
     try {
         const result = await cloudinary.uploader.upload_stream(
             {
                 resource_type: 'auto', // Auto-detect file type
-                public_id: `imagepost/${publicId}`, // Specify the folder 'imagepost' in the public ID
-                folder: 'imagepost', // Specify folder name
+                public_id: publicId,   // Public ID (no need to manually specify folder here)
+                folder: 'imagepost',    // Specify the folder where images should go
             },
             (error, result) => {
                 if (error) {
                     throw new Error(error.message);
                 }
-                return result;
+                return result; // Returning result with image URL
             }
         );
 
@@ -39,7 +40,8 @@ const uploadToCloudinary = async (fileBuffer, publicId) => {
     } catch (error) {
         throw new Error('Error uploading image to Cloudinary: ' + error.message);
     }
-};   
+};
+
 
 export default upload;
 export { uploadToCloudinary };
