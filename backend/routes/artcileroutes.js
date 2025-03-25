@@ -21,7 +21,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
     const { title, content } = req.body;
     let imageUrl = null;
 
-    // Check if the file exists and its size
+    // Check if a file exists and if its size is under the allowed limit
     if (req.file) {
         console.log('File received:', req.file);
 
@@ -31,10 +31,10 @@ router.post('/add', upload.single('image'), async (req, res) => {
         }
 
         try {
-            // Upload image to Cloudinary
-            const publicId = `article_images_${Date.now()}`; // Unique identifier for the image
-            const result = await uploadToCloudinary(req.file.buffer, publicId); // Upload to Cloudinary
-            imageUrl = result.secure_url;  // Get the URL of the uploaded image
+            // Upload the image to Cloudinary using the file buffer and generate the publicId
+            const publicId = `article_images_${Date.now()}`;
+            const result = await uploadToCloudinary(req.file.buffer, publicId);  // Pass the buffer to Cloudinary
+            imageUrl = result.secure_url;  // Get the URL of the uploaded image from Cloudinary
             console.log('Image uploaded to Cloudinary:', imageUrl);
         } catch (error) {
             console.error('Error uploading to Cloudinary:', error);
@@ -48,7 +48,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
     }
 
     try {
-        // Create and save the article
+        // Create and save the article in the database
         const article = new Article({ title, content, image: imageUrl });
         await article.save();
 
@@ -62,6 +62,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
         res.status(500).json({ message: 'Error creating article', error });
     }
 });
+
 
 
 // PUT: Update article
