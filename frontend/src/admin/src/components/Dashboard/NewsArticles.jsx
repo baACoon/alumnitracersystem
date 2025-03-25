@@ -4,7 +4,7 @@ import styles from "./NewsArticles.module.css";
 export default function NewsArticles() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [image, setImage] = useState(null);
+  const [imageUrl, setimageUrl] = useState(null);
   const [message, setMessage] = useState("");
   const [articles, setArticles] = useState([]);
   const [editId, setEditId] = useState(null);
@@ -33,8 +33,8 @@ export default function NewsArticles() {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
-    if (image) {
-      formData.append("image", image);
+    if (imageUrl) {
+      formData.append("imageUrl", imageUrl);
     }
 
     try {
@@ -53,7 +53,7 @@ export default function NewsArticles() {
         setMessage(data.message);
         setTitle("");
         setContent("");
-        setImage(null);
+        setimageUrl(null);
         setEditId(null);
         setShowFormModal(false);
         fetchArticles();
@@ -106,7 +106,7 @@ export default function NewsArticles() {
     setEditId(null);
     setTitle("");
     setContent("");
-    setImage(null);
+    setimageUrl(null);
   };
 
   const closeArticleModal = () => {
@@ -124,35 +124,35 @@ export default function NewsArticles() {
 
       <div className={styles.articlesGrid}>
         {articles.map((article) => (
-          <div key={article._id} className={styles.articleBox}>
+            <div key={article._id} className={styles.articleBox}>
             <h3>{article.title}</h3>
-            {article.imageUrl && (  // Use imageUrl here
-              <img
-                src={article.imageUrl}  // Display the Cloudinary image URL
+            {article.imageUrl && (
+                <img
+                src={article.imageUrl}
                 alt={article.title}
-                className={styles.articleImage}
-              />
+                className={styles.articleimageUrl}
+                />
             )}
             <p>{article.content.slice(0, 100)}...</p>
             <button
-              className={styles.editButton}
-              onClick={(e) => {
+                className={styles.editButton}
+                onClick={(e) => {
                 e.stopPropagation();
                 handleEdit(article);
-              }}
+                }}
             >
-              Edit
+                Edit
             </button>
             <button
-              className={styles.deleteButton}
-              onClick={(e) => {
+                className={styles.deleteButton}
+                onClick={(e) => {
                 e.stopPropagation();
                 handleDelete(article._id);
-              }}
+                }}
             >
-              Delete
+                Delete
             </button>
-          </div>
+            </div>
         ))}
       </div>
 
@@ -164,70 +164,88 @@ export default function NewsArticles() {
               &times;
             </button>
             <form className={styles.formContainer} onSubmit={handleSubmit}>
-              <div className={styles.formGroup}>
-                <label htmlFor="title">Title</label>
-                <input
-                  id="title"
-                  type="text"
-                  className={styles.formInput}
-                  placeholder="Enter article title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label htmlFor="content">Content</label>
-                <textarea
-                  id="content"
-                  className={styles.formTextarea}
-                  placeholder="Enter article content"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  required
-                ></textarea>
-              </div>
-              <div className={styles.formGroup}>
-                <label htmlFor="image">Image</label>
-                <input
-                  id="image"
-                  type="file"
-                  className={styles.formFile}
-                  accept="image/*"
-                  onChange={(e) => setImage(e.target.files[0])}
-                />
-              </div>
-              <button type="submit" className={styles.submitButton}>
-                {editId ? "Update Article" : "Add Article"}
-              </button>
+                <div className={styles.formGroup}>
+                    <label htmlFor="title">Title</label>
+                    <input
+                    id="title"
+                    type="text"
+                    className={styles.formInput}
+                    placeholder="Enter article title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                    />
+                </div>
+                <div className={styles.formGroup}>
+                    <label htmlFor="content">Content</label>
+                    <textarea
+                    id="content"
+                    className={styles.formTextarea}
+                    placeholder="Enter article content"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    required
+                    ></textarea>
+                </div>
+                <div className={styles.formGroup}>
+                    <label htmlFor="imageUrl">imageUrl</label>
+                    <input
+                    id="imageUrl"
+                    type="file"
+                    className={styles.formFile}
+                    accept="imageUrl/*"
+                    onChange={(e) => setimageUrl(e.target.files[0])}
+                    />
+                </div>
+                <button type="submit" className={styles.submitButton}>
+                    {editId ? "Update Article" : "Add Article"}
+                </button>
             </form>
           </div>
         </div>
       )}
 
       {/* Article Modal */}
-      {selectedArticle && (
+        {selectedArticle && (
         <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
+            <div className={styles.modalContent}>
             <button className={styles.closeButton} onClick={closeArticleModal}>
-              &times;
+                &times;
             </button>
             <h2>{selectedArticle.title}</h2>
-            {selectedArticle.imageUrl && (  // Display the Cloudinary URL here
-              <img
-                src={selectedArticle.imageUrl}  // Cloudinary URL
+            {selectedArticle.imageUrl && (
+                <img
+                src={selectedArticle.imageUrl}
                 alt={selectedArticle.title}
-                className={styles.fullArticleImage}
-              />
+                className={styles.fullArticleimageUrl}
+                />
             )}
             <p>{selectedArticle.content}</p>
-            <small>
-              Published on {new Date(selectedArticle.createdAt).toLocaleString()}
-            </small>
-          </div>
+            
+            <div className={styles.modalActions}>
+                <button
+                    className={styles.editButton}
+                    onClick={() => {
+                    handleEdit(selectedArticle);
+                    closeArticleModal();
+                    }}
+                >
+                    Edit
+                </button>
+                <button
+                    className={styles.deleteButton}
+                    onClick={() => {
+                    handleDelete(selectedArticle._id);
+                    closeArticleModal();
+                    }}
+                >
+                    Delete
+                </button>
+                </div>
+
+            </div>
         </div>
-      )}
+        )}
     </div>
-    
   );
 }
