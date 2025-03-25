@@ -5,29 +5,23 @@ import path from 'path';
 import Article from '../models/article.js'; 
 import { sendArticleNotification } from '../emailservice.js';
 import cloudinary from '../config/cloudinary.js' 
+import multerConfig, { uploadToCloudinary } from '../config/multerConfig.js';
 
 dotenv.config();
 
 const router = express.Router();
-
-
 const storage = multer.memoryStorage(); // Using memory storage as Cloudinary will handle the file
-
 const upload = multer({ storage });
 
 // POST: Add a new article
-router.post('/add', upload.single('image'), async (req, res) => {
+router.post('/add', multerConfig.single('image'), async (req, res) => {
     const { title, content } = req.body;
     let imageUrl = null;
   
     try {
       // If there's an image, upload it to Cloudinary
       if (req.file) {
-        const result = await cloudinary.uploader.upload(req.file.buffer, {
-          resource_type: "auto",  // Automatically detect file type (image, video, etc.)
-          public_id: `article_images/${Date.now()}`, // Add a unique identifier or filename here
-        });
-  
+        const result = await uploadToCloudinary(req.file.buffer);
         imageUrl = result.secure_url;  // Get the secure URL from Cloudinary
       }
   
@@ -49,39 +43,34 @@ router.post('/add', upload.single('image'), async (req, res) => {
       res.status(500).json({ message: 'Error creating article', error: error.message || error });
     }
   });
-  
 
 // PUT: Update article
-router.put('/update/:id', upload.single('image'), async (req, res) => {
+router.put('/update/:id', multerConfig.single('image'), async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
     let imageUrl = undefined;
-  
+
     try {
-      const updatedFields = { title, content };
-  
-      // If there is a new image uploaded, upload it to Cloudinary
-      if (req.file) {
-        const result = await cloudinary.uploader.upload(req.file.buffer, {
-          resource_type: "auto", // Automatically detect file type (image, video, etc.)
-          public_id: `article_images/${Date.now()}`,  // Set a unique filename
-        });
-  
-        imageUrl = result.secure_url; // Get the image URL from Cloudinary response
-        updatedFields.image = imageUrl; // Set the image URL to the update fields
-      }
-  
-      const article = await Article.findByIdAndUpdate(id, updatedFields, { new: true });
-      if (!article) {
-        return res.status(404).json({ message: 'Article not found' });
-      }
-  
-      res.status(200).json({ message: 'Article updated successfully!' });
+        const updatedFields = { title, content };
+
+        // If there is a new image uploaded, upload it to Cloudinary
+        if (req.file) {
+            const result = await uploadToCloudinary(req.file.buffer);
+            imageUrl = result.secure_url; // Get the image URL from Cloudinary response
+            updatedFields.image = imageUrl; // Set the image URL to the update fields
+        }
+
+        const article = await Article.findByIdAndUpdate(id, updatedFields, { new: true });
+        if (!article) {
+            return res.status(404).json({ message: 'Article not found' });
+        }
+
+        res.status(200).json({ message: 'Article updated successfully!' });
     } catch (error) {
-      console.error('Error updating article:', error);
-      res.status(500).json({ message: 'Error updating article', error: error.message || error });
+        res.status(500).json({ message: 'Error updating article', error });
     }
-  });
+});
+
 
 // DELETE: Delete article
 router.delete('/delete/:id', async (req, res) => {

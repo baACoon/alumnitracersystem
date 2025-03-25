@@ -21,3 +21,5 @@ export async function connectToDatabase() {
     throw error;
   }
 }
+
+

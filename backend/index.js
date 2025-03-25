@@ -16,6 +16,7 @@ import alumnipage from './routes/alumnipageroutes.js';
 import dashboardRoutes from './routes/dashboardroutes.js';
 import uploadRoutes from './routes/uploadroutes.js';
 import fs from 'fs';
+import multer from "multer";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -53,3 +54,6 @@ connectToDatabase()
   .catch((error) => {
     console.error("Failed to connect to MongoDB Atlas. Server not started:", error);
   });
+
+
+  
