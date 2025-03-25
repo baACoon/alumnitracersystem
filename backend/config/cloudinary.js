@@ -1,5 +1,5 @@
 import cloudinary from 'cloudinary';
-import streamifier from 'streamifier';
+//import streamifier from 'streamifier';
 import dotenv from 'dotenv';
 
 dotenv.config
