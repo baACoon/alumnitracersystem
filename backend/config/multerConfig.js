@@ -1,6 +1,6 @@
 // multerConfig.js
 import multer from 'multer';
-import cloudinary from './cloudinary';
+import cloudinary from '../config/cloudinary.js';
 import { v2 as cloudinaryUploader } from 'cloudinary';
 import dotenv from 'dotenv';
 
