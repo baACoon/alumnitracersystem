@@ -1,9 +1,9 @@
-const cloudinary = require('cloudinary').v2;
+import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({
-  cloud_name: 'dhumh210h', 
-  api_key: '837878367197867', 
-  api_secret: 'G_BgDH8YxQhpHWKITrUXtMe-Xa8' 
+  cloud_name: 'dhumh210h',
+  api_key: '837878367197867',
+  api_secret: 'G_BgDH8YxQhpHWKITrUXtMe-Xa8',
 });
 
-module.exports = cloudinary;
+export default cloudinary;
