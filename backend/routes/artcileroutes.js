@@ -50,37 +50,38 @@ router.post('/add', upload.single('image'), async (req, res) => {
     }
   });
   
-  
 
 // PUT: Update article
 router.put('/update/:id', upload.single('image'), async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
     let imageUrl = undefined;
-
+  
     try {
-        const updatedFields = { title, content };
-
-        // If there is a new image uploaded, upload it to Cloudinary
-        if (req.file) {
-            const result = await cloudinary.uploader.upload(req.file.buffer, {
-                resource_type: "auto", // Automatically detect file type (image, video, etc.)
-            });
-
-            imageUrl = result.secure_url; // Get the image URL from Cloudinary response
-            updatedFields.image = imageUrl; // Set the image URL to the update fields
-        }
-
-        const article = await Article.findByIdAndUpdate(id, updatedFields, { new: true });
-        if (!article) {
-            return res.status(404).json({ message: 'Article not found' });
-        }
-
-        res.status(200).json({ message: 'Article updated successfully!' });
+      const updatedFields = { title, content };
+  
+      // If there is a new image uploaded, upload it to Cloudinary
+      if (req.file) {
+        const result = await cloudinary.uploader.upload(req.file.buffer, {
+          resource_type: "auto", // Automatically detect file type (image, video, etc.)
+          public_id: `article_images/${Date.now()}`,  // Set a unique filename
+        });
+  
+        imageUrl = result.secure_url; // Get the image URL from Cloudinary response
+        updatedFields.image = imageUrl; // Set the image URL to the update fields
+      }
+  
+      const article = await Article.findByIdAndUpdate(id, updatedFields, { new: true });
+      if (!article) {
+        return res.status(404).json({ message: 'Article not found' });
+      }
+  
+      res.status(200).json({ message: 'Article updated successfully!' });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating article', error });
+      console.error('Error updating article:', error);
+      res.status(500).json({ message: 'Error updating article', error: error.message || error });
     }
-});
+  });
 
 // DELETE: Delete article
 router.delete('/delete/:id', async (req, res) => {
