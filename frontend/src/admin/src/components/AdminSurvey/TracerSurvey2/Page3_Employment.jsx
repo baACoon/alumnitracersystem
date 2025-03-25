@@ -12,7 +12,7 @@ const Page3_Employment = ({ data, updateForm }) => {
     updateForm("unemploymentReasons", { ...data.unemploymentReasons, [field]: value });
   };
 
-  const handleFirstJobStayingReasonChange = (field, value) => {
+  const handleFirstJobStayingReasons = (field, value) => {
     const updatedStayingReasons = {
       ...data.jobDetails.stayingReasons,
       [field]: value,
@@ -37,6 +37,19 @@ const Page3_Employment = ({ data, updateForm }) => {
       acceptingJobReasons: updatedAcceptingJobReasons,
     });
   };
+
+  const handleFirstJobChangingReasonChange = (field, value) => {
+    const updatedChangingJobReasons = {
+      ...data.jobDetails.changingJobReasons,
+      [field]: value,
+    };
+    
+    updateForm("jobDetails", {
+      ...data.jobDetails,
+      changingJobReasons: updatedChangingJobReasons,
+    });
+  };
+
 
   const handleFirstJobSearchChange = (field, value) => {
     const updatedFirstJobSearch = {
@@ -223,7 +236,7 @@ const Page3_Employment = ({ data, updateForm }) => {
               <input
                 type="checkbox"
                 checked={data.jobDetails.stayingReasons.salariesBenefits}
-                onChange={(e) => handleFirstJobStayingReasonChange("salariesBenefits", e.target.checked)}
+                onChange={(e) => handleFirstJobStayingReasons("salariesBenefits", e.target.checked)}
               />
               Salary and benefits
             </label>
@@ -231,7 +244,7 @@ const Page3_Employment = ({ data, updateForm }) => {
               <input
                 type="checkbox"
                 checked={data.jobDetails.stayingReasons.careerChallenge}
-                onChange={(e) => handleFirstJobStayingReasonChange("careerChallenge", e.target.checked)}
+                onChange={(e) => handleFirstJobStayingReasons("careerChallenge", e.target.checked)}
               />
               Career Challenge
             </label>
@@ -239,7 +252,7 @@ const Page3_Employment = ({ data, updateForm }) => {
               <input
                 type="checkbox"
                 checked={data.jobDetails.stayingReasons.specialSkill}
-                onChange={(e) => handleFirstJobStayingReasonChange("specialSkill", e.target.checked)}
+                onChange={(e) => handleFirstJobStayingReasons("specialSkill", e.target.checked)}
               />
               Special Skill
             </label>
@@ -247,7 +260,7 @@ const Page3_Employment = ({ data, updateForm }) => {
               <input
                 type="checkbox"
                 checked={data.jobDetails.stayingReasons.relatedToCourse}
-                onChange={(e) => handleFirstJobStayingReasonChange("relatedToCourse", e.target.checked)}
+                onChange={(e) => handleFirstJobStayingReasons("relatedToCourse", e.target.checked)}
               />
               Related Course
             </label>
@@ -255,7 +268,7 @@ const Page3_Employment = ({ data, updateForm }) => {
               <input
                 type="checkbox"
                 checked={data.jobDetails.stayingReasons.proximity}
-                onChange={(e) => handleFirstJobStayingReasonChange("proximity", e.target.checked)}
+                onChange={(e) => handleFirstJobStayingReasons("proximity", e.target.checked)}
               />
               Close to home
             </label>
@@ -263,7 +276,7 @@ const Page3_Employment = ({ data, updateForm }) => {
               <input
                 type="checkbox"
                 checked={data.jobDetails.stayingReasons.peerInfluence}
-                onChange={(e) => handleFirstJobStayingReasonChange("peerInfluence", e.target.checked)}
+                onChange={(e) => handleFirstJobStayingReasons("peerInfluence", e.target.checked)}
               />
               Peer Influence
             </label>
@@ -271,7 +284,7 @@ const Page3_Employment = ({ data, updateForm }) => {
               <input
                 type="checkbox"
                 checked={data.jobDetails.stayingReasons.familyInfluence}
-                onChange={(e) => handleFirstJobStayingReasonChange("familyInfluence", e.target.checked)}
+                onChange={(e) => handleFirstJobStayingReasons("familyInfluence", e.target.checked)}
               />
               Family Influence
             </label>
