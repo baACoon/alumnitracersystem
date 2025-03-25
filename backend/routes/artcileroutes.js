@@ -10,65 +10,58 @@ dotenv.config();
 
 const router = express.Router();
 
-// Set up multer to store files in disk (instead of buffer)
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, 'uploads/');  // Define the folder to store images temporarily
-    },
-    filename: (req, file, cb) => {
-      cb(null, Date.now() + '-' + file.originalname);  // Name the file with timestamp to avoid conflicts
-    },
-  });
-  
-  const upload = multer({ storage });
-  
-  // Maximum file size allowed (5MB limit)
-  const MAX_FILE_SIZE = 5 * 1024 * 1024;  // 5MB
-  
-  // POST: Add a new article
-  router.post('/add', upload.single('image'), async (req, res) => {
+// Set up multer (memory storage for uploading files in memory)
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+// Maximum file size allowed (5MB limit)
+const MAX_FILE_SIZE = 5 * 1024 * 1024;  // 5MB
+
+// POST: Add a new article
+router.post('/add', upload.single('image'), async (req, res) => {
     const { title, content } = req.body;
     let imageUrl = null;
-  
-    // Check if the file exists and its size
+
+    // Check if a file was uploaded and handle image upload to Cloudinary
     if (req.file) {
-      // Check file size
-      if (req.file.size > MAX_FILE_SIZE) {
-        return res.status(400).json({ message: 'File is too large. Maximum size is 5MB.' });
-      }
-  
-      console.log('File received:', req.file);
-  
-      try {
-        // Upload image to Cloudinary
-        const result = await uploadToCloudinary(req.file);  // This should be the correct function
-        imageUrl = result.secure_url;  // Get the URL of the uploaded image
-        console.log('Image uploaded to Cloudinary:', imageUrl);
-      } catch (error) {
-        console.error('Error uploading to Cloudinary:', error);
-        return res.status(500).json({ message: 'Error uploading image to Cloudinary', error });
-      }
+        console.log('File received:', req.file);
+
+        // Check file size
+        if (req.file.size > MAX_FILE_SIZE) {
+            return res.status(400).json({ message: 'File is too large. Maximum size is 5MB.' });
+        }
+
+        try {
+            // Upload image to Cloudinary and get the URL
+            const result = await uploadToCloudinary(req.file);
+            imageUrl = result.secure_url;
+            console.log('Image uploaded to Cloudinary:', imageUrl);
+        } catch (error) {
+            console.error('Error uploading to Cloudinary:', error);
+            return res.status(500).json({ message: 'Error uploading image to Cloudinary', error });
+        }
     }
-  
+
     // Ensure title and content are provided
     if (!title || !content) {
-      return res.status(400).json({ message: 'Title and content are required' });
+        return res.status(400).json({ message: 'Title and content are required' });
     }
-  
+
     try {
-      const article = new Article({ title, content, image: imageUrl });
-      await article.save();
-  
-      // Send email notification to users
-      await sendArticleNotification(title, content);
-  
-      res.status(201).json({ message: 'Article added successfully and notification sent!' });
+        // Create and save the article with the Cloudinary image URL
+        const article = new Article({ title, content, image: imageUrl });
+        await article.save();
+
+        // Send email notification to users (optional)
+        await sendArticleNotification(title, content);
+
+        res.status(201).json({ message: 'Article added successfully and notification sent!' });
     } catch (error) {
-      console.error('Error saving article:', error);
-      res.status(500).json({ message: 'Error creating article', error });
+        console.error('Error saving article:', error);
+        res.status(500).json({ message: 'Error creating article', error });
     }
-  });
-  
+});
+
 
 
 // PUT: Update article
