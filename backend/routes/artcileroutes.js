@@ -14,28 +14,24 @@ dotenv.config();
 const router = express.Router();
 
 // POST: Add a new article
-router.post('/add', multerConfig.single('image'), async (req, res) => {
+router.post('/add', upload.single('image'), async (req, res) => {
     const { title, content } = req.body;
     let imageUrl = null;
 
     try {
-        // If there's an image, upload it to Cloudinary
         if (req.file) {
-            const publicId = `article_images/${Date.now()}`; // Optional: use a unique identifier for the image
+            const publicId = `article_images/${Date.now()}`;
             const result = await uploadToCloudinary(req.file.buffer, publicId);
-            imageUrl = result.secure_url;  // Get the secure URL from Cloudinary
+            imageUrl = result.secure_url;
         }
 
-        // Ensure the title and content are provided
         if (!title || !content) {
             return res.status(400).json({ message: 'Title and content are required' });
         }
 
-        // Save the article to the database
         const article = new Article({ title, content, image: imageUrl });
         await article.save();
 
-        // Send email notification to users
         await sendArticleNotification(title, content);
 
         res.status(201).json({ message: 'Article added successfully and notification sent!' });
