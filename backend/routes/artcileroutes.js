@@ -1,4 +1,3 @@
-// articleroutes.js
 import dotenv from 'dotenv';
 import express from 'express';
 import multer from 'multer';
@@ -22,10 +21,11 @@ router.post('/add', upload.single('image'), async (req, res) => {
     let imageUrl = null;
   
     try {
-      // If there is an image, upload it to Cloudinary
+      // If there's an image, upload it to Cloudinary
       if (req.file) {
         const result = await cloudinary.uploader.upload(req.file.buffer, {
           resource_type: "auto",  // Automatically detect file type (image, video, etc.)
+          public_id: `article_images/${Date.now()}`, // Add a unique identifier or filename here
         });
   
         imageUrl = result.secure_url;  // Get the secure URL from Cloudinary
@@ -49,6 +49,8 @@ router.post('/add', upload.single('image'), async (req, res) => {
       res.status(500).json({ message: 'Error creating article', error: error.message || error });
     }
   });
+  
+  
 
 // PUT: Update article
 router.put('/update/:id', upload.single('image'), async (req, res) => {
