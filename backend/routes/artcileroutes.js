@@ -10,85 +10,78 @@ dotenv.config();
 
 const router = express.Router();
 
-// Set up multer (memory storage for uploading files in memory)
+// Use multer to handle file uploads (memoryStorage to store file in memory)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// Maximum file size allowed (5MB limit)
-const MAX_FILE_SIZE = 5 * 1024 * 1024;  // 5MB
-
 // POST: Add a new article
 router.post('/add', upload.single('image'), async (req, res) => {
-    const { title, content } = req.body;
-    let imageUrl = null;
+  const { title, content } = req.body;
+  let imageUrl = null;
 
-    // Check if a file was uploaded and handle image upload to Cloudinary
-    if (req.file) {
-        console.log('File received:', req.file);
-
-        // Check file size
-        if (req.file.size > MAX_FILE_SIZE) {
-            return res.status(400).json({ message: 'File is too large. Maximum size is 5MB.' });
-        }
-
-        try {
-            // Upload image to Cloudinary and get the URL
-            const result = await uploadToCloudinary(req.file);
-            imageUrl = result.secure_url;
-            console.log('Image uploaded to Cloudinary:', imageUrl);
-        } catch (error) {
-            console.error('Error uploading to Cloudinary:', error);
-            return res.status(500).json({ message: 'Error uploading image to Cloudinary', error });
-        }
-    }
-
-    // Ensure title and content are provided
-    if (!title || !content) {
-        return res.status(400).json({ message: 'Title and content are required' });
-    }
+  if (req.file) {
+    console.log('File received:', req.file);
 
     try {
-        // Create and save the article with the Cloudinary image URL
-        const article = new Article({ title, content, image: imageUrl });
-        await article.save();
-
-        // Send email notification to users (optional)
-        await sendArticleNotification(title, content);
-
-        res.status(201).json({ message: 'Article added successfully and notification sent!' });
+      // Upload the image to Cloudinary and get the secure URL
+      const result = await uploadToCloudinary(req.file);
+      imageUrl = result.secure_url;  // This is the Cloudinary URL that you save
+      console.log('Image uploaded to Cloudinary:', imageUrl);
     } catch (error) {
-        console.error('Error saving article:', error);
-        res.status(500).json({ message: 'Error creating article', error });
+      console.error('Error uploading image to Cloudinary:', error);
+      return res.status(500).json({ message: 'Error uploading image to Cloudinary', error });
     }
+  }
+
+  // Ensure title and content are provided
+  if (!title || !content) {
+    return res.status(400).json({ message: 'Title and content are required' });
+  }
+
+  try {
+    // Save the article with the title, content, and Cloudinary image URL (imageUrl)
+    const article = new Article({ title, content, imageUrl });
+    await article.save();
+
+    // Send email notification
+    await sendArticleNotification(title, content);
+
+    res.status(201).json({ message: 'Article added successfully and notification sent!' });
+  } catch (error) {
+    console.error('Error saving article:', error);
+    res.status(500).json({ message: 'Error creating article', error });
+  }
 });
 
-
-
-// PUT: Update article
+// PUT: Update an existing article
 router.put('/update/:id', upload.single('image'), async (req, res) => {
-    const { id } = req.params;
-    const { title, content } = req.body;
-    let imageUrl = undefined;
+  const { id } = req.params;
+  const { title, content } = req.body;
+  let imageUrl = undefined;
 
+  const updatedFields = { title, content };
+
+  if (req.file) {
     try {
-        const updatedFields = { title, content };
-
-        if (req.file) {
-            const publicId = `article_images/${Date.now()}`;
-            const result = await uploadToCloudinary(req.file.buffer, publicId);
-            imageUrl = result.secure_url;
-            updatedFields.image = imageUrl;
-        }
-
-        const article = await Article.findByIdAndUpdate(id, updatedFields, { new: true });
-        if (!article) {
-            return res.status(404).json({ message: 'Article not found' });
-        }
-
-        res.status(200).json({ message: 'Article updated successfully!' });
+      // Upload new image to Cloudinary and get the URL
+      const result = await uploadToCloudinary(req.file);
+      imageUrl = result.secure_url;
+      updatedFields.imageUrl = imageUrl;  // Update the image URL
     } catch (error) {
-        res.status(500).json({ message: 'Error updating article', error: error.message || error });
+      console.error('Error uploading image to Cloudinary:', error);
+      return res.status(500).json({ message: 'Error uploading image to Cloudinary', error });
     }
+  }
+
+  try {
+    const article = await Article.findByIdAndUpdate(id, updatedFields, { new: true });
+    if (!article) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+    res.status(200).json({ message: 'Article updated successfully!' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating article', error });
+  }
 });
 
 

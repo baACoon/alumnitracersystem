@@ -4,19 +4,19 @@ import styles from "./NewsArticles.module.css";
 export default function NewsArticles() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [imageUrl, setimageUrl] = useState(null);
+  const [image, setImage] = useState(null); // The file object for the image
   const [message, setMessage] = useState("");
   const [articles, setArticles] = useState([]);
   const [editId, setEditId] = useState(null);
   const [showFormModal, setShowFormModal] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
 
-  // Fetch articles
+  // Fetch articles from the backend
   const fetchArticles = async () => {
     try {
       const response = await fetch("https://alumnitracersystem.onrender.com/artcileroutes/");
       const data = await response.json();
-      setArticles(data);
+      setArticles(data); // Store articles including the image URL
     } catch (error) {
       console.error("Error fetching articles:", error);
     }
@@ -26,15 +26,15 @@ export default function NewsArticles() {
     fetchArticles();
   }, []);
 
-  // Submit form to add or update article
+  // Submit form to add or update an article
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
-    if (imageUrl) {
-      formData.append("imageUrl", imageUrl);
+    if (image) {
+      formData.append("image", image);  // Send the image file to the backend
     }
 
     try {
@@ -53,10 +53,10 @@ export default function NewsArticles() {
         setMessage(data.message);
         setTitle("");
         setContent("");
-        setimageUrl(null);
+        setImage(null);
         setEditId(null);
         setShowFormModal(false);
-        fetchArticles();
+        fetchArticles();  // Re-fetch the articles to include the newly added article
       } else {
         setMessage(data.message || "Error occurred");
       }
@@ -78,7 +78,7 @@ export default function NewsArticles() {
       const data = await response.json();
       if (response.ok) {
         setMessage(data.message);
-        fetchArticles();
+        fetchArticles();  // Re-fetch the articles after deletion
       } else {
         setMessage(data.message || "Error occurred");
       }
@@ -95,7 +95,7 @@ export default function NewsArticles() {
     setShowFormModal(true);
   };
 
-  // Open modal for full article
+  // Open the modal for the selected article
   const openArticleModal = (article) => {
     setSelectedArticle(article);
   };
@@ -106,7 +106,7 @@ export default function NewsArticles() {
     setEditId(null);
     setTitle("");
     setContent("");
-    setimageUrl(null);
+    setImage(null);
   };
 
   const closeArticleModal = () => {
@@ -124,35 +124,35 @@ export default function NewsArticles() {
 
       <div className={styles.articlesGrid}>
         {articles.map((article) => (
-            <div key={article._id} className={styles.articleBox}>
+          <div key={article._id} className={styles.articleBox}>
             <h3>{article.title}</h3>
-            {article.imageUrl && (
-                <img
-                src={article.imageUrl}
+            {article.imageUrl && (  // Use imageUrl here
+              <img
+                src={article.imageUrl}  // This should be the full Cloudinary URL
                 alt={article.title}
-                className={styles.articleimageUrl}
-                />
+                className={styles.articleImage}
+              />
             )}
             <p>{article.content.slice(0, 100)}...</p>
             <button
-                className={styles.editButton}
-                onClick={(e) => {
+              className={styles.editButton}
+              onClick={(e) => {
                 e.stopPropagation();
                 handleEdit(article);
-                }}
+              }}
             >
-                Edit
+              Edit
             </button>
             <button
-                className={styles.deleteButton}
-                onClick={(e) => {
+              className={styles.deleteButton}
+              onClick={(e) => {
                 e.stopPropagation();
                 handleDelete(article._id);
-                }}
+              }}
             >
-                Delete
+              Delete
             </button>
-            </div>
+          </div>
         ))}
       </div>
 
@@ -164,88 +164,69 @@ export default function NewsArticles() {
               &times;
             </button>
             <form className={styles.formContainer} onSubmit={handleSubmit}>
-                <div className={styles.formGroup}>
-                    <label htmlFor="title">Title</label>
-                    <input
-                    id="title"
-                    type="text"
-                    className={styles.formInput}
-                    placeholder="Enter article title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                    />
-                </div>
-                <div className={styles.formGroup}>
-                    <label htmlFor="content">Content</label>
-                    <textarea
-                    id="content"
-                    className={styles.formTextarea}
-                    placeholder="Enter article content"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    required
-                    ></textarea>
-                </div>
-                <div className={styles.formGroup}>
-                    <label htmlFor="imageUrl">imageUrl</label>
-                    <input
-                    id="imageUrl"
-                    type="file"
-                    className={styles.formFile}
-                    accept="imageUrl/*"
-                    onChange={(e) => setimageUrl(e.target.files[0])}
-                    />
-                </div>
-                <button type="submit" className={styles.submitButton}>
-                    {editId ? "Update Article" : "Add Article"}
-                </button>
+              <div className={styles.formGroup}>
+                <label htmlFor="title">Title</label>
+                <input
+                  id="title"
+                  type="text"
+                  className={styles.formInput}
+                  placeholder="Enter article title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label htmlFor="content">Content</label>
+                <textarea
+                  id="content"
+                  className={styles.formTextarea}
+                  placeholder="Enter article content"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  required
+                ></textarea>
+              </div>
+              <div className={styles.formGroup}>
+                <label htmlFor="image">Image</label>
+                <input
+                  id="image"
+                  type="file"
+                  className={styles.formFile}
+                  accept="image/*"
+                  onChange={(e) => setImage(e.target.files[0])}
+                />
+              </div>
+              <button type="submit" className={styles.submitButton}>
+                {editId ? "Update Article" : "Add Article"}
+              </button>
             </form>
           </div>
         </div>
       )}
 
       {/* Article Modal */}
-        {selectedArticle && (
+      {selectedArticle && (
         <div className={styles.modalOverlay}>
-            <div className={styles.modalContent}>
+          <div className={styles.modalContent}>
             <button className={styles.closeButton} onClick={closeArticleModal}>
-                &times;
+              &times;
             </button>
             <h2>{selectedArticle.title}</h2>
-            {selectedArticle.imageUrl && (
-                <img
-                src={selectedArticle.imageUrl}
+            {selectedArticle.imageUrl && (  // Display the Cloudinary URL here
+              <img
+                src={selectedArticle.imageUrl}  // Cloudinary URL
                 alt={selectedArticle.title}
-                className={styles.fullArticleimageUrl}
-                />
+                className={styles.fullArticleImage}
+              />
             )}
             <p>{selectedArticle.content}</p>
-            
-            <div className={styles.modalActions}>
-                <button
-                    className={styles.editButton}
-                    onClick={() => {
-                    handleEdit(selectedArticle);
-                    closeArticleModal();
-                    }}
-                >
-                    Edit
-                </button>
-                <button
-                    className={styles.deleteButton}
-                    onClick={() => {
-                    handleDelete(selectedArticle._id);
-                    closeArticleModal();
-                    }}
-                >
-                    Delete
-                </button>
-                </div>
-
-            </div>
+            <small>
+              Published on {new Date(selectedArticle.createdAt).toLocaleString()}
+            </small>
+          </div>
         </div>
-        )}
+      )}
     </div>
   );
 }
