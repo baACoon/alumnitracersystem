@@ -2,7 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose"; // Also wag mo to kalimutan i addd
 import jwt from 'jsonwebtoken';
-import Graduate from "./models/Graduate.js"; // ✅ Make sure this file exists and is correctly defined
+import Graduate from "./models/graduateModels.js";  // Correct, with file extension
 
 const router = express.Router();
 
@@ -29,7 +29,8 @@ router.post("/register", async (req, res) => {
     password,
     confirmPassword,
   } = req.body;
-  console.log("Received registration data:", req.body);
+
+  console.log("Received registration data:", { gradyear, firstName, lastName });
 
   try {
     // Validate input fields
@@ -44,21 +45,38 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ error: "Passwords do not match." });
     }
 
-    // ✅ Graduate Verification Step with full name
-    const fullName = `${firstName} ${lastName}`;
-    const graduate = await Graduate.findOne({
-      firstName: { $regex: new RegExp(`^${firstName}$`, "i") },
-      lastName: { $regex: new RegExp(`^${lastName}$`, "i") },
-      gradYear: parseInt(gradyear),
-    });
-    
-
-    if (!graduate) {
-      return res.status(401).json({
-        error: "Verification failed. Your credentials do not match our graduate list."
-      });
+    // Ensure graduation year is a number
+    const parsedGradYear = parseInt(gradyear);
+    if (isNaN(parsedGradYear)) {
+      console.log("Error: Invalid graduation year");
+      return res.status(400).json({ error: "Invalid graduation year." });
     }
 
+    // Trim and normalize names
+    const normalizedFirstName = firstName.trim();
+    const normalizedLastName = lastName.trim();
+
+    // Exact match verification with case-insensitive comparison
+    const graduate = await Graduate.findOne({
+      firstName: { $regex: new RegExp(`^${firstName.trim()}$`, "i") },  // Direct match with spaces allowed
+      lastName: { $regex: new RegExp(`^${lastName.trim()}$`, "i") },   // Same for last name
+      gradYear: parseInt(gradyear),  // Ensuring the year is correct
+    });    
+    
+    console.log("Graduate verification:", {
+      firstName: normalizedFirstName,
+      lastName: normalizedLastName,
+      gradYear: parsedGradYear,
+      foundGraduate: !!graduate, // Will be true if graduate is found
+    });
+
+    // If no matching graduate is found, prevent registration
+    if (!graduate) {
+      return res.status(401).json({
+        error: "Verification failed. You are not in our graduate records.",
+        details: error.message
+      });
+    }
     // Generate unique user ID
     const randomID = Math.floor(10000 + Math.random() * 90000); // Generate random 5-digit number
     const generatedID = `${lastName.toLowerCase()}-${randomID}`;
@@ -115,9 +133,36 @@ router.post("/register", async (req, res) => {
         lastName: newUser.lastName
       }
     });
+
   } catch (error) {
     console.error("Error during registration:", error);
-    res.status(500).json({ error: "Error registering user." });
+    res.status(500).json({ 
+      error: "Error registering user.", 
+      details: error.message 
+    });
+  }
+});
+
+router.get("/verify-graduate", async (req, res) => {
+  const { firstName, lastName, gradYear } = req.query;
+  
+  try {
+    const graduate = await Graduate.findOne({
+      firstName: { $regex: new RegExp(`^${firstName}$`, 'i') },
+      lastName: { $regex: new RegExp(`^${lastName}$`, 'i') },
+      gradYear: parseInt(gradYear)
+    });
+
+    res.json({ 
+      found: !!graduate,
+      graduate: graduate ? { 
+        firstName: graduate.firstName, 
+        lastName: graduate.lastName, 
+        gradYear: graduate.gradYear 
+      } : null
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
