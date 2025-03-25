@@ -1,11 +1,10 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import multer from 'multer';
 import path from 'path';
 import Article from '../models/article.js'; 
 import { sendArticleNotification } from '../emailservice.js';
 import cloudinary from '../config/cloudinary.js' 
-import multerConfig, { uploadToCloudinary } from '../config/multerConfig.js';
+import { upload, uploadToCloudinary } from '../config/multerConfig.js';
 
 dotenv.config();
 
@@ -17,23 +16,19 @@ router.post('/add', upload.single('image'), async (req, res) => {
     let imageUrl = null;
 
     try {
-        // If there's an image, upload it to Cloudinary
         if (req.file) {
-            const publicId = `article_images/${Date.now()}`; // Optional: use a unique identifier for the image
+            const publicId = `article_images/${Date.now()}`;
             const result = await uploadToCloudinary(req.file.buffer, publicId);
-            imageUrl = result.secure_url;  // Get the secure URL from Cloudinary
+            imageUrl = result.secure_url;
         }
 
-        // Ensure the title and content are provided
         if (!title || !content) {
             return res.status(400).json({ message: 'Title and content are required' });
         }
 
-        // Save the article to the database
         const article = new Article({ title, content, image: imageUrl });
         await article.save();
 
-        // Send email notification
         await sendArticleNotification(title, content);
 
         res.status(201).json({ message: 'Article added successfully and notification sent!' });
@@ -42,6 +37,34 @@ router.post('/add', upload.single('image'), async (req, res) => {
         res.status(500).json({ message: 'Error creating article', error: error.message || error });
     }
 });
+
+// PUT: Update article
+router.put('/update/:id', upload.single('image'), async (req, res) => {
+    const { id } = req.params;
+    const { title, content } = req.body;
+    let imageUrl = undefined;
+
+    try {
+        const updatedFields = { title, content };
+
+        if (req.file) {
+            const publicId = `article_images/${Date.now()}`;
+            const result = await uploadToCloudinary(req.file.buffer, publicId);
+            imageUrl = result.secure_url;
+            updatedFields.image = imageUrl;
+        }
+
+        const article = await Article.findByIdAndUpdate(id, updatedFields, { new: true });
+        if (!article) {
+            return res.status(404).json({ message: 'Article not found' });
+        }
+
+        res.status(200).json({ message: 'Article updated successfully!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating article', error });
+    }
+});
+
 
 // PUT: Update article
 router.put('/update/:id', upload.single('image'), async (req, res) => {
