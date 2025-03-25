@@ -2,15 +2,15 @@ import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
 
+// Load environment variables
 dotenv.config();
 
 // Configure Cloudinary
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
 });
-
 
 // Use memory storage to keep files in buffer
 const storage = multer.memoryStorage();
@@ -39,6 +39,7 @@ const uploadToCloudinary = async (buffer, publicId) => {
     throw error;
   }
 };
+
 
 export default upload;
 export { uploadToCloudinary };
