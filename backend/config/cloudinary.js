@@ -13,20 +13,20 @@ const uploadToCloudinary = (fileBuffer, publicId) => {
         const cloudinaryUploadStream = cloudinary.uploader.upload_stream(
             {
                 resource_type: 'auto',   // Auto-detect file type
-                public_id: `imagepost/${publicId}`, // Store image in the 'imagepost' folder
-                folder: 'imagepost',     // Folder where images are saved in Cloudinary
+                public_id: `imagepost/${publicId}`,  // Upload to the 'imagepost' folder
+                folder: 'imagepost',      // Specify the folder in Cloudinary
             },
             (error, result) => {
                 if (error) {
                     reject(error);
                 } else {
-                    resolve(result); // Returning the upload result
+                    resolve(result);
                 }
             }
         );
 
-        const bufferStream = streamifier.createReadStream(fileBuffer); // Convert buffer to stream
-        bufferStream.pipe(cloudinaryUploadStream); // Upload the image buffer
+        const bufferStream = streamifier.createReadStream(fileBuffer);  // Create stream from buffer
+        bufferStream.pipe(cloudinaryUploadStream);  // Upload the image buffer to Cloudinary
     });
 };
 

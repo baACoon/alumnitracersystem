@@ -13,28 +13,49 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({storage});
 
+// Maximum file size allowed (5MB limit)
+const MAX_FILE_SIZE = 5 * 1024 * 1024;  // 5MB
 
 // POST: Add a new article
 router.post('/add', upload.single('image'), async (req, res) => {
     const { title, content } = req.body;
     let imageUrl = null;
 
-    try {
-        if (req.file) {
+    // Check if the file exists and its size
+    if (req.file) {
+        console.log('File received:', req.file);
+
+        // Check file size
+        if (req.file.size > MAX_FILE_SIZE) {
+            return res.status(400).json({ message: 'File is too large. Maximum size is 5MB.' });
+        }
+
+        try {
+            // Upload image to Cloudinary
             const publicId = `article_images_${Date.now()}`; // Unique identifier for the image
             const result = await uploadToCloudinary(req.file.buffer, publicId); // Upload to Cloudinary
-            imageUrl = result.secure_url; // Get the secure URL of the uploaded image
+            imageUrl = result.secure_url;  // Get the URL of the uploaded image
+            console.log('Image uploaded to Cloudinary:', imageUrl);
+        } catch (error) {
+            console.error('Error uploading to Cloudinary:', error);
+            return res.status(500).json({ message: 'Error uploading image to Cloudinary', error });
         }
+    }
 
-        if (!title || !content) {
-            return res.status(400).json({ message: 'Title and content are required' });
-        }
+    // Check if title and content are provided
+    if (!title || !content) {
+        return res.status(400).json({ message: 'Title and content are required' });
+    }
 
-        const article = new Article({ title, content, image: imageUrl }); // Store the URL of the image
+    try {
+        // Create and save the article
+        const article = new Article({ title, content, image: imageUrl });
         await article.save();
 
-        await sendArticleNotification(title, content); // Send email notification
+        // Send email notification
+        await sendArticleNotification(title, content);
 
+        // Send success response
         res.status(201).json({ message: 'Article added successfully and notification sent!' });
     } catch (error) {
         console.error('Error saving article:', error);
