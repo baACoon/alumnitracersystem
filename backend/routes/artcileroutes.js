@@ -10,8 +10,16 @@ dotenv.config();
 
 const router = express.Router();
 
-// Use multer to handle file uploads (memoryStorage to store file in memory)
-const storage = multer.memoryStorage();
+// Configure Multer for file uploads (diskStorage now to upload to Cloudinary directly)
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Local path, not used, image goes to Cloudinary
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  },
+});
+
 const upload = multer({ storage });
 
 // POST: Add a new article
@@ -25,7 +33,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
     try {
       // Upload the image to Cloudinary and get the secure URL
       const result = await uploadToCloudinary(req.file);
-      imageUrl = result.secure_url;  // This is the Cloudinary URL that you save
+      imageUrl = result.secure_url;  // Cloudinary URL
       console.log('Image uploaded to Cloudinary:', imageUrl);
     } catch (error) {
       console.error('Error uploading image to Cloudinary:', error);
@@ -39,7 +47,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
   }
 
   try {
-    // Save the article with the title, content, and Cloudinary image URL (imageUrl)
+    // Save the article with the title, content, and Cloudinary image URL
     const article = new Article({ title, content, imageUrl });
     await article.save();
 
