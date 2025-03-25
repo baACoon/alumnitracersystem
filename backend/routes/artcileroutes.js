@@ -1,10 +1,13 @@
 // articleroutes.js
+import dotenv from 'dotenv';
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import Article from '../models/article.js'; 
 import { sendArticleNotification } from '../emailservice.js';
 import cloudinary from '../config/cloudinary.js' 
+
+dotenv.config();
 
 const router = express.Router();
 
