@@ -20,9 +20,9 @@ router.post('/add', upload.single('image'), async (req, res) => {
 
     try {
         if (req.file) {
-            const publicId = `article_images/${Date.now()}`;
+            const publicId = `article_images_${Date.now()}`; // Prefix with 'imagepost' in upload function
             const result = await uploadToCloudinary(req.file.buffer, publicId);
-            imageUrl = result.secure_url;
+            imageUrl = result.secure_url; // Get the secure URL for the image
         }
 
         if (!title || !content) {
