@@ -128,7 +128,7 @@ export default function NewsArticles() {
             <h3>{article.title}</h3>
             {article.image && (
                 <img
-                src={`https://alumnitracersystem.onrender.com${article.image}`}
+                src={article.image}
                 alt={article.title}
                 className={styles.articleImage}
                 />
@@ -215,7 +215,7 @@ export default function NewsArticles() {
             <h2>{selectedArticle.title}</h2>
             {selectedArticle.image && (
                 <img
-                src={`https://alumnitracersystem.onrender.com${selectedArticle.image}`}
+                src={selectedArticle.image}
                 alt={selectedArticle.title}
                 className={styles.fullArticleImage}
                 />

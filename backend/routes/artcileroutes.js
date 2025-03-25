@@ -25,7 +25,7 @@ const upload = multer({ storage });
 // POST: Add a new article
 router.post('/add', upload.single('image'), async (req, res) => {
   const { title, content } = req.body;
-  let imageUrl = null;
+  let image = null;
 
   if (req.file) {
     console.log('File received:', req.file);
@@ -33,8 +33,8 @@ router.post('/add', upload.single('image'), async (req, res) => {
     try {
       // Upload the image to Cloudinary and get the secure URL
       const result = await uploadToCloudinary(req.file);
-      imageUrl = result.secure_url;  // Cloudinary URL
-      console.log('Image uploaded to Cloudinary:', imageUrl);
+      image = result.secure_url;  // Cloudinary URL
+      console.log('Image uploaded to Cloudinary:', image);
     } catch (error) {
       console.error('Error uploading image to Cloudinary:', error);
       return res.status(500).json({ message: 'Error uploading image to Cloudinary', error });
@@ -48,7 +48,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
 
   try {
     // Save the article with the title, content, and Cloudinary image URL
-    const article = new Article({ title, content, imageUrl });
+    const article = new Article({ title, content, image });
     await article.save();
 
     // Send email notification
@@ -65,7 +65,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
 router.put('/update/:id', upload.single('image'), async (req, res) => {
   const { id } = req.params;
   const { title, content } = req.body;
-  let imageUrl = undefined;
+  let image = undefined;
 
   const updatedFields = { title, content };
 
@@ -73,8 +73,8 @@ router.put('/update/:id', upload.single('image'), async (req, res) => {
     try {
       // Upload new image to Cloudinary and get the URL
       const result = await uploadToCloudinary(req.file);
-      imageUrl = result.secure_url;
-      updatedFields.imageUrl = imageUrl;  // Update the image URL
+      image = result.secure_url;
+      updatedFields.image = image;  // Update the image URL
     } catch (error) {
       console.error('Error uploading image to Cloudinary:', error);
       return res.status(500).json({ message: 'Error uploading image to Cloudinary', error });
