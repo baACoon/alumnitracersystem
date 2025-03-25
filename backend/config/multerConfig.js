@@ -42,4 +42,5 @@ const uploadToCloudinary = async (buffer) => {
   }
 };
 
-export { upload, uploadToCloudinary };
+export default upload;
+export { uploadToCloudinary };
