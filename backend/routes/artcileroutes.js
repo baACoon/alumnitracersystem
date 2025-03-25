@@ -1,34 +1,34 @@
+// articleroutes.js
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
-import Article from '../models/article.js'; // Import the model
+import Article from '../models/article.js'; 
 import { sendArticleNotification } from '../emailservice.js';
+import cloudinary from '../config/cloudinaryConfig'; 
 
 const router = express.Router();
 
-// Configure Multer for file uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Path to save files
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
-    },
-});
+
+const storage = multer.memoryStorage(); // Using memory storage as Cloudinary will handle the file
 
 const upload = multer({ storage });
-
 
 // POST: Add a new article
 router.post('/add', upload.single('image'), async (req, res) => {
     const { title, content } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : null; // Save the file path if uploaded
-
-    console.log('Request Body:', req.body); // Log the form data
-    console.log('Uploaded File:', req.file); // Log the uploaded file
+    let imageUrl = null;
 
     try {
-        const article = new Article({ title, content, image });
+        // If there is an image uploaded, upload it to Cloudinary
+        if (req.file) {
+            const result = await cloudinary.uploader.upload(req.file.buffer, {
+                resource_type: "auto", // Automatically detect file type (image, video, etc.)
+            });
+
+            imageUrl = result.secure_url; // Get the image URL from Cloudinary response
+        }
+
+        const article = new Article({ title, content, image: imageUrl });
         await article.save();
 
         // Send email notification to users
@@ -41,16 +41,24 @@ router.post('/add', upload.single('image'), async (req, res) => {
     }
 });
 
-
 // PUT: Update article
 router.put('/update/:id', upload.single('image'), async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : undefined;
+    let imageUrl = undefined;
 
     try {
         const updatedFields = { title, content };
-        if (image) updatedFields.image = image;
+
+        // If there is a new image uploaded, upload it to Cloudinary
+        if (req.file) {
+            const result = await cloudinary.uploader.upload(req.file.buffer, {
+                resource_type: "auto", // Automatically detect file type (image, video, etc.)
+            });
+
+            imageUrl = result.secure_url; // Get the image URL from Cloudinary response
+            updatedFields.image = imageUrl; // Set the image URL to the update fields
+        }
 
         const article = await Article.findByIdAndUpdate(id, updatedFields, { new: true });
         if (!article) {
@@ -77,7 +85,7 @@ router.delete('/delete/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error deleting article', error });
     }
-}); 
+});
 
 // GET: Fetch all articles
 router.get('/', async (req, res) => {
