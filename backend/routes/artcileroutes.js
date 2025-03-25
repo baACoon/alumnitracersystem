@@ -4,7 +4,8 @@ import path from 'path';
 import Article from '../models/article.js'; 
 import { sendArticleNotification } from '../emailservice.js';
 import cloudinary from '../config/cloudinary.js' 
-import { upload, uploadToCloudinary } from '../config/multerConfig.js';
+import  { uploadToCloudinary} from '../config/multerConfig.js';
+import upload from '../config/multerConfig.js'; 
 
 dotenv.config();
 
