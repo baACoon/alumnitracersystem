@@ -1,4 +1,3 @@
-import cloudinary from 'cloudinary';  // ES6 import
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
 
