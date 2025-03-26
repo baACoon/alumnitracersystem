@@ -5,6 +5,7 @@ import multer from 'multer';
 import Article from '../models/article.js'; 
 import { sendArticleNotification } from '../emailservice.js';
 import cloudinary from '../config/cloudinary.js';
+import {UploadImageArticles} from '../config/cloudinary.js'
 
 
 dotenv.config();
@@ -13,36 +14,20 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-
-router.post('/add', upload.single('image'), async (req, res) => {
+router.post('/add', UploadImageArticles.single('image'), async (req, res) => {
     const { title, content } = req.body;
     let imageUrl = null;
 
     try {
         if (req.file) {
-            const result = await cloudinary.uploader.upload_stream(
-                {
-                    folder: 'articles', // optional: organize uploads in a folder
-                },
-                async (error, result) => {
-                    if (error) {
-                        console.error('Cloudinary upload error:', error);
-                        return res.status(500).json({ message: 'Cloudinary upload failed', error });
-                    }
+            imageUrl = req.file.path; // Cloudinary URL is available in `req.file.path`
 
-                    imageUrl = result.secure_url;
+            const article = new Article({ title, content, image: imageUrl });
+            await article.save();
 
-                    const article = new Article({ title, content, image: imageUrl });
-                    await article.save();
+            await sendArticleNotification(title, content);
 
-                    await sendArticleNotification(title, content);
-
-                    return res.status(201).json({ message: 'Article added and Notification Sent!' });
-                }
-            );
-
-            // Pipe buffer to cloudinary stream
-            require('streamifier').createReadStream(req.file.buffer).pipe(result);
+            res.status(201).json({ message: 'Article added and Notification Sent!' });
         } else {
             const article = new Article({ title, content });
             await article.save();
@@ -56,6 +41,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
         res.status(500).json({ message: 'Error creating article', error });
     }
 });
+
 
 
 router.put('/update/:id', upload.single('image'), async (req, res) => {
