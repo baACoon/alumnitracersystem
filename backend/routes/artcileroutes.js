@@ -5,62 +5,92 @@ import multer from 'multer';
 import Article from '../models/article.js'; 
 import { sendArticleNotification } from '../emailservice.js';
 import cloudinary from '../config/cloudinary.js';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
+
 
 dotenv.config();
 
 const router = express.Router();
-
-// Configure Multer for Cloudinary
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-      folder: 'articles', // Folder name in Cloudinary
-      allowedFormats: ['jpg', 'jpeg', 'png'],
-  },
-});
-
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// POST: Add a new article
+
 router.post('/add', upload.single('image'), async (req, res) => {
-  const { title, content } = req.body;
-  const image = req.file ? req.file.path : null; // Cloudinary URL
+    const { title, content } = req.body;
+    let imageUrl = null;
 
-  try {
-      const article = new Article({ title, content, image });
-      await article.save();
+    try {
+        if (req.file) {
+            const result = await cloudinary.uploader.upload_stream(
+                {
+                    folder: 'articles', // optional: organize uploads in a folder
+                },
+                async (error, result) => {
+                    if (error) {
+                        console.error('Cloudinary upload error:', error);
+                        return res.status(500).json({ message: 'Cloudinary upload failed', error });
+                    }
 
-      // Send email notification
-      await sendArticleNotification(title, content);
+                    imageUrl = result.secure_url;
 
-      res.status(201).json({ message: 'Article added and Notification Sent!' });
-  } catch (error) {
-      console.error('Error saving article:', error);
-      res.status(500).json({ message: 'Error creating article', error });
-  }
+                    const article = new Article({ title, content, image: imageUrl });
+                    await article.save();
+
+                    await sendArticleNotification(title, content);
+
+                    return res.status(201).json({ message: 'Article added and Notification Sent!' });
+                }
+            );
+
+            // Pipe buffer to cloudinary stream
+            require('streamifier').createReadStream(req.file.buffer).pipe(result);
+        } else {
+            const article = new Article({ title, content });
+            await article.save();
+
+            await sendArticleNotification(title, content);
+
+            res.status(201).json({ message: 'Article added without image' });
+        }
+    } catch (error) {
+        console.error('Error saving article:', error);
+        res.status(500).json({ message: 'Error creating article', error });
+    }
 });
 
-// PUT: Update article
+
 router.put('/update/:id', upload.single('image'), async (req, res) => {
-  const { id } = req.params;
-  const { title, content } = req.body;
-  const image = req.file ? req.file.path : undefined; // Cloudinary URL
+    const { id } = req.params;
+    const { title, content } = req.body;
 
-  try {
-      const updatedFields = { title, content };
-      if (image) updatedFields.image = image;
+    try {
+        const updatedFields = { title, content };
 
-      const article = await Article.findByIdAndUpdate(id, updatedFields, { new: true });
-      if (!article) {
-          return res.status(404).json({ message: 'Article not found' });
-      }
+        if (req.file) {
+            const result = await new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    { folder: 'articles' },
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result);
+                    }
+                );
 
-      res.status(200).json({ message: 'Article updated successfully!' });
-  } catch (error) {
-      res.status(500).json({ message: 'Error updating article', error });
-  }
+                require('streamifier').createReadStream(req.file.buffer).pipe(uploadStream);
+            });
+
+            updatedFields.image = result.secure_url;
+        }
+
+        const article = await Article.findByIdAndUpdate(id, updatedFields, { new: true });
+        if (!article) return res.status(404).json({ message: 'Article not found' });
+
+        res.status(200).json({ message: 'Article updated successfully!' });
+    } catch (error) {
+        console.error('Error updating article:', error);
+        res.status(500).json({ message: 'Error updating article', error });
+    }
 });
+
 
 
 // DELETE: Delete article
