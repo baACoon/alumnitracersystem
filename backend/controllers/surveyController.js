@@ -84,3 +84,52 @@ export const deleteSurvey = async (req, res) => {
     res.status(500).json({ error: "Error deleting survey" });
   }
 };
+
+// Publish survey
+export const publishSurvey = async (req, res) => {
+  try {
+    const surveyId = req.params.id;  // Get the survey ID from the URL parameter
+
+    // Find the survey by ID and update its status to "active"
+    const updatedSurvey = await Survey.findByIdAndUpdate(surveyId, {
+      status: "active",
+    }, { new: true });  // new: true returns the updated document
+
+    if (!updatedSurvey) {
+      return res.status(404).json({ error: "Survey not found" });
+    }
+
+    res.status(200).json(updatedSurvey);  // Return the updated survey
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error publishing survey" });
+  }
+};
+
+
+export const updateSurvey = async (req, res) => {
+  const { title, description, questions } = req.body;
+  const { id } = req.params;
+
+  try {
+    // Find the survey by ID and update it
+    const updatedSurvey = await Survey.findByIdAndUpdate(
+      id, 
+      { title, description },
+      { new: true } // Return the updated survey
+    );
+
+    if (!updatedSurvey) {
+      return res.status(404).json({ error: "Survey not found" });
+    }
+
+    // Update associated questions if needed
+    // Assuming questions are part of the request body and need to be handled separately
+    // You can implement logic here for updating questions as per your requirements
+
+    res.status(200).json({ message: "Survey updated successfully", survey: updatedSurvey });
+  } catch (error) {
+    console.error("Error updating survey:", error);
+    res.status(500).json({ error: "Error updating survey" });
+  }
+};

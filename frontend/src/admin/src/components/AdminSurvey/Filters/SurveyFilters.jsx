@@ -63,7 +63,7 @@ export const SurveyFilters = () => {
           {/* Tab Content */}
           <div>
             {activeTab === 'existing' && <SurveyTable onView={setViewSurveyId} />}
-            {activeTab === 'pending' && <PendingSurvey />}
+            {activeTab === 'pending' && <PendingSurvey onView={setViewSurveyId} />}
           </div>
         </section>
       )}

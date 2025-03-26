@@ -14,8 +14,10 @@ export const SurveyTable = ({ onView }) => {
 
   const fetchSurveys = async () => {
     try {
-      const response = await axios.get("http://localhost:5050.onrender.com/api/surveys");
-      setSurveys(response.data);
+      const response = await axios.get("http://localhost:5050/api/surveys");
+      // Only fetch surveys with status "active"
+      const activeSurveys = response.data.filter(survey => survey.status === "active");
+      setSurveys(activeSurveys);
     } catch (error) {
       console.error("Error fetching surveys:", error);
     } finally {
@@ -27,8 +29,8 @@ export const SurveyTable = ({ onView }) => {
     if (!window.confirm("Are you sure you want to delete this survey?")) return;
 
     try {
-      await axios.delete(`http://localhost:5050.onrender.com/api/surveys/${surveyId}`);
-      setSurveys(surveys.filter((survey) => survey._id !== surveyId));
+      await axios.delete(`http://localhost:5050/api/surveys/${surveyId}`);
+      setSurveys(surveys.filter((survey) => survey._id !== surveyId)); // Remove from the list
     } catch (error) {
       console.error("Error deleting survey:", error);
       alert("Failed to delete survey.");
@@ -75,7 +77,7 @@ export const SurveyTable = ({ onView }) => {
                     </td>
                   </tr>
 
-                  {/* Map through the surveys and render them below */}
+                  {/* Map through the active surveys and render them */}
                   {surveys.map((survey, index) => (
                     <tr key={survey._id} className={styles.row}>
                       <td className={styles.cell}>{index + 1}</td>

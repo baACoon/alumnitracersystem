@@ -301,7 +301,7 @@ const Page3_Employment = ({ data, updateForm }) => {
           <label key={index}>
             <input
               type="radio"
-              name="firstJob"
+              name="jobRelatedToCourse"
               value={option}
               checked={data.jobDetails.jobRelatedToCourse === option}
               onChange={() => updateForm("jobDetails", { ...data.jobDetails, jobRelatedToCourse: option })}

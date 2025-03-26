@@ -38,19 +38,20 @@ export const CreateSurvey = ({ onBack }) => {
       alert("Title and at least one question are required.");
       return;
     }
-
+  
     try {
-      const response = await axios.post("http://localhost:5050.onrender.com/api/surveys/create", {
+      const response = await axios.post("http://localhost:5050/api/surveys/create", {
         title,
         description,
-        questions
+        questions,
+        status: "draft", // Ensure survey is created with status "draft"
       });
-
+  
       alert("Survey created successfully!");
       setTitle("");
       setDescription("");
       setQuestions([]);
-      onBack(); // Navigate back to the survey list
+      onBack(); // Navigate back to the pending survey list
     } catch (error) {
       console.error("Error creating survey:", error);
       alert("Failed to create survey.");
@@ -68,7 +69,7 @@ export const CreateSurvey = ({ onBack }) => {
             </button>
           </div>
 
-          <h1 className={styles.title}>Create New Survey</h1>
+          <h1 className={styles.title}>create New Survey</h1>
       <input
         type="text"
         placeholder="Survey Title"

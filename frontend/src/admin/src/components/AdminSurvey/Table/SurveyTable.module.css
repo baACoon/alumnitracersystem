@@ -66,12 +66,12 @@
 
 /* Action Buttons */
 .actionCell {
-  padding: 5px 10px;
-  font-size: 0.9rem;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  margin: 0 5px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 10px;
+  border-bottom: 1px solid #eaeaea;
+  flex-wrap: wrap;
 }
 
 .viewButton,
@@ -82,26 +82,28 @@
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
   margin: 0 5px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .viewButton {
-  background-color: #28a745;
+  background-color: #17a2b8;
   color: #fff;
   width: 40%;
 }
 
 .viewButton:hover {
-  background-color: #218838;
+  background-color: #138496;
 }
 
 .deleteButton {
-  background-color: #c31d3c;
+  background-color: #dc3545;
   color: #fff;
   width: 40%;
 }
 
 .deleteButton:hover {
-  background-color: #a31730;
+  background-color: #c82333;
 }
 
 /* Loading and No Surveys Message */
