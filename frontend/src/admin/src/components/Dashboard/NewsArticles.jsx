@@ -182,10 +182,10 @@ export default function NewsArticles() {
                   {/* Show the loading spinner while the form is being submitted */}
                 {loading && (
                   <div className={styles.bg}>
-                    <div className={styles.loader}></div>
+                    <div className={styles.spinner}></div>
                   </div>
                 )}
-                
+
             <form className={styles.formContainer} onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
                     <label htmlFor="title">Title</label>
