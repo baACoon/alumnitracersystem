@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./NewsArticles.module.css";
+import SuccessModal from "./SuccesModal";
 
 export default function NewsArticles() {
   const [title, setTitle] = useState("");
@@ -10,6 +11,8 @@ export default function NewsArticles() {
   const [editId, setEditId] = useState(null);
   const [showFormModal, setShowFormModal] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); 
+  const [successMessage, setSuccessMessage] = useState(''); 
 
   // Fetch articles
   const fetchArticles = async () => {
@@ -50,7 +53,8 @@ export default function NewsArticles() {
 
       const data = await response.json();
       if (response.ok) {
-        setMessage(data.message);
+        setSuccessMessage(data.message);
+        setIsSuccessModalOpen(true);
         setTitle("");
         setContent("");
         setImage(null);
@@ -111,6 +115,10 @@ export default function NewsArticles() {
 
   const closeArticleModal = () => {
     setSelectedArticle(null);
+  };
+
+  const closeSuccessModal = () => {
+    setIsSuccessModalOpen(false); 
   };
 
   return (
@@ -204,6 +212,15 @@ export default function NewsArticles() {
           </div>
         </div>
       )}
+
+
+            {/* Success Modal */}
+            <SuccessModal
+              isOpen={isSuccessModalOpen}
+              message={successMessage}
+              onClose={closeSuccessModal}
+            />
+
 
       {/* Article Modal */}
         {selectedArticle && (
