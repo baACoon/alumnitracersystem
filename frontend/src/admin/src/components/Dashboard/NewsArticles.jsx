@@ -124,7 +124,6 @@ export default function NewsArticles() {
   return (
     <div className={styles.container}>
       <h1>MANAGE ARTICLES</h1>
-      {message && <p className={styles.message}>{message}</p>}
 
       <button onClick={() => setShowFormModal(true)} className={styles.createButton}>
         + Create Article
@@ -214,12 +213,15 @@ export default function NewsArticles() {
       )}
 
 
-            {/* Success Modal */}
+          {isSuccessModalOpen ? (
             <SuccessModal
               isOpen={isSuccessModalOpen}
               message={successMessage}
               onClose={closeSuccessModal}
             />
+          ) : (
+            message && <p className={styles.message}>{message}</p>
+          )}
 
 
       {/* Article Modal */}
