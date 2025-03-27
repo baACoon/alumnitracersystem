@@ -70,6 +70,8 @@ export default function NewsArticles() {
       }
     } catch (error) {
       setMessage("Error: Unable to connect to server");
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -178,14 +180,13 @@ export default function NewsArticles() {
             <button className={styles.closeButton} onClick={closeFormModal}>
               &times;
             </button>
-
-                  {/* Show the loading spinner while the form is being submitted */}
-                {loading && (
-                  <div className={styles.bg}>
-                    <div className={styles.spinner}></div>
-                    <h3 className={styles.loadname}>Loading...</h3>
-                  </div>
-                )}
+            
+              {loading && (
+                <div className={styles.bg}>
+                  <div className={styles.spinner}></div>
+                  <h3 className={styles.loadname}>Loading...</h3>
+                </div>
+              )}
 
             <form className={styles.formContainer} onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
@@ -221,7 +222,7 @@ export default function NewsArticles() {
                     onChange={(e) => setImage(e.target.files[0])}
                     />
                 </div>
-                <button type="submit" className={styles.submitButton}>
+                <button type="submit" className={styles.submitButton} disabled={loading}>
                     {editId ? "Update Article" : "Add Article"}
                 </button>
             </form>

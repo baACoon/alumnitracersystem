@@ -151,7 +151,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10; /* Ensure it appears above the modal content */
+  z-index: 10; 
+  flex-direction: column;
 }
 .spinner {
   width: 56px;
@@ -168,7 +169,7 @@
  .loadname{
   color: white;
   font-size: 13px;
-
+  margin-top: 10px ;
  }
 
  
