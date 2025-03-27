@@ -69,10 +69,10 @@ const TestFrontPage = () => {
     if (loading) {
       return (
         <div className={styles.loadingPage}>
+          <div className={styles.loadingContainer}>
           <div className='tupname-container'>
              <h1 className='tupname'>TECHNOLOGICAL UNIVERSITY OF THE PHILIPPINES-MANILA</h1>
           </div>
-          <div className={styles.loadingContainer}>
             <div className={styles.gearbox}>
               <div className={styles.overlay}></div>
               <div className={`${styles.gear} ${styles.one}`}>
