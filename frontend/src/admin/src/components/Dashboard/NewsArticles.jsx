@@ -93,7 +93,7 @@ export default function NewsArticles() {
         setMessage(data.message || "Error occurred");
       }
     } catch (error) {
-      setMessage("Error: Unable to connect to server");
+      setMessage( data.message || "Error: Unable to connect to server");
     } finally {
       setLoading(false);  
     }
@@ -127,6 +127,7 @@ export default function NewsArticles() {
 
     const closeMessageModal = () => {
       setIsMessageModalOpen(false); 
+      setMessage(""); 
     };
 
 
@@ -180,7 +181,7 @@ export default function NewsArticles() {
             <button className={styles.closeButton} onClick={closeFormModal}>
               &times;
             </button>
-            
+
               {loading && (
                 <div className={styles.bg}>
                   <div className={styles.spinner}></div>
