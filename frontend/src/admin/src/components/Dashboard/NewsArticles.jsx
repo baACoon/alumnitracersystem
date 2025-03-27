@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./NewsArticles.module.css";
-import SuccessModal from "./SuccesModal";
+
 
 export default function NewsArticles() {
   const [title, setTitle] = useState("");
@@ -11,8 +11,9 @@ export default function NewsArticles() {
   const [editId, setEditId] = useState(null);
   const [showFormModal, setShowFormModal] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); 
-  const [successMessage, setSuccessMessage] = useState(''); 
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);  // State for the success message modal
+
+
 
   // Fetch articles
   const fetchArticles = async () => {
@@ -53,8 +54,8 @@ export default function NewsArticles() {
 
       const data = await response.json();
       if (response.ok) {
-        setSuccessMessage(data.message);
-        setIsSuccessModalOpen(true);
+        setMessage(data.message);  
+        setIsMessageModalOpen(true);
         setTitle("");
         setContent("");
         setImage(null);
@@ -117,9 +118,10 @@ export default function NewsArticles() {
     setSelectedArticle(null);
   };
 
-  const closeSuccessModal = () => {
-    setIsSuccessModalOpen(false); 
-  };
+    const closeMessageModal = () => {
+      setIsMessageModalOpen(false); 
+    };
+
 
   return (
     <div className={styles.container}>
@@ -212,13 +214,23 @@ export default function NewsArticles() {
         </div>
       )}
 
+            {/* Success Modal for Success Message */}
+            {isMessageModalOpen && (
+              <div className={styles.successModalOverlay}>
+                <div className={styles.successModalContent}>
+                  <div className={styles.successModalHeader}>
+                    <div className={styles.successCheckmark}>✔️</div>
+                  </div>
+                  <div className={styles.successModalBody}>
+                    <h2>Success!</h2>
+                    <p>{message}</p>
+                    <button className={styles.successOkButton} onClick={closeMessageModal}>OK</button>
+                  </div>
+                </div>
+              </div>
 
-            {/* Success Modal */}
-            <SuccessModal
-              isOpen={isSuccessModalOpen}
-              message={successMessage}
-              onClose={closeSuccessModal}
-            />
+      )}
+
 
 
       {/* Article Modal */}
