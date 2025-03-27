@@ -239,14 +239,23 @@
   }
 
 
-  .tupname-container{
-    margin-top: -10px;
+  .tupname-container {
+    position: absolute;
+    top: 15%;  /* Adjust this value to move the text higher or lower */
+    left: 50%;
+    transform: translateX(-50%);  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
   }
-
-  .tupname-container .tupname{
+  
+  /* Style the text */
+  .tupname-container .tupname {
     color: white;
-    font-size: 40px;
+    font-size: 40px; /* You can adjust this as needed */
     font-weight: 700;
+    text-align: center; /* Ensure the text is centered within the container */
   }
   
   /* Center the gearbox inside */
