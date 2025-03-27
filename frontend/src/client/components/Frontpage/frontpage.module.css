@@ -241,7 +241,7 @@
 
   .tupname-container {
     position: absolute;
-    top: 15%;  /* Adjust this value to move the text higher or lower */
+    top: 15%;  
     left: 50%;
     transform: translateX(-50%);  
     display: flex;
@@ -253,9 +253,9 @@
   /* Style the text */
   .tupname-container .tupname {
     color: white;
-    font-size: 40px; /* You can adjust this as needed */
+    font-size: 40px; 
     font-weight: 700;
-    text-align: center; /* Ensure the text is centered within the container */
+    text-align: center; 
   }
   
   /* Center the gearbox inside */
