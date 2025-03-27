@@ -88,6 +88,7 @@ export default function NewsArticles() {
       const data = await response.json();
       if (response.ok) {
         setMessage(data.message);
+        setIsMessageModalOpen(true);  
         fetchArticles();
       } else {
         setMessage(data.message || "Error occurred");
