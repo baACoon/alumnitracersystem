@@ -183,6 +183,7 @@ export default function NewsArticles() {
                 {loading && (
                   <div className={styles.bg}>
                     <div className={styles.spinner}></div>
+                    <h3 className={styles.loadname}>Loading...</h3>
                   </div>
                 )}
 

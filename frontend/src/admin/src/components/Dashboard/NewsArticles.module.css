@@ -164,6 +164,13 @@
   animation: spinner-sm4bhi 2s infinite linear;
 
  }
+
+ .loadname{
+  color: white;
+  font-size: 13px;
+  
+ }
+
  
  .spinner::before,
  .spinner::after {
