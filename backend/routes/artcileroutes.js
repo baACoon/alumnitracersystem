@@ -5,7 +5,6 @@ import multer from 'multer';
 import Article from '../models/article.js'; 
 import { sendArticleNotification } from '../emailservice.js';
 import cloudinary from '../config/cloudinary.js';
-import {UploadImageArticles} from '../config/cloudinary.js'
 
 
 dotenv.config();
@@ -13,6 +12,8 @@ dotenv.config();
 const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+const UploadImageArticles = multer ({storage: Articlestorage})
+
 
 router.post('/add', UploadImageArticles.single('image'), async (req, res) => {
     const { title, content } = req.body;
