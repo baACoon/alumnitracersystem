@@ -221,7 +221,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
       height: 100vh; /* Full viewport height */
       width: 100vw; /* Full viewport width */
       position: fixed;
@@ -240,24 +239,6 @@
   }
 
 
-  .tupname-container {
-    position: absolute;
-    margin-top: -30px;
-    left: 50%;
-    transform: translateX(-50%);  
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; 
-  }
-  
-  /* Style the text */
-  .tupname-container .tupname {
-    color: white;
-    font-size: 40px; 
-    font-weight: 700;
-    text-align: center; 
-  }
   
   /* Center the gearbox inside */
   .gearbox {
