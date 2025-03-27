@@ -106,7 +106,7 @@
 
 .successModalHeader .successCheckmark {
   font-size: 3rem;
-  color: #3ba73a;
+  color: #026800;
 }
 
 .successModalBody h2 {
@@ -121,7 +121,7 @@
 }
 
 .successOkButton {
-  background-color: #3ba73a;
+  background-color: #c31d3c;
   color: white;
   border: none;
   padding: 10px 20px;
