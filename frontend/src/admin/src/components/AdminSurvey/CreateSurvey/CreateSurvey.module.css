@@ -24,6 +24,7 @@
 .backButton {
   flex: 0 0 20%;
   color: gray;
+  text-transform: uppercase;
   border: none;
   padding: 10px 0;
   font-size: 1rem;
@@ -34,23 +35,14 @@
 
 .backButton:hover {
   background-color: #8f263a;
+  color: #fff;
 }
 
-/* Tracer Survey Button (80% Width) */
-.tracerSurveyButton {
-  flex: 0 0 80%;
-  background-color: #c31d3c;
-  color: white;
-  font-size: 14px;
-  padding: 10px 0;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.tracerSurveyButton:hover {
-  background-color: #8f263a;
+.title{
+  text-transform: uppercase;
+  color: #c31d3c;
+  font-weight: bold;
+  font-size: 1.5rem;
 }
 
 /* Form */

@@ -69,7 +69,7 @@ export const CreateSurvey = ({ onBack }) => {
             </button>
           </div>
 
-          <h1 className={styles.title}>create New Survey</h1>
+          <h1 className={styles.title}>Create New Survey</h1>
       <input
         type="text"
         placeholder="Survey Title"

@@ -84,7 +84,7 @@ export const ViewSurvey = ({ surveyId, onBack }) => {
                   </ul>
                 )}
 
-                {/* Checkbox for Multiple Selections */}
+                {/* Checkbox for Multiple Selections
                 {question.questionType === "checkbox" && (
                   <ul className={styles.optionsList}>
                     {question.options.map((option, optIndex) => (
@@ -109,7 +109,7 @@ export const ViewSurvey = ({ surveyId, onBack }) => {
                       </li>
                     ))}
                   </ul>
-                )}
+                )} */}
               </div>
             ))}
           </form>
