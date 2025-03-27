@@ -54,31 +54,24 @@ router.post('/add', UploadImageArticles.single('image'), async (req, res) => {
 
 
 
-router.put('/update/:id', upload.single('image'), async (req, res) => {
+router.put('/update/:id', UploadImageArticles.single('image'), async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
 
     try {
         const updatedFields = { title, content };
 
+        // Check if an image was uploaded and update the image URL
         if (req.file) {
-            const result = await new Promise((resolve, reject) => {
-                const uploadStream = cloudinary.uploader.upload_stream(
-                    { folder: 'articles' },
-                    (error, result) => {
-                        if (error) reject(error);
-                        else resolve(result);
-                    }
-                );
-
-                require('streamifier').createReadStream(req.file.buffer).pipe(uploadStream);
-            });
-
-            updatedFields.image = result.secure_url;
+            updatedFields.image = req.file.path; // The Cloudinary URL is stored in `req.file.path`
         }
 
+        // Find and update the article
         const article = await Article.findByIdAndUpdate(id, updatedFields, { new: true });
-        if (!article) return res.status(404).json({ message: 'Article not found' });
+
+        if (!article) {
+            return res.status(404).json({ message: 'Article not found' });
+        }
 
         res.status(200).json({ message: 'Article updated successfully!' });
     } catch (error) {
