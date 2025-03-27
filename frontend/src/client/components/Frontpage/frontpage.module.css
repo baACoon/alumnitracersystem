@@ -237,6 +237,17 @@
       background-size: cover; /* Ensures the image covers the entire container */
       z-index: 1000; /* Ensure it’s on top of everything */
   }
+
+
+  .tupname-container{
+    margin-top: -10px;
+  }
+
+  .tupname-container .tupname{
+    color: white;
+    font-size: 40px;
+    font-weight: 700;
+  }
   
   /* Center the gearbox inside */
   .gearbox {
