@@ -11,7 +11,8 @@ export default function NewsArticles() {
   const [editId, setEditId] = useState(null);
   const [showFormModal, setShowFormModal] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
-  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);  // State for the success message modal
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);  
+  const [loading, setLoading] = useState(false);  
 
 
 
@@ -40,6 +41,8 @@ export default function NewsArticles() {
     if (image) {
       formData.append("image", image);
     }
+
+    setLoading(true); 
 
     try {
       const url = editId
@@ -89,6 +92,8 @@ export default function NewsArticles() {
       }
     } catch (error) {
       setMessage("Error: Unable to connect to server");
+    } finally {
+      setLoading(false);  
     }
   };
 
@@ -213,6 +218,13 @@ export default function NewsArticles() {
           </div>
         </div>
       )}
+
+            {/* Loading Indicator */}
+            {loading && (
+              <div className={styles.bg}>
+                <div className={styles.loading}></div>
+              </div>
+            )}
 
             {/* Success Modal for Success Message */}
             {isMessageModalOpen && (
