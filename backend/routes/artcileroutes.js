@@ -12,7 +12,6 @@ dotenv.config();
 const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
-const UploadImageArticles = multer ({storage: Articlestorage})
 
 const Articlestorage = new CloudinaryStorage({
   cloudinary,
@@ -22,6 +21,8 @@ const Articlestorage = new CloudinaryStorage({
     transformation: [{ width: 500, height: 500, crop: 'limit' }],
   },
 });
+
+const UploadImageArticles = multer ({storage: Articlestorage})
 
 router.post('/add', UploadImageArticles.single('image'), async (req, res) => {
     const { title, content } = req.body;
