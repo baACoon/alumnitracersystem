@@ -74,7 +74,7 @@ router.post("/create", uploadImageEvents.single("image"), async (req, res) => {
 // GET: Fetch all events
 router.get("/list", async (req, res) => {
   try {
-    const events = await Event.find({});
+    const events = await Event.find({}); // Ensure this returns valid data
     res.status(200).json(events);
   } catch (error) {
     console.error("Error fetching events:", error);
@@ -82,17 +82,15 @@ router.get("/list", async (req, res) => {
   }
 });
 
-// DELETE: Delete an event by ID
+// Delete an event by ID
 router.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    const deletedEvent = await Event.findByIdAndDelete(id);
-
+    const deletedEvent = await Event.findByIdAndDelete(id); // Ensure this query is correct
     if (!deletedEvent) {
       return res.status(404).json({ error: "Event not found." });
     }
-
     res.status(200).json({ message: "Event deleted successfully." });
   } catch (error) {
     console.error("Error deleting event:", error);

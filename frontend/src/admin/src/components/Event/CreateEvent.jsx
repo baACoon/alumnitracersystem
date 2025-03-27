@@ -10,6 +10,7 @@ export const CreateEvent = ({ onPost, onBack }) => {
   const [venue, setVenue] = useState("");
   const [source, setSource] = useState("");
 
+  // Handles event creation
   const handlePost = async () => {
     if (title && description && date && time && venue) {
       const formData = new FormData();
@@ -23,41 +24,43 @@ export const CreateEvent = ({ onPost, onBack }) => {
         const fileInput = document.getElementById("fileInput");
         formData.append("image", fileInput.files[0]); // Attach file
       }
-  
+
       try {
         const response = await fetch("https://alumnitracersystem.onrender.com/event/create", {
           method: "POST",
           body: formData, // Send as FormData
         });
-  
+
         if (response.ok) {
           const result = await response.json();
           alert(result.message);
-          onPost(result.event);
-          setTitle("");
-          setDescription("");
-          setDate("");
-          setTime("");
-          setVenue("");
-          setSource("");
-          setFileName("");
+          onPost(result.event); // Trigger callback for posting event
+          resetForm(); // Clear form after success
         } else {
           const errorData = await response.json();
           alert(`Failed to create the event: ${errorData.error}`);
         }
       } catch (error) {
-        if (error instanceof multer.MulterError && error.code === "LIMIT_FILE_SIZE") {
-          return res.status(400).json({ error: "File size exceeds the maximum limit of 25 MB." });
-        }
         console.error("Error creating event:", error);
-        alert("An error occurred.");
+        alert("An error occurred while creating the event.");
       }
     } else {
       alert("Please fill out all required fields.");
     }
   };
-  
 
+  // Clear form after successful post
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setDate("");
+    setTime("");
+    setVenue("");
+    setSource("");
+    setFileName("");
+  };
+
+  // Handles file input change
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -76,7 +79,7 @@ export const CreateEvent = ({ onPost, onBack }) => {
         </button>
       </div>
       <div className={styles.form}>
-      <div className={styles.fileInputContainer}>
+        <div className={styles.fileInputContainer}>
           <label htmlFor="fileInput" className={styles.importImageButton}>
             Import Image
           </label>
@@ -96,7 +99,7 @@ export const CreateEvent = ({ onPost, onBack }) => {
           className={styles.inputField}
         />
         <textarea
-          placeholder="Write Events Description"
+          placeholder="Write Event Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className={styles.textArea}
@@ -135,8 +138,5 @@ export const CreateEvent = ({ onPost, onBack }) => {
     </div>
   );
 };
-const uri = "mongodb+srv://alumni:alumnipassword@alumni.fcta3.mongodb.net/?retryWrites=true&w=majority&appName=Alumni";
-//mongodb+srv://alumnitracer:pj3Nrrn4k32LKdEq@cluster0.cn3yf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-
 
 export default CreateEvent;
