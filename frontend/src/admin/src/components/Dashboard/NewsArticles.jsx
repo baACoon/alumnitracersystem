@@ -213,15 +213,12 @@ export default function NewsArticles() {
       )}
 
 
-          {isSuccessModalOpen ? (
+            {/* Success Modal */}
             <SuccessModal
               isOpen={isSuccessModalOpen}
               message={successMessage}
               onClose={closeSuccessModal}
             />
-          ) : (
-            message && <p className={styles.message}>{message}</p>
-          )}
 
 
       {/* Article Modal */}
