@@ -334,15 +334,15 @@
       position: relative;
       height: 100%;
       width: 100%;
-      background: #ffffff;
+      background: #ECECEC;
       border-radius: 30px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.3);
+      
     }
     
     .large .gearInner {
       border-radius: 60px;
-      box-shadow: inset 0px 0px 15px rgba(0, 0, 0, 0.4);
+      
     }
     
     .gear.one .gearInner {
@@ -362,7 +362,7 @@
     }
     
     .gearInner .bar {
-      background: #ffffff;
+      background: #ECECEC;
       height: 16px;
       width: 76px;
       position: absolute;
