@@ -5,7 +5,7 @@ import multer from 'multer';
 import Article from '../models/article.js'; 
 import { sendArticleNotification } from '../emailservice.js';
 import cloudinary from '../config/cloudinary.js';
-
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
 dotenv.config();
 
@@ -14,6 +14,14 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 const UploadImageArticles = multer ({storage: Articlestorage})
 
+const Articlestorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'articles', // Change this to your preferred folder name
+    allowed_formats: ['jpg', 'png', 'jpeg'],
+    transformation: [{ width: 500, height: 500, crop: 'limit' }],
+  },
+});
 
 router.post('/add', UploadImageArticles.single('image'), async (req, res) => {
     const { title, content } = req.body;
