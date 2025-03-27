@@ -169,6 +169,13 @@ export default function NewsArticles() {
             </div>
         ))}
       </div>
+      
+                  {/* Loading Indicator */}
+                  {loading && (
+                    <div className={styles.bg}>
+                      <div className={styles.loading}></div>
+                    </div>
+                   )}
 
       {/* Form Modal */}
       {showFormModal && (
@@ -219,12 +226,6 @@ export default function NewsArticles() {
         </div>
       )}
 
-            {/* Loading Indicator */}
-            {loading && (
-              <div className={styles.bg}>
-                <div className={styles.loading}></div>
-              </div>
-            )}
 
             {/* Success Modal for Success Message */}
             {isMessageModalOpen && (
