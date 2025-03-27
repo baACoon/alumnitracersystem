@@ -140,7 +140,7 @@
 }
 
 /*LOADER */
-/* From Uiverse.io by AqFox */ 
+
 .bg{
   position: absolute; 
   top: 0; 
@@ -162,13 +162,13 @@
   -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 15px),#000 calc(100% - 13px));
   border-radius: 50%;
   animation: spinner-sm4bhi 2s infinite linear;
-
+  box-shadow: 0 0 8px 4px rgba(255, 255, 255, 0.6); 
  }
 
  .loadname{
   color: white;
   font-size: 13px;
-  
+
  }
 
  
