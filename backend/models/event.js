@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import multer from "multer";
 import path from "path";
 import { sendEventNotification } from "../emailservice.js";
+import cloudinary from "../config/cloudinary.js";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 const router = express.Router();
 
@@ -17,37 +19,20 @@ const eventSchema = new mongoose.Schema({
   image: { type: String, required: false }, // Image filename
 });
 
-// MongoDB Model for Events
-const Event = mongoose.model("Event", eventSchema);
-
-// Multer Configuration for File Uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Ensure 'uploads/' folder exists
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
+// Cloudinary Configuration for Image Uploads
+const eventStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'events', // Specify folder name for event images in Cloudinary
+    allowed_formats: ['jpg', 'png', 'jpeg'], // Allowed image formats
+    transformation: [{ width: 500, height: 500, crop: 'limit' }], // Resize images to 500x500
   },
 });
 
-const upload = multer({
-  storage,
-  limits: {
-    fileSize: 25 * 1024 * 1024, // Limit file size to 25 MB
-  },
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    if (allowedTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only image files are allowed!"), false);
-    }
-  },
-});
-
+const uploadImageEvents = multer({ storage: eventStorage });
 
 // POST: Create a new event with an image
-router.post("/create", upload.single("image"), async (req, res) => {
+router.post("/create", uploadImageEvents.single("image"), async (req, res) => {
   try {
     console.log("Request body:", req.body); // Log request data
     console.log("Uploaded file:", req.file); // Log uploaded file info
@@ -66,7 +51,7 @@ router.post("/create", upload.single("image"), async (req, res) => {
       time,
       venue,
       source,
-      image: req.file ? req.file.filename : null, // Save image filename if uploaded
+      image: req.file ? req.file.path : null, // Save the Cloudinary URL if uploaded
     });
 
     await newEvent.save();

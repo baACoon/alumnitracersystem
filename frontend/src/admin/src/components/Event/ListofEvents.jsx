@@ -62,7 +62,7 @@ export const ListOfEvents = ({ events }) => {
           <div key={event._id} className={styles.eventBox}>
             {event.image && (
               <img
-                src={`https://alumnitracersystem.onrender.com/uploads/${event.image}`}
+                src={event.image}
                 alt={event.title}
                 className={styles.eventImage}
                 onClick={() => handleEventClick(event)}
@@ -102,7 +102,7 @@ export const ListOfEvents = ({ events }) => {
             </button>
             {selectedEvent.image && (
               <img
-                src={`http://localhost:5050/uploads/${selectedEvent.image}`}
+                src={selectedEvent.image}
                 alt={selectedEvent.title}
                 className={styles.modalEventImage}
               />
