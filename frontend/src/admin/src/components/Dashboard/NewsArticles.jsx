@@ -170,12 +170,6 @@ export default function NewsArticles() {
         ))}
       </div>
       
-                  {/* Loading Indicator */}
-                  {loading && (
-                    <div className={styles.bg}>
-                      <div className={styles.loading}></div>
-                    </div>
-                   )}
 
       {/* Form Modal */}
       {showFormModal && (
@@ -184,6 +178,14 @@ export default function NewsArticles() {
             <button className={styles.closeButton} onClick={closeFormModal}>
               &times;
             </button>
+
+                  {/* Show the loading spinner while the form is being submitted */}
+                {loading && (
+                  <div className={styles.bg}>
+                    <div className={styles.loader}></div>
+                  </div>
+                )}
+                
             <form className={styles.formContainer} onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
                     <label htmlFor="title">Title</label>
