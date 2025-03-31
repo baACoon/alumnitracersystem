@@ -47,6 +47,34 @@
   font-family: "Montserrat", sans-serif;
 }
 
+/* Tabs */
+.viewToggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  justify-content: center;
+}
+
+.tab {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #f9f9f9;;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.activeTab {
+  color: #ffffff;
+  background-color: #c31d3c;
+}
+
+.tab:hover:not(.activeTab) {
+  text-decoration: underline;
+  color: #c31d3c;
+  font-weight: bolder;
+}
 
 /* Medium screens (tablets) */
 @media (max-width: 1024px) {
