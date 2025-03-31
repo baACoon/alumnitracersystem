@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ReportsContent from "./Reports-Content"
+import ReportsContent from "../Reports/Reports-Content"
 import styles from "./Admin-Reports.module.css";
 
 export default function Reports() {

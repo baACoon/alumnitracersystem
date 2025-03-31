@@ -1,7 +1,7 @@
 import React from 'react';
-import { Sidebar } from '../SideBar/Admin-SideBar';
-import { DashFilter } from './Dash-Filter';
-import { Footer } from '../Footer/Footer';
+import { Sidebar } from '../../SideBar/Admin-SideBar';
+import { DashFilter } from '../../Dashboard/MainPage/Dash-Filter';
+import { Footer } from '../../Footer/Footer';
 import styles from './Dashboard.module.css';
 
 export function Dashboard() {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import styles from "../Admin-Analytics.module.css";
-import { TracerSurveyGraph, EmploymentAlumniGraph, CourseAlignmentGraph } from "../Analytics-Graphs";
+import styles from "../../Analytics-Cards.module.css";
+import { TracerSurveyGraph, EmploymentAlumniGraph, CourseAlignmentGraph } from "./Analytics-Graphs";
 
 const GeneralTracer = () => {
 

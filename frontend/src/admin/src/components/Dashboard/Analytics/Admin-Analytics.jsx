@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import AnalyticsCards from "./AnalyticsCards/Analytics-Cards";
-import { TracerSurveyGraph, EmploymentAlumniGraph, CourseAlignmentGraph } from "./Analytics-Graphs";
+import AnalyticsCards from "./Analytics-Cards";
+import { TracerSurveyGraph, EmploymentAlumniGraph, CourseAlignmentGraph } from "./AnalyticsCards/General/Analytics-Graphs";
 import styles from "./Admin-Analytics.module.css";
-import GeneralTracer from "./AnalyticsCards/GeneralTracer";
-import Tracer1Analytics from "./AnalyticsCards/Tracer1Analytics";
-import Tracer2Analytics from "./AnalyticsCards/Tracer2Analytics";
+import GeneralTracer from "./AnalyticsCards/General/GeneralTracer";
+import Tracer1Analytics from "./AnalyticsCards/Tracer1/Tracer1Analytics";
+import Tracer2Analytics from "./AnalyticsCards/Tracer2/Tracer2Analytics";
 
 export default function Analytics() {
   const [batch, setBatch] = useState("");
