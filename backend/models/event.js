@@ -5,19 +5,9 @@ import path from "path";
 import { sendEventNotification } from "../emailservice.js";
 import cloudinary from "../config/cloudinary.js";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
+import Event from "./Eventmodal.js";
 
 const router = express.Router();
-
-// MongoDB Schema for Events
-const eventSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  date: { type: String, required: true },
-  time: { type: String, required: true },
-  venue: { type: String, required: true },
-  source: { type: String, required: false },
-  image: { type: String, required: false }, // Image filename
-});
 
 // Cloudinary Configuration for Image Uploads
 const eventStorage = new CloudinaryStorage({
@@ -44,6 +34,7 @@ router.post("/create", uploadImageEvents.single("image"), async (req, res) => {
       return res.status(400).json({ error: "All required fields must be filled." });
     }
 
+    // Create the new event
     const newEvent = new Event({
       title,
       description,
@@ -54,12 +45,13 @@ router.post("/create", uploadImageEvents.single("image"), async (req, res) => {
       image: req.file ? req.file.path : null, // Save the Cloudinary URL if uploaded
     });
 
+    // Save event to the database
     await newEvent.save();
-    res.status(201).json({ message: "Event created successfully!", event: newEvent });
 
-    // **Send Email Notification to Users**
+    // Send Email Notification to Users
     await sendEventNotification(title, description, date);
 
+    // Send success response after saving event and sending email
     res.status(201).json({
       message: "Event created successfully & notifications sent!",
       event: newEvent,
