@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styles from './GraduatesList.module.css';
 import axios from "axios";
+import { Search } from "lucide-react"
+
 
 const API_BASE_URL = "https://alumnitracersystem.onrender.com"; // Change this to your actual backend URL
 
@@ -23,6 +25,7 @@ export function GraduatesList() {
   const [graduates, setGraduates] = useState([]);
   const [totalGraduates, setTotalGraduates] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("")
   const graduatesPerPage = 10;
 
   // Fetch all graduates on component mount
@@ -143,8 +146,20 @@ export function GraduatesList() {
     setCurrentPage(1);
   };
 
-  // Filter graduates for selected batch
-  const filteredGraduates = graduates.filter((grad) => Number(grad.gradYear) === Number(selectedBatch));
+  // Filter graduates for selected batch and search query
+  const filteredGraduates = graduates
+    .filter((grad) => Number(grad.gradYear) === Number(selectedBatch))
+    .filter((grad) => {
+      if (!searchQuery) return true
+      const fullName =
+        `${grad.firstName} ${grad.middleName !== "N/A" ? grad.middleName : ""} ${grad.lastName}`.toLowerCase()
+      return (
+        fullName.includes(searchQuery.toLowerCase()) ||
+        (grad.contact && grad.contact.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (grad.college && grad.college.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (grad.course && grad.course.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    })
 
   // Calculate total pages
   const totalPages = Math.ceil(filteredGraduates.length / graduatesPerPage);
@@ -297,6 +312,19 @@ export function GraduatesList() {
             </div>
 
             <div className={styles.uploadedList}>
+              <div className={styles.searchContainer}>
+
+                    <input
+                      type="search"
+                      placeholder="Search graduates..."
+                      className={styles.searchInput}
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value)
+                        setCurrentPage(1)
+                      }}
+                    />
+                  </div>
               <h3>Uploaded Graduates</h3>
               {isLoading ? (
                 <div className={styles.loadingIndicator}>Loading graduates...</div>
@@ -321,7 +349,7 @@ export function GraduatesList() {
                                 grad.middleName !== "N/A" ? grad.middleName : ""
                               } ${grad.lastName}`.trim()}
                             </td>
-                            <td>{grad.contact}</td>
+                            <td>{grad.email}</td>
                             <td>{grad.college}</td>
                             <td>{grad.course}</td>
                             <td>{grad.gradYear}</td>
