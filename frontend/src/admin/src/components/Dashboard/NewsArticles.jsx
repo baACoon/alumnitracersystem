@@ -19,7 +19,7 @@ export default function NewsArticles() {
   // Fetch articles
   const fetchArticles = async () => {
     try {
-      const response = await fetch("http://localhost:5050/artcileroutes/");
+      const response = await fetch("https://alumnitracersystem.onrender.com/artcileroutes/");
       const data = await response.json();
       setArticles(data);
     } catch (error) {
@@ -46,8 +46,8 @@ export default function NewsArticles() {
 
     try {
       const url = editId
-        ? `http://localhost:5050/artcileroutes/update/${editId}`
-        : "http://localhost:5050/artcileroutes/add";
+        ? `https://alumnitracersystem.onrender.com/artcileroutes/update/${editId}`
+        : "https://alumnitracersystem.onrender.com/artcileroutes/add";
       const method = editId ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -79,7 +79,7 @@ export default function NewsArticles() {
   const handleDelete = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5050/artcileroutes/delete/${id}`,
+        `https://alumnitracersystem.onrender.com/artcileroutes/delete/${id}`,
         {
           method: "DELETE",
         }

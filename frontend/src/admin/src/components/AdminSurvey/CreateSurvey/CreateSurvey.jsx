@@ -42,7 +42,7 @@ export const CreateSurvey = ({ onBack }) => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5050.onrender.com/api/surveys/create", {
+      const response = await axios.post("https://alumnitracersystem.onrender.com/api/surveys/create", {
         title,
         description,
         questions
