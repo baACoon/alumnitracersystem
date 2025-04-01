@@ -57,11 +57,13 @@ router.post("/register", async (req, res) => {
     const normalizedLastName = lastName.trim();
 
     // Exact match verification with case-insensitive comparison
-    const graduate = await Graduate.findOne({
-      firstName: { $regex: new RegExp(`^${firstName.trim()}$`, "i") },  // Direct match with spaces allowed
-      lastName: { $regex: new RegExp(`^${lastName.trim()}$`, "i") },   // Same for last name
-      gradYear: parseInt(gradyear),  // Ensuring the year is correct
-    });    
+    // Check for existing user with the same name, gradyear, and college
+    const existingGraduate = await Graduate.findOne({
+      firstName: { $regex: new RegExp(`^${normalizedFirstName}$`, "i") }, // case-insensitive match
+      lastName: { $regex: new RegExp(`^${normalizedLastName}$`, "i") },
+      gradYear: parsedGradYear, // Ensuring the year is correct
+    });
+   
     
     console.log("Graduate verification:", {
       firstName: normalizedFirstName,
@@ -69,6 +71,12 @@ router.post("/register", async (req, res) => {
       gradYear: parsedGradYear,
       foundGraduate: !!graduate, // Will be true if graduate is found
     });
+
+    if (existingGraduate) {
+      return res.status(400).json({
+        error: "A user with this name, graduation year, and course already exists.",
+      });
+    }    
 
     // If no matching graduate is found, prevent registration
     if (!graduate) {
