@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from './GraduatesList.module.css';
 import axios from "axios";
 
-const API_BASE_URL = "http://alumnitracersystem.onrender.com"; // Change this to your actual backend URL
+const API_BASE_URL = "http://localhost:5050"; // Change this to your actual backend URL
 
 export function GraduatesList() {
   const [selectedBatch, setSelectedBatch] = useState(null);
@@ -144,7 +144,7 @@ export function GraduatesList() {
   };
 
   // Filter graduates for selected batch
-  const filteredGraduates = graduates.filter((grad) => grad.gradYear === selectedBatch);
+  const filteredGraduates = graduates.filter((grad) => Number(grad.gradYear) === Number(selectedBatch));
 
   // Calculate total pages
   const totalPages = Math.ceil(filteredGraduates.length / graduatesPerPage);

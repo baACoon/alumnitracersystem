@@ -18,8 +18,10 @@ const TestLoginForm = ({ closeModal }) => {
     setLoading(true);
     const formData = { alumniID, password };
 
-    try { 
-      const response = await fetch('https://alumnitracersystem.onrender.com/record/login', {
+    console.log('Login attempt with:', formData); // Debug log
+
+    try {
+      const response = await fetch('https://localhost:5050/record/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -52,7 +54,7 @@ const TestLoginForm = ({ closeModal }) => {
     }
 
     try {
-      const response = await fetch('https://alumnitracersystem.onrender.com/record/forgot-password', {
+      const response = await fetch('https://localhost:5050.onrender.com/record/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ alumniID: resetAlumniID }),
@@ -80,7 +82,7 @@ const TestLoginForm = ({ closeModal }) => {
     }
 
     try {
-      const response = await fetch('https://alumnitracersystem.onrender.com/record/reset-password', {
+      const response = await fetch('https://localhost:5050.onrender.com/record/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: resetToken, newPassword }),

@@ -86,7 +86,7 @@ function AddjobFormMainPage() {
         }
 
         try {
-            const response = await fetch("https://alumnitracersystem.onrender.com/jobs/jobpost", {
+            const response = await fetch("https://localhost:5050/jobs/jobpost", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

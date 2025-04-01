@@ -11,7 +11,7 @@ export const ListOfEvents = ({ events }) => {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch("https://alumnitracersystem.onrender.com/event/list");
+      const response = await fetch("https://localhost:5050/event/list");
       if (response.ok) {
         const data = await response.json();
         setEventList(data);
@@ -34,7 +34,7 @@ export const ListOfEvents = ({ events }) => {
     }
   
     try {
-      const response = await fetch(`https://alumnitracersystem.onrender.com/event/delete/${eventId}`, {
+      const response = await fetch(`https://localhost:5050/event/delete/${eventId}`, {
         method: "DELETE",
       });
   

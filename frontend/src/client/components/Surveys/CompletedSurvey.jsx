@@ -13,7 +13,7 @@ export const CompletedSurvey = () => {
                 const userId = localStorage.getItem("userId");
 
                 const response = await axios.get(
-                    `https://alumnitracersystem.onrender.com/surveys/completed/${userId}`,
+                    `https://localhost:5050.onrender.com/surveys/completed/${userId}`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }

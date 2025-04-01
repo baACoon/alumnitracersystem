@@ -24,12 +24,11 @@ const app = express();
 dotenv.config();
 
 // Middleware
-app.use(cors({ origin: ['https://tupalumni.com', 'https://admin.tupalumni.com']}));
+app.use(cors({ origin: ['https://tupalumni.com', 'https://admin.tupalumni.com', 'http://localhost:3000','http://localhost:5050']}));
 app.use(express.json());
 
 // Serve static files (uploaded images)
 app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
-
 
 // Routes
 app.use("/record", records); // Existing records routes
@@ -43,6 +42,7 @@ app.use("/jobs", jobRoutes);
 app.use("/profile", profileRoutes);
 app.use("/api/alumni", alumnipage);
 app.use("/dashboard", dashboardRoutes);
+app.use("/api", uploadRoutes);
 
 // Connect to MongoDB Atlas before starting the server
 connectToDatabase()

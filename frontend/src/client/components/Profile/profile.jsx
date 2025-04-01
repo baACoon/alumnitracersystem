@@ -51,7 +51,7 @@ function ProfilePage() {
           return;
         }
 
-        const response = await fetch('https://alumnitracersystem.onrender.com/profile/user-profile', {
+        const response = await fetch('https://localhost:5050/profile/user-profile', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -97,7 +97,7 @@ function ProfilePage() {
   
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('https://alumnitracersystem.onrender.com/profile/change-password', {
+      const response = await fetch('https://localhost:5050.onrender.com/profile/change-password', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

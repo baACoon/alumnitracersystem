@@ -99,7 +99,7 @@ export default function CreateOpportunity({ onClose }) {
             status: status, // Pass status dynamically
         }));
 
-        const response = await fetch("https://alumnitracersystem.onrender.com/jobs/create", {
+        const response = await fetch("https://localhost:5050.onrender.com/jobs/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
