@@ -1,10 +1,10 @@
 import express from "express";
-import { createSurvey, getSurveys, getSurveyById, submitResponse, deleteSurvey, publishSurvey, updateSurvey } from "../controllers/surveyController.js";
+import { createCreatedSurvey, getSurveys, getSurveyById, submitResponse, deleteSurvey, publishSurvey, updateSurvey } from "../controllers/surveyController.js";
 
 const router = express.Router();
 
 // Existing routes
-router.post("/create", createSurvey);
+router.post("/create", createCreatedSurvey);
 router.get("/", getSurveys);
 router.get("/:id", getSurveyById);
 router.delete("/:id", deleteSurvey);
