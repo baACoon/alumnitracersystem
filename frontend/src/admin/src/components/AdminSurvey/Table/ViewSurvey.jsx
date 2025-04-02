@@ -15,7 +15,7 @@ export const ViewSurvey = ({ surveyId, onBack }) => {
 
   const fetchSurvey = async () => {
     try {
-      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/surveys/${surveyId}`);
+      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/newSurveys/${surveyId}`);
       setSurvey(response.data);
     } catch (error) {
       console.error("Error fetching survey:", error);
@@ -84,7 +84,7 @@ export const ViewSurvey = ({ surveyId, onBack }) => {
                   </ul>
                 )}
 
-                {/* Checkbox for Multiple Selections */}
+                {/* Checkbox for Multiple Selections
                 {question.questionType === "checkbox" && (
                   <ul className={styles.optionsList}>
                     {question.options.map((option, optIndex) => (
@@ -109,7 +109,7 @@ export const ViewSurvey = ({ surveyId, onBack }) => {
                       </li>
                     ))}
                   </ul>
-                )}
+                )} */}
               </div>
             ))}
           </form>

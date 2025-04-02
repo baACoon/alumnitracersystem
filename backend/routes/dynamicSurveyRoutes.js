@@ -1,21 +1,18 @@
 import express from "express";
-import { createSurvey, getSurveys, getSurveyById, submitResponse, deleteSurvey } from "../controllers/surveyController.js";
+import { createCreatedSurvey, getSurveys, getSurveyById, submitResponse, deleteSurvey, publishSurvey, updateSurvey } from "../controllers/surveyController.js";
 
 const router = express.Router();
 
-// Create a new survey
-router.post("/create", createSurvey);
-
-// Get all surveys
+// Existing routes
+router.post("/create", createCreatedSurvey);
 router.get("/", getSurveys);
-
-// Get a single survey by ID
 router.get("/:id", getSurveyById);
-
-// Delete a survey
 router.delete("/:id", deleteSurvey);
-
-// Submit a response to a survey
 router.post("/:id/response", submitResponse);
+
+// Add the route for publishing a survey (PUT request)
+router.put("/:id/publish", publishSurvey);
+router.put("/:id", updateSurvey);  // Route for updating survey by ID
+
 
 export default router;

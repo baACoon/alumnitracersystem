@@ -1,6 +1,17 @@
 .filterSection {
- 
+  padding: 20px;
   font-family: "Montserrat", sans-serif;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.databaseTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #c31d3c;
+  margin-bottom: 20px;
 }
 
 /* Filter Controls */
@@ -42,11 +53,35 @@
   cursor: not-allowed;
 }
 
-.analyticsContainer {
+/* Tabs */
+.viewToggle {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
   margin-bottom: 20px;
-  font-family: "Montserrat", sans-serif;
 }
 
+.tab {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #e0e0e0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  text-align: center;
+}
+
+.activeTab {
+  background-color: #c31d3c;
+  color: #fff;
+}
+
+.tab:hover:not(.activeTab) {
+  background-color: #ddd;
+}
+
+/* Responsive Design */
 
 /* Medium screens (tablets) */
 @media (max-width: 1024px) {
@@ -65,4 +100,12 @@
     gap: 10px;
   }
 
+  .viewToggle {
+    flex-direction: column; /* Stack tabs vertically */
+    gap: 10px;
+  }
+
+  .tab {
+    width: 100%; /* Full width for each tab */
+  }
 }

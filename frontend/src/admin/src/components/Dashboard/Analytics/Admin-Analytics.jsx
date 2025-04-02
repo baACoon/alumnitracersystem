@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import AnalyticsCards from "./Analytics-Cards";
-import { TracerSurveyGraph, EmploymentAlumniGraph, CourseAlignmentGraph } from "./Analytics-Graphs";
+import { TracerSurveyGraph, EmploymentAlumniGraph, CourseAlignmentGraph } from "./AnalyticsCards/General/Analytics-Graphs";
 import styles from "./Admin-Analytics.module.css";
+import GeneralTracer from "./AnalyticsCards/General/GeneralTracer";
+import Tracer1Analytics from "./AnalyticsCards/Tracer1/Tracer1Analytics";
+import Tracer2Analytics from "./AnalyticsCards/Tracer2/Tracer2Analytics";
 
 export default function Analytics() {
+  const [batch, setBatch] = useState("");
   const [college, setCollege] = useState("");
   const [course, setCourse] = useState("");
   const [activeFilter, setActiveFilter] = useState(null);
+  const [activeTab, setActiveTab] = useState("general");  
 
   const coursesByCollege = {
     "College of Engineering": [
@@ -39,22 +44,10 @@ export default function Analytics() {
     ]
   };
 
-  const tracerData = {
-    dates: ["June 19", "June 26", "July 3", "July 10", "July 17"],
-    participants: [50, 60, 70, 80, 90],
-    total: [60, 70, 80, 90, 100],
-  };
 
-  const employmentData = {
-    colleges: ["COE", "COS", "CIE", "CLA", "CAFA"],
-    employed: [500, 700, 300, 400, 250],
-    total: [800, 1000, 600, 700, 500],
-  };
-
-  const courseAlignData = {
-    level: ["1", "2", "3", "4", "5"],
-    employed: [500, 700, 300, 400, 250],
-
+  const handleBatchChange = (e) => {
+    setBatch(e.target.value);
+    setActiveFilter("batch");
   };
 
   const handleCollegeChange = (e) => {
@@ -68,9 +61,31 @@ export default function Analytics() {
     setActiveFilter("course");
   };
 
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
+
   return (
     <section className={styles.filterSection} aria-label="Dashboard filters">
       <div className={styles.filterControls} role="group" aria-label="Filter controls">
+        {/* Batch Filter */}
+        <div className={styles.filterButtonContainer}>
+          <label htmlFor="batch" className={styles.filterLabel}>Batch:</label>
+          <select
+            id="batch"
+            className={`${styles.filterButton} ${activeFilter === "batch" ? styles.filterButtonActive : ""}`}
+            value={batch}
+            onChange={handleBatchChange}
+          >
+            <option value="">All Batches</option>
+            {Array.from({ length: 10 }, (_, i) => 2024 - i).map((year) => (
+              <option key={year} value={year}>
+                Batch {year}
+              </option>
+            ))}
+          </select>
+        </div>
         {/* College Filter */}
         <div className={styles.filterButtonContainer}>
           <label htmlFor="college" className={styles.filterLabel}>
@@ -122,20 +137,38 @@ export default function Analytics() {
         <AnalyticsCards />
       </div>
 
-      <div className={styles.analyticsContainer}>
-        {/* Tracer Survey Graph */}
-        <TracerSurveyGraph tracerData={tracerData} />
+      {/* Tabs for Registered Alumni and List of Graduates */}
+      <div className={styles.viewToggle} role="tablist">
+        <button
+          role="tab"
+          aria-selected={activeTab === "general"}
+          className={`${styles.tab} ${activeTab === "general" ? styles.activeTab : ""}`}
+          onClick={() => handleTabChange("general")}
+        >
+          GENERAL
+        </button>
+        <button
+          role="tab"
+          aria-selected={activeTab === "tracer1"}
+          className={`${styles.tab} ${activeTab === "tracer1" ? styles.activeTab : ""}`}
+          onClick={() => handleTabChange("tracer1")}
+        >
+          TRACER 1
+        </button>
+        <button
+          role="tab"
+          aria-selected={activeTab === "tracer2"}
+          className={`${styles.tab} ${activeTab === "tracer2" ? styles.activeTab : ""}`}
+          onClick={() => handleTabChange("tracer2")}
+        >
+          TRACER 2
+        </button>
       </div>
 
-      <div className={styles.analyticsContainer}>
-        {/* Employment Alumni Graph */}
-        <EmploymentAlumniGraph employmentData={employmentData} />
-      </div>
-
-      <div className={styles.analyticsContainer}>
-        {/* Employment Alumni Graph */}
-        <CourseAlignmentGraph courseAlignData={courseAlignData} />
-      </div>
+      {/* Conditional Rendering */}
+      {activeTab === "general" && <GeneralTracer />}
+      {activeTab === "tracer1" && <Tracer1Analytics />}
+      {activeTab === "tracer2" && <Tracer2Analytics />}  
     </section>
   );
 }

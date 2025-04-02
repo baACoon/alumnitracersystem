@@ -16,7 +16,6 @@ import alumnipage from './routes/alumnipageroutes.js';
 import dashboardRoutes from './routes/dashboardroutes.js';
 import uploadRoutes from './routes/uploadroutes.js';
 import fs from 'fs';
-import multer from "multer";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -33,7 +32,7 @@ app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 // Routes
 app.use("/record", records); // Existing records routes
 app.use("/surveys", surveyRoutes); // Add survey routes
-app.use("/api/surveys", dynamicSurveyRoutes);
+app.use("/api/newSurveys", dynamicSurveyRoutes);
 app.use("/adminlog_reg", adminlogreg);
 app.use("/event", eventRoutes);
 //app.use("/user", userProfile);
@@ -54,6 +53,3 @@ connectToDatabase()
   .catch((error) => {
     console.error("Failed to connect to MongoDB Atlas. Server not started:", error);
   });
-
-
-  

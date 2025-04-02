@@ -1,64 +1,35 @@
-/* PendingSurvey.module.css */
-
-/* Container for Pending Surveys */
-.container {
-  width: 100%;
-  margin: auto;
-}
-
-/* Button Container */
-.buttonContainer {
-  text-align: center;
-  margin-top: 20px;
-}
-
-/* Navigate Button */
-.tracerSurveyButton {
-  background-color: #463557;
-  color: white;
-  font-size: 16px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.tracerSurveyButton:hover {
-  background-color: #362642;
-}
-
-.tableContainer {
-  margin-top: 20px;
-  font-family: "Montserrat", sans-serif;
-  
-  border-radius: 8px;
-
-}
-
 .table {
   width: 100%;
-  border-radius: 5px;
+  margin-top: 20px;
   border-collapse: collapse;
   background-color: #fff;
 }
 
-.tableHeader {
+.header {
   background-color: #c31d3c;
   color: #fff;
   text-align: left;
   font-weight: bold;
-  padding: 10px;
+  padding: 12px;
   font-size: 1rem;
-  border-radius: 5px;
+  text-transform: uppercase;
 }
 
-.headerCell {
-  padding: 10px;
-  text-align: center;
-  border: 1px solid #ddd;
+.header th {
+  padding: 12px;
+  /* Set column widths */
+  width: 15%; /* Adjust based on your layout, this is just an example */
 }
 
+.header th:nth-child(2) {
+  width: 40%; /* For "Title" column */
+}
+
+.header th:nth-child(3) {
+  width: 45%; /* For "Actions" column */
+}
+
+/* Row Styles */
 .row:nth-child(even) {
   background-color: #f9f9f9;
 }
@@ -68,50 +39,121 @@
   cursor: pointer;
 }
 
+/* Cell Styling */
 .cell {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: center;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+/* Clickable Row */
+.clickable {
+  color: #c31d3c;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.clickable:hover {
+  color: #721324;
 }
 
 .actionButton {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 10px;
+  border-bottom: 1px solid #eaeaea;
+  flex-wrap: wrap;
+}
+
+/* Base Button Styles */
+.viewButton, 
+.deleteButton, 
+.editButton, 
+.publishButton {
   padding: 5px 10px;
   font-size: 0.9rem;
+  width: 23%;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
   margin: 0 5px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
+/* Edit Button */
 .editButton {
   background-color: #007bff;
   color: #fff;
-  width: 40%;
 }
 
 .editButton:hover {
-  background-color: #0056b3;
+  background-color: #0069d9;
+  transform: translateY(-1px);
 }
 
+/* View Button */
+.viewButton {
+  background-color: #17a2b8;
+  color: #fff;
+}
+
+.viewButton:hover {
+  background-color: #138496;
+  transform: translateY(-1px);
+}
+
+/* Delete Button */
+.deleteButton {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.deleteButton:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+/* Publish Button */
 .publishButton {
   background-color: #28a745;
   color: #fff;
-  width: 40%;
 }
 
 .publishButton:hover {
   background-color: #218838;
+  transform: translateY(-1px);
+}
+
+/* Loading and No Surveys Message */
+.loading,
+.noSurveys {
+  text-align: center;
+  font-size: 16px;
+  color: #555;
+  padding: 20px;
 }
 
 /* Responsive Design */
-
 @media (max-width: 768px) {
   .table {
     font-size: 0.9rem;
   }
 
-  .actionButton {
-    padding: 5px;
+  .actionCell {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .viewButton,
+  .publishButton,
+  .editButton,
+  .deleteButton {
+    width: 100%;
+    padding: 6px;
     font-size: 0.8rem;
   }
 }

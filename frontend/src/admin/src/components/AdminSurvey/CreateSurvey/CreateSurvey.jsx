@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 import styles from "./CreateSurvey.module.css";
-import { TracerSurvey2 } from "./TracerSurvey2"; // Import TracerSurvey2 Component
 
 export const CreateSurvey = ({ onBack }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState([]);
-  const [viewTracerSurvey, setViewTracerSurvey] = useState(false);
 
   const addQuestion = () => {
     setQuestions([...questions, { questionText: "", questionType: "", options: [] }]);
@@ -40,19 +38,20 @@ export const CreateSurvey = ({ onBack }) => {
       alert("Title and at least one question are required.");
       return;
     }
-
+  
     try {
-      const response = await axios.post("https://alumnitracersystem.onrender.com/api/surveys/create", {
+      const response = await axios.post("https://alumnitracersystem.onrender.com/api/newSurveys/create", {
         title,
         description,
-        questions
+        questions,
+        status: "draft", // Ensure survey is created with status "draft"
       });
-
+  
       alert("Survey created successfully!");
       setTitle("");
       setDescription("");
       setQuestions([]);
-      onBack(); // Navigate back to the survey list
+      onBack(); // Navigate back to the pending survey list
     } catch (error) {
       console.error("Error creating survey:", error);
       alert("Failed to create survey.");
@@ -61,18 +60,12 @@ export const CreateSurvey = ({ onBack }) => {
 
   return (
     <div>
-      {viewTracerSurvey ? (
-        <TracerSurvey2 onBack={() => setViewTracerSurvey(false)} />
-      ) : (
         <div className={styles.createSurvey}>
           
           {/* Buttons Row */}
           <div className={styles.buttonRow}>
             <button className={styles.backButton} onClick={onBack}>
               Back
-            </button>
-            <button className={styles.tracerSurveyButton} onClick={() => setViewTracerSurvey(true)}>
-              OPEN TRACER SURVEY II
             </button>
           </div>
 
@@ -124,25 +117,6 @@ export const CreateSurvey = ({ onBack }) => {
                 <button className={styles.addOptionButton} onClick={() => addOption(index)}>
                   Add Option
                 </button>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
               </div>
             )}
 
@@ -159,7 +133,7 @@ export const CreateSurvey = ({ onBack }) => {
         Submit Survey
       </button>
         </div>
-      )}
+   
     </div>
   );
 };

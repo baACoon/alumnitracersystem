@@ -1,0 +1,103 @@
+.cardsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+
+}
+
+.card {
+  background-color: #f5f5f5;
+  border: 1px solid #e5e5e5;
+  border-radius: 2px;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+ 
+}
+
+
+
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 60px;
+  height: 60px;
+
+  margin: 0 auto 20px;
+}
+
+.iconSvg {
+  width: 30px;
+  height: 30px;
+  stroke: #c31d3c; /* Main color for the icons */
+}
+
+.value {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+.percentage {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #666666;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 5px;
+  color: #777777;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .cardsContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .iconSvg {
+    width: 25px;
+    height: 25px;
+  }
+
+  .value {
+    font-size: 2rem;
+  }
+
+  .title {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .cardsContainer {
+    grid-template-columns: 1fr; /* Stack cards vertically */
+    gap: 15px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .value {
+    font-size: 1.8rem;
+  }
+
+  .title {
+    font-size: 0.85rem;
+  }
+}
