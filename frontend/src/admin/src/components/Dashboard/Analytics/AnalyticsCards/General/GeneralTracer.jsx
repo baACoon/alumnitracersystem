@@ -1,45 +1,161 @@
-import React, { useState } from "react";
-import styles from "../../Analytics-Cards.module.css";
-import { TracerSurveyGraph, EmploymentAlumniGraph, CourseAlignmentGraph } from "./Analytics-Graphs";
+"use client"
+import { Bar, BarChart, Cell, Pie, PieChart, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
+import styles from "../Tracer1/Tracer1Analytics.module.css"
 
-const GeneralTracer = () => {
+export default function GeneralTracer() {
+  // Sample data for the charts
+  const degreeData = [
+    { name: "Bachelor", value: 45, color: "#4CC3C8" }, // Teal
+    { name: "Masters", value: 30, color: "#FF6B81" }, // Pink
+    { name: "Associate", value: 20, color: "#FFD166" }, // Yellow
+    { name: "Doctorate", value: 5, color: "#FF9F43" }, // Orange
+  ]
 
-  const tracerData = {
-    dates: ["June 19", "June 26", "July 3", "July 10", "July 17"],
-    participants: [50, 60, 70, 80, 90],
-    total: [60, 70, 80, 90, 100],
-  };
+  const collegeData = [
+    { name: "Engineering", value: 40, color: "#4CC3C8" }, // Teal
+    { name: "Business", value: 35, color: "#FF6B81" }, // Pink
+    { name: "Arts", value: 20, color: "#FFD166" }, // Yellow
+    { name: "Science", value: 5, color: "#FF9F43" }, // Orange
+  ]
 
-  const employmentData = {
-    colleges: ["COE", "COS", "CIE", "CLA", "CAFA"],
-    employed: [500, 700, 300, 400, 250],
-    total: [800, 1000, 600, 700, 500],
-  };
+  const barChartData = [
+    { category: "Red", value: 12 },
+    { category: "Blue", value: 19 },
+    { category: "Yellow", value: 3 },
+    { category: "Green", value: 5 },
+    { category: "Purple", value: 2 },
+    { category: "Orange", value: 3 },
+  ]
 
-  const courseAlignData = {
-    level: ["1", "2", "3", "4", "5"],
-    employed: [500, 700, 300, 400, 250],
-
-  };
+  // Custom tooltip component for charts
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className={styles.customTooltip}>
+          <p className={styles.label}>{`${label || payload[0].name}: ${payload[0].value}`}</p>
+        </div>
+      )
+    }
+    return null
+  }
 
   return (
-    <div>
-      <div className={styles.analyticsContainer}>
-              {/* Tracer Survey Graph */}
-              <TracerSurveyGraph tracerData={tracerData} />
+    <div className={styles.dashboardGrid}>
+      {/* First Row: Respondents, Degree, College */}
+      <div className={styles.topRow}>
+        {/* Respondents Counter */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>NUMBER OF ALUMNI</h2>
+          </div>
+          <div className={styles.cardContent}>
+            <span className={styles.counterValue}>487</span>
+          </div>
+        </div>
+
+        {/* Degree Chart */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>REGISTERED ALUMNI</h2>
+          </div>
+          <div className={styles.cardContent}>
+            <span className={styles.counterValue}>254</span>
+          </div>
+        </div>
+
+        {/* College Chart */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>TRACER 2 REPONDENTS</h2>
+          </div>
+          <div className={styles.cardContent}>
+            <span className={styles.counterValue}>157</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Second Row: Year Started, Employment Status */}
+      <div className={styles.barRow}>
+        {/* Year Started Chart */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>EDUCATIONATION ATTAINTMENT</h2>
+          </div>
+          <div className={styles.cardContent}>
+            <div className={styles.chartContainer}>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="category" />
+                  <YAxis domain={[0, 20]} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="value" fill="#7DD3FC" name="# of Votes" />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
-      
-            <div className={styles.analyticsContainer}>
-              {/* Employment Alumni Graph */}
-              <EmploymentAlumniGraph employmentData={employmentData} />
+          </div>
+        </div>
+
+        {/* Employment Status Chart */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>EMPLOYMENT STATUS</h2>
+          </div>
+          <div className={styles.cardContent}>
+            <div className={styles.chartContainer}>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="category" />
+                  <YAxis domain={[0, 20]} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="value" fill="#7DD3FC" name="# of Votes" />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
-      
-            <div className={styles.analyticsContainer}>
-              {/* Employment Alumni Graph */}
-              <CourseAlignmentGraph courseAlignData={courseAlignData} />
-            </div> 
+          </div>
+        </div>
+      </div>
+
+      {/* Third Row: Type of Organization, Work Alignment */}
+      <div className={styles.barRow}>
+        {/* Type of Organization Chart */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>TYPE OF ORGANIZATION</h2>
+          </div>
+          <div className={styles.cardContent}>
+            <div className={styles.chartContainer}>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="category" />
+                  <YAxis domain={[0, 20]} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="value" fill="#7DD3FC" name="# of Votes" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        {/* Work Alignment Chart */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>WORK ALIGNMENT IN COURSE</h2>
+          </div>
+          <div className={styles.cardContent}>
+            <div className={styles.chartContainer}>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="category" />
+                  <YAxis domain={[0, 20]} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="value" fill="#7DD3FC" name="# of Votes" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
 
-export default GeneralTracer

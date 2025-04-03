@@ -18,12 +18,12 @@ import uploadRoutes from './routes/uploadroutes.js';
 import fs from 'fs';
 
 const PORT = process.env.PORT || 5050;
-const app = express();
+const app = express(); 
 
 dotenv.config();
 
 // Middleware
-app.use(cors({ origin: ['https://tupalumni.com', 'https://admin.tupalumni.com', 'http://localhost:3000','http://localhost:5050']}));
+app.use(cors({ origin: ['https://tupalumni.com', 'https://admin.tupalumni.com', 'http://localhost:3000','http://localhost:5050','http://localhost:3001']}));
 app.use(express.json());
 
 // Serve static files (uploaded images)
