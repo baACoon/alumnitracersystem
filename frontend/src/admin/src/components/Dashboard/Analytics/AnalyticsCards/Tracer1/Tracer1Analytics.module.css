@@ -1,0 +1,89 @@
+.dashboardGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .topRow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .barRow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  .cardHeader {
+    background-color: #c31d3c;
+    padding: 16px;
+    color: white;
+  }
+  
+  .cardTitle {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .cardContent {
+    padding: 16px;
+  }
+  
+  .counterValue {
+    font-size: 96px;
+    color: #98172f;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 32px 0;
+  }
+  
+  .chartContainer {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .customTooltip {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  }
+  
+  .label {
+    margin: 0;
+    font-weight: 500;
+  }
+  
+  /* Responsive styles */
+  @media (min-width: 768px) {
+    .topRow {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  
+    .barRow {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  /* For smaller screens, ensure the top row stacks properly */
+  @media (max-width: 767px) {
+    .topRow {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  

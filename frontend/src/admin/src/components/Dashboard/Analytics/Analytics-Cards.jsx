@@ -17,7 +17,7 @@ export default function DashboardCards() {
           fetch(`${baseURL}/employed-alumni`),
           fetch(`${baseURL}/course-aligned-alumni`),
         ]);
-
+ 
         const [totalData, employedData, alignedData] = await Promise.all(responses.map(res => res.json()));
 
         setStats({

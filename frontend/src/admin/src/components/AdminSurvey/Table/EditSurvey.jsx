@@ -59,7 +59,7 @@ export const EditSurvey = ({ surveyId, onBack }) => {
     }
   
     try {
-      const response = await axios.put(`http://localhost:5050/api/surveys/${surveyId}`, {
+      const response = await axios.put(`http://localhost:5050/api/newSurveys/${surveyId}`, {
         title,
         description,
         questions,

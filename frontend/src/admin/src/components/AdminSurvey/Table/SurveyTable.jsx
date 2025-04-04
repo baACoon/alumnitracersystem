@@ -14,7 +14,7 @@ export const SurveyTable = ({ onView }) => {
 
   const fetchSurveys = async () => {
     try {
-      const response = await axios.get("http://localhost:5050/api/surveys");
+      const response = await axios.get("http://localhost:5050/api/newSurveys");
       // Only fetch surveys with status "active"
       const activeSurveys = response.data.filter(survey => survey.status === "active");
       setSurveys(activeSurveys);
@@ -29,7 +29,7 @@ export const SurveyTable = ({ onView }) => {
     if (!window.confirm("Are you sure you want to delete this survey?")) return;
 
     try {
-      await axios.delete(`http://localhost:5050/api/surveys/${surveyId}`);
+      await axios.delete(`http://localhost:5050/api/newSurveys/${surveyId}`);
       setSurveys(surveys.filter((survey) => survey._id !== surveyId)); // Remove from the list
     } catch (error) {
       console.error("Error deleting survey:", error);

@@ -15,7 +15,7 @@ export const PendingSurvey = () => {
 
   const fetchPendingSurveys = async () => {
     try {
-      const response = await axios.get("http://localhost:5050/api/surveys");  // Fetch all surveys
+      const response = await axios.get("http://localhost:5050/api/newSurveys");  // Fetch all surveys
       const pendingSurveys = response.data.filter(survey => survey.status === "draft");
       setPendingSurveys(pendingSurveys);
     } catch (error) {
@@ -25,7 +25,7 @@ export const PendingSurvey = () => {
 
   const handlePublish = async (surveyId) => {
     try {
-      const response = await axios.put(`http://localhost:5050/api/surveys/${surveyId}/publish`);
+      const response = await axios.put(`http://localhost:5050/api/newSurveys/${surveyId}/publish`);
       alert("Survey published successfully!");
       fetchPendingSurveys(); // Re-fetch surveys to show the updated list
     } catch (error) {
@@ -38,7 +38,7 @@ export const PendingSurvey = () => {
     if (!window.confirm("Are you sure you want to delete this survey?")) return;
 
     try {
-      await axios.delete(`http://localhost:5050/api/surveys/${surveyId}`);
+      await axios.delete(`http://localhost:5050/api/newSurveys/${surveyId}`);
       setPendingSurveys(pendingSurveys.filter((survey) => survey._id !== surveyId)); // Remove from the list
     } catch (error) {
       console.error("Error deleting survey:", error);

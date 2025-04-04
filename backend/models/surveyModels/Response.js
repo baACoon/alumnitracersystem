@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const responseSchema = new mongoose.Schema({
-  surveyId: { type: mongoose.Schema.Types.ObjectId, ref: "Survey", required: true },
+  surveyId: { type: mongoose.Schema.Types.ObjectId, ref: "CreatedSurvey", required: true },
   submittedAt: { type: Date, default: Date.now },
   answers: [
     {
