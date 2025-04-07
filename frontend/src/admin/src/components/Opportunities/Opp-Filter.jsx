@@ -24,7 +24,7 @@ export function OpportunityFilters() {
         });
 
         if (!response.ok) {
-          const text = await response.text(); // Handle HTML error
+          const text = await response.text();
           console.error("Error response:", text);
           return;
         }
@@ -40,7 +40,6 @@ export function OpportunityFilters() {
     fetchOpportunities();
   }, []);
 
-  // ✅ Filters (College & Course Options)
   const coursesByCollege = {
     "College of Engineering": [
       "Bachelor of Science in Civil Engineering",
@@ -97,12 +96,17 @@ export function OpportunityFilters() {
 
   // ✅ Apply filters
   const filteredOpportunities = opportunities.filter((opportunity) => {
-    const matchesCollege = college ? opportunity.college === college : true;
-    const matchesCourse = course ? opportunity.course === course : true;
+    // Adjust these field names if needed!
+    const jobCollege = opportunity.college || opportunity.department || "";
+    const jobCourse = opportunity.course || opportunity.program || "";
+    const jobStatus = opportunity.status || "";
+
+    const matchesCollege = college ? jobCollege === college : true;
+    const matchesCourse = course ? jobCourse === course : true;
     const matchesStatus =
       activeTab === "published"
-        ? opportunity.status === "Published"
-        : opportunity.status === "Pending";
+        ? jobStatus === "Published"
+        : jobStatus === "Pending";
 
     return matchesCollege && matchesCourse && matchesStatus;
   });
@@ -158,7 +162,7 @@ export function OpportunityFilters() {
           </div>
         </div>
 
-        {/* ✅ Tabs for Published / Pending */}
+        {/* ✅ Tabs */}
         <div className={styles.viewToggle} role="tablist">
           <button
             role="tab"
