@@ -14,7 +14,7 @@ export const EditSurvey = ({ surveyId, onBack }) => {
 
   const fetchSurveyData = async () => {
     try {
-      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/surveys/${surveyId}`);
+      const response = await axios.get(`https://alumnitracersystem.onrender.com/api/newSurveys/${surveyId}`);
       const { survey, questions } = response.data;
       setTitle(survey.title);
       setDescription(survey.description);
