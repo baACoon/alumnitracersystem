@@ -69,7 +69,7 @@ function HomePage() {
     useEffect(() => {
         const fetchStats = async () => {
           try {
-            const baseURL = "https://localhost:5050/dashboard";
+            const baseURL = "https://alumnitracersystem.onrender.com/dashboard";
             const responses = await Promise.all([
               fetch(`${baseURL}/total-alumni`),
               fetch(`${baseURL}/employed-alumni`),

@@ -26,7 +26,7 @@ function JobListMainPage() {
 
   const [college, setCollege] =  useState("");
   const [course, setCourse] = useState("");
-
+  
   const coursesByCollege = {
     "College of Engineering": [
       "Bachelor of Science in Civil Engineering",
