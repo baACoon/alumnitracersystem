@@ -24,6 +24,41 @@ function JobListMainPage() {
   const [likes, setLikes] = useState({});
   const [loading, setLoading] = useState(true);
 
+  const [college, setCollege] =  useState("");
+  const [course, setCourse] = useState("");
+
+  const coursesByCollege = {
+    "College of Engineering": [
+      "Bachelor of Science in Civil Engineering",
+      "Bachelor of Science in Electrical Engineering",
+      "Bachelor of Science in Electronics Engineering",
+      "Bachelor of Science in Mechanical Engineering",
+    ],
+    "College of Science": [
+      "Bachelor of Applied Science in Laboratory Technology",
+      "Bachelor of Science in Computer Science",
+      "Bachelor of Science in Environmental Science",
+      "Bachelor of Science in Information System",
+      "Bachelor of Science in Information Technology",
+    ],
+    "College of Industrial Education": [
+      "Bachelor of Science Industrial Education Major in Information and Communication Technology",
+      "Bachelor of Science Industrial Education Major in Home Economics",
+      "Bachelor of Science Industrial Education Major in Industrial Arts",
+    ],
+    "College of Liberal Arts": [
+      "Bachelor of Science in Business Management Major in Industrial Management",
+      "Bachelor of Science in Entrepreneurship",
+      "Bachelor of Science in Hospitality Management",
+    ],
+    "College of Architecture and Fine Arts": [
+      "Bachelor of Science in Architecture",
+      "Bachelor of Fine Arts",
+      "Bachelor of Graphic Technology Major in Architecture Technology",
+    ],
+  };
+
+
   const goToJobPage = () => {
     navigate("/JobPage");
   };
@@ -47,6 +82,19 @@ function JobListMainPage() {
     };
     fetchJobs();
   }, []);
+
+    // Filter jobs when college/course or original jobs change
+    useEffect(() => {
+      let updated = [...jobs];
+      if (college) {
+        updated = updated.filter((job) => job.college === college);
+      }
+      if (course) {
+        updated = updated.filter((job) => job.course === course);
+      }
+      setFilteredJobs(updated);
+    }, [college, course, jobs]);
+
 
   const handleCommentSubmit = async (jobId) => {
     if (!newComment.trim()) return;
@@ -82,6 +130,44 @@ function JobListMainPage() {
       Back
     </a>
     <h1 className="list-title">JOB OPPORTUNITIES FEED</h1>
+    
+      {/* Filter controls */}
+      <div className="filter-controls">
+        <label>
+          College:
+          <select
+            value={college}
+            onChange={(e) => {
+              setCollege(e.target.value);
+              setCourse(""); // Reset course if college changes
+            }}
+          >
+            <option value="">All Colleges</option>
+            {Object.keys(coursesByCollege).map((collegeName) => (
+              <option key={collegeName} value={collegeName}>
+                {collegeName}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          Course:
+          <select
+            value={course}
+            onChange={(e) => setCourse(e.target.value)}
+            disabled={!college}
+          >
+            <option value="">All Courses</option>
+            {college &&
+              coursesByCollege[college].map((courseName) => (
+                <option key={courseName} value={courseName}>
+                  {courseName}
+                </option>
+              ))}
+          </select>
+        </label>
+      </div>
 
     {/* 🔄 Show Loading Animation */}
     {loading ? (
