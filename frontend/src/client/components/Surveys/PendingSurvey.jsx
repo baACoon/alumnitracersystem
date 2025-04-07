@@ -4,48 +4,46 @@ import axios from 'axios';
 import styles from './PendingSurvey.module.css';
 
 export const PendingSurvey = () => {
-    const navigate = useNavigate();
-    const [pendingSurveys, setPendingSurveys]= useState([]);
+  const navigate = useNavigate();
+  const [activeSurveys, setActiveSurveys] = useState([]);
 
-    useEffect(() => {
-        const fetchPendingSurveys = async () => {
-            const token = localStorage.getItem("token");
-            const userId = localStorage.getItem("userId");
-            
-            const response = await axios.get(`https://alumnitracersystem.onrender.com/surveys/pending/${userId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+  useEffect(() => {
+    const fetchSurveys = async () => {
+      try {
+        const response = await axios.get("https://alumnitracersystem.onrender.com/api/newSurveys/active");
 
-            setPendingSurveys(response.data.surveys);
-        };
-
-        fetchPendingSurveys();
-    }, []);
-
-    const goToForm = (surveyId) => {
-        navigate(`/SurveyForm/${surveyId}`);
+        // Assuming your backend returns: { surveys: [...] }
+        setActiveSurveys(response.data.surveys || []);
+      } catch (error) {
+        console.error("Error fetching active surveys:", error);
+        alert("Failed to load surveys.");
+      }
     };
 
-    return (
-        <div className={styles.surveyContainer}>
-            <h2>PENDING SURVEYS</h2>
-            <div className={styles.surveyList}>
-                {pendingSurveys.length > 0 ? (
-                    pendingSurveys.map((survey) => (
-                        <div key={survey.id} className={styles.surveyCard}>
-                            <h3 className={styles.surveyTitle} onClick={() => goToForm(survey.id)}>
-                                {survey.title}
-                                <p className={styles.surveyDate}>Received: {survey.dateReceived}</p>
-                            </h3>
-                        </div>
-                    ))
-                ) : (
-                    <p>No pending surveys available.</p>
-                )}
-            </div>
-        </div>
+    fetchSurveys();
+  }, []);
 
-    );
+  const goToForm = (surveyId) => {
+    navigate(`/SurveyForm/${surveyId}`);
+  };
+
+  return (
+    <div className={styles.surveyContainer}>
+      <h2>AVAILABLE SURVEYS</h2>
+      <div className={styles.surveyList}>
+        {activeSurveys.length > 0 ? (
+          activeSurveys.map((survey) => (
+            <div key={survey._id} className={styles.surveyCard} onClick={() => goToForm(survey._id)}>
+              <h3 className={styles.surveyTitle}>{survey.title}</h3>
+              <p className={styles.surveyDescription}>{survey.description}</p>
+            </div>
+          ))
+        ) : (
+          <p>No available surveys.</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default PendingSurvey;
