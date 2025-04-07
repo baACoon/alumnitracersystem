@@ -24,6 +24,8 @@ function JobListMainPage() {
   const [likes, setLikes] = useState({});
   const [loading, setLoading] = useState(true);
 
+  const [filteredJobs, setFilteredJobs] = useState([]);
+
   const [college, setCollege] =  useState("");
   const [course, setCourse] = useState("");
   
@@ -183,7 +185,8 @@ function JobListMainPage() {
         </div>
       </div>
     ) : (
-      jobs.map((job) => (
+      
+      filteredJobs.map((job) => (
         <div key={job.id} className="job-card">
           <div className="job-card-header">
             <h3>{job.title}</h3>
