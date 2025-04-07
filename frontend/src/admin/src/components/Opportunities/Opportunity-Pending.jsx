@@ -48,31 +48,31 @@ export default function OpportunityPending() {
 
   const handlePublishClick = async () => {
     if (!selectedOpportunity) return;
-
+  
     const token = localStorage.getItem("token");
     if (!token) {
       alert("You need to log in first.");
       return;
     }
-
+  
     try {
       const response = await fetch(
-        `https://alumnitracersystem.onrender.com${selectedOpportunity._id}/approve`,
+        `https://alumnitracersystem.onrender.com/jobs/${selectedOpportunity._id}/approve`,
         {
-          method: "POST",
+          method: "POST", // or "PATCH" if backend expects it
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
+  
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Failed to publish opportunity:", errorData);
-        alert(errorData.message || "Failed to publish opportunity.");
+        const errorText = await response.text(); // safer than assuming it's JSON
+        console.error("Failed to publish opportunity:", errorText);
+        alert("Failed to publish opportunity.");
         return;
       }
-
+  
       alert("Opportunity published successfully!");
       setPendingOpportunities((prev) =>
         prev.filter((opportunity) => opportunity._id !== selectedOpportunity._id)
@@ -83,6 +83,7 @@ export default function OpportunityPending() {
       alert("An error occurred while publishing the opportunity.");
     }
   };
+  
 
   const handleRejectClick = () => {
     setShowRejectionForm(true);

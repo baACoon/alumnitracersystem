@@ -13,13 +13,25 @@ export function OpportunityFilters() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [opportunities, setOpportunities] = useState([]);
 
+  // ✅ Fetch opportunities from backend
   useEffect(() => {
     const fetchOpportunities = async () => {
       try {
-        const response = await fetch("https://alumnitracersystem.onrender.com/jobs");
+        const response = await fetch("https://alumnitracersystem.onrender.com/jobs/jobpost", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        if (!response.ok) {
+          const text = await response.text(); // Handle HTML error
+          console.error("Error response:", text);
+          return;
+        }
+
         const data = await response.json();
-        console.log("Fetched Opportunities: ", data);  // Log fetched data for debugging
-        setOpportunities(data); // Store the data from the API
+        console.log("Fetched Opportunities:", data);
+        setOpportunities(data);
       } catch (error) {
         console.error("Error fetching opportunities:", error);
       }
@@ -28,6 +40,7 @@ export function OpportunityFilters() {
     fetchOpportunities();
   }, []);
 
+  // ✅ Filters (College & Course Options)
   const coursesByCollege = {
     "College of Engineering": [
       "Bachelor of Science in Civil Engineering",
@@ -61,8 +74,8 @@ export function OpportunityFilters() {
 
   const handleCollegeChange = (e) => {
     setCollege(e.target.value);
-    setActiveFilter("college");
     setCourse(""); // Reset course when college changes
+    setActiveFilter("college");
   };
 
   const handleCourseChange = (e) => {
@@ -75,20 +88,17 @@ export function OpportunityFilters() {
   };
 
   const handleCreateClick = () => {
-    setShowCreateModal(true); // Show the create opportunity modal
+    setShowCreateModal(true);
   };
 
   const closeCreateModal = () => {
-    setShowCreateModal(false); // Close the create opportunity modal
+    setShowCreateModal(false);
   };
 
-  // Filter the opportunities based on the selected college and course
+  // ✅ Apply filters
   const filteredOpportunities = opportunities.filter((opportunity) => {
-    // Check if the opportunity matches the selected college and course
     const matchesCollege = college ? opportunity.college === college : true;
     const matchesCourse = course ? opportunity.course === course : true;
-
-    // Check if the opportunity matches the selected status (Published or Pending)
     const matchesStatus =
       activeTab === "published"
         ? opportunity.status === "Published"
@@ -107,13 +117,11 @@ export function OpportunityFilters() {
           </button>
         </div>
 
-        {/* Filter Controls */}
+        {/* ✅ Filter Controls */}
         <div className={styles.filterControls} role="group" aria-label="Filter controls">
           {/* College Filter */}
           <div className={styles.filterButtonContainer}>
-            <label htmlFor="college" className={styles.filterLabel}>
-              College:
-            </label>
+            <label htmlFor="college" className={styles.filterLabel}>College:</label>
             <select
               id="college"
               className={`${styles.filterButton} ${activeFilter === "college" ? styles.filterButtonActive : ""}`}
@@ -131,9 +139,7 @@ export function OpportunityFilters() {
 
           {/* Course Filter */}
           <div className={styles.filterButtonContainer}>
-            <label htmlFor="course" className={styles.filterLabel}>
-              Course:
-            </label>
+            <label htmlFor="course" className={styles.filterLabel}>Course:</label>
             <select
               id="course"
               className={`${styles.filterButton} ${activeFilter === "course" ? styles.filterButtonActive : ""}`}
@@ -141,7 +147,7 @@ export function OpportunityFilters() {
               onChange={handleCourseChange}
               disabled={!college}
             >
-              <option value="">Select Course</option>
+              <option value="">All Courses</option>
               {college &&
                 coursesByCollege[college].map((courseName) => (
                   <option key={courseName} value={courseName}>
@@ -152,7 +158,7 @@ export function OpportunityFilters() {
           </div>
         </div>
 
-        {/* Tabs for Published and Pending Opportunities */}
+        {/* ✅ Tabs for Published / Pending */}
         <div className={styles.viewToggle} role="tablist">
           <button
             role="tab"
@@ -172,11 +178,11 @@ export function OpportunityFilters() {
           </button>
         </div>
 
-        {/* Conditional Rendering */}
+        {/* ✅ Render Opportunity Lists */}
         {activeTab === "published" && <OpportunityList opportunities={filteredOpportunities} />}
         {activeTab === "pending" && <OpportunityPending opportunities={filteredOpportunities} />}
 
-        {/* Create Opportunity Modal */}
+        {/* ✅ Create Modal */}
         {showCreateModal && <CreateOpportunity onClose={closeCreateModal} />}
       </section>
     </SidebarLayout>
