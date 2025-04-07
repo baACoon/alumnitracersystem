@@ -3,7 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import Dashboard from './components/Dashboard/Dashboard';
+//import Dashboard from './components/Dashboard/Dashboard';
+import Dashboard from './components/Dashboard/MainPage/Dashboard';
 import AlumniPage from './components/Alumni/Page/AlumniPage';
 import SurveyContent from './components/AdminSurvey/Content/SurveyContent';
 import EvenTabs from './components/Event/EventTabs';
