@@ -6,17 +6,30 @@ import styles from './PendingSurvey.module.css';
 export const PendingSurvey = () => {
   const navigate = useNavigate();
   const [activeSurveys, setActiveSurveys] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSurveys = async () => {
       try {
-        const response = await axios.get("https://alumnitracersystem.onrender.com/api/newSurveys/active");
+        const token = localStorage.getItem("token");
 
-        // Assuming your backend returns: { surveys: [...] }
-        setActiveSurveys(response.data.surveys || []);
+        const response = await axios.get("https://alumnitracersystem.onrender.com/api/newSurveys/active", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.data && response.data.surveys) {
+          setActiveSurveys(response.data.surveys);
+        } else {
+          console.warn("No surveys key in response:", response.data);
+          setActiveSurveys([]);
+        }
       } catch (error) {
-        console.error("Error fetching active surveys:", error);
+        console.error("Error fetching active surveys:", error.response?.data || error.message);
         alert("Failed to load surveys.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -31,7 +44,9 @@ export const PendingSurvey = () => {
     <div className={styles.surveyContainer}>
       <h2>AVAILABLE SURVEYS</h2>
       <div className={styles.surveyList}>
-        {activeSurveys.length > 0 ? (
+        {loading ? (
+          <p>Loading surveys...</p>
+        ) : activeSurveys.length > 0 ? (
           activeSurveys.map((survey) => (
             <div key={survey._id} className={styles.surveyCard} onClick={() => goToForm(survey._id)}>
               <h3 className={styles.surveyTitle}>{survey.title}</h3>
