@@ -1,6 +1,5 @@
 import express from "express";
-import { createCreatedSurvey, getSurveys, getSurveyById, submitResponse, deleteSurvey, publishSurvey, updateSurvey } from "../controllers/surveyController.js";
-import { getActiveSurveys } from "../controllers/surveyController.js";
+import { createCreatedSurvey, getSurveys, getSurveyById, submitResponse, deleteSurvey, publishSurvey, updateSurvey, getActiveSurveys } from "../controllers/surveyController.js";
 const router = express.Router();
 
 // Existing routes
