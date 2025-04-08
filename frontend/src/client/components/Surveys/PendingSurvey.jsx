@@ -64,20 +64,18 @@ export const PendingSurvey = () => {
   const handleSubmitSurvey = async () => {
     try {
       const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
 
       await axios.post(
         `https://alumnitracersystem.onrender.com/api/newSurveys/${selectedSurvey._id}/response`,
-        { answers: responses },
+        { answers: responses, userId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       alert("Survey submitted successfully!");
       setSelectedSurvey(null);
 
-      // Remove submitted survey from pending
       setActiveSurveys((prev) => prev.filter((s) => s._id !== selectedSurvey._id));
-
-      // Redirect to completed surveys
       navigate("/CompletedSurveys");
     } catch (error) {
       console.error("Submission error:", error);
@@ -111,7 +109,6 @@ export const PendingSurvey = () => {
         )}
       </div>
 
-      {/* Modal */}
       {selectedSurvey && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
