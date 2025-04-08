@@ -32,11 +32,13 @@ export const createCreatedSurvey = async (req, res) => {
 export const getSurveys = async (req, res) => {
   try {
     const surveys = await CreatedSurvey.find();
-    res.status(200).json(surveys);
+    res.status(200).json(surveys); // returns array, not an object with a "surveys" key
   } catch (error) {
+    console.error("Error retrieving surveys:", error);
     res.status(500).json({ error: "Error retrieving surveys" });
   }
 };
+
 
 // Get a single survey by ID
 export const getSurveyById = async (req, res) => {

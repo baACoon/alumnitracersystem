@@ -19,12 +19,18 @@ export const PendingSurvey = () => {
           },
         });
 
-        if (response.data && response.data.surveys) {
-          setActiveSurveys(response.data.surveys);
+
+        if (Array.isArray(response.data)) {
+          const active = response.data.filter((s) => s.status === "active");
+          setActiveSurveys(active);
+        } else if (Array.isArray(response.data.surveys)) {
+          const active = response.data.surveys.filter((s) => s.status === "active");
+          setActiveSurveys(active);
         } else {
-          console.warn("No surveys key in response:", response.data);
+          console.warn("Unexpected response format:", response.data);
           setActiveSurveys([]);
         }
+
       } catch (error) {
         console.error("Error fetching active surveys:", error.response?.data || error.message);
         alert("Failed to load surveys.");
