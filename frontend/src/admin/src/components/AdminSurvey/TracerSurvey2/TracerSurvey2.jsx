@@ -14,7 +14,7 @@ export const TracerSurvey2 = ({ onBack }) => {
 
   const [formData, setFormData] = useState({
     // Page 1: Educational Background
-    education: [{ degree: "", college: "", yearGraduated: "", honors: "" }],
+    education: [{ type: "", course: "", college: "", yearGraduated: "", honors: "" }],
     examinations: [{ examName: "", dateTaken: "", rating: "" }],
     reasons: {
       highGradesRelated: { undergraduate: false, graduate: false },

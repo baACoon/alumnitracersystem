@@ -72,7 +72,7 @@ const Page1_Education = ({ data, updateForm }) => {
                       <option value="Doctorate">Doctorate</option>
                     </select>
                   </td>
-                  <td><input type="text" value={entry.degree} onChange={(e) => handleEducationChange(index, "degree", e.target.value)} placeholder="e.g., BS Computer Science" /></td>
+                  <td><input type="text" value={entry.course} onChange={(e) => handleEducationChange(index, "course", e.target.value)} placeholder="e.g., BS Computer Science" /></td>
                   <td><input type="text" value={entry.college} onChange={(e) => handleEducationChange(index, "college", e.target.value)} placeholder="e.g., TUP Manila" /></td>
                   <td><input type="number" value={entry.yearGraduated} onChange={(e) => handleEducationChange(index, "yearGraduated", e.target.value)} placeholder="e.g., 2022" /></td>
                   <td><input type="text" value={entry.honors} onChange={(e) => handleEducationChange(index, "honors", e.target.value)} placeholder="e.g., Cum Laude" /></td>
