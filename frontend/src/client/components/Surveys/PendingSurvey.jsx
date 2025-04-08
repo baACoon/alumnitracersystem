@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './PendingSurvey.module.css';
+import { TracerSurvey2 } from '../TracerSurvey2/TracerSurvey2';
 
 export const PendingSurvey = () => {
   const navigate = useNavigate();
   const [activeSurveys, setActiveSurveys] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showTracer2, setShowTracer2] = useState(false);
 
   useEffect(() => {
     const fetchSurveys = async () => {
@@ -52,19 +54,41 @@ export const PendingSurvey = () => {
       <div className={styles.surveyList}>
         {loading ? (
           <p>Loading surveys...</p>
-        ) : activeSurveys.length > 0 ? (
-          activeSurveys.map((survey) => (
-            <div key={survey._id} className={styles.surveyCard} onClick={() => goToForm(survey._id)}>
-              <h3 className={styles.surveyTitle}>{survey.title}</h3>
-              <p className={styles.surveyDescription}>{survey.description}</p>
-            </div>
-          ))
+        ) : showTracer2 ? (
+          <TracerSurvey2 onBack={() => setShowTracer2(false)} />
         ) : (
-          <p>No available surveys.</p>
+          <>
+            {/* Tracer Survey 2 card at the top */}
+            <div
+              className={styles.surveyCard}
+              onClick={() => setShowTracer2(true)}
+            >
+              <h3 className={styles.surveyTitle}>Tracer Survey 2</h3>
+              <p className={styles.surveyDescription}>
+                Answer the detailed alumni tracer form
+              </p>
+            </div>
+  
+            {/*  Other active surveys below */}
+            {activeSurveys.length > 0 ? (
+              activeSurveys.map((survey) => (
+                <div
+                  key={survey._id}
+                  className={styles.surveyCard}
+                  onClick={() => goToForm(survey._id)}
+                >
+                  <h3 className={styles.surveyTitle}>{survey.title}</h3>
+                  <p className={styles.surveyDescription}>{survey.description}</p>
+                </div>
+              ))
+            ) : (
+              <p>No available surveys.</p>
+            )}
+          </>
         )}
       </div>
     </div>
-  );
+  );  
 };
 
 export default PendingSurvey;
