@@ -25,14 +25,6 @@ export const PendingSurvey = () => {
           activeSurveys = response.data.filter((s) => s.status === "active");
         }
 
-        // ✅ Manually add Tracer Survey 2 (static)
-        activeSurveys.unshift({
-          _id: "static-tracer2",
-          title: "TRACER SURVEY 2",
-          description: "Static survey for testing purposes only.",
-          isStaticTracer: true,
-        });
-
         setActiveSurveys(activeSurveys);
       } catch (error) {
         console.error("Error fetching active surveys:", error.response?.data || error.message);
@@ -45,11 +37,11 @@ export const PendingSurvey = () => {
     fetchSurveys();
   }, []);
 
-  const goToForm = (surveyId, isStaticTracer) => {
-    if (isStaticTracer || surveyId === "static-tracer2") {
+  const goToForm = (survey) => {
+    if (survey.title === "TRACER SURVEY 2") {
       navigate("/TracerSurvey2");
     } else {
-      navigate(`/SurveyForm/${surveyId}`);
+      navigate(`/SurveyForm/${survey._id}`);
     }
   };
 
@@ -64,7 +56,7 @@ export const PendingSurvey = () => {
             <div
               key={survey._id}
               className={styles.surveyCard}
-              onClick={() => goToForm(survey._id, survey.isStaticTracer)}
+              onClick={() => goToForm(survey)}
             >
               <h3 className={styles.surveyTitle}>{survey.title}</h3>
               <p className={styles.surveyDescription}>{survey.description}</p>
