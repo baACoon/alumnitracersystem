@@ -67,6 +67,102 @@
     margin: 0;
     font-weight: 500;
   }
+
+  /* Loading Skeletons */
+.skeletonChart {
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 16px;
+  height: 100%;
+}
+
+.skeletonHeader {
+  height: 24px;
+  width: 60%;
+  background: #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.skeletonContent {
+  height: calc(100% - 40px);
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+.barSkeleton {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding-top: 40px;
+}
+
+.barSkeleton::before {
+  content: "";
+  flex: 1;
+  height: 30%;
+  background: #d0d0d0;
+  border-radius: 4px 4px 0 0;
+}
+
+/* Error States */
+.errorContainer {
+  text-align: center;
+  padding: 2rem;
+}
+
+.error {
+  color: #ff6b6b;
+  margin-bottom: 1rem;
+}
+
+.retryButton {
+  padding: 8px 16px;
+  background: #4CC3C8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+/* Dashboard Controls */
+.dashboardControls {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.refreshButton {
+  padding: 6px 12px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.lastUpdated {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Error Boundary */
+.errorFallback {
+  background: #fff0f0;
+  color: #ff6b6b;
+  padding: 1rem;
+  border-radius: 4px;
+  text-align: center;
+}
   
   /* Responsive styles */
   @media (min-width: 768px) {
