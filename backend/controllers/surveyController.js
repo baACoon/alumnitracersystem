@@ -134,3 +134,16 @@ export const updateSurvey = async (req, res) => {
     res.status(500).json({ error: "Error updating survey" });
   }
 };
+
+export const getActiveSurveys = async (req, res) => {
+  try {
+    const activeSurveys = await CreatedSurvey.find({ status: "active" });
+
+    res.status(200).json({
+      surveys: activeSurveys,
+    });
+  } catch (error) {
+    console.error("Error fetching active surveys:", error);
+    res.status(500).json({ error: "Error retrieving surveys" });
+  }
+};
