@@ -74,7 +74,6 @@ export const PendingSurvey = () => {
 
       alert("Survey submitted successfully!");
       setSelectedSurvey(null);
-
       setActiveSurveys((prev) => prev.filter((s) => s._id !== selectedSurvey._id));
       navigate("/CompletedSurveys");
     } catch (error) {
