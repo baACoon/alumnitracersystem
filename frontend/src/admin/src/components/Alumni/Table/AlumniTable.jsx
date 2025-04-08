@@ -135,10 +135,11 @@ export function AlumniTable() {
               </th>
               <th scope="col">TUP-ID</th>
               <th scope="col">Name</th>
-              <th scope="col">College</th>
-              <th scope="col">Course</th>
               <th scope="col">Email</th>
               <th scope="col">Birthday</th>
+              <th scope="col">College</th>
+              <th scope="col">Course</th>
+              <th scope="col">Year Graduate</th>
             </tr>
           </thead>
           <tbody>
@@ -165,10 +166,11 @@ export function AlumniTable() {
                 </td>
                 <td>{alumni.generatedID || 'N/A'}</td>
                 <td>{`${alumni.personalInfo?.first_name || 'N/A'} ${alumni.personalInfo?.last_name || 'N/A'}`}</td>
-                <td>{alumni.personalInfo?.college || 'N/A'}</td>
-                <td>{alumni.personalInfo?.course || 'N/A'}</td>
                 <td>{alumni.personalInfo?.email_address || 'N/A'}</td>
                 <td>{formatDate(alumni.personalInfo?.birthdate) || 'N/A'}</td>
+                <td>{alumni.personalInfo?.college || 'N/A'}</td>
+                <td>{alumni.personalInfo?.course || 'N/A'}</td>
+                <td>{alumni.personalInfo?.gradyear || 'N/A'}</td>
               </tr>
             ))}
           </tbody>
@@ -192,16 +194,19 @@ export function AlumniTable() {
                   <h3>Personal Information</h3>
                     <div className={styles.profileInfo}>
                       <div>
+                        <strong>TUP-ID:</strong> {studentDetails.generatedID || 'N/A'}
+                      </div>
+                      <div>
                         <strong>Degree:</strong> {studentDetails.personalInfo.degree || 'N/A'}
                       </div>
                       <div>
-                        <strong>College:</strong> {studentDetails.college || 'N/A'}
+                        <strong>College:</strong> {studentDetails.personalInfo.college || 'N/A'}
                       </div>
                       <div>
-                        <strong>Course:</strong> {studentDetails.course || 'N/A'}
+                        <strong>Course:</strong> {studentDetails.personalInfo.course || 'N/A'}
                       </div>
                       <div>
-                        <strong>Graduation Year:</strong> {studentDetails.gradyear || 'N/A'}
+                        <strong>Graduation Year:</strong> {studentDetails.personalInfo.gradyear || 'N/A'}
                       </div>
                       <div>
                         <strong>Last Name:</strong> {studentDetails.personalInfo.last_name || 'N/A'}

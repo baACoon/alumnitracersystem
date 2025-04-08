@@ -62,9 +62,10 @@ router.get('/all', authenticateToken, async (req, res) => {
         first_name: survey.personalInfo.first_name,
         last_name: survey.personalInfo.last_name,
         email_address: survey.personalInfo.email_address,
+        birthdate: survey.personalInfo.birthdate || 'N/A',
         college: survey.personalInfo.college,
         course: survey.personalInfo.course,
-        birthdate: survey.personalInfo.birthdate || 'N/A',
+        gradyear: survey.personalInfo.gradyear || survey.studentInfo.gradyear || 'N/A',
       },
       employmentInfo: survey.employmentInfo || {},
       gradyear: survey.studentInfo.gradyear,
@@ -91,59 +92,56 @@ router.get('/all', authenticateToken, async (req, res) => {
 // Get details of a specific latestSurvey by userId
 router.get('/user/:userId', authenticateToken, async (req, res) => {
   try {
-    const { userId } = req.params; // Extract userId from params
+    const { userId } = req.params;
 
-    // Validate ObjectId format
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ error: 'Invalid userId format.' });
     }
 
-    const student = await Student.findById(userId).lean(); // Fetch graduation year and other student-specific fields
+    const student = await Student.findById(userId).lean();
     if (!student) {
       return res.status(404).json({ error: 'Student not found.' });
     }
 
-
-    // Fetch surveys associated with the given userId
     const surveys = await SurveySubmission.find({ userId }).sort({ createdAt: -1 }).lean();
 
     if (surveys.length === 0) {
       return res.status(404).json({ error: 'No surveys found for the specified user.' });
     }
 
-    // Get the latest survey for college and course information
     const latestSurvey = surveys[0];
-    // Add console.log to debug
-    console.log('Employment Info:', latestSurvey.employmentInfo);
 
-    // Structure the response with fallback values 
-    //Modal
     res.status(200).json({
       success: true,
       data: {
+        generatedID: student.generatedID || 'N/A',
+        profileImage: student.profileImage || null,
         personalInfo: {
-          first_name: student.first_name || 'N/A',
-          last_name: latestSurvey.last_name || 'N/A',
-          middle_name: latestSurvey.middle_name || 'N/A',
-          birthdate: latestSurvey.birthdate || 'N/A',
-          address: latestSurvey.address || 'N/A', // Ensure this field is returned
-          contact_no: latestSurvey.contact_no || 'N/A', // Ensure this field is returned
+          first_name: student.first_name || latestSurvey.personalInfo?.first_name || 'N/A',
+          last_name: student.last_name || latestSurvey.personalInfo?.last_name || 'N/A',
+          middle_name: student.middle_name || latestSurvey.personalInfo?.middle_name || 'N/A',
+          birthdate: student.birthdate || latestSurvey.personalInfo?.birthdate || 'N/A',
+          address: student.address || latestSurvey.personalInfo?.address || 'N/A',
+          contact_no: student.contact_no || latestSurvey.personalInfo?.contact_no || 'N/A',
+          email_address: student.email_address || latestSurvey.personalInfo?.email_address || 'N/A',
+          degree: latestSurvey.personalInfo?.degree || latestSurvey.degree || 'N/A',
+          college: latestSurvey.personalInfo?.college || latestSurvey.college || 'N/A',
+          course: latestSurvey.personalInfo?.course || latestSurvey.course || 'N/A',
+          gradyear: student.gradyear || latestSurvey.personalInfo?.gradyear || 'N/A'
         },
-        email_address: student.email_address || 'N/A',
-        degree: latestSurvey.degree || 'N/A',
-        college: latestSurvey.college || 'N/A',
-        gradyear: student.gradyear || 'N/A',
-        course: latestSurvey.course || 'N/A',
         employmentInfo: latestSurvey.employmentInfo || {},
-        surveys: surveys || [],
-      },
+        surveys: surveys.map(s => ({
+          title: s.surveyTitle || 'Untitled Survey',
+          date: s.surveyDate || s.createdAt,
+          createdAt: s.createdAt
+        })) || []
+      }
     });
   } catch (error) {
     console.error(`Error fetching latestSurvey details for userId ${req.params.userId}:`, error);
     res.status(500).json({ error: 'Failed to fetch latestSurvey details.' });
   }
 });
-
 
 
 
