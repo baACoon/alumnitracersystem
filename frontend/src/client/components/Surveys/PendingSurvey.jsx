@@ -13,7 +13,7 @@ export const PendingSurvey = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await axios.get("https://alumnitracersystem.onrender.com/api/newSurveys/active", {
+        const response = await axios.get("https://alumnitracersystem.onrender.com/api/newSurveys", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
