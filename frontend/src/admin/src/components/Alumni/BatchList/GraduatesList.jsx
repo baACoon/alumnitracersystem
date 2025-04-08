@@ -32,31 +32,31 @@ export function GraduatesList() {
 
   // Recalculate total graduates whenever graduates or selectedBatch changes
   useEffect(() => {
-    if (selectedBatch) {
-      const count = graduates.filter(grad => grad.gradYear === selectedBatch).length;
-      setTotalGraduates(count);
-    }
-  }, [graduates, selectedBatch]);
+    if (selectedBatch) fetchGraduates();
+  }, [selectedBatch]); // Trigger fetch when batch selection changes
 
   const fetchGraduates = async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/graduates`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch graduates.");
-      }
-      const data = await response.json();
-      setGraduates(data);
-      console.log("Graduates fetched successfully:", data);
+      const url = selectedBatch 
+      ? `${API_BASE_URL}/api/graduates?year=${selectedBatch}`
+      : `${API_BASE_URL}/api/graduates?year=${new Date().getFullYear()}`;
+
+      const response = await axios.get(url);
+    
+      setGraduates(response.data.data || []);
+      setTotalGraduates(response.data.count || 0);
+
+      console.log(`Graduates fetched successfully for batch ${selectedBatch || new Date().getFullYear()}:`, response.data.data);
     } catch (error) {
       console.error("Error fetching graduates:", error);
-      setError("Failed to load graduates. Please try again later.");
+      setError("Failed to load graduates.");
     } finally {
       setIsLoading(false);
     }
-  };
+};
   
   const handleUpload = async () => {
     if (!uploadedFile) {
@@ -69,8 +69,9 @@ export function GraduatesList() {
 
     const formData = new FormData();
     formData.append("csvFile", uploadedFile);
+    formData.append("batchYear", selectedBatch); // Add the batch year to the form data
     
-    console.log("Uploading file:", uploadedFile.name);
+    console.log(`Uploading file for batch year ${selectedBatch}:`, uploadedFile.name);
 
     try {
       // Using axios for better error details
@@ -148,7 +149,7 @@ export function GraduatesList() {
 
   // Calculate total pages
   const totalPages = Math.ceil(filteredGraduates.length / graduatesPerPage);
-
+  
   // Get graduates for current page
   const indexOfLastGraduate = currentPage * graduatesPerPage;
   const indexOfFirstGraduate = indexOfLastGraduate - graduatesPerPage;
@@ -305,10 +306,11 @@ export function GraduatesList() {
                   <table className={styles.graduatesTable}>
                     <thead>
                       <tr>
+                        <th>TUP-ID</th>
                         <th>Name</th>
-                        <th>Contact</th>
+                        <th>Email</th> 
                         <th>College</th>
-                        <th>Program</th>
+                        <th>Course</th>
                         <th>Year Graduated</th>
                       </tr>
                     </thead>
@@ -316,12 +318,13 @@ export function GraduatesList() {
                       {currentGraduates.length > 0 ? (
                         currentGraduates.map((grad, index) => (
                           <tr key={index}>
+                            <td>{grad.tupId}</td> 
                             <td>
                               {`${grad.firstName} ${
                                 grad.middleName !== "N/A" ? grad.middleName : ""
                               } ${grad.lastName}`.trim()}
                             </td>
-                            <td>{grad.contact}</td>
+                            <td>{grad.email}</td>
                             <td>{grad.college}</td>
                             <td>{grad.course}</td>
                             <td>{grad.gradYear}</td>
@@ -329,7 +332,7 @@ export function GraduatesList() {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="5">No graduates uploaded yet</td>
+                          <td colSpan="6">No graduates uploaded yet</td> {/* Updated colspan */}
                         </tr>
                       )}
                     </tbody>
