@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './PendingSurvey.module.css';
-import { TracerSurvey2 } from '../TracerSurvey2/TracerSurvey2'; 
 
 export const PendingSurvey = () => {
   const navigate = useNavigate();
   const [activeSurveys, setActiveSurveys] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showTracerSurvey, setShowTracerSurvey] = useState(false); // NEW STATE
 
   useEffect(() => {
     const fetchSurveys = async () => {
@@ -21,14 +19,21 @@ export const PendingSurvey = () => {
           },
         });
 
-        // Filter for active surveys
+        let activeSurveys = [];
+
         if (Array.isArray(response.data)) {
-          const active = response.data.filter((s) => s.status === "active");
-          setActiveSurveys(active);
-        } else {
-          console.warn("Unexpected response format:", response.data);
-          setActiveSurveys([]);
+          activeSurveys = response.data.filter((s) => s.status === "active");
         }
+
+        // ✅ Manually add Tracer Survey 2 (static)
+        activeSurveys.unshift({
+          _id: "static-tracer2",
+          title: "TRACER SURVEY 2",
+          description: "Static survey for testing purposes only.",
+          isStaticTracer: true,
+        });
+
+        setActiveSurveys(activeSurveys);
       } catch (error) {
         console.error("Error fetching active surveys:", error.response?.data || error.message);
         alert("Failed to load surveys.");
@@ -40,13 +45,13 @@ export const PendingSurvey = () => {
     fetchSurveys();
   }, []);
 
-  const goToForm = (surveyId) => {
-    navigate(`/SurveyForm/${surveyId}`);
+  const goToForm = (surveyId, isStaticTracer) => {
+    if (isStaticTracer || surveyId === "static-tracer2") {
+      navigate("/TracerSurvey2");
+    } else {
+      navigate(`/SurveyForm/${surveyId}`);
+    }
   };
-
-  if (showTracerSurvey) {
-    return <TracerSurvey2 onBack={() => setShowTracerSurvey(false)} />;
-  }
 
   return (
     <div className={styles.surveyContainer}>
@@ -54,26 +59,19 @@ export const PendingSurvey = () => {
       <div className={styles.surveyList}>
         {loading ? (
           <p>Loading surveys...</p>
-        ) : (
-          <>
-            {/* 📌 Display Tracer Survey 2 */}
-            <div className={styles.surveyCard} onClick={() => setShowTracerSurvey(true)}>
-              <h3 className={styles.surveyTitle}>Tracer Survey 2</h3>
-              <p className={styles.surveyDescription}>Answer the official tracer form.</p>
+        ) : activeSurveys.length > 0 ? (
+          activeSurveys.map((survey) => (
+            <div
+              key={survey._id}
+              className={styles.surveyCard}
+              onClick={() => goToForm(survey._id, survey.isStaticTracer)}
+            >
+              <h3 className={styles.surveyTitle}>{survey.title}</h3>
+              <p className={styles.surveyDescription}>{survey.description}</p>
             </div>
-
-            {/* 📌 Display active surveys from backend */}
-            {activeSurveys.length > 0 ? (
-              activeSurveys.map((survey) => (
-                <div key={survey._id} className={styles.surveyCard} onClick={() => goToForm(survey._id)}>
-                  <h3 className={styles.surveyTitle}>{survey.title}</h3>
-                  <p className={styles.surveyDescription}>{survey.description}</p>
-                </div>
-              ))
-            ) : (
-              <p>No available surveys.</p>
-            )}
-          </>
+          ))
+        ) : (
+          <p>No available surveys.</p>
         )}
       </div>
     </div>
