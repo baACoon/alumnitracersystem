@@ -93,7 +93,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -101,22 +101,24 @@
 }
 
 .modalContent {
-    background: white;
+    background: #fff;
     padding: 2rem;
     border-radius: 12px;
     max-width: 600px;
     width: 100%;
     position: relative;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
+    max-height: 90vh;
 }
 
 .closeButton {
     position: absolute;
     top: 10px;
     right: 15px;
+    font-size: 1.5rem;
     background: none;
     border: none;
-    font-size: 1.5rem;
     cursor: pointer;
 }
 
@@ -125,6 +127,7 @@
 }
 
 .answerItem {
-    border-bottom: 1px solid #ddd;
-    padding: 0.5rem 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
 }

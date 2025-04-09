@@ -45,6 +45,12 @@ export const CompletedSurvey = () => {
         setSelectedSurvey(null);
     };
 
+    const formatKey = (key) => {
+        return key
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, char => char.toUpperCase());
+    };
+
     return (
         <div className={styles.surveyContainer}>
             <h2>COMPLETED SURVEYS</h2>
@@ -89,16 +95,28 @@ export const CompletedSurvey = () => {
                         </button>
                         <h3>{selectedSurvey.title}</h3>
                         <p><strong>Date Completed:</strong> {selectedSurvey.dateCompleted}</p>
+
                         <div className={styles.answerSection}>
-                            {selectedSurvey.answers && selectedSurvey.answers.length > 0 ? (
-                                selectedSurvey.answers.map((ans, index) => (
+                            <h4>Personal Information</h4>
+                            {selectedSurvey.personalInfo ? (
+                                Object.entries(selectedSurvey.personalInfo).map(([key, value], index) => (
                                     <div key={index} className={styles.answerItem}>
-                                        <p><strong>Q:</strong> {ans.question}</p>
-                                        <p><strong>A:</strong> {ans.answer}</p>
+                                        <p><strong>{formatKey(key)}:</strong> {value}</p>
                                     </div>
                                 ))
                             ) : (
-                                <p>No answers available.</p>
+                                <p>No personal information available.</p>
+                            )}
+
+                            <h4>Employment Information</h4>
+                            {selectedSurvey.employmentInfo ? (
+                                Object.entries(selectedSurvey.employmentInfo).map(([key, value], index) => (
+                                    <div key={index} className={styles.answerItem}>
+                                        <p><strong>{formatKey(key)}:</strong> {value}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No employment information available.</p>
                             )}
                         </div>
                     </div>
