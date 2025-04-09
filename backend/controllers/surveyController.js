@@ -58,20 +58,24 @@ export const getSurveyById = async (req, res) => {
 // Submit a response to a survey
 export const submitResponse = async (req, res) => {
   try {
-    const { answers } = req.body;
+    const { answers, userId } = req.body;  // Make sure frontend sends userId
     const surveyId = req.params.id;
 
     const response = new Response({
       surveyId,
-      answers
+      userId,
+      answers,
+      dateCompleted: new Date()
     });
 
     await response.save();
+
     res.status(201).json({ message: "Response submitted successfully!" });
   } catch (error) {
     res.status(500).json({ error: "Error submitting response" });
   }
 };
+
 
 // Delete a survey
 export const deleteSurvey = async (req, res) => {
@@ -153,3 +157,20 @@ export const getActiveSurveys = async (req, res) => {
 };
 
 
+export const getCompletedSurveysByUser = async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const responses = await Response.find({ userId }).populate('surveyId');
+
+    const surveys = responses.map(r => ({
+      id: r.surveyId._id,
+      title: r.surveyId.title,
+      dateCompleted: r.dateCompleted
+    }));
+
+    res.status(200).json({ surveys });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching completed surveys" });
+  }
+};
