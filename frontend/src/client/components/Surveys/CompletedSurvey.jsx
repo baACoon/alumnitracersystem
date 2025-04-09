@@ -43,23 +43,29 @@ export const CompletedSurvey = () => {
     };
 
     const handleSurveyClick = async (survey) => {
-        try {
-            const token = localStorage.getItem("token");
-    
-            const response = await axios.get(
-                `https://alumnitracersystem.onrender.com/surveys/${survey._id}`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
-    
-            setSelectedSurvey(response.data.survey); // Replace with full data
-            setShowModal(true);
-        } catch (error) {
-            console.error("Failed to fetch full survey data:", error);
-            alert("Failed to load survey details.");
+        if (!survey || !survey._id) {
+          console.error("Survey object missing _id:", survey);
+          alert("This survey cannot be viewed because it has no ID.");
+          return;
         }
-    };
+      
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.get(
+            `https://alumnitracersystem.onrender.com/surveys/${survey._id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+      
+          setSelectedSurvey(response.data.survey);
+          setShowModal(true);
+        } catch (error) {
+          console.error("Failed to fetch full survey data:", error);
+          alert("Failed to load survey details.");
+        }
+      };
+      
     
 
     const closeModal = () => {
