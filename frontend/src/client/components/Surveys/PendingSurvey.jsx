@@ -66,21 +66,12 @@ export const PendingSurvey = () => {
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
   
-      // Convert answers to array if needed
       const formattedResponses = Object.entries(responses).map(([questionId, answer]) => ({
         questionId,
-        answer,
+        response: answer,
       }));
   
-      const payload = {
-        surveyId: selectedSurvey._id,
-        userId: userId,
-        answers: formattedResponses.map(({ questionId, answer }) => ({
-          questionId,
-          response: answer,
-        })),
-      };
-      
+      const payload = { userId, answers: formattedResponses };
   
       console.log("Submitting:", payload);
   
@@ -93,13 +84,16 @@ export const PendingSurvey = () => {
       alert("Survey submitted successfully!");
       setSelectedSurvey(null);
       setActiveSurveys((prev) => prev.filter((s) => s._id !== selectedSurvey._id));
-      navigate("/CompletedSurvey");
+  
+      // Either reload the surveys or navigate
+      window.location.reload(); // or setActiveTab("completed");
   
     } catch (error) {
       console.error("Submission error:", error.response || error.message);
       alert("Failed to submit survey.");
     }
   };
+  
   
 
   const closeModal = () => {

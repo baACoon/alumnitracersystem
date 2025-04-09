@@ -17,7 +17,6 @@ import JobPageList from '../src/client/components/JobPageList/jobpagelist';
 import Contact from '../src/client/components/Contact/contact';
 import Profile from '../src/client/components/Profile/profile';
 import SurveyForm from '../src/client/components/SurveyForm/SurveyForm';
-import CompletedForm from '../src/client/components/CompletedForm/CompletedForm';
 
 
 
