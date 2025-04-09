@@ -65,22 +65,38 @@ export const PendingSurvey = () => {
     try {
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
-
+  
+      // Convert answers to array if needed
+      const formattedResponses = Object.entries(responses).map(([questionId, answer]) => ({
+        questionId,
+        answer,
+      }));
+  
+      const payload = {
+        surveyId: selectedSurvey._id,
+        alumniId: userId, // try 'alumniId' if 'userId' doesn't work
+        responses: formattedResponses,
+      };
+  
+      console.log("Submitting:", payload);
+  
       await axios.post(
         `https://alumnitracersystem.onrender.com/api/newSurveys/${selectedSurvey._id}/response`,
-        { answers: responses, userId },
+        payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
+  
       alert("Survey submitted successfully!");
       setSelectedSurvey(null);
       setActiveSurveys((prev) => prev.filter((s) => s._id !== selectedSurvey._id));
       navigate("/CompletedSurveys");
+  
     } catch (error) {
-      console.error("Submission error:", error);
+      console.error("Submission error:", error.response || error.message);
       alert("Failed to submit survey.");
     }
   };
+  
 
   const closeModal = () => {
     setSelectedSurvey(null);
