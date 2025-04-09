@@ -41,30 +41,17 @@ export const CompletedSurvey = () => {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     };
+    
+    const handleSurveyClick = (survey) => {
+        if (!survey || !survey.personalInfo) {
+            console.error("Incomplete survey object:", survey);
+            alert("This survey is missing information.");
+            return;
+        }
 
-    const handleSurveyClick = async (survey) => {
-        if (!survey || !survey._id) {
-          console.error("Survey object missing _id:", survey);
-          alert("This survey cannot be viewed because it has no ID.");
-          return;
-        }
-      
-        try {
-          const token = localStorage.getItem("token");
-          const response = await axios.get(
-            `https://alumnitracersystem.onrender.com/surveys/${survey._id}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-      
-          setSelectedSurvey(response.data.survey);
-          setShowModal(true);
-        } catch (error) {
-          console.error("Failed to fetch full survey data:", error);
-          alert("Failed to load survey details.");
-        }
-      };
+        setSelectedSurvey(survey);
+        setShowModal(true);
+    };
       
     
 
