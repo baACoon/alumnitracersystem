@@ -42,10 +42,25 @@ export const CompletedSurvey = () => {
         return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     };
 
-    const handleSurveyClick = (survey) => {
-        setSelectedSurvey(survey);
-        setShowModal(true);
+    const handleSurveyClick = async (survey) => {
+        try {
+            const token = localStorage.getItem("token");
+    
+            const response = await axios.get(
+                `https://alumnitracersystem.onrender.com/surveys/${survey._id}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+    
+            setSelectedSurvey(response.data.survey); // Replace with full data
+            setShowModal(true);
+        } catch (error) {
+            console.error("Failed to fetch full survey data:", error);
+            alert("Failed to load survey details.");
+        }
     };
+    
 
     const closeModal = () => {
         setShowModal(false);
