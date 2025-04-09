@@ -5,6 +5,8 @@ import styles from './CompletedSurvey.module.css';
 export const CompletedSurvey = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [completedSurveys, setCompletedSurveys] = useState([]);
+    const [selectedSurvey, setSelectedSurvey] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchCompletedSurveys = async () => {
@@ -29,16 +31,24 @@ export const CompletedSurvey = () => {
         fetchCompletedSurveys();
     }, []);
 
-    const filteredSurveys = completedSurveys.filter(survey => {
-        const title = survey.title || survey.surveyId?.title || '';
-        return title.toLowerCase().includes(searchTerm.toLowerCase());
-    });
+    const filteredSurveys = completedSurveys.filter(survey =>
+        survey.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const handleSurveyClick = (survey) => {
+        setSelectedSurvey(survey);
+        setShowModal(true);
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        setSelectedSurvey(null);
+    };
 
     return (
         <div className={styles.surveyContainer}>
             <h2>COMPLETED SURVEYS</h2>
 
-            {/* Search Input */}
             <div>
                 <input
                     type="text"
@@ -49,15 +59,18 @@ export const CompletedSurvey = () => {
                 />
             </div>
 
-            {/* Survey List */}
             <div className={styles.surveyList}>
                 {filteredSurveys.length > 0 ? (
-                    filteredSurveys.map((survey, index) => (
-                        <div key={survey._id || survey.id || index} className={styles.surveyCard}>
+                    filteredSurveys.map((survey) => (
+                        <div
+                            key={survey.id}
+                            className={styles.surveyCard}
+                            onClick={() => handleSurveyClick(survey)}
+                        >
                             <h3 className={styles.surveyTitle}>
-                                {(survey.title || survey.surveyId?.title || "Untitled Survey")}
+                                {survey.title}
                                 <p className={styles.surveyDate}>
-                                    Completed on: {new Date(survey.dateCompleted || survey.submittedAt).toLocaleDateString()}
+                                    Completed on: {survey.dateCompleted}
                                 </p>
                             </h3>
                         </div>
@@ -66,6 +79,31 @@ export const CompletedSurvey = () => {
                     <p>No completed surveys available.</p>
                 )}
             </div>
+
+            {/* Modal */}
+            {showModal && selectedSurvey && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <button className={styles.closeButton} onClick={closeModal}>
+                            &times;
+                        </button>
+                        <h3>{selectedSurvey.title}</h3>
+                        <p><strong>Date Completed:</strong> {selectedSurvey.dateCompleted}</p>
+                        <div className={styles.answerSection}>
+                            {selectedSurvey.answers && selectedSurvey.answers.length > 0 ? (
+                                selectedSurvey.answers.map((ans, index) => (
+                                    <div key={index} className={styles.answerItem}>
+                                        <p><strong>Q:</strong> {ans.question}</p>
+                                        <p><strong>A:</strong> {ans.answer}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No answers available.</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
