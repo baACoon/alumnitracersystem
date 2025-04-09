@@ -97,19 +97,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 999;
 }
 
 .modalContent {
-    background: #fff;
+    background: white;
     padding: 2rem;
     border-radius: 12px;
-    max-width: 600px;
-    width: 100%;
-    position: relative;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    overflow-y: auto;
+    width: 90%;
+    max-width: 700px;
     max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
 }
 
 .closeButton {
@@ -122,12 +122,16 @@
     cursor: pointer;
 }
 
-.answerSection {
-    margin-top: 1rem;
+.modalSection {
+    margin-top: 1.5rem;
 }
 
-.answerItem {
-    margin-bottom: 1rem;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 0.5rem;
+.modalSection h4 {
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.3rem;
+}
+
+.modalSection p {
+    margin: 0.3rem 0;
 }

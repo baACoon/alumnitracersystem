@@ -31,9 +31,16 @@ export const CompletedSurvey = () => {
         fetchCompletedSurveys();
     }, []);
 
-    const filteredSurveys = completedSurveys.filter(survey =>
-        survey.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const formatKey = (key) => {
+        return key
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, char => char.toUpperCase());
+    };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    };
 
     const handleSurveyClick = (survey) => {
         setSelectedSurvey(survey);
@@ -45,11 +52,9 @@ export const CompletedSurvey = () => {
         setSelectedSurvey(null);
     };
 
-    const formatKey = (key) => {
-        return key
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, char => char.toUpperCase());
-    };
+    const filteredSurveys = completedSurveys.filter(survey =>
+        survey.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <div className={styles.surveyContainer}>
@@ -69,14 +74,14 @@ export const CompletedSurvey = () => {
                 {filteredSurveys.length > 0 ? (
                     filteredSurveys.map((survey) => (
                         <div
-                            key={survey.id}
+                            key={survey._id}
                             className={styles.surveyCard}
                             onClick={() => handleSurveyClick(survey)}
                         >
                             <h3 className={styles.surveyTitle}>
                                 {survey.title}
                                 <p className={styles.surveyDate}>
-                                    Completed on: {survey.dateCompleted}
+                                    Completed on: {formatDate(survey.createdAt)}
                                 </p>
                             </h3>
                         </div>
@@ -86,7 +91,6 @@ export const CompletedSurvey = () => {
                 )}
             </div>
 
-            {/* Modal */}
             {showModal && selectedSurvey && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
@@ -94,27 +98,41 @@ export const CompletedSurvey = () => {
                             &times;
                         </button>
                         <h3>{selectedSurvey.title}</h3>
-                        <p><strong>Date Completed:</strong> {selectedSurvey.dateCompleted}</p>
+                        <p><strong>Date Completed:</strong> {formatDate(selectedSurvey.createdAt)}</p>
 
-                        <div className={styles.answerSection}>
+                        <div className={styles.modalSection}>
                             <h4>Personal Information</h4>
                             {selectedSurvey.personalInfo ? (
-                                Object.entries(selectedSurvey.personalInfo).map(([key, value], index) => (
-                                    <div key={index} className={styles.answerItem}>
-                                        <p><strong>{formatKey(key)}:</strong> {value}</p>
-                                    </div>
-                                ))
+                                <>
+                                    <p><strong>Name:</strong> {`${selectedSurvey.personalInfo.first_name || ''} ${selectedSurvey.personalInfo.middle_name || ''} ${selectedSurvey.personalInfo.last_name || ''}`}</p>
+                                    <p><strong>Email:</strong> {selectedSurvey.personalInfo.email_address}</p>
+                                    <p><strong>Contact Number:</strong> {selectedSurvey.personalInfo.contact_no}</p>
+                                    <p><strong>Birthdate:</strong> {formatDate(selectedSurvey.personalInfo.birthdate)}</p>
+                                    <p><strong>Birthplace:</strong> {selectedSurvey.personalInfo.birthplace}</p>
+                                    <p><strong>Sex:</strong> {selectedSurvey.personalInfo.sex}</p>
+                                    <p><strong>Nationality:</strong> {selectedSurvey.personalInfo.nationality}</p>
+                                    <p><strong>Address:</strong> {selectedSurvey.personalInfo.address}</p>
+                                    <p><strong>Degree:</strong> {selectedSurvey.personalInfo.degree}</p>
+                                    <p><strong>College:</strong> {selectedSurvey.personalInfo.college}</p>
+                                    <p><strong>Course:</strong> {selectedSurvey.personalInfo.course}</p>
+                                </>
                             ) : (
                                 <p>No personal information available.</p>
                             )}
+                        </div>
 
+                        <div className={styles.modalSection}>
                             <h4>Employment Information</h4>
                             {selectedSurvey.employmentInfo ? (
-                                Object.entries(selectedSurvey.employmentInfo).map(([key, value], index) => (
-                                    <div key={index} className={styles.answerItem}>
-                                        <p><strong>{formatKey(key)}:</strong> {value}</p>
-                                    </div>
-                                ))
+                                <>
+                                    <p><strong>Occupation:</strong> {selectedSurvey.employmentInfo.occupation}</p>
+                                    <p><strong>Company Name:</strong> {selectedSurvey.employmentInfo.company_name}</p>
+                                    <p><strong>Year Started:</strong> {selectedSurvey.employmentInfo.year_started}</p>
+                                    <p><strong>Position:</strong> {selectedSurvey.employmentInfo.position}</p>
+                                    <p><strong>Job Status:</strong> {selectedSurvey.employmentInfo.job_status}</p>
+                                    <p><strong>Type of Organization:</strong> {selectedSurvey.employmentInfo.type_of_organization}</p>
+                                    <p><strong>Work Alignment:</strong> {selectedSurvey.employmentInfo.work_alignment}</p>
+                                </>
                             ) : (
                                 <p>No employment information available.</p>
                             )}
