@@ -41,17 +41,36 @@ export const CompletedSurvey = () => {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     };
-    
-    const handleSurveyClick = (survey) => {
-        if (!survey || !survey.personalInfo) {
-            console.error("Incomplete survey object:", survey);
-            alert("This survey is missing information.");
+
+    const handleSurveyClick = async (survey) => {
+        if (!survey || !survey._id) {
+            console.error("Survey object missing _id:", survey);
+            alert("This survey cannot be viewed because it has no ID.");
             return;
         }
-
-        setSelectedSurvey(survey);
-        setShowModal(true);
+    
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get(
+                `https://alumnitracersystem.onrender.com/surveys/${survey._id}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+    
+            if (!response.data.survey?.personalInfo) {
+                alert("This survey is missing information.");
+                return;
+            }
+    
+            setSelectedSurvey(response.data.survey); // Replace with full survey
+            setShowModal(true);
+        } catch (error) {
+            console.error("Failed to fetch full survey data:", error);
+            alert("Failed to load survey details.");
+        }
     };
+    
       
     
 
@@ -68,15 +87,13 @@ export const CompletedSurvey = () => {
         <div className={styles.surveyContainer}>
             <h2>COMPLETED SURVEYS</h2>
 
-            <div>
-                <input
-                    type="text"
-                    className={styles.searchInput}
-                    placeholder="Search surveys..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </div>
+            <input
+                type="text"
+                className={styles.searchInput}
+                placeholder="Search surveys..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
 
             <div className={styles.surveyList}>
                 {filteredSurveys.length > 0 ? (
@@ -89,7 +106,7 @@ export const CompletedSurvey = () => {
                             <h3 className={styles.surveyTitle}>
                                 {survey.title}
                                 <p className={styles.surveyDate}>
-                                    Completed on: {formatDate(survey.createdAt)}
+                                    Completed on: {survey.dateCompleted}
                                 </p>
                             </h3>
                         </div>
