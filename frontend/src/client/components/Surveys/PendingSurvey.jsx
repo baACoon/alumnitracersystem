@@ -74,9 +74,13 @@ export const PendingSurvey = () => {
   
       const payload = {
         surveyId: selectedSurvey._id,
-        alumniId: userId, // try 'alumniId' if 'userId' doesn't work
-        responses: formattedResponses,
+        userId: userId,
+        answers: formattedResponses.map(({ questionId, answer }) => ({
+          questionId,
+          response: answer,
+        })),
       };
+      
   
       console.log("Submitting:", payload);
   
