@@ -40,7 +40,6 @@ function App() {
             <Route path="/Contact" element={<Contact />} />
             <Route path="/Profile" element={<Profile />} />
             <Route path="/SurveyForm" element={<SurveyForm />} />
-            <Route path="/CompletedForm" element={<CompletedForm />} />
        
           </Routes>
         </BrowserRouter>
