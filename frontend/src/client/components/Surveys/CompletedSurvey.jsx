@@ -29,10 +29,10 @@ export const CompletedSurvey = () => {
         fetchCompletedSurveys();
     }, []);
 
-    // Corrected reference: completedSurveys (not surveys)
-    const filteredSurveys = completedSurveys.filter(survey =>
-        survey.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredSurveys = completedSurveys.filter(survey => {
+        const title = survey.title || survey.surveyId?.title || '';
+        return title.toLowerCase().includes(searchTerm.toLowerCase());
+    });
 
     return (
         <div className={styles.surveyContainer}>
@@ -52,12 +52,12 @@ export const CompletedSurvey = () => {
             {/* Survey List */}
             <div className={styles.surveyList}>
                 {filteredSurveys.length > 0 ? (
-                    filteredSurveys.map((survey) => (
-                        <div key={survey.id} className={styles.surveyCard}>
+                    filteredSurveys.map((survey, index) => (
+                        <div key={survey._id || survey.id || index} className={styles.surveyCard}>
                             <h3 className={styles.surveyTitle}>
-                                {survey.title}
+                                {(survey.title || survey.surveyId?.title || "Untitled Survey")}
                                 <p className={styles.surveyDate}>
-                                    Completed on: {survey.dateCompleted}
+                                    Completed on: {new Date(survey.dateCompleted || survey.submittedAt).toLocaleDateString()}
                                 </p>
                             </h3>
                         </div>
