@@ -32,11 +32,13 @@ export const createCreatedSurvey = async (req, res) => {
 export const getSurveys = async (req, res) => {
   try {
     const surveys = await CreatedSurvey.find();
-    res.status(200).json(surveys);
+    res.status(200).json(surveys); // returns array, not an object with a "surveys" key
   } catch (error) {
+    console.error("Error retrieving surveys:", error);
     res.status(500).json({ error: "Error retrieving surveys" });
   }
 };
+
 
 // Get a single survey by ID
 export const getSurveyById = async (req, res) => {
@@ -56,20 +58,24 @@ export const getSurveyById = async (req, res) => {
 // Submit a response to a survey
 export const submitResponse = async (req, res) => {
   try {
-    const { answers } = req.body;
+    const { answers, userId } = req.body;  // Make sure frontend sends userId
     const surveyId = req.params.id;
 
     const response = new Response({
       surveyId,
-      answers
+      userId,
+      answers,
+      dateCompleted: new Date()
     });
 
     await response.save();
+
     res.status(201).json({ message: "Response submitted successfully!" });
   } catch (error) {
     res.status(500).json({ error: "Error submitting response" });
   }
 };
+
 
 // Delete a survey
 export const deleteSurvey = async (req, res) => {
@@ -132,5 +138,39 @@ export const updateSurvey = async (req, res) => {
   } catch (error) {
     console.error("Error updating survey:", error);
     res.status(500).json({ error: "Error updating survey" });
+  }
+};
+
+export const getActiveSurveys = async (req, res) => {
+  try {
+    const activeSurveys = await CreatedSurvey.find({ status: "active" });
+
+    if (!activeSurveys) {
+      console.log("No surveys returned");
+    }
+
+    res.status(200).json({ surveys: activeSurveys });
+  } catch (error) {
+    console.error("ERROR in /api/newSurveys/active", error);
+    res.status(500).json({ error: "Error retrieving survey", details: error.message });
+  }
+};
+
+
+export const getCompletedSurveysByUser = async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const responses = await Response.find({ userId }).populate('surveyId');
+
+    const surveys = responses.map(r => ({
+      id: r.surveyId._id,
+      title: r.surveyId.title,
+      dateCompleted: r.dateCompleted
+    }));
+
+    res.status(200).json({ surveys });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching completed surveys" });
   }
 };
