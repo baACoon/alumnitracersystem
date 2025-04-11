@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "./events.module.css"; // Import the CSS module
+import styles from "./events.module.css"; // CSS module
 import Header from "../Header/header";
 import Footer from "../FooterClient/Footer";
 
@@ -63,7 +63,7 @@ function EventMainPage() {
           </div>
         </div>
       ) : (
-        <>
+        <div className={styles.pageEnter}> {/* 🎉 Apply fade animation */}
           <h4>UPCOMING EVENTS</h4>
           {events.length > 0 ? (
             events.map((event, index) => (
@@ -77,9 +77,7 @@ function EventMainPage() {
                   <h3>{new Date(event.date).getDate()}</h3>
                 </div>
                 <div className={styles.eventDetails}>
-                  <h5>
-                    {event.time} in {event.venue}
-                  </h5>
+                  <h5>{event.time} in {event.venue}</h5>
                   <h3>{event.title}</h3>
                   <h5>
                     {event.description.length > 100
@@ -92,7 +90,7 @@ function EventMainPage() {
           ) : (
             <p>No events available at the moment.</p>
           )}
-        </>
+        </div>
       )}
 
       {/* Modal */}
@@ -112,12 +110,8 @@ function EventMainPage() {
             <h2>{selectedEvent.title}</h2>
             <p>{selectedEvent.description}</p>
             <div className={styles.dateTimeVenue}>
-              <p>
-                <strong>Date & Time:</strong> <br />{selectedEvent.date} at {selectedEvent.time}
-              </p>
-              <p>
-                <strong>Location:</strong> <br />{selectedEvent.venue}
-              </p>
+              <p><strong>Date & Time:</strong><br />{selectedEvent.date} at {selectedEvent.time}</p>
+              <p><strong>Location:</strong><br />{selectedEvent.venue}</p>
             </div>
           </div>
         </div>
