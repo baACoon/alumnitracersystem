@@ -1,68 +1,68 @@
 /* Main Footer Styles */
 .footer-client {
-    background-color: #f4f4f4;
-    padding: 20px 0;
-    width: 100%;
-    text-align: center;
-    color: #333;
-  }
-  
-  /* Content Layout */
+  background-color: #f4f4f4;
+  padding: 20px 0;
+  width: 100%;
+  text-align: center;
+  color: #333;
+}
+
+/* Flex layout for content */
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Logos */
+.footer-logo img,
+.footer-logo-2 img {
+  height: 80px;
+  width: auto;
+}
+
+/* Text content */
+.footer-text {
+  flex: 1 1 100%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.footer-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.footer-p {
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.socmed-title {
+  font-size: 14px;
+  color: #000000;
+}
+
+/* Responsive Tweaks */
+@media (min-width: 768px) {
   .footer-content {
-    display: flex;
-    align-items: center;
+    flex-wrap: nowrap;
     justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px 40px;
-  }
-  
-  /* Footer Logos */
-  .footer-logo img,
-  .footer-logo-2 img {
-    height: 100px;
-  }
-  
-  /* Text Content */
-  .footer-text {
     text-align: left;
+  }
+
+  .footer-text {
     flex: 1;
-    margin: 0 235px;
+    max-width: none;
+    text-align: left;
+    margin: 0 40px;
   }
-  
-  .footer-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #000;
-  }
-  
-  .footer-p {
-    font-size: 14px;
-    margin-bottom: 10px;
-    color: #000;
-  }
-  
-  .socmed-title {
-    font-size: 14px;
-    color: #000000;
-  }
-  
-  /* Footer Bottom */
-  .footer-bottom {
-    background-color: #000;
-    color: #fff;
-    padding: 10px 0;
-    text-align: center;
-  }
-  
-  .footer-bottom h1 {
-    font-size: 14px;
-    margin: 0;
-  }
-  
-  .footer-bottom h2 {
-    font-size: 12px;
-    margin: 0;
-  }
-  
+}
