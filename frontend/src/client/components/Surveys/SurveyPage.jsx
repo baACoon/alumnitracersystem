@@ -8,9 +8,13 @@ import Footer from "../FooterClient/Footer";
 function SurveyPage() {
     return (
         <div className={styles.surveyContainer}>
+            <div className="page-wrapper">
             <Header />
-            <SurveyMainPage />
+            <div className="page-body">
+                <SurveyMainPage />
+            </div>
             <Footer />
+            </div>
         </div>
     );
 }

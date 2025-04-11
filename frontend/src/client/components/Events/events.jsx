@@ -5,9 +5,11 @@ import Footer from "../FooterClient/Footer";
 
 function Events() {
   return (
-    <div>
+    <div className="page-wrapper">
       <Header />
-      <EventMainPage />
+      <div className="page-body">
+        <EventMainPage />
+      </div>
       <Footer />
     </div>
   );
