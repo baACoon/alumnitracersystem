@@ -23,12 +23,11 @@ function JobListMainPage() {
   const [comments, setComments] = useState({});
   const [likes, setLikes] = useState({});
   const [loading, setLoading] = useState(true);
-
   const [filteredJobs, setFilteredJobs] = useState([]);
-
-  const [college, setCollege] =  useState("");
+  const [college, setCollege] = useState("");
   const [course, setCourse] = useState("");
-  
+  const [expandedJobId, setExpandedJobId] = useState(null);
+
   const coursesByCollege = {
     "College of Engineering": [
       "Bachelor of Science in Civil Engineering",
@@ -60,7 +59,6 @@ function JobListMainPage() {
     ],
   };
 
-
   const goToJobPage = () => {
     navigate("/JobPage");
   };
@@ -74,29 +72,26 @@ function JobListMainPage() {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
           }
         );
-        
         setJobs(response.data);
-        setLoading(false); // Set loading to false after jobs are fetched
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching jobs:", error);
-        setLoading(false); // Set loading to false even if there's an error
+        setLoading(false);
       }
     };
     fetchJobs();
   }, []);
 
-    // Filter jobs when college/course or original jobs change
-    useEffect(() => {
-      let updated = [...jobs];
-      if (college) {
-        updated = updated.filter((job) => job.college === college);
-      }
-      if (course) {
-        updated = updated.filter((job) => job.course === course);
-      }
-      setFilteredJobs(updated);
-    }, [college, course, jobs]);
-
+  useEffect(() => {
+    let updated = [...jobs];
+    if (college) {
+      updated = updated.filter((job) => job.college === college);
+    }
+    if (course) {
+      updated = updated.filter((job) => job.course === course);
+    }
+    setFilteredJobs(updated);
+  }, [college, course, jobs]);
 
   const handleCommentSubmit = async (jobId) => {
     if (!newComment.trim()) return;
@@ -126,29 +121,24 @@ function JobListMainPage() {
     }));
   };
 
+  const toggleExpanded = (jobId) => {
+    setExpandedJobId((prevId) => (prevId === jobId ? null : jobId));
+  };
+
   return (
     <div className="listcontainer">
-    <a onClick={goToJobPage} className="back-button">
-      Back
-    </a>
-    <h1 className="list-title">JOB OPPORTUNITIES FEED</h1>
-    
-      {/* Filter controls */}
+      <a onClick={goToJobPage} className="back-button">
+        Back
+      </a>
+      <h1 className="list-title">JOB OPPORTUNITIES FEED</h1>
+
       <div className="filter-controls">
         <label>
           College:
-          <select
-            value={college}
-            onChange={(e) => {
-              setCollege(e.target.value);
-              setCourse(""); // Reset course if college changes
-            }}
-          >
+          <select value={college} onChange={(e) => { setCollege(e.target.value); setCourse(""); }}>
             <option value="">All Colleges</option>
             {Object.keys(coursesByCollege).map((collegeName) => (
-              <option key={collegeName} value={collegeName}>
-                {collegeName}
-              </option>
+              <option key={collegeName} value={collegeName}>{collegeName}</option>
             ))}
           </select>
         </label>
@@ -161,87 +151,88 @@ function JobListMainPage() {
             disabled={!college}
           >
             <option value="">All Courses</option>
-            {college &&
-              coursesByCollege[college].map((courseName) => (
-                <option key={courseName} value={courseName}>
-                  {courseName}
-                </option>
-              ))}
+            {college && coursesByCollege[college].map((courseName) => (
+              <option key={courseName} value={courseName}>{courseName}</option>
+            ))}
           </select>
         </label>
       </div>
 
-    {/* 🔄 Show Loading Animation */}
-    {loading ? (
-      <div className="loadingOverlay">
-        <div className="loaderContainer">
-          <svg viewBox="0 0 240 240" height="80" width="80" className="loader">
-            <circle strokeLinecap="round" strokeDashoffset="-330" strokeDasharray="0 660" strokeWidth="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className="pl__ring pl__ringA"></circle>
-            <circle strokeLinecap="round" strokeDashoffset="-110" strokeDasharray="0 220" strokeWidth="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className="pl__ring pl__ringB"></circle>
-            <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className="pl__ring pl__ringC"></circle>
-            <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className="pl__ring pl__ringD"></circle>
-          </svg>
-          <p>Loading...</p>
+      {loading ? (
+        <div className="loadingOverlay">
+          <div className="loaderContainer">
+            <svg viewBox="0 0 240 240" height="80" width="80" className="loader">
+              <circle strokeLinecap="round" strokeDashoffset="-330" strokeDasharray="0 660" strokeWidth="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className="pl__ring pl__ringA"></circle>
+              <circle strokeLinecap="round" strokeDashoffset="-110" strokeDasharray="0 220" strokeWidth="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className="pl__ring pl__ringB"></circle>
+              <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className="pl__ring pl__ringC"></circle>
+              <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className="pl__ring pl__ringD"></circle>
+            </svg>
+            <p>Loading...</p>
+          </div>
         </div>
-      </div>
-    ) : (
-      
-      filteredJobs.map((job) => (
-        <div key={job.id} className="job-card">
-          <div className="job-card-header">
-            <h3>{job.title}</h3>
-            <p>{job.datePosted}</p>
-          </div>
-          <p>
-            <strong>Company:</strong> {job.company}
-          </p>
-          <p>
-            <strong>Location:</strong> {job.location}
-          </p>
-          <p>
-            <strong>Type:</strong> {job.type}
-          </p>
-          <p>{job.jobDescription}</p>
-          <div className="job-card-actions">
-            <div className="action-icon" onClick={() => handleLike(job.id)}>
-              <FaRegThumbsUp /> <span>{likes[job.id] || 0} Likes</span>
+      ) : (
+        filteredJobs.map((job) => (
+          <div key={job.id} className="job-card">
+            <div className="job-card-header">
+              <h3>{job.title}</h3>
+              <p>{job.datePosted}</p>
             </div>
-            <div
-              className="action-icon"
-              onClick={() => alert("Open comment input below.")}
-            >
-              <FaRegComment /> <span>Comment</span>
-            </div>
-          </div>
-          <div className="comments-section">
-            <h4>Comments</h4>
-            {comments[job.id]?.map((comment, index) => (
-              <div key={index} className="comment">
-                <p>{comment.text}</p>
-                <small>{comment.date}</small>
+            <p><strong>Company:</strong> {job.company}</p>
+            <p><strong>Location:</strong> {job.location}</p>
+            <p><strong>Type:</strong> {job.type}</p>
+            <p>{job.jobDescription}</p>
+            {expandedJobId === job.id && (
+              <div className="expanded-details">
+                <p><strong>College:</strong> {job.college || 'N/A'}</p>
+                <p><strong>Job Status:</strong> {job.status}</p>
+                <p><strong>Date Published:</strong> {job.createdAt ? new Date(job.createdAt).toLocaleDateString() : 'N/A'}</p>
+                <p><strong>Key Responsibilities:</strong></p>
+                <ul>
+                  {job.responsibilities?.map((resp, index) => (
+                    <li key={index}>{resp}</li>
+                  )) || <li>N/A</li>}
+                </ul>
+                <p><strong>Qualifications:</strong> {job.qualifications}</p>
+                <p><strong>Source:</strong> {job.source}</p>
               </div>
-            ))}
-            <div className="comment-input-container">
-              <input
-                type="text"
-                placeholder="Add a comment..."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                className="comment-input"
-              />
-              <button 
-                className="post-button"
-                onClick={() => handleCommentSubmit(job.id)}
-              >
-                Post
-              </button>
+            )}
+            <button className="see-more-btn" onClick={() => toggleExpanded(job.id)}>
+              {expandedJobId === job.id ? "See Less" : "See More"}
+            </button>
+            <div className="job-card-actions">
+              <div className="action-icon" onClick={() => handleLike(job.id)}>
+                <FaRegThumbsUp /> <span>{likes[job.id] || 0} Likes</span>
+              </div>
+              <div className="action-icon" onClick={() => alert("Open comment input below.")}> 
+                <FaRegComment /> <span>Comment</span>
+              </div>
+            </div>
+            <div className="comments-section">
+              <h4>Comments</h4>
+              {comments[job.id]?.map((comment, index) => (
+                <div key={index} className="comment">
+                  <p>{comment.text}</p>
+                  <small>{comment.date}</small>
+                </div>
+              ))}
+              <div className="comment-input-container">
+                <input
+                  type="text"
+                  placeholder="Add a comment..."
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  className="comment-input"
+                />
+                <button className="post-button" onClick={() => handleCommentSubmit(job.id)}>
+                  Post
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))
-    )}
-  </div>
-);
+        ))
+      )}
+    </div>
+  );
 }
 
 export default JobPageList;
