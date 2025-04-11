@@ -174,7 +174,7 @@ function JobListMainPage() {
         </div>
       ) : (
         filteredJobs.map((job) => (
-          <div key={job.id} className="job-card">
+          <div key={job._id} className="job-card">
             <div className="job-card-header">
               <h3>{job.title}</h3>
               <p>{job.datePosted}</p>
@@ -183,7 +183,7 @@ function JobListMainPage() {
             <p><strong>Location:</strong> {job.location}</p>
             <p><strong>Type:</strong> {job.type}</p>
             <p>{job.jobDescription}</p>
-            {expandedJobs.includes(job.id) && (
+            {expandedJobs.includes(job._id) && (
               <div className="expanded-details">
                 <p><strong>College:</strong> {job.college || 'N/A'}</p>
                 <p><strong>Job Status:</strong> {job.status}</p>
@@ -198,12 +198,12 @@ function JobListMainPage() {
                 <p><strong>Source:</strong> {job.source}</p>
               </div>
             )}
-            <button className="see-more-btn" onClick={() => toggleExpanded(job.id)}>
-              {expandedJobs.includes(job.id) ? "See Less" : "See More"}
+            <button className="see-more-btn" onClick={() => toggleExpanded(job._id)}>
+              {expandedJobs.includes(job._id) ? "See Less" : "See More"}
             </button>
             <div className="job-card-actions">
-              <div className="action-icon" onClick={() => handleLike(job.id)}>
-                <FaRegThumbsUp /> <span>{likes[job.id] || 0} Likes</span>
+              <div className="action-icon" onClick={() => handleLike(job._id)}>
+                <FaRegThumbsUp /> <span>{likes[job._id] || 0} Likes</span>
               </div>
               <div className="action-icon" onClick={() => alert("Open comment input below.")}> 
                 <FaRegComment /> <span>Comment</span>
@@ -211,7 +211,7 @@ function JobListMainPage() {
             </div>
             <div className="comments-section">
               <h4>Comments</h4>
-              {comments[job.id]?.map((comment, index) => (
+              {comments[job._id]?.map((comment, index) => (
                 <div key={index} className="comment">
                   <p>{comment.text}</p>
                   <small>{comment.date}</small>
@@ -225,7 +225,7 @@ function JobListMainPage() {
                   onChange={(e) => setNewComment(e.target.value)}
                   className="comment-input"
                 />
-                <button className="post-button" onClick={() => handleCommentSubmit(job.id)}>
+                <button className="post-button" onClick={() => handleCommentSubmit(job._id)}>
                   Post
                 </button>
               </div>
