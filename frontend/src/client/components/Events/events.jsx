@@ -18,15 +18,15 @@ function Events() {
 function EventMainPage() {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch events from backend API
   useEffect(() => {
     fetchEvents();
   }, []);
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch("https://alumnitracersystem.onrender.com/event/list"); // Adjust URL if needed
+      const response = await fetch("https://alumnitracersystem.onrender.com/event/list");
       if (response.ok) {
         const data = await response.json();
         setEvents(data);
@@ -35,6 +35,8 @@ function EventMainPage() {
       }
     } catch (error) {
       console.error("Error fetching events:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,33 +50,49 @@ function EventMainPage() {
 
   return (
     <div className={styles.eventsContainer}>
-      <h4>UPCOMING EVENTS</h4>
-      {events.length > 0 ? (
-        events.map((event, index) => (
-          <div
-            key={index}
-            className={styles.eventNo1}
-            onClick={() => handleEventClick(event)}
-          >
-            <div className={styles.eventDate}>
-              <h3>{new Date(event.date).toLocaleString("default", { month: "long" })}</h3>
-              <h3>{new Date(event.date).getDate()}</h3>
-            </div>
-            <div className={styles.eventDetails}>
-              <h5>
-                {event.time} in {event.venue}
-              </h5>
-              <h3>{event.title}</h3>
-              <h5>
-                {event.description.length > 100
-                  ? `${event.description.substring(0, 100)}...`
-                  : event.description}
-              </h5>
-            </div>
+      {loading ? (
+        <div className="loadingOverlay">
+          <div className="loaderContainer">
+            <svg viewBox="0 0 240 240" height="80" width="80" className="loader">
+              <circle strokeLinecap="round" strokeDashoffset="-330" strokeDasharray="0 660" strokeWidth="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className="pl__ring pl__ringA"></circle>
+              <circle strokeLinecap="round" strokeDashoffset="-110" strokeDasharray="0 220" strokeWidth="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className="pl__ring pl__ringB"></circle>
+              <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className="pl__ring pl__ringC"></circle>
+              <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className="pl__ring pl__ringD"></circle>
+            </svg>
+            <p>Loading...</p>
           </div>
-        ))
+        </div>
       ) : (
-        <p>No events available at the moment.</p>
+        <>
+          <h4>UPCOMING EVENTS</h4>
+          {events.length > 0 ? (
+            events.map((event, index) => (
+              <div
+                key={index}
+                className={styles.eventNo1}
+                onClick={() => handleEventClick(event)}
+              >
+                <div className={styles.eventDate}>
+                  <h3>{new Date(event.date).toLocaleString("default", { month: "long" })}</h3>
+                  <h3>{new Date(event.date).getDate()}</h3>
+                </div>
+                <div className={styles.eventDetails}>
+                  <h5>
+                    {event.time} in {event.venue}
+                  </h5>
+                  <h3>{event.title}</h3>
+                  <h5>
+                    {event.description.length > 100
+                      ? `${event.description.substring(0, 100)}...`
+                      : event.description}
+                  </h5>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No events available at the moment.</p>
+          )}
+        </>
       )}
 
       {/* Modal */}
@@ -101,7 +119,6 @@ function EventMainPage() {
                 <strong>Location:</strong> <br />{selectedEvent.venue}
               </p>
             </div>
-            
           </div>
         </div>
       )}
