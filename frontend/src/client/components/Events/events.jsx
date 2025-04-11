@@ -19,6 +19,9 @@ function EventMainPage() {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isClosing, setIsClosing] = useState(false);
+
+
 
   useEffect(() => {
     fetchEvents();
@@ -40,12 +43,18 @@ function EventMainPage() {
     }
   };
 
+  
+
   const handleEventClick = (event) => {
     setSelectedEvent(event);
   };
 
   const closeModal = () => {
-    setSelectedEvent(null);
+    setIsClosing(true);
+    setTimeout(() => {
+      setSelectedEvent(null);
+      setIsClosing(false);
+    }, 300); // duration should match animation duration
   };
 
   return (
@@ -95,27 +104,30 @@ function EventMainPage() {
 
       {/* Modal */}
       {selectedEvent && (
-        <div className={styles.eventModal}>
-          <div className={styles.eventModalContent}>
-            <span className={styles.closeButton} onClick={closeModal}>
-              &times;
-            </span>
-            {selectedEvent.image && (
-              <img
-                src={selectedEvent.image}
-                alt={selectedEvent.title}
-                className={styles.eventPoster}
-              />
-            )}
-            <h2>{selectedEvent.title}</h2>
-            <p>{selectedEvent.description}</p>
-            <div className={styles.dateTimeVenue}>
-              <p><strong>Date & Time:</strong><br />{selectedEvent.date} at {selectedEvent.time}</p>
-              <p><strong>Location:</strong><br />{selectedEvent.venue}</p>
-            </div>
+      <div className={styles.eventModal}>
+        <div
+          className={`${styles.eventModalContent} ${isClosing ? styles.zoomOut : styles.zoomIn}`}
+        >
+          <span className={styles.closeButton} onClick={closeModal}>
+            &times;
+          </span>
+          {selectedEvent.image && (
+            <img
+              src={selectedEvent.image}
+              alt={selectedEvent.title}
+              className={styles.eventPoster}
+            />
+          )}
+          <h2>{selectedEvent.title}</h2>
+          <p>{selectedEvent.description}</p>
+          <div className={styles.dateTimeVenue}>
+            <p><strong>Date & Time:</strong><br />{selectedEvent.date} at {selectedEvent.time}</p>
+            <p><strong>Location:</strong><br />{selectedEvent.venue}</p>
           </div>
         </div>
-      )}
+      </div>
+    )}
+
     </div>
   );
 }
