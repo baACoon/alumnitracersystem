@@ -1,129 +1,128 @@
 .header-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    background-color: white;
-    padding: 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 10;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: white;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.header-logo-banner {
+  display: flex;
+  align-items: center;
+  padding: 1em;
+  justify-content: space-between;
+}
+
+.header-logo {
+  display: flex;
+  position: relative;
+  margin: 0 1em;
+}
+
+.header-logo-1 {
+  width: 80px;
+  height: auto;
+}
+
+.header-logo-2 {
+  width: 55px;
+  height: auto;
+  position: absolute;
+  bottom: -15px;
+  left: -15px;
+}
+
+.header-banner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 1em;
+}
+
+.header-banner h1 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.header-banner h2 {
+  font-size: 1rem;
+  font-style: italic;
+  color: gray;
+  margin: 0;
+}
+
+/* Responsive: stack logo and banner on smaller screens */
+@media (max-width: 768px) {
   .header-logo-banner {
-    display: flex;
-    align-items: center;
-    padding: 1em;
-    justify-content: space-between;
-  }
-  
-  .header-logo {
-    display: flex;
-    position: relative;
-    margin: 0 1em;
-  }
-  
-  .header-logo-1 {
-    width: 80px;
-    height: auto;
-  }
-  
-  .header-logo-2 {
-    width: 55px;
-    height: auto;
-    position: absolute;
-    bottom: -15px;
-    left: -15px;
-  }
-  
-  .header-banner {
-    display: flex;
     flex-direction: column;
-    justify-content: center;
-    margin: 0 1em;
+    align-items: center;
+    text-align: center;
   }
-  
-  .header-banner h1 {
-    font-size: 1.2rem;
-    font-weight: bold;
+
+  .header-logo {
     margin: 0;
   }
-  
-  .header-banner h2 {
-    font-size: 1rem;
-    font-style: italic;
-    color: gray;
-    margin: 0;
-  }
-  
-  /* Responsive: stack logo and banner on smaller screens */
-  @media (max-width: 768px) {
-    .header-logo-banner {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-  
-    .header-logo {
-      margin: 0;
-    }
-  
-    .header-banner {
-      margin-top: 0.5em;
-      align-items: center;
-    }
-  }
-  
-  /* NAVBAR */
-  #navbar {
-    background-color: #C31D3C !important;
-    margin-top: 105px; /* Push navbar below header */
-  }
-  
-  #navbar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+
+  .header-banner {
+    margin-top: 0.5em;
     align-items: center;
   }
-  
-  #navbar ul li {
-    margin: 0 1em;
-  }
-  
-  #navbar ul li a {
-    text-decoration: none;
-    color: white;
-    padding: 10px 20px;
-    display: block;
-    font-size: 1em;
-    font-weight: 500;
-    cursor: pointer;
-  }
-  
-  #navbar ul li a:hover {
-    background-color: #5D0E1D;
-    border-radius: 5px;
-  }
-  
-  .navbar-nav .nav-link.active,
-  .navbar-nav .nav-link:focus {
-    background-color: #5D0E1D;
-    border-radius: 5px;
-    color: white !important;
-  }
-  
-  .d-flex a {
-    color: white;
-    cursor: pointer;
-    padding: 10px 20px;
-  }
-  
-  .d-flex a:hover {
-    background-color: #5D0E1D;
-    border-radius: 5px;
-  }
-  
+}
+
+/* NAVBAR */
+#navbar {
+  background-color: #C31D3C !important;
+  margin-top: 105px; /* Push navbar below header */
+}
+
+#navbar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#navbar ul li {
+  margin: 0 1em;
+}
+
+#navbar ul li a {
+  text-decoration: none;
+  color: white;
+  padding: 10px 20px;
+  display: block;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+#navbar ul li a:hover {
+  background-color: #5D0E1D;
+  border-radius: 5px;
+}
+
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link:focus {
+  background-color: #5D0E1D;
+  border-radius: 5px;
+  color: white !important;
+}
+
+.d-flex a {
+  color: white;
+  cursor: pointer;
+  padding: 10px 20px;
+}
+
+.d-flex a:hover {
+  background-color: #5D0E1D;
+  border-radius: 5px;
+}
