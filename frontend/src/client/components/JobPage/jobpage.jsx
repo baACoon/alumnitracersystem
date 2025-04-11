@@ -57,7 +57,7 @@ function JobPageMainPage() {
         <div className="JobPageContainer">
           <div onClick={goToGive} className="JobPageOption-1 JobPageBox">
             <FontAwesomeIcon icon={faHandHoldingHeart} className="JobPageIcon" />
-            <h3>GIVE OPPORTUNITY FOR OTHERS</h3>
+            <h3>GIVE OPPORTUNITY TO OTHERS</h3>
           </div>
           <div onClick={goToList} className="JobPageOption-2 JobPageBox">
             <FontAwesomeIcon icon={faBriefcase} className="JobPageIcon" />
