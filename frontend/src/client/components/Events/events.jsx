@@ -21,8 +21,6 @@ function EventMainPage() {
   const [loading, setLoading] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
 
-
-
   useEffect(() => {
     fetchEvents();
   }, []);
@@ -43,8 +41,6 @@ function EventMainPage() {
     }
   };
 
-  
-
   const handleEventClick = (event) => {
     setSelectedEvent(event);
   };
@@ -54,7 +50,7 @@ function EventMainPage() {
     setTimeout(() => {
       setSelectedEvent(null);
       setIsClosing(false);
-    }, 300); // duration should match animation duration
+    }, 300);
   };
 
   return (
@@ -72,13 +68,14 @@ function EventMainPage() {
           </div>
         </div>
       ) : (
-        <div className={styles.pageEnter}> {/* 🎉 Apply fade animation */}
-          <h4>UPCOMING EVENTS</h4>
+        <div className={styles.pageEnter}>
+          <h4 className={styles.pageTitle}>UPCOMING EVENTS</h4>
           {events.length > 0 ? (
             events.map((event, index) => (
               <div
                 key={index}
-                className={styles.eventNo1}
+                className={`${styles.eventNo1} ${styles.animatedBox}`}
+                style={{ animationDelay: `${index * 0.1}s` }}
                 onClick={() => handleEventClick(event)}
               >
                 <div className={styles.eventDate}>
@@ -104,30 +101,29 @@ function EventMainPage() {
 
       {/* Modal */}
       {selectedEvent && (
-      <div className={styles.eventModal}>
-        <div
-          className={`${styles.eventModalContent} ${isClosing ? styles.zoomOut : styles.zoomIn}`}
-        >
-          <span className={styles.closeButton} onClick={closeModal}>
-            &times;
-          </span>
-          {selectedEvent.image && (
-            <img
-              src={selectedEvent.image}
-              alt={selectedEvent.title}
-              className={styles.eventPoster}
-            />
-          )}
-          <h2>{selectedEvent.title}</h2>
-          <p>{selectedEvent.description}</p>
-          <div className={styles.dateTimeVenue}>
-            <p><strong>Date & Time:</strong><br />{selectedEvent.date} at {selectedEvent.time}</p>
-            <p><strong>Location:</strong><br />{selectedEvent.venue}</p>
+        <div className={styles.eventModal}>
+          <div
+            className={`${styles.eventModalContent} ${isClosing ? styles.zoomOut : styles.zoomIn}`}
+          >
+            <span className={styles.closeButton} onClick={closeModal}>
+              &times;
+            </span>
+            {selectedEvent.image && (
+              <img
+                src={selectedEvent.image}
+                alt={selectedEvent.title}
+                className={styles.eventPoster}
+              />
+            )}
+            <h2>{selectedEvent.title}</h2>
+            <p>{selectedEvent.description}</p>
+            <div className={styles.dateTimeVenue}>
+              <p><strong>Date & Time:</strong><br />{selectedEvent.date} at {selectedEvent.time}</p>
+              <p><strong>Location:</strong><br />{selectedEvent.venue}</p>
+            </div>
           </div>
         </div>
-      </div>
-    )}
-
+      )}
     </div>
   );
 }
