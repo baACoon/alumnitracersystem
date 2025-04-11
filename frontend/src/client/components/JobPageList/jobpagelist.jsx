@@ -135,30 +135,40 @@ function JobListMainPage() {
       <h1 className="list-title">JOB OPPORTUNITIES FEED</h1>
 
       <div className="filter-controls">
-        <label>
-          College:
-          <select value={college} onChange={(e) => { setCollege(e.target.value); setCourse(""); }}>
+        <div className="filter-group">
+          <label htmlFor="college">College:</label>
+          <select
+            id="college"
+            value={college}
+            onChange={(e) => {
+              setCollege(e.target.value);
+              setCourse("");
+            }}
+          >
             <option value="">All Colleges</option>
             {Object.keys(coursesByCollege).map((collegeName) => (
               <option key={collegeName} value={collegeName}>{collegeName}</option>
             ))}
           </select>
-        </label>
+        </div>
 
-        <label>
-          Course:
+        <div className="filter-group">
+          <label htmlFor="course">Course:</label>
           <select
+            id="course"
             value={course}
             onChange={(e) => setCourse(e.target.value)}
             disabled={!college}
           >
             <option value="">All Courses</option>
-            {college && coursesByCollege[college].map((courseName) => (
-              <option key={courseName} value={courseName}>{courseName}</option>
-            ))}
+            {college &&
+              coursesByCollege[college].map((courseName) => (
+                <option key={courseName} value={courseName}>{courseName}</option>
+              ))}
           </select>
-        </label>
+        </div>
       </div>
+
 
       {loading ? (
         <div className="loadingOverlay">
