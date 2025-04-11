@@ -12,6 +12,7 @@ function Header() {
     const isActive = (path) => location.pathname === path;
 
 
+
   return (
 
     <div className="header-container">
@@ -20,6 +21,7 @@ function Header() {
       <img src={Tuplogo} alt="TUP Logo" className='header-logo-1'/>
       <img src={Alumnilogo} alt="Alumni Logo" className='header-logo-2' />
     </div>
+
 
     {/* Banner Section */}
     <div className="header-banner">
@@ -72,6 +74,7 @@ function Header() {
               <a onClick={() => navigate("/Contact")}
                   className={`nav-link ${isActive("/Contact") ? "active" : ""}`}>
                 CONTACT US
+
               </a>
             </li>
             */}
