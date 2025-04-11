@@ -26,7 +26,7 @@ function JobListMainPage() {
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [college, setCollege] = useState("");
   const [course, setCourse] = useState("");
-  const [expandedJobId, setExpandedJobId] = useState(null);
+  const [expandedJobs, setExpandedJobs] = useState([]);
 
   const coursesByCollege = {
     "College of Engineering": [
@@ -122,7 +122,9 @@ function JobListMainPage() {
   };
 
   const toggleExpanded = (jobId) => {
-    setExpandedJobId((prevId) => (prevId === jobId ? null : jobId));
+    setExpandedJobs((prev) =>
+      prev.includes(jobId) ? prev.filter((id) => id !== jobId) : [...prev, jobId]
+    );
   };
 
   return (
@@ -181,7 +183,7 @@ function JobListMainPage() {
             <p><strong>Location:</strong> {job.location}</p>
             <p><strong>Type:</strong> {job.type}</p>
             <p>{job.jobDescription}</p>
-            {expandedJobId === job.id && (
+            {expandedJobs.includes(job.id) && (
               <div className="expanded-details">
                 <p><strong>College:</strong> {job.college || 'N/A'}</p>
                 <p><strong>Job Status:</strong> {job.status}</p>
@@ -197,7 +199,7 @@ function JobListMainPage() {
               </div>
             )}
             <button className="see-more-btn" onClick={() => toggleExpanded(job.id)}>
-              {expandedJobId === job.id ? "See Less" : "See More"}
+              {expandedJobs.includes(job.id) ? "See Less" : "See More"}
             </button>
             <div className="job-card-actions">
               <div className="action-icon" onClick={() => handleLike(job.id)}>
