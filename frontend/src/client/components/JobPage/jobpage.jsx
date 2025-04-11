@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './jobpage.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,29 +18,22 @@ function JobPage() {
 
 function JobPageMainPage() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    // Simulate loading delay (3 seconds)
     const timeout = setTimeout(() => {
       setLoading(false);
+      setTimeout(() => setShowContent(true), 100); // delay before showing
     }, 2000);
     return () => clearTimeout(timeout);
   }, []);
 
-
-  const goToGive = () => {
-    navigate('/JobPageGive');
-  };
-
-  const goToList = () => {
-    navigate('/JobPageList');
-  };
+  const goToGive = () => navigate('/JobPageGive');
+  const goToList = () => navigate('/JobPageList');
 
   return (
-    
     <>
-      {/* Show Loading Animation */}
       {loading ? (
         <div className="loadingOverlay">
           <div className="loaderContainer">
@@ -54,15 +47,19 @@ function JobPageMainPage() {
           </div>
         </div>
       ) : (
-        <div className="JobPageContainer">
-          <div onClick={goToGive} className="JobPageOption-1 JobPageBox">
-            <FontAwesomeIcon icon={faHandHoldingHeart} className="JobPageIcon" />
-            <h3>GIVE OPPORTUNITY TO  OTHERS</h3>
-          </div>
-          <div onClick={goToList} className="JobPageOption-2 JobPageBox">
-            <FontAwesomeIcon icon={faBriefcase} className="JobPageIcon" />
-            <h3>OPPORTUNITIES</h3>
-          </div>
+        <div className={`JobPageContainer fadeInUp`}>
+          {showContent && (
+            <>
+              <div onClick={goToGive} className="JobPageBox animatedBox">
+                <FontAwesomeIcon icon={faHandHoldingHeart} className="JobPageIcon" />
+                <h3>GIVE OPPORTUNITY TO OTHERS</h3>
+              </div>
+              <div onClick={goToList} className="JobPageBox animatedBox">
+                <FontAwesomeIcon icon={faBriefcase} className="JobPageIcon" />
+                <h3>OPPORTUNITIES</h3>
+              </div>
+            </>
+          )}
         </div>
       )}
     </>
