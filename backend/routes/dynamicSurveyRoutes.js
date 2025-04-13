@@ -1,6 +1,5 @@
 import express from "express";
-import { createCreatedSurvey, getSurveys, getSurveyById, submitResponse, deleteSurvey, publishSurvey, updateSurvey } from "../controllers/surveyController.js";
-
+import { createCreatedSurvey, getSurveys, getSurveyById, submitResponse, deleteSurvey, publishSurvey, updateSurvey, getActiveSurveys, getCompletedSurveysByUser } from "../controllers/surveyController.js";
 const router = express.Router();
 
 // Existing routes
@@ -13,6 +12,10 @@ router.post("/:id/response", submitResponse);
 // Add the route for publishing a survey (PUT request)
 router.put("/:id/publish", publishSurvey);
 router.put("/:id", updateSurvey);  // Route for updating survey by ID
+router.get("/active", getActiveSurveys); // 
+router.get("/completed/:userId", getCompletedSurveysByUser);
+
+
 
 
 export default router;

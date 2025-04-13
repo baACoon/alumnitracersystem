@@ -207,6 +207,21 @@
   font-size: 16px;
 }
 
+.selectInput {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.inputField {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 /* ============================== */
 /* MAJOR LINE OF BUSINESS - 3 COLUMNS */
 /* ============================== */

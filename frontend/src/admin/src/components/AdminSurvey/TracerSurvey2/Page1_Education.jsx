@@ -1,15 +1,88 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from "./TracerSurvey2.module.css";
 
+const collegeCourses = {
+  "College of Engineering": [
+    "Bachelor of Science in Civil Engineering",
+    "Bachelor of Science in Electrical Engineering",
+    "Bachelor of Science in Electronics Engineering",
+    "Bachelor of Science in Mechanical Engineering",
+  ],
+  "College of Science": [
+    "Bachelor of Applied Science in Laboratory Technology",
+    "Bachelor of Science in Computer Science",
+    "Bachelor of Science in Environmental Science",
+    "Bachelor of Science in Information System",
+    "Bachelor of Science in Information Technology",
+  ],
+  "College of Industrial Education": [
+    "Bachelor of Science Industrial Education Major in Information and Communication Technology",
+    "Bachelor of Science Industrial Education Major in Home Economics",
+    "Bachelor of Science Industrial Education Major in Industrial Arts",
+    "Bachelor of Technical Vocational Teachers Education Major in Animation",
+    "Bachelor of Technical Vocational Teachers Education Major in Automotive",
+    "Bachelor of Technical Vocational Teachers Education Major in Beauty Care and Wellness",
+    "Bachelor of Technical Vocational Teachers Education Major in Computer Programming",
+    "Bachelor of Technical Vocational Teachers Education Major in Electrical",
+    "Bachelor of Technical Vocational Teachers Education Major in Electronics",
+    "Bachelor of Technical Vocational Teachers Education Major in Food Service Management",
+    "Bachelor of Technical Vocational Teachers Education Major in Fashion and Garment",
+    "Bachelor of Technical Vocational Teachers Education Major in Heat Ventillation & Air Conditioning",
+  ],
+  "College of Liberal Arts": [
+    "Bachelor of Science in Business Management Major in Industrial Management",
+    "Bachelor of Science in Entreprenuership",
+    "Bachelor of Science Hospitality Management",
+  ],
+  "College of Architecture and Fine Arts": [
+    "Bachelor of Science in Architecture",
+    "Bachelor of Fine Arts",
+    "Bachelor of Graphic Technology Major in Architecture Technology",
+    "Bachelor of Graphic Technology Major in Industrial Design",
+    "Bachelor of Graphic Technology Major in Mechanical Drafting Technology",
+  ],
+  "College of Industrial Technology": [
+    "Bachelor of Science in Food Technology",
+    "Bachelor of Engineering Technology Major in Civil Technology",
+    "Bachelor of Engineering Technology Major in Electrical Technology",
+    "Bachelor of Engineering Technology Major in Electronics Technology",
+    "Bachelor of Engineering Technology Major in Computer Engineering Technology",
+    "Bachelor of Engineering Technology Major in Instrumentation and Control Technology",
+    "Bachelor of Engineering Technology Major in Mechanical Technology",
+    "Bachelor of Engineering Technology Major in Mechatronics Technology",
+    "Bachelor of Engineering Technology Major in Railway Technology",
+    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Automative Technology",
+    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Heating Ventilation & Airconditioning/Refrigiration Technology",
+    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Power Plant Technology",
+    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Welding Technology",
+    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Dies and Moulds Technology",
+    "Bachelor of Technology in Apparel and Fashion",
+    "Bachelor of Technology in Culinary Technology",
+    "Bachelor of Technology in Print Media Technology",
+  ],
+};
+
 const Page1_Education = ({ data, updateForm }) => {
-  const handleEducationChange = (index, field, value) => {
+  const [availableCourses, setAvailableCourses] = useState([]);
+
+   const handleEducationChange = (index, field, value) => {
     const updatedEducation = [...data.education];
+    
+    // If college is changing, reset course and update available courses
+    if (field === "college") {
+      updatedEducation[index].course = "";
+      setAvailableCourses(collegeCourses[value] || []);
+    }
+    
     updatedEducation[index][field] = value;
     updateForm("education", updatedEducation);
   };
 
   const addEducationRow = () => {
-    updateForm("education", [...data.education, { degree: "", college: "", yearGraduated: "", honors: "" }]);
+    updateForm("education", [
+      ...data.education, 
+      { type: "", course: "", college: "", yearGraduated: "", institution: "" }
+    ]);
   };
 
   const removeEducationRow = (index) => {
@@ -54,10 +127,10 @@ const Page1_Education = ({ data, updateForm }) => {
             <thead>
               <tr>
                 <th>Type</th>
-                <th>Degree & Specialization</th>
-                <th>College/University</th>
+                <th>College</th>
+                <th>Course</th>
                 <th>Year Graduated</th>
-                <th>Honors/Awards</th>
+                <th>Institution</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -65,18 +138,71 @@ const Page1_Education = ({ data, updateForm }) => {
               {data.education.map((entry, index) => (
                 <tr key={index}>
                   <td>
-                    <select value={entry.type} onChange={(e) => handleEducationChange(index, "type", e.target.value)}>
+                    <select 
+                      value={entry.type} 
+                      onChange={(e) => handleEducationChange(index, "type", e.target.value)}
+                      className={styles.selectInput}
+                    >
                       <option value="">Select Type</option>
                       <option value="Bachelor">Bachelor</option>
                       <option value="Masters">Masters</option>
                       <option value="Doctorate">Doctorate</option>
                     </select>
                   </td>
-                  <td><input type="text" value={entry.degree} onChange={(e) => handleEducationChange(index, "degree", e.target.value)} placeholder="e.g., BS Computer Science" /></td>
-                  <td><input type="text" value={entry.college} onChange={(e) => handleEducationChange(index, "college", e.target.value)} placeholder="e.g., TUP Manila" /></td>
-                  <td><input type="number" value={entry.yearGraduated} onChange={(e) => handleEducationChange(index, "yearGraduated", e.target.value)} placeholder="e.g., 2022" /></td>
-                  <td><input type="text" value={entry.honors} onChange={(e) => handleEducationChange(index, "honors", e.target.value)} placeholder="e.g., Cum Laude" /></td>
-                  <td>{data.education.length > 1 && <button className={styles.removeButton} onClick={() => removeEducationRow(index)}>✖</button>}</td>
+                  <td>
+                    <select
+                      value={entry.college}
+                      onChange={(e) => handleEducationChange(index, "college", e.target.value)}
+                      className={styles.selectInput}
+                    >
+                      <option value="">Select College</option>
+                      {Object.keys(collegeCourses).map((college) => (
+                        <option key={college} value={college}>
+                          {college}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td>
+                    <select
+                      value={entry.course}
+                      onChange={(e) => handleEducationChange(index, "course", e.target.value)}
+                      className={styles.selectInput}
+                      disabled={!entry.college}
+                    >
+                      <option value="">Select Course</option>
+                      {collegeCourses[entry.college]?.map((course) => (
+                        <option key={course} value={course}>
+                          {course}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td>
+                    <input 
+                      type="number" 
+                      value={entry.yearGraduated} 
+                      onChange={(e) => handleEducationChange(index, "yearGraduated", e.target.value)} 
+                      placeholder="e.g., 2022" 
+                      className={styles.inputField}
+                    />
+                  </td>
+                  <td>
+                    <input 
+                      type="text" 
+                      value={entry.institution} 
+                      onChange={(e) => handleEducationChange(index, "institution", e.target.value)} 
+                      placeholder="e.g., TUP Manila" 
+                      className={styles.inputField}
+                    />
+                  </td>
+                  <td>
+                    {data.education.length > 1 && (
+                      <button className={styles.removeButton} onClick={() => removeEducationRow(index)}>
+                        ✖
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
