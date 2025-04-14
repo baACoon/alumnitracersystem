@@ -426,6 +426,9 @@
   width: 100%;
   border-bottom: 1px solid #e0e0e0;
   margin-bottom: 20px;
+  padding: 10px;
+  gap: 100px;
+  justify-content: center;
 }
 
 .tabButton {

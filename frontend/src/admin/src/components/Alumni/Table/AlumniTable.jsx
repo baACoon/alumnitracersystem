@@ -9,7 +9,7 @@ import { Tracer1Tab } from './TracerTab1';
 import { Tracer2Tab } from './TracerTab2';
 
 
-export function AlumniTable() {
+export function AlumniTable({ batch, college, course }) {
   const [alumniData, setAlumniData] = useState([]);
   const [selectedAlumni, setSelectedAlumni] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,6 +29,12 @@ export function AlumniTable() {
         }
 
         jwtDecode(token); // Validate token
+
+         // Construct query string based on filters
+         const queryParams = new URLSearchParams();
+         if (batch) queryParams.append('batch', batch);
+         if (college) queryParams.append('college', college);
+         if (course) queryParams.append('course', course);
 
         const response = await axios.get('http://localhost:5050/api/alumni/all', {
           headers: { 'Authorization': `Bearer ${token}` },
@@ -51,8 +57,8 @@ export function AlumniTable() {
     };
 
     fetchData();
-  }, [navigate]);
-
+  }, [navigate, batch, college, course]);
+  
   const handleSelectAll = (e) => {
     setSelectedAlumni(e.target.checked ? new Set(alumniData.map((alumni) => alumni.userId)) : new Set());
   };
@@ -170,41 +176,50 @@ export function AlumniTable() {
                 </tr>
               </thead>
               <tbody>
-                {filteredAlumni.map((alumni) => (
-                  <tr key={alumni.userId} onClick={() => openStudentDetails(alumni.userId)}>
-                    <td onClick={(e) => e.stopPropagation()}>
-                      <input
-                        type="checkbox"
-                        id={`select-${alumni.userId}`}
-                        checked={selectedAlumni.has(alumni.userId)}
-                        onChange={() => handleSelectAlumni(alumni.userId)}
-                        onClick={(e) => e.stopPropagation()}
-                        aria-label={`Select ${alumni.userId}`}
-                      />
-                    </td>
-                    <td>{alumni.generatedID}</td>
-                    <td>{`${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`}</td>
-                    <td>{alumni.personalInfo.email_address}</td>
-                    <td>{alumni.personalInfo.course}</td>
-                    <td>{alumni.personalInfo.gradyear}</td>
-                    <td>
-                      <span className={`${styles.tracerStatus} ${
-                        alumni.tracerStatus?.includes('&') ? styles.tracerStatusMultiple : styles.tracerStatusSingle
-                      }`}>
-                        {alumni.tracerStatus || 'No tracer'}
-                      </span>
-                    </td>
-                    <td>
-                      <button className={styles.actionButton} onClick={(e) => {
-                        e.stopPropagation();
-                        openStudentDetails(alumni.userId);
-                      }}>
-                        ›
-                      </button>
+                {filteredAlumni.length > 0 ? (
+                  filteredAlumni.map((alumni) => (
+                    <tr key={alumni.userId} onClick={() => openStudentDetails(alumni.userId)}>
+                      <td onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          id={`select-${alumni.userId}`}
+                          checked={selectedAlumni.has(alumni.userId)}
+                          onChange={() => handleSelectAlumni(alumni.userId)}
+                          onClick={(e) => e.stopPropagation()}
+                          aria-label={`Select ${alumni.userId}`}
+                        />
+                      </td>
+                      <td>{alumni.generatedID}</td>
+                      <td>{`${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`}</td>
+                      <td>{alumni.personalInfo.email_address}</td>
+                      <td>{alumni.personalInfo.course}</td>
+                      <td>{alumni.personalInfo.gradyear}</td>
+                      <td>
+                        <span className={`${styles.tracerStatus} ${
+                          alumni.tracerStatus?.includes('&') ? styles.tracerStatusMultiple : styles.tracerStatusSingle
+                        }`}>
+                          {alumni.tracerStatus || 'No tracer'}
+                        </span>
+                      </td>
+                      <td>
+                        <button className={styles.actionButton} onClick={(e) => {
+                          e.stopPropagation();
+                          openStudentDetails(alumni.userId);
+                        }}>
+                          ›
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="8" style={{ textAlign: 'center', padding: '1rem', fontStyle: 'italic', color: 'gray' }}>
+                      Sorry, there is no ‘{searchQuery}’ in the alumni list.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
+
             </table>
           </div>
         </>

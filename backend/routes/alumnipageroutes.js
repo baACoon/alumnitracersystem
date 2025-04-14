@@ -23,38 +23,37 @@ const authenticateToken = (req, res, next) => {
 // Get all alumni (with filters and pagination)
 router.get('/all', authenticateToken, async (req, res) => {
   try {
-    // Validate and sanitize query parameters
-    const page = Math.max(1, parseInt(req.query.page) || 1); // Default page is 1
-    const limit = Math.max(1, parseInt(req.query.limit) || 10); // Default limit is 10
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.max(1, parseInt(req.query.limit) || 10);
+
     const college = req.query.college?.trim() || null;
     const course = req.query.course?.trim() || null;
+    const batch = req.query.batch ? parseInt(req.query.batch) : null; // ✅ CORRECTED
 
-    // Construct query filters
     const query = {};
-    if (college) query['personalInfo.college'] = college;
-    if (course) query['personalInfo.course'] = course;
-
-    
+    if (batch) query["personalInfo.gradyear"] = batch;
+    if (college && college !== "") query["personalInfo.college"] = college;
+    if (course && course !== "") query["personalInfo.course"] = course;
+    console.log("Applied filter query:", query); // ✅ Debugging line
 
     const surveys = await SurveySubmission.aggregate([
-      { $match: query }, // Apply the filters
+      { $match: query },
       {
         $lookup: {
-          from: 'students', // Collection name for `Student`
+          from: 'students',
           localField: 'userId',
           foreignField: '_id',
-          as: 'studentInfo', // Resulting array of matched students
+          as: 'studentInfo',
         },
       },
-      { $unwind: '$studentInfo' }, // Flatten the joined `studentInfo` array
-      { $sort: { createdAt: -1 } }, // Sort by the most recent survey
-      { $skip: (page - 1) * limit }, // Pagination: Skip documents
-      { $limit: limit }, // Pagination: Limit the number of documents
+      { $unwind: '$studentInfo' },
+      { $sort: { createdAt: -1 } },
+      { $skip: (page - 1) * limit },
+      { $limit: limit },
     ]);
 
-    const total = await SurveySubmission.countDocuments(query); // Total matching documents
+    const total = await SurveySubmission.countDocuments(query);
 
-    // Map surveys to include only relevant fields for the TABLE
     const mappedSurveys = surveys.map((survey) => ({
       userId: survey.userId.toString(),
       generatedID: survey.studentInfo.generatedID,
@@ -72,7 +71,6 @@ router.get('/all', authenticateToken, async (req, res) => {
       submittedAt: survey.createdAt,
     }));
 
-    // Respond with data and pagination info
     res.status(200).json({
       success: true,
       data: mappedSurveys,
@@ -87,7 +85,6 @@ router.get('/all', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch survey data.' });
   }
 });
-
 
 // Get details of a specific latestSurvey by userId
 router.get('/user/:userId', authenticateToken, async (req, res) => {

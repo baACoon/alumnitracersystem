@@ -11,7 +11,6 @@
   font-size: 1.5rem;
   font-weight: bold;
   color: #c31d3c;
-  margin-bottom: 20px;
 }
 
 /* Filter Controls */
@@ -56,6 +55,8 @@
 .viewToggle {
   display: flex;
   gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .tab {
