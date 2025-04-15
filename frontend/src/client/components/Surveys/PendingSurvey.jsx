@@ -141,9 +141,7 @@ export const PendingSurvey = () => {
                 onClick={isTracer2Open ? () => navigate("/tracer2") : null}
                 style={{ order: -1 }}
               >
-                <h3 className={`${styles.surveyTitle} ${!isTracer2Open ? styles.grayText : ''}`}>
-                  Tracer Survey 2
-                </h3>
+                <h3 className={`${styles.surveyTitle} ${!isTracer2Open ? styles.grayText : ''}`}>Tracer Survey 2</h3>
                 <p className={`${styles.surveyDescription} ${!isTracer2Open ? styles.grayText : ''}`}>
                   {!isTracer2Open
                     ? `Open on or after ${tracer2ReleaseDate?.toLocaleDateString()}`
