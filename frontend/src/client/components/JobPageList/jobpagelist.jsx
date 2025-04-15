@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaRegComment, FaRegThumbsUp } from "react-icons/fa";
 import "./jobpagelist.css";
 import Header from "../Header/header";
 import Footer from "../FooterClient/Footer";
@@ -19,14 +18,11 @@ function JobPageList() {
 function JobListMainPage() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
-  const [newComment, setNewComment] = useState("");
-  const [comments, setComments] = useState({});
-  const [likes, setLikes] = useState({});
   const [loading, setLoading] = useState(true);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [college, setCollege] = useState("");
   const [course, setCourse] = useState("");
-  const [expandedJobs, setExpandedJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
 
   const coursesByCollege = {
     "College of Engineering": [
@@ -93,40 +89,6 @@ function JobListMainPage() {
     setFilteredJobs(updated);
   }, [college, course, jobs]);
 
-  const handleCommentSubmit = async (jobId) => {
-    if (!newComment.trim()) return;
-
-    try {
-      const response = await axios.post(
-        `https://alumnitracersystem.onrender.com/jobs/${jobId}/comments`,
-        { comment: newComment },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
-      setComments((prevComments) => ({
-        ...prevComments,
-        [jobId]: [...(prevComments[jobId] || []), response.data],
-      }));
-      setNewComment("");
-    } catch (error) {
-      console.error("Error submitting comment:", error);
-    }
-  };
-
-  const handleLike = (jobId) => {
-    setLikes((prevLikes) => ({
-      ...prevLikes,
-      [jobId]: (prevLikes[jobId] || 0) + 1,
-    }));
-  };
-
-  const toggleExpanded = (jobId) => {
-    setExpandedJobs((prev) =>
-      prev.includes(jobId) ? prev.filter((id) => id !== jobId) : [...prev, jobId]
-    );
-  };
-
   return (
     <div className="listcontainer">
       <a onClick={goToJobPage} className="back-button">
@@ -169,7 +131,6 @@ function JobListMainPage() {
         </div>
       </div>
 
-
       {loading ? (
         <div className="loadingOverlay">
           <div className="loaderContainer">
@@ -184,7 +145,7 @@ function JobListMainPage() {
         </div>
       ) : (
         filteredJobs.map((job) => (
-          <div key={job._id} className="job-card">
+          <div key={job._id} className="job-card" onClick={() => setSelectedJob(job)}>
             <div className="job-card-header">
               <h3>{job.title}</h3>
               <p>{job.datePosted}</p>
@@ -193,55 +154,35 @@ function JobListMainPage() {
             <p><strong>Location:</strong> {job.location}</p>
             <p><strong>Type:</strong> {job.type}</p>
             <p>{job.jobDescription}</p>
-            {expandedJobs.includes(job._id) && (
-              <div className="expanded-details">
-                <p><strong>College:</strong> {job.college || 'N/A'}</p>
-                <p><strong>Job Status:</strong> {job.status}</p>
-                <p><strong>Date Published:</strong> {job.createdAt ? new Date(job.createdAt).toLocaleDateString() : 'N/A'}</p>
-                <p><strong>Key Responsibilities:</strong></p>
-                <ul>
-                  {job.responsibilities?.map((resp, index) => (
-                    <li key={index}>{resp}</li>
-                  )) || <li>N/A</li>}
-                </ul>
-                <p><strong>Qualifications:</strong> {job.qualifications}</p>
-                <p><strong>Source:</strong> {job.source}</p>
-              </div>
-            )}
-            <button className="see-more-btn" onClick={() => toggleExpanded(job._id)}>
-              {expandedJobs.includes(job._id) ? "See Less" : "See More"}
-            </button>
-            <div className="job-card-actions">
-              <div className="action-icon" onClick={() => handleLike(job._id)}>
-                <FaRegThumbsUp /> <span>{likes[job._id] || 0} Likes</span>
-              </div>
-              <div className="action-icon" onClick={() => alert("Open comment input below.")}> 
-                <FaRegComment /> <span>Comment</span>
-              </div>
-            </div>
-            <div className="comments-section">
-              <h4>Comments</h4>
-              {comments[job._id]?.map((comment, index) => (
-                <div key={index} className="comment">
-                  <p>{comment.text}</p>
-                  <small>{comment.date}</small>
-                </div>
-              ))}
-              <div className="comment-input-container">
-                <input
-                  type="text"
-                  placeholder="Add a comment..."
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  className="comment-input"
-                />
-                <button className="post-button" onClick={() => handleCommentSubmit(job._id)}>
-                  Post
-                </button>
-              </div>
-            </div>
           </div>
         ))
+      )}
+
+      {/* Modal */}
+      {selectedJob && (
+        <div className="eventModal">
+          <div className="eventModalContent">
+            <span className="closeButton" onClick={() => setSelectedJob(null)}>
+              &times;
+            </span>
+            <h2>{selectedJob.title}</h2>
+            <p><strong>Company:</strong> {selectedJob.company}</p>
+            <p><strong>Location:</strong> {selectedJob.location}</p>
+            <p><strong>Type:</strong> {selectedJob.type}</p>
+            <p><strong>Description:</strong> {selectedJob.jobDescription}</p>
+            <p><strong>College:</strong> {selectedJob.college || 'N/A'}</p>
+            <p><strong>Status:</strong> {selectedJob.status}</p>
+            <p><strong>Date Published:</strong> {selectedJob.createdAt ? new Date(selectedJob.createdAt).toLocaleDateString() : 'N/A'}</p>
+            <p><strong>Key Responsibilities:</strong></p>
+            <ul>
+              {selectedJob.responsibilities?.map((resp, idx) => (
+                <li key={idx}>{resp}</li>
+              )) || <li>N/A</li>}
+            </ul>
+            <p><strong>Qualifications:</strong> {selectedJob.qualifications}</p>
+            <p><strong>Source:</strong> {selectedJob.source}</p>
+          </div>
+        </div>
       )}
     </div>
   );
