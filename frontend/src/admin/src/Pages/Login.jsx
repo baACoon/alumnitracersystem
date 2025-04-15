@@ -55,7 +55,7 @@ export default function Login() {
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
     if (!forgotEmail) {
-      setForgotMessage("Please enter your email address.");
+      setForgotMessage("Please enter your username.");
       return;
     }
 
@@ -63,9 +63,9 @@ export default function Login() {
       const res = await fetch("https://alumnitracersystem.onrender.com/adminlog_reg/request-password-reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: forgotEmail }),
+        body: JSON.stringify({ username: forgotEmail }),  // <-- changed to username
       });
-
+  
       const data = await res.json();
       if (res.ok) {
         setForgotMessage("Reset link sent successfully! Check your email.");
@@ -138,21 +138,21 @@ export default function Login() {
       {showForgotModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <h3>Reset Your Password</h3>
-            <form onSubmit={handleForgotSubmit} className={styles.modalForm}>
-              <label htmlFor="forgotEmail">Email Address</label>
-              <input
-                type="email"
-                id="forgotEmail"
-                value={forgotEmail}
-                onChange={(e) => setForgotEmail(e.target.value)}
-                placeholder="Enter your registered email"
-              />
-              <button type="submit" className={styles.modalButton}>
-                Send Reset Link
-              </button>
-              {forgotMessage && <p className={styles.forgotMsg}>{forgotMessage}</p>}
-            </form>
+          <h3>Reset Your Password</h3>
+          <form onSubmit={handleForgotSubmit} className={styles.modalForm}>
+            <label htmlFor="forgotEmail">Username</label>
+            <input
+              type="text"
+              id="forgotEmail"
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+              placeholder="Enter your username"
+            />
+            <button type="submit" className={styles.modalButton}>
+              Send Reset Link
+            </button>
+            {forgotMessage && <p className={styles.forgotMsg}>{forgotMessage}</p>}
+          </form>
             <button className={styles.closeModal} onClick={handleCloseModal}>✖</button>
           </div>
         </div>
