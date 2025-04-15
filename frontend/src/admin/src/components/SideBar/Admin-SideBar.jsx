@@ -41,8 +41,11 @@ export function Sidebar({ isOpen, toggleSidebar }) {
           SURVEYS
         </NavLink>
         <NavLink to="/EventTabs" className={({ isActive }) => isActive ? styles.mainTabActive : styles.mainTab}>
+        <span className={styles.navWithIcon}>
+          <FontAwesomeIcon icon="fa-solid fa-calendar-xmark" className={styles.icon} />
           EVENTS
-        </NavLink>
+        </span>
+      </NavLink>
         <NavLink to="/Opportunities" className={({ isActive }) => isActive ? styles.mainTabActive : styles.mainTab}>
           OPPORTUNITIES
         </NavLink>
