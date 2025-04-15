@@ -153,7 +153,7 @@ export default function Login() {
                 <h3>Reset Your Password</h3>
                 <label>Username</label>
                 <input type='text' value={forgotUsername} onChange={(e) => setForgotUsername(e.target.value)} placeholder='Enter your username' />
-                <button type='submit' className={styles.modalButton}>Send Reset Link</button>
+                <button type='submit' className={styles.modalButton}>Reset</button>
               </form>
             ) : (
               <div>

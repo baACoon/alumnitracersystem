@@ -205,8 +205,9 @@ background: none;
   color: white;
   border: none;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 15px;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 .modalButton:hover {
