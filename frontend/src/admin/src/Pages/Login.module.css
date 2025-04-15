@@ -130,6 +130,30 @@ background: none;
   color: #f84c3f;
 }
 
+.formFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.forgotText {
+  font-size: 0.85rem;
+  color: #ffffff;
+}
+
+.forgotLink {
+  font-weight: bold;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+.forgotLink:hover {
+  text-decoration: underline;
+  color: #f8a5b4;
+}
+
+
 /* Responsive Styling */
 @media (max-width: 768px) {
   .adminLoginLogo img {
