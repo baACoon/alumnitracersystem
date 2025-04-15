@@ -26,13 +26,14 @@ export const PendingSurvey = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
+        let active = [];
         if (Array.isArray(response.data)) {
-          const active = response.data.filter((s) => s.status === "active");
-          setActiveSurveys(active);
+          active = response.data.filter((s) => s.status === "active");
         } else if (Array.isArray(response.data.surveys)) {
-          const active = response.data.surveys.filter((s) => s.status === "active");
-          setActiveSurveys(active);
+          active = response.data.surveys.filter((s) => s.status === "active");
         }
+
+        setActiveSurveys(active);
       } catch (error) {
         console.error("Error fetching active surveys:", error.response?.data || error.message);
         alert("Failed to load surveys.");
@@ -89,8 +90,6 @@ export const PendingSurvey = () => {
 
       const payload = { userId, answers: formattedResponses };
 
-      console.log("Submitting:", payload);
-
       await axios.post(
         `https://alumnitracersystem.onrender.com/api/newSurveys/${selectedSurvey._id}/response`,
         payload,
@@ -100,7 +99,6 @@ export const PendingSurvey = () => {
       alert("Survey submitted successfully!");
       setSelectedSurvey(null);
       setActiveSurveys((prev) => prev.filter((s) => s._id !== selectedSurvey._id));
-
       window.location.reload();
     } catch (error) {
       console.error("Submission error:", error.response || error.message);
@@ -118,31 +116,35 @@ export const PendingSurvey = () => {
       <div className={styles.surveyList}>
         {loading ? (
           <p>Loading surveys...</p>
-        ) : activeSurveys.length > 0 ? (
-          activeSurveys.map((survey) => (
-            <div
-              key={survey._id}
-              className={styles.surveyCard}
-              onClick={() => openSurveyModal(survey)}
-            >
-              <h3 className={styles.surveyTitle}>{survey.title}</h3>
-              <p className={styles.surveyDescription}>{survey.description}</p>
-            </div>
-          ))
         ) : (
-          <p>No available surveys.</p>
-        )}
+          <>
+            {!tracer2Submitted && (
+              <div
+                className={`${styles.surveyCard} ${!isTracer2Open ? styles.disabledCard : ''}`}
+                onClick={isTracer2Open ? () => navigate("/tracer2") : null}
+              >
+                <h3 className={styles.surveyTitle}>Tracer Survey 2</h3>
+                <p className={styles.surveyDescription}>
+                  {!isTracer2Open ? "Open on or after April 20, 2025" : "Your journey matters—share your story!"}
+                </p>
+              </div>
+            )}
 
-        {!tracer2Submitted && (
-          <div
-            className={`${styles.surveyCard} ${!isTracer2Open ? styles.disabledCard : ''}`}
-            onClick={isTracer2Open ? () => navigate("/tracer2") : null}
-          >
-            <h3 className={styles.surveyTitle}>Tracer Survey 2</h3>
-            <p className={styles.surveyDescription}>
-              {!isTracer2Open ? "Open on or after April 20, 2025" : "Your journey matters—share your story!"}
-            </p>
-          </div>
+            {activeSurveys.length > 0 ? (
+              activeSurveys.map((survey) => (
+                <div
+                  key={survey._id}
+                  className={styles.surveyCard}
+                  onClick={() => openSurveyModal(survey)}
+                >
+                  <h3 className={styles.surveyTitle}>{survey.title}</h3>
+                  <p className={styles.surveyDescription}>{survey.description}</p>
+                </div>
+              ))
+            ) : (
+              <p>No available surveys.</p>
+            )}
+          </>
         )}
       </div>
 
