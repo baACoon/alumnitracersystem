@@ -132,17 +132,6 @@
   transform: translateX(0); /* Show sidebar when toggled */
 }
 
-/*ICONS  */
-.navWithIcon {
-  display: flex;
-  align-items: center;
-  color: white;
-  gap: 8px; /* spacing between icon and text */
-}
-
-.icon {
-  font-size: 1rem; /* adjust as needed */
-}
 
 
 @media (min-width: 768px) {
