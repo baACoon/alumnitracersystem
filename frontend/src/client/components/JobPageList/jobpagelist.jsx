@@ -171,8 +171,6 @@ function JobListMainPage() {
             <p><strong>Type:</strong> {selectedJob.type}</p>
             <p><strong>Description:</strong> {selectedJob.jobDescription}</p>
             <p><strong>College:</strong> {selectedJob.college || 'N/A'}</p>
-            <p><strong>Status:</strong> {selectedJob.status}</p>
-            <p><strong>Date Published:</strong> {selectedJob.createdAt ? new Date(selectedJob.createdAt).toLocaleDateString() : 'N/A'}</p>
             <p><strong>Key Responsibilities:</strong></p>
             <ul>
               {selectedJob.responsibilities?.map((resp, idx) => (
@@ -181,6 +179,8 @@ function JobListMainPage() {
             </ul>
             <p><strong>Qualifications:</strong> {selectedJob.qualifications}</p>
             <p><strong>Source:</strong> {selectedJob.source}</p>
+            <p><strong>Status:</strong> {selectedJob.status}</p>
+            <p><strong>Date Published:</strong> {selectedJob.createdAt ? new Date(selectedJob.createdAt).toLocaleDateString() : 'N/A'}</p>
           </div>
         </div>
       )}
