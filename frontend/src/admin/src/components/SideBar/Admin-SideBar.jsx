@@ -2,6 +2,14 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import styles from "./Admin-SideBar.module.css";
 import './sidebarmodal.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faGauge,
+  faUsers,
+  faListCheck,
+  faCalendarDays,
+  faBriefcase
+} from '@fortawesome/free-solid-svg-icons';
 
 export function Sidebar({ isOpen, toggleSidebar }) {
   const navigate = useNavigate();
@@ -32,19 +40,38 @@ export function Sidebar({ isOpen, toggleSidebar }) {
       </div>
       <nav className={styles.navigation}>
         <NavLink to="/Dashboard" className={({ isActive }) => isActive ? styles.mainTabActive : styles.mainTab}>
-          DASHBOARD
+          <span className={styles.navWithIcon}>
+            <FontAwesomeIcon icon={faGauge} className={styles.icon} />
+            DASHBOARD
+          </span>
         </NavLink>
+
         <NavLink to="/alumni-page" className={({ isActive }) => isActive ? styles.mainTabActive : styles.mainTab}>
-          ALUMNI
+          <span className={styles.navWithIcon}>
+            <FontAwesomeIcon icon={faUsers} className={styles.icon} />
+            ALUMNI
+          </span>
         </NavLink>
+
         <NavLink to="/SurveyContent" className={({ isActive }) => isActive ? styles.mainTabActive : styles.mainTab}>
-          SURVEYS
+          <span className={styles.navWithIcon}>
+            <FontAwesomeIcon icon={faListCheck} className={styles.icon} />
+            SURVEYS
+          </span>
         </NavLink>
+
         <NavLink to="/EventTabs" className={({ isActive }) => isActive ? styles.mainTabActive : styles.mainTab}>
-          EVENTS
+          <span className={styles.navWithIcon}>
+            <FontAwesomeIcon icon={faCalendarDays} className={styles.icon} />
+            EVENTS
+          </span>
         </NavLink>
+
         <NavLink to="/Opportunities" className={({ isActive }) => isActive ? styles.mainTabActive : styles.mainTab}>
-          OPPORTUNITIES
+          <span className={styles.navWithIcon}>
+            <FontAwesomeIcon icon={faBriefcase} className={styles.icon} />
+            OPPORTUNITIES
+          </span>
         </NavLink>
       </nav>
         <div className="select">
