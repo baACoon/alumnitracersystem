@@ -15,6 +15,7 @@ import profileRoutes from './routes/profile.js';
 import alumnipage from './routes/alumnipageroutes.js';
 import dashboardRoutes from './routes/dashboardroutes.js';
 import uploadRoutes from './routes/uploadroutes.js';
+import tracerSurvey2Routes from './routes/tracerSurvey2Routes.js'
 import fs from 'fs';
 
 const PORT = process.env.PORT || 5050;
@@ -42,6 +43,8 @@ app.use("/profile", profileRoutes);
 app.use("/api/alumni", alumnipage);
 app.use("/dashboard", dashboardRoutes);
 app.use("/api", uploadRoutes);
+app.use("/api/survey2", tracerSurvey2Routes);
+
 
 // Connect to MongoDB Atlas before starting the server
 connectToDatabase()

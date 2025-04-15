@@ -56,7 +56,7 @@ export const SurveyFilters = () => {
               className={`${styles.tab} ${activeTab === 'pending' ? styles.activeTab : ''}`}
               onClick={() => setActiveTab('pending')}
             >
-              PENDING
+              DRAFT
             </button>
           </div>
 

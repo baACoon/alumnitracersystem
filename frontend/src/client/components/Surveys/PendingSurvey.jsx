@@ -10,6 +10,12 @@ export const PendingSurvey = () => {
   const [selectedSurvey, setSelectedSurvey] = useState(null);
   const [surveyQuestions, setSurveyQuestions] = useState([]);
   const [responses, setResponses] = useState({});
+  const [tracer2Submitted, setTracer2Submitted] = useState(false);
+
+  const tracer2ReleaseDate = new Date("2025-04-20T00:00:00");
+  const today = new Date();
+  const isTracer2Open = today >= tracer2ReleaseDate;
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const fetchSurveys = async () => {
@@ -35,8 +41,18 @@ export const PendingSurvey = () => {
       }
     };
 
+    const checkTracer2Status = async () => {
+      try {
+        const res = await axios.get(`https://alumnitracersystem.onrender.com/api/survey2/status?userId=${userId}`);
+        setTracer2Submitted(res.data.submitted);
+      } catch (err) {
+        console.error("Failed to check Tracer 2 status:", err);
+      }
+    };
+
     fetchSurveys();
-  }, []);
+    checkTracer2Status();
+  }, [userId]);
 
   const openSurveyModal = async (survey) => {
     try {
@@ -65,36 +81,32 @@ export const PendingSurvey = () => {
     try {
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
-  
+
       const formattedResponses = Object.entries(responses).map(([questionId, answer]) => ({
         questionId,
         response: answer,
       }));
-  
+
       const payload = { userId, answers: formattedResponses };
-  
+
       console.log("Submitting:", payload);
-  
+
       await axios.post(
         `https://alumnitracersystem.onrender.com/api/newSurveys/${selectedSurvey._id}/response`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
+
       alert("Survey submitted successfully!");
       setSelectedSurvey(null);
       setActiveSurveys((prev) => prev.filter((s) => s._id !== selectedSurvey._id));
-  
-      // Either reload the surveys or navigate
-      window.location.reload(); // or setActiveTab("completed");
-  
+
+      window.location.reload();
     } catch (error) {
       console.error("Submission error:", error.response || error.message);
       alert("Failed to submit survey.");
     }
   };
-  
-  
 
   const closeModal = () => {
     setSelectedSurvey(null);
@@ -119,6 +131,18 @@ export const PendingSurvey = () => {
           ))
         ) : (
           <p>No available surveys.</p>
+        )}
+
+        {!tracer2Submitted && (
+          <div
+            className={`${styles.surveyCard} ${!isTracer2Open ? styles.disabledCard : ''}`}
+            onClick={isTracer2Open ? () => navigate("/tracer2") : null}
+          >
+            <h3 className={styles.surveyTitle}>Tracer Survey 2</h3>
+            <p className={styles.surveyDescription}>
+              {!isTracer2Open ? "Open on or after April 20, 2025" : "Your journey matters—share your story!"}
+            </p>
+          </div>
         )}
       </div>
 

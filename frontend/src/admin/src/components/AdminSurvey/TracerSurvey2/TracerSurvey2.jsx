@@ -13,7 +13,7 @@ export const TracerSurvey2 = ({ onBack }) => {
   const handlePrevPage = () => setCurrentPage((prev) => prev - 1);
 
   const [formData, setFormData] = useState({
-    // Page 1: Educational Background
+    userId: localStorage.getItem("userId") || "",
     education: [{ degree: "", college: "", yearGraduated: "", honors: "" }],
     examinations: [{ examName: "", dateTaken: "", rating: "" }],
     reasons: {
@@ -32,12 +32,8 @@ export const TracerSurvey2 = ({ onBack }) => {
       abroadEmployment: { undergraduate: false, graduate: false },
       noChoice: { undergraduate: false, graduate: false },
     },
-
-    // Page 2: Training Programs & Motivation
     trainings: [{ title: "", duration: "", institution: "" }],
     motivation: { promotion: false, professionalDevelopment: false, others: "" },
-
-    // Page 3: Employment Data
     employmentStatus: "",
     unemploymentReasons: {
       furtherStudy: false,
@@ -52,7 +48,6 @@ export const TracerSurvey2 = ({ onBack }) => {
       occupation: "",
       lineOfBusiness: "",
       placeOfWork: "",
-      
       firstJob: "",
       stayingReasons: {
         salariesBenefits: false,
@@ -64,7 +59,6 @@ export const TracerSurvey2 = ({ onBack }) => {
         familyInfluence: false,
         other: "",
       },
-
       jobRelatedToCourse: "",
       acceptingJobReasons: {
         salariesBenefits: false,
@@ -73,15 +67,14 @@ export const TracerSurvey2 = ({ onBack }) => {
         proximity: false,
         other: "",
       },
-      changingJobReasons: { 
+      changingJobReasons: {
         specialSkill: false,
         relatedToCourse: false,
         proximity: false,
         peerInfluence: false,
         familyInfluence: false,
-        other: false,  // Change 'other' to false (boolean), not ""
+        other: false,
       },
-      
       firstJobDuration: "",
       firstJobSearch: {
         advertisement: false,
@@ -91,7 +84,7 @@ export const TracerSurvey2 = ({ onBack }) => {
         schoolPlacement: false,
         familyBusiness: false,
         jobFair: false,
-        other: "",  // For 'Other' option
+        other: "",
       },
       jobLandingTime: "",
       jobLevel: {
@@ -124,7 +117,7 @@ export const TracerSurvey2 = ({ onBack }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch("https://alumnitracersystem.onrender.com/api/survey/submit", {
+      const response = await fetch("https://alumnitracersystem.onrender.com/api/survey2/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
