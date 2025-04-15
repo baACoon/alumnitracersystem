@@ -13,6 +13,7 @@ export default function Login() {
   const [resetToken, setResetToken] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [showResetPassword, setShowResetPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -21,6 +22,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await fetch('https://alumnitracersystem.onrender.com/adminlog_reg/adminlogin', {
         method: 'POST',
@@ -38,6 +40,8 @@ export default function Login() {
       }
     } catch (error) {
       setMessage('An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,6 +53,7 @@ export default function Login() {
 
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await fetch('https://alumnitracersystem.onrender.com/adminlog_reg/forgot-password', {
         method: 'POST',
@@ -64,11 +69,14 @@ export default function Login() {
       }
     } catch (err) {
       setForgotMessage('Something went wrong.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleResetPassword = async () => {
     if (!newPassword) return;
+    setLoading(true);
     try {
       const res = await fetch('https://alumnitracersystem.onrender.com/adminlog_reg/reset-password', {
         method: 'POST',
@@ -85,6 +93,8 @@ export default function Login() {
       }
     } catch (err) {
       setForgotMessage('Something went wrong.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -98,6 +108,13 @@ export default function Login() {
 
   return (
     <div className={styles.adminBg}>
+      {loading && (
+        <div className={styles.bg}>
+          <div className={styles.spinner}></div>
+          <h3 className={styles.loadname}>Loading...</h3>
+        </div>
+      )}
+
       <div className={styles.adminLoginLogo}>
         <img src={Tuplogo} alt='TUP logo' className={styles.logo1} />
         <img src={Alumnilogo} alt='Alumni logo' className={styles.logo2} />
