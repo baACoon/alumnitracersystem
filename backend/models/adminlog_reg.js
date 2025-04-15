@@ -107,5 +107,35 @@ router.post("/adminlogin", async (req, res) => {
   }
 });
 
+router.post('/forgot-password', async (req, res) => {
+  const { username } = req.body;
+  try {
+    const admin = await Admin.findOne({ username });
+    if (!admin) return res.status(404).json({ error: 'Admin not found.' });
+
+    const resetToken = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+    res.status(200).json({ resetToken });
+  } catch (err) {
+    res.status(500).json({ error: 'Error processing password reset.' });
+  }
+});
+
+router.post('/reset-password', async (req, res) => {
+  const { token, newPassword } = req.body;
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const admin = await Admin.findById(decoded.id);
+    if (!admin) return res.status(404).json({ error: 'Admin not found.' });
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+    admin.password = hashed;
+    await admin.save();
+    res.status(200).json({ message: 'Password reset successful.' });
+  } catch (err) {
+    res.status(400).json({ error: 'Invalid or expired token.' });
+  }
+});
+
+
 
 export default router;
