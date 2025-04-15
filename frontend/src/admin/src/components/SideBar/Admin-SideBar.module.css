@@ -62,6 +62,22 @@
   border-radius: 5px;
 }
 
+.mainTab,
+.mainTabActive {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* ← This adds space between icon and text */
+  padding: 12px 16px;
+  text-decoration: none;
+  font-weight: bold;
+  color: white;
+}
+
+.sidebarIcon {
+  font-size: 1.1rem;
+}
+
+
 /* Sub-Tabs Container */
 .subTabs {
   padding-left: 20px; /* Indent sub-tabs */
