@@ -11,11 +11,11 @@ export const PendingSurvey = () => {
   const [surveyQuestions, setSurveyQuestions] = useState([]);
   const [responses, setResponses] = useState({});
   const [tracer2Submitted, setTracer2Submitted] = useState(false);
+  const [tracer2ReleaseDate, setTracer2ReleaseDate] = useState(null);
 
-  const tracer2ReleaseDate = new Date("2025-04-20T00:00:00");
   const today = new Date();
-  const isTracer2Open = today >= tracer2ReleaseDate;
   const userId = localStorage.getItem("userId");
+  const isTracer2Open = tracer2ReleaseDate && today >= new Date(tracer2ReleaseDate);
 
   useEffect(() => {
     const fetchSurveys = async () => {
@@ -51,8 +51,25 @@ export const PendingSurvey = () => {
       }
     };
 
+    const fetchTracer1Date = async () => {
+      try {
+        const res = await axios.get(`https://alumnitracersystem.onrender.com/surveys/user-surveys`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        const tracer1Survey = res.data?.data?.[0];
+        if (tracer1Survey?.createdAt) {
+          const completedDate = new Date(tracer1Survey.createdAt);
+          completedDate.setFullYear(completedDate.getFullYear() + 2);
+          setTracer2ReleaseDate(completedDate);
+        }
+      } catch (err) {
+        console.error("Failed to get Tracer 1 survey date:", err);
+      }
+    };
+
     fetchSurveys();
     checkTracer2Status();
+    fetchTracer1Date();
   }, [userId]);
 
   const openSurveyModal = async (survey) => {
@@ -122,10 +139,15 @@ export const PendingSurvey = () => {
               <div
                 className={`${styles.surveyCard} ${!isTracer2Open ? styles.disabledCard : ''}`}
                 onClick={isTracer2Open ? () => navigate("/tracer2") : null}
+                style={{ order: -1 }}
               >
-                <h3 className={styles.surveyTitle}>Tracer Survey 2</h3>
-                <p className={styles.surveyDescription}>
-                  {!isTracer2Open ? "Open on or after April 20, 2025" : "Your journey matters—share your story!"}
+                <h3 className={`${styles.surveyTitle} ${!isTracer2Open ? styles.grayText : ''}`}>
+                  Tracer Survey 2
+                </h3>
+                <p className={`${styles.surveyDescription} ${!isTracer2Open ? styles.grayText : ''}`}>
+                  {!isTracer2Open
+                    ? `Open on or after ${tracer2ReleaseDate?.toLocaleDateString()}`
+                    : "Your journey matters—share your story!"}
                 </p>
               </div>
             )}
