@@ -109,7 +109,7 @@ export default function Login() {
   return (
     <div className={styles.adminBg}>
       {loading && (
-        <div className={styles.bg}>
+        <div className={styles.bg} style={{ zIndex: 9999 }}>
           <div className={styles.spinner}></div>
           <h3 className={styles.loadname}>Loading...</h3>
         </div>
@@ -146,14 +146,14 @@ export default function Login() {
       </div>
 
       {showForgotModal && (
-        <div className={styles.modalOverlay}>
+        <div className={styles.modalOverlay} style={{ zIndex: 10000 }}>
           <div className={styles.modalContent}>
             {!showResetPassword ? (
               <form onSubmit={handleForgotSubmit} className={styles.modalForm}>
                 <h3>Reset Your Password</h3>
                 <label>Username</label>
                 <input type='text' value={forgotUsername} onChange={(e) => setForgotUsername(e.target.value)} placeholder='Enter your username' />
-                <button type='submit' className={styles.modalButton}>Reset</button>
+                <button type='submit' className={styles.modalButton}>Send Reset Link</button>
               </form>
             ) : (
               <div>
