@@ -8,7 +8,7 @@ export default function Login() {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [message, setMessage] = useState("");
   const [showForgotModal, setShowForgotModal] = useState(false);
-  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotUsername, setForgotUsername] = useState("");
   const [forgotMessage, setForgotMessage] = useState("");
   const navigate = useNavigate();
 
@@ -29,7 +29,6 @@ export default function Login() {
       });
 
       const data = await response.json();
-      console.log("Login Response:", data);
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
@@ -48,13 +47,13 @@ export default function Login() {
 
   const handleForgotClick = () => {
     setShowForgotModal(true);
-    setForgotEmail("");
+    setForgotUsername("");
     setForgotMessage("");
   };
 
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
-    if (!forgotEmail) {
+    if (!forgotUsername) {
       setForgotMessage("Please enter your username.");
       return;
     }
@@ -63,9 +62,9 @@ export default function Login() {
       const res = await fetch("https://alumnitracersystem.onrender.com/adminlog_reg/request-password-reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: forgotEmail }),  // <-- changed to username
+        body: JSON.stringify({ username: forgotUsername }),
       });
-  
+
       const data = await res.json();
       if (res.ok) {
         setForgotMessage("Reset link sent successfully! Check your email.");
@@ -138,21 +137,21 @@ export default function Login() {
       {showForgotModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-          <h3>Reset Your Password</h3>
-          <form onSubmit={handleForgotSubmit} className={styles.modalForm}>
-            <label htmlFor="forgotEmail">Username</label>
-            <input
-              type="text"
-              id="forgotEmail"
-              value={forgotEmail}
-              onChange={(e) => setForgotEmail(e.target.value)}
-              placeholder="Enter your username"
-            />
-            <button type="submit" className={styles.modalButton}>
-              Send Reset Link
-            </button>
-            {forgotMessage && <p className={styles.forgotMsg}>{forgotMessage}</p>}
-          </form>
+            <h3>Reset Your Password</h3>
+            <form onSubmit={handleForgotSubmit} className={styles.modalForm}>
+              <label htmlFor="forgotUsername">Username</label>
+              <input
+                type="text"
+                id="forgotUsername"
+                value={forgotUsername}
+                onChange={(e) => setForgotUsername(e.target.value)}
+                placeholder="Enter your username"
+              />
+              <button type="submit" className={styles.modalButton}>
+                Reset 
+              </button>
+              {forgotMessage && <p className={styles.forgotMsg}>{forgotMessage}</p>}
+            </form>
             <button className={styles.closeModal} onClick={handleCloseModal}>✖</button>
           </div>
         </div>
