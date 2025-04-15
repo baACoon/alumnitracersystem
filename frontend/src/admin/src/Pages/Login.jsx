@@ -54,7 +54,7 @@ export default function Login() {
       <div className={styles.adminLoginTitle}>
         <h3 className={styles.adminSystemTitle1}>TUPATS</h3>
         <h4 className={styles.adminSystemTitle2}>The Technological University of the Philippines Alumni Tracer System</h4>
-        <h5 className={styles.adminSystemTitle3}>ADMIN RECESS</h5>
+        <h5 className={styles.adminSystemTitle3}>ADMIN ACCESS</h5>
       </div>
 
       <div className={styles.adminLoginContainer}>
