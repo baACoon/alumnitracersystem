@@ -66,9 +66,11 @@
 
 .navWithIcon {
   font-size: 1.1rem;
-  margin-right: 10px;
 }
 
+.icon {
+  margin-right: 10px; 
+}
 
 /* Sub-Tabs Container */
 .subTabs {
