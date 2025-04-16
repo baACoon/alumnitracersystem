@@ -184,8 +184,7 @@ function JobListMainPage() {
 
             {/* Description Section */}
             <div className="job-section">
-              <h4>Job Description</h4>
-              <p>{selectedJob.jobDescription}</p>
+              <p><strong>Description:</strong> {selectedJob.jobDescription}</p>
             </div>
 
             {/* Responsibilities & Qualifications */}
