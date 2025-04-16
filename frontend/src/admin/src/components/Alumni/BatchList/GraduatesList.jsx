@@ -61,14 +61,7 @@ function Pagination({ currentPage, totalPages, setCurrentPage }) {
 
 export function GraduatesList() {
   const [selectedBatch, setSelectedBatch] = useState(null);
-  const [batches, setBatches] = useState(
-    Array.from({ length: 9 }, (_, i) => ({
-      year: i + 2016,
-      title: `Graduates ${i + 2016}`,
-      graduates: [],
-      importedDate: null
-    }))
-  );
+  const [batches, setBatches] = useState([]);
   const [newBatchYear, setNewBatchYear] = useState('');
   const [newBatchTitle, setNewBatchTitle] = useState('');
   const [isAddingBatch, setIsAddingBatch] = useState(false);
@@ -85,6 +78,20 @@ export function GraduatesList() {
    const [showDeleteModal, setShowDeleteModal] = useState(false);
    const [batchToDelete, setBatchToDelete] = useState(null);
    const [confirmText, setConfirmText] = useState('');
+
+   useEffect(() => {
+    fetchBatches();
+  }, []);
+  
+  const fetchBatches = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/api/batches`);
+      setBatches(res.data);
+    } catch (err) {
+      console.error("Failed to fetch batches:", err);
+    }
+  };
+
   // Fetch all graduates on component mount
   useEffect(() => {
     fetchGraduates();
@@ -242,29 +249,30 @@ export function GraduatesList() {
     setNewBatchTitle('');
   };
 
-  const handleSaveNewBatch = () => {
-    if (newBatchYear && newBatchTitle) {
-      const newBatchYearNum = parseInt(newBatchYear);
-      const isDuplicate = batches.some(batch => batch.year === newBatchYearNum);
+  const handleSaveNewBatch = async () => {
+  if (newBatchYear && newBatchTitle) {
+    const newBatchYearNum = parseInt(newBatchYear);
+    const isDuplicate = batches.some(batch => batch.year === newBatchYearNum);
 
-      if (!isDuplicate && !isNaN(newBatchYearNum)) {
-        const newBatch = {
+    if (!isDuplicate && !isNaN(newBatchYearNum)) {
+      try {
+        const res = await axios.post(`${API_BASE_URL}/api/batches`, {
           year: newBatchYearNum,
-          title: newBatchTitle,
-          graduates: [],
-          importedDate: null
-        };
+          title: newBatchTitle
+        });
 
-        const updatedBatches = [...batches, newBatch]
-          .sort((a, b) => b.year - a.year);
-
-        setBatches(updatedBatches);
+        console.log("Batch saved:", res.data);
+        fetchBatches(); // Refresh list from backend
         setIsAddingBatch(false);
-      } else {
-        alert('Please enter a valid, unique batch year and title');
+      } catch (err) {
+        console.error("Error saving new batch:", err);
+        alert("Failed to save new batch to database.");
       }
+    } else {
+      alert('Please enter a valid, unique batch year and title');
     }
-  };
+  }
+};
 
   const handleCancelAddBatch = () => {
     setIsAddingBatch(false);
@@ -287,16 +295,52 @@ export function GraduatesList() {
   };
 
   // Delete batch if confirmation is correct
-  const handleDeleteBatch = () => {
+  const handleDeleteBatch = async () => {
     if (confirmText === `BATCH ${batchToDelete}`) {
-      setBatches(batches.filter(batch => batch.year !== batchToDelete));
-      setShowDeleteModal(false);
-      setBatchToDelete(null);
-      setConfirmText('');
-      
-      // If we were viewing the batch that was deleted, go back to the batch list
-      if (selectedBatch === batchToDelete) {
-        setSelectedBatch(null);
+      try {
+        // Add error handling and logging
+        console.log(`Attempting to delete batch ${batchToDelete}`);
+        
+        const res = await axios.delete(`${API_BASE_URL}/api/graduates/batch/${batchToDelete}`, {
+          validateStatus: function (status) {
+            // Accept 404 as valid response (in case batch is empty)
+            return (status >= 200 && status < 300) || status === 404;
+          }
+        });
+        
+        console.log("Delete response:", res.data);
+        
+        // Update local state to reflect deletion
+        setBatches(prev => prev.filter(batch => batch.year !== batchToDelete));
+        
+        // If selected batch is deleted, reset view
+        if (selectedBatch === batchToDelete) {
+          setSelectedBatch(null);
+          setGraduates([]);
+        }
+        
+        // Show success message based on response
+        alert(res.data.message || `Batch ${batchToDelete} was successfully deleted.`);
+        
+      } catch (err) {
+        console.error("Error deleting batch:", err);
+        
+        let errorMessage = "Failed to delete batch";
+        if (err.response) {
+          errorMessage = err.response.data.error || 
+                        err.response.data.message || 
+                        `Server responded with ${err.response.status}`;
+        } else if (err.request) {
+          errorMessage = "No response from server";
+        } else {
+          errorMessage = err.message;
+        }
+        
+        alert(`Delete failed: ${errorMessage}`);
+      } finally {
+        setShowDeleteModal(false);
+        setBatchToDelete(null);
+        setConfirmText('');
       }
     }
   };
@@ -359,14 +403,12 @@ export function GraduatesList() {
                     <button 
                       className={styles.cancelButton} 
                       onClick={handleCancelAddBatch}
-                    >
-                      Cancel
+                    > Cancel
                     </button>
                     <button 
                       className={styles.saveButton} 
                       onClick={handleSaveNewBatch}
-                    >
-                      Save
+                    > Save
                     </button>
                   </div>
                 </div>
