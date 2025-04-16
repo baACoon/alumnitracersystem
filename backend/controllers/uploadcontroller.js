@@ -90,6 +90,7 @@ export const uploadCSV = async (req, res) => {
         course: row["Course"]?.trim().toUpperCase() || null,
         gradYear: batchYear,
         tupId: row["TUP-ID"]?.trim().toUpperCase() || null,
+        importedDate: new Date() // ✅ add this
       });
     })
     .on("end", async () => {
@@ -155,6 +156,9 @@ export const getGraduates = async (req, res) => {
     const graduates = await Graduate.find(filter)
       .sort({ lastName: 1, firstName: 1 })
       .select('-__v -_checksum');
+
+    const latest = await Graduate.findOne(filter).sort({ importedDate: -1 });
+
 
     res.json({
       count: graduates.length,

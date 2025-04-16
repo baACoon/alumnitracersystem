@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import { Student } from '../record.js'; // Import the existing Student schema
-import { SurveySubmission } from './surveyroutes.js'; // Import the existing SurveySubmission schema
+import { SurveySubmission } from "./surveyroutes.js"; // Import the existing SurveySubmission schema
 import jwt from 'jsonwebtoken';
 
 const router = express.Router();
@@ -128,9 +128,11 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
         },
         employmentInfo: latestSurvey.employmentInfo || {},
         surveys: surveys.map(s => ({
-          title: s.surveyTitle || 'Untitled Survey',
+          title: s.surveyType || 'Untitled Survey',
           date: s.surveyDate || s.createdAt,
-          createdAt: s.createdAt
+          createdAt: s.createdAt,
+          employmentInfo: s.employmentInfo || {},
+          personalInfo: s.personalInfo || {}
         })) || []
       }
     });

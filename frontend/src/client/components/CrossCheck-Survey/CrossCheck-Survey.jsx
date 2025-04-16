@@ -176,7 +176,7 @@ function CrossCheckSurveyForm() {
 
     setIsSubmitting(true);
     try {
-      const response = await axios.post('http://localhost:5050/surveys/submit', {
+      const response = await axios.post('http://localhost:5050/surveys/submit/Tracer1', {// Or Tracer2 if submitting that        userId,
         userId,
         personalInfo: {
           first_name: formData.first_name,

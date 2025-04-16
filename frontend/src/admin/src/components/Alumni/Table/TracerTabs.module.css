@@ -277,3 +277,219 @@
     flex-direction: column;
   }
 }
+
+/* TracerTabs.module.css */
+
+.tracerContainer {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tracerHeader {
+  margin-bottom: 20px;
+}
+
+.headerInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.surveyTitle h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 5px;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.surveyTitle h3::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #e53935;
+  margin-right: 8px;
+}
+
+.completionDate {
+  color: #777;
+  font-size: 13px;
+  margin: 0;
+  padding-left: 24px;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.actionButton:hover {
+  background-color: #f5f5f5;
+}
+
+.printIcon, .exportIcon {
+  margin-right: 6px;
+}
+
+/* Tab Navigation */
+.tabContainer {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+.tabButton {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+  color: #666;
+}
+
+.activeTab {
+  color: #d32f2f;
+  font-weight: 500;
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #d32f2f;
+}
+
+/* Tab Panels */
+.tabPanel {
+  padding: 10px 0;
+}
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 15px;
+  color: #333;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 25px;
+}
+
+.dataTable tr {
+  border-bottom: 1px solid #eee;
+}
+
+.fieldLabel {
+  width: 30%;
+  padding: 12px 15px 12px 0;
+  color: #555;
+  font-size: 14px;
+  vertical-align: top;
+}
+
+.fieldValue {
+  padding: 12px 0;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Quick Info Cards */
+.quickInfoGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.infoCard {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  flex: 1;
+  min-width: 200px;
+}
+
+.infoIcon {
+  font-size: 20px;
+  margin-right: 12px;
+  color: #555;
+}
+
+.infoContent {
+  flex: 1;
+}
+
+.infoLabel {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.infoValue {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .headerInfo {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .actionButtons {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .tabButton {
+    padding: 10px 15px;
+    font-size: 13px;
+  }
+  
+  .quickInfoGrid {
+    flex-direction: column;
+  }
+  
+  .infoCard {
+    width: 100%;
+  }
+}

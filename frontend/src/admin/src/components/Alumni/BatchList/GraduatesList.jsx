@@ -1,8 +1,63 @@
 import React, { useState, useEffect } from "react";
 import styles from './GraduatesList.module.css';
 import axios from "axios";
+import { Search, Delete } from "lucide-react"; // Import icons if available
+
 
 const API_BASE_URL = "http://localhost:5050"; // Change this to your actual backend URL
+
+function Pagination({ currentPage, totalPages, setCurrentPage }) {
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    pageNumbers.push(1);
+
+    const startPage = Math.max(2, currentPage - 1);
+    const endPage = Math.min(totalPages - 1, currentPage + 1);
+
+    if (startPage > 2) pageNumbers.push("...");
+    for (let i = startPage; i <= endPage; i++) {
+      if (i !== 1 && i !== totalPages) pageNumbers.push(i);
+    }
+    if (endPage < totalPages - 1) pageNumbers.push("...");
+    if (totalPages > 1) pageNumbers.push(totalPages);
+
+    return pageNumbers;
+  };
+
+  return (
+    <div className={styles.paginationContent}>
+      <button
+        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+        disabled={currentPage === 1}
+        className={`${styles.paginationPrev} ${currentPage === 1 ? styles.paginationDisabled : ""}`}
+      >
+        Previous
+      </button>
+
+      {getPageNumbers().map((page, index) =>
+        page === "..." ? (
+          <span key={`ellipsis-${index}`} className={styles.paginationEllipsis}>...</span>
+        ) : (
+          <button
+            key={`page-${page}`}
+            onClick={() => setCurrentPage(page)}
+            className={`${styles.paginationNumber} ${currentPage === page ? styles.paginationActive : ""}`}
+          >
+            {page}
+          </button>
+        )
+      )}
+
+      <button
+        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+        disabled={currentPage === totalPages}
+        className={`${styles.paginationNext} ${currentPage === totalPages ? styles.paginationDisabled : ""}`}
+      >
+        Next
+      </button>
+    </div>
+  );
+}
 
 export function GraduatesList() {
   const [selectedBatch, setSelectedBatch] = useState(null);
@@ -23,6 +78,7 @@ export function GraduatesList() {
   const [graduates, setGraduates] = useState([]);
   const [totalGraduates, setTotalGraduates] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
   const graduatesPerPage = 10;
 
   // Fetch all graduates on component mount
@@ -153,7 +209,20 @@ export function GraduatesList() {
   // Get graduates for current page
   const indexOfLastGraduate = currentPage * graduatesPerPage;
   const indexOfFirstGraduate = indexOfLastGraduate - graduatesPerPage;
-  const currentGraduates = filteredGraduates.slice(indexOfFirstGraduate, indexOfLastGraduate);
+  const searchedGraduates = filteredGraduates.filter((grad) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      grad.firstName?.toLowerCase().includes(query) ||
+      grad.middleName?.toLowerCase().includes(query) ||
+      grad.lastName?.toLowerCase().includes(query) ||
+      grad.tupId?.toLowerCase().includes(query) ||
+      grad.email?.toLowerCase().includes(query) ||
+      grad.course?.toLowerCase().includes(query)
+    );
+  });
+  
+  const currentGraduates = searchedGraduates.slice(indexOfFirstGraduate, indexOfLastGraduate);
+  
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -206,169 +275,208 @@ export function GraduatesList() {
   };
 
   return (
-    <div className={styles.graduatesContainer}>
-        {!selectedBatch ? (
-          <div className={styles.batchesContainer}>
-            <div className={styles.batchButtonsContainer}>
-              {batches.map((batch) => (
-                <div key={batch.year} className={styles.batchButtonWrapper}>
-                  <button
-                    className={styles.batchButton}
-                    onClick={() => handleBatchClick(batch.year)}
-                  >
-                    BATCH {batch.year} {batch.title}
-                  </button>
+    <div className={styles.container}>
+      {!selectedBatch ? (
+        <>
+          <div className={styles.batchGrid}>
+            {batches.map((batch) => (
+              <div 
+                key={batch.year} 
+                className={styles.batchCard}
+                onClick={() => handleBatchClick(batch.year)}
+              >
+                <div className={styles.batchContent}>
+                  <h3 className={styles.batchTitle}>BATCH {batch.year}</h3>
+                  <p className={styles.batchSubtitle}>{batch.title}</p>
                 </div>
-              ))}
-              {isAddingBatch ? (
-                <div className={styles.newBatchForm}>
-                  <input
-                    type="number"
-                    placeholder="Year"
-                    value={newBatchYear}
-                    onChange={(e) => setNewBatchYear(e.target.value)}
-                    className={styles.batchInput}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Title"
-                    value={newBatchTitle}
-                    onChange={(e) => setNewBatchTitle(e.target.value)}
-                    className={styles.batchInput}
-                  />
-                  <div className={styles.newBatchButtons}>
-                    <button onClick={handleSaveNewBatch} className={styles.saveButton}>Save</button>
-                    <button onClick={handleCancelAddBatch} className={styles.cancelButton}>Cancel</button>
+              </div>
+            ))}
+          </div>
+
+          <div className={styles.addBatchWrapper}>
+            {isAddingBatch ? (
+              <div className={styles.addBatchDialog}>
+                <div className={styles.addBatchForm}>
+                  <h2 className={styles.dialogTitle}>Add New Batch</h2>
+                  <div className={styles.formField}>
+                    <label htmlFor="year">Year</label>
+                    <input
+                      id="year"
+                      type="text"
+                      value={newBatchYear}
+                      onChange={(e) => setNewBatchYear(e.target.value)}
+                      placeholder="e.g. 2025"
+                      className={styles.input}
+                    />
+                  </div>
+                  <div className={styles.formField}>
+                    <label htmlFor="title">Title</label>
+                    <input
+                      id="title"
+                      type="text"
+                      value={newBatchTitle}
+                      onChange={(e) => setNewBatchTitle(e.target.value)}
+                      placeholder="e.g. Graduates 2025"
+                      className={styles.input}
+                    />
+                  </div>
+                  <div className={styles.dialogActions}>
+                    <button 
+                      className={styles.cancelButton} 
+                      onClick={handleCancelAddBatch}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      className={styles.saveButton} 
+                      onClick={handleSaveNewBatch}
+                    >
+                      Save
+                    </button>
                   </div>
                 </div>
-              ) : (
-                <button 
-                  className={styles.addBatchButton}
-                  onClick={handleAddBatch}
+              </div>
+            ) : (
+              <button className={styles.addBatchButton} onClick={handleAddBatch}>
+                <span className={styles.plusIcon}>+</span>
+                Add New Batch
+              </button>
+            )}
+          </div>
+        </>
+      ) : (
+        <div className={styles.batchDetailContainer}>
+          <div className={styles.batchHeader}>
+            <button className={styles.backButton} onClick={handleBack}>
+              <span className={styles.backIcon}>←</span>
+            </button>
+            <Delete className={styles.deleteBatchButton} onClick={() => handleDeleteBatch(selectedBatch)}>
+                Delete Batch
+            </Delete>
+            <h1 className={styles.batchHeading}>BATCH {selectedBatch} GRADUATES</h1>
+          </div>
+
+          <div className={styles.importSection}>
+            <h2 className={styles.importTitle}>Import CSV File</h2>
+            <div className={styles.importControls}>
+              <div className={styles.fileInputContainer}>
+                <label 
+                  htmlFor="file-upload" 
+                  className={styles.fileInputLabel}
                 >
-                  + 
-                </button>
-              )}
+                  Choose File
+                </label>
+                <input 
+                  id="file-upload" 
+                  type="file" 
+                  accept=".csv" 
+                  onChange={handleFileChange} 
+                  className={styles.fileInput} 
+                />
+                <span className={styles.fileName}>
+                  {uploadedFile ? uploadedFile.name : "No file chosen"}
+                </span>
+              </div>
+              <button 
+                onClick={handleUpload} 
+                disabled={!uploadedFile || isLoading} 
+                className={styles.uploadButton}
+              >
+                <span className={styles.uploadIcon}>↑</span>
+                {isLoading ? "Uploading..." : "Upload"}
+              </button>
             </div>
           </div>
-        ) : (
-          <div className={styles.batchDetails}>
-            <div className={styles.batchDetailsHeader}>
-              <button className={styles.backButton} onClick={handleBack}>
-                ← 
-              </button>
-              <button className={styles.deleteBatchButton} onClick={() => handleDeleteBatch(selectedBatch)}>
-                Delete Batch
-              </button>
+
+          <div className={styles.statsGrid}>
+            <div className={styles.statCard}>
+              <p className={styles.statLabel}>Total Graduates:</p>
+              <p className={styles.statValue}>{totalGraduates}</p>
             </div>
-
-            <h2>BATCH {selectedBatch} GRADUATES</h2>
-
-            <div className={styles.importForm}>
-              <div className={styles.formGroup}>
-                <label htmlFor="file">Import CSV File</label>
-                <div className={styles.fileInputWrapper}>
-                  <input type="file" id="file" accept=".csv" onChange={handleFileChange} className={styles.fileInput} />
-                  <label htmlFor="file" className={styles.fileInputButton}>
-                    {uploadedFile ? uploadedFile.name : "Choose File"}
-                  </label>
-                </div>
-                <button 
-                  onClick={handleUpload} 
-                  disabled={!uploadedFile || isLoading} 
-                  className={styles.uploadButton}
-                >
-                  {isLoading ? "Uploading..." : "Upload"}
-                </button>
-              </div>
-              {error && <div className={styles.errorMessage}>{error}</div>}
+            <div className={styles.statCard}>
+              <p className={styles.statLabel}>Imported Date:</p>
+              <p className={styles.statValue}>
+                {batches.find(b => b.year === selectedBatch)?.importedDate
+                  ? new Date(batches.find(b => b.year === selectedBatch).importedDate).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric"
+                    })
+                  : "Not imported yet"}              
+              </p>
             </div>
-
-            <div className={styles.graduateListStats}>
-              <div className={styles.statItem}>
-                <span className={styles.statLabel}>Total Graduates:</span>
-                <span className={styles.statValue}>{totalGraduates}</span>
-              </div>
-              <div className={styles.statItem}>
-                <span className={styles.statLabel}>Imported Date:</span>
-                <span className={styles.statValue}>
-                  {batches.find(b => b.year === selectedBatch)?.importedDate || "Not imported yet"}
+          </div>
+          <div className={styles.graduatesTableSection}>
+            <div className={styles.tableHeaderRow}>
+              <h2 className={styles.tableTitle}>Uploaded Graduates</h2>
+              <div className={styles.searchInputWrapper}>
+                <input
+                  type="text"
+                  placeholder="Search graduates..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={styles.searchBar}
+                />
+                <span className={styles.searchIcon}>
+                    <Search size={16} />
                 </span>
               </div>
             </div>
 
-            <div className={styles.uploadedList}>
-              <h3>Uploaded Graduates</h3>
-              {isLoading ? (
-                <div className={styles.loadingIndicator}>Loading graduates...</div>
-              ) : (
-                <>
-                  <table className={styles.graduatesTable}>
-                    <thead>
-                      <tr>
-                        <th>TUP-ID</th>
-                        <th>Name</th>
-                        <th>Email</th> 
-                        <th>College</th>
-                        <th>Course</th>
-                        <th>Year Graduated</th>
+            <div className={styles.tableContainer}>
+              <table className={styles.graduatesTable}>
+                <thead>
+                  <tr>
+                    <th className={styles.tableHeader}>TUP-ID</th>
+                    <th className={styles.tableHeader}>Name</th>
+                    <th className={styles.tableHeader}>Email</th>
+                    <th className={styles.tableHeader}>College</th>
+                    <th className={styles.tableHeader}>Course</th>
+                    <th className={styles.tableHeader}>Year Graduated</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan="6" className={styles.loadingCell}>Loading...</td>
+                    </tr>
+                  ) : currentGraduates.length > 0 ? (
+                    currentGraduates.map((grad, index) => (
+                      <tr key={index} className={styles.tableRow}>
+                        <td>{grad.tupId}</td>
+                        <td>
+                          {`${grad.firstName} ${
+                            grad.middleName !== "N/A" ? grad.middleName : ""
+                          } ${grad.lastName}`.trim()}
+                        </td>
+                        <td>{grad.email}</td>
+                        <td>{grad.college}</td>
+                        <td className={styles.courseCell}>{grad.course}</td>
+                        <td>{grad.gradYear}</td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {currentGraduates.length > 0 ? (
-                        currentGraduates.map((grad, index) => (
-                          <tr key={index}>
-                            <td>{grad.tupId}</td> 
-                            <td>
-                              {`${grad.firstName} ${
-                                grad.middleName !== "N/A" ? grad.middleName : ""
-                              } ${grad.lastName}`.trim()}
-                            </td>
-                            <td>{grad.email}</td>
-                            <td>{grad.college}</td>
-                            <td>{grad.course}</td>
-                            <td>{grad.gradYear}</td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="6">No graduates uploaded yet</td> {/* Updated colspan */}
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-
-                  {/* Pagination Controls */}
-                  {totalGraduates > 0 && (
-                    <div className={styles.paginationControls}>
-                      <button
-                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                        disabled={currentPage === 1}
-                        className={styles.paginationButton}
-                      >
-                        Previous
-                      </button>
-
-                      <span>
-                        Page {currentPage} of {totalPages || 1}
-                      </span>
-
-                      <button
-                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                        disabled={currentPage === totalPages || totalPages === 0}
-                        className={styles.paginationButton}
-                      >
-                        Next
-                      </button>
-                    </div>
+                    ))
+                  ) : (
+                    <tr>
+                    <td colSpan="8" style={{ textAlign: 'center', padding: '1rem', fontStyle: 'italic', color: 'gray' }}>
+                      Sorry, there is no ‘{searchQuery}’ in the graduated list.
+                    </td>
+                  </tr>
                   )}
-                </>
-              )}
+                </tbody>
+              </table>
             </div>
-          </div>
-        )}
+
+            {totalGraduates > 0 && (
+              <div className={styles.pagination}>
+                <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
+              </div>
+                )}
+              </div>
+            </div>
+      )}
     </div>
   );
 }
+
 
 export default GraduatesList;

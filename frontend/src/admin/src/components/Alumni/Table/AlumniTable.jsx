@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './AlumniTable.module.css';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import  {jwtDecode} from 'jwt-decode';
 import { TracerComparisonTab } from './TracerTabComparison';
@@ -9,10 +10,10 @@ import { Tracer1Tab } from './TracerTab1';
 import { Tracer2Tab } from './TracerTab2';
 
 
-export function AlumniTable({ batch, college, course }) {
+
+export function AlumniTable({ batch, college, course, searchQuery }) {
   const [alumniData, setAlumniData] = useState([]);
   const [selectedAlumni, setSelectedAlumni] = useState(new Set());
-  const [searchQuery, setSearchQuery] = useState('');
   const [studentDetails, setStudentDetails] = useState(null);
   const [activeTab, setActiveTab] = useState('Alumni List');
   const [modalTab, setModalTab] = useState('overview');
@@ -40,9 +41,33 @@ export function AlumniTable({ batch, college, course }) {
           headers: { 'Authorization': `Bearer ${token}` },
         });
 
-        console.log('API Response Data:', response.data); // Debug log
         if (response.data?.data) {
-          setAlumniData(response.data.data);
+          const alumniWithStatus = await Promise.all(response.data.data.map(async (alumni) => {
+            try {
+              const statusRes = await axios.get(`http://localhost:5050/surveys/user-status/${alumni.userId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+              });
+    
+              let tracerStatusText = '';
+              const status = statusRes.data.status;
+              if (status.tracer1Completed && status.tracer2Completed) {
+                tracerStatusText = 'Tracer 1 & 2';
+              } else if (status.tracer1Completed) {
+                tracerStatusText = 'Tracer 1';
+              } else if (status.currentlyTaking) {
+                tracerStatusText = 'Currently taking Tracer 1';
+              } else {
+                tracerStatusText = 'No Tracer';
+              }
+    
+              return { ...alumni, tracerStatus: tracerStatusText };
+            } catch (error) {
+              console.error(`Failed to fetch status for ${alumni.userId}`, error);
+              return { ...alumni, tracerStatus: 'Unknown' };
+            }
+          }));
+    
+          setAlumniData(alumniWithStatus);
         } else {
           alert('No alumni data available.');
           setAlumniData([]);
@@ -74,16 +99,24 @@ export function AlumniTable({ batch, college, course }) {
       const token = localStorage.getItem('token');
       console.log('Fetching details for user ID:', userId);
 
-      const response = await axios.get(`http://localhost:5050/api/alumni/user/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const [studentRes, statusRes] = await Promise.all([
+        axios.get(`http://localhost:5050/api/alumni/user/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`http://localhost:5050/surveys/user-status/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
 
-      console.log('API response data:', response.data);
+      console.log('API response data:', studentRes.data);
 
-      if (response.data?.data) {
-        setStudentDetails(response.data.data);
-        console.log('Student Details:', response.data.data);
-      } else {
+          if (studentRes.data?.data) {
+            setStudentDetails({
+              ...studentRes.data.data,
+              tracerStatus: statusRes.data.status,
+            });
+            console.log('Student Details:', studentRes.data.data);
+          } else {
         console.error('Unexpected API response structure:', response.data);
         alert('Failed to fetch student details.');
       }
@@ -100,8 +133,8 @@ export function AlumniTable({ batch, college, course }) {
   };
 
   const filteredAlumni = alumniData.filter((alumni) => {
-    const searchTerm = searchQuery.toLowerCase();
-    const searchableFields = [
+    const term = searchQuery.toLowerCase();
+    const fields = [
       alumni.personalInfo.first_name?.toLowerCase() || '',
       alumni.personalInfo.last_name?.toLowerCase() || '',
       alumni.personalInfo.gradyear?.toString().toLowerCase() || '',
@@ -110,8 +143,9 @@ export function AlumniTable({ batch, college, course }) {
       alumni.personalInfo.email_address?.toLowerCase() || ''
     ];
   
-    return searchableFields.some(field => field.includes(searchTerm));
+    return fields.some(field => field.includes(term));
   });
+  
 
   console.log('Filtered Alumni:', filteredAlumni);
 
@@ -123,36 +157,17 @@ export function AlumniTable({ batch, college, course }) {
 
   return (
     <section className={styles.tableSection}>
-      <div className={styles.tabs}>
+      {/*<div className={styles.tabs}>
         <button 
           className={`${styles.tabButton} ${activeTab === 'Alumni List' ? styles.activeTab : ''}`}
           onClick={() => setActiveTab('Alumni List')}
         >
           Alumni List
         </button>
-        <button 
-          className={`${styles.tabButton} ${activeTab === 'Tracer Comparison' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('Tracer Comparison')}
-        >
-          Tracer Comparison
-        </button>
-      </div>
+      </div>*/}
 
       {activeTab === 'Alumni List' && (
         <>
-          <div className={styles.tableControls}>
-            <div className={styles.searchContainer}>
-              <input
-                type="search"
-                id="searchInput"
-                placeholder="Search alumni..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={styles.searchInput}
-              />
-            </div>
-          </div>
-
           <div className={styles.tableWrapper} role="region" aria-label="Alumni table" tabIndex="0">
             <table className={styles.alumniTable}>
               <thead>
@@ -232,100 +247,103 @@ export function AlumniTable({ batch, college, course }) {
         </div>
       )}
       {studentDetails && (
-  <div className={styles.modalOverlay} onClick={() => setStudentDetails(null)}>
-    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-      <button className={styles.closeButton} onClick={() => setStudentDetails(null)}>
-        ×
-      </button>
-      
-      {studentDetails.personalInfo ? (
-        <>
-         <div className={`${styles.modalHeader} ${styles.gradientHeader}`}>
-            <button 
-              className={styles.closeButton} 
-              onClick={() => setStudentDetails(null)}
-            >
-              <i className="fas fa-times"></i>
-            </button>
+      <div className={styles.modalOverlay} onClick={() => setStudentDetails(null)}>
+        <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <button className={styles.closeButton} onClick={() => setStudentDetails(null)}>
+            ×
+          </button>
+          
+          {studentDetails.personalInfo ? (
+            <>
+            <div className={`${styles.modalHeader} ${styles.gradientHeader}`}>
+                <button 
+                  className={styles.closeButton} 
+                  onClick={() => setStudentDetails(null)}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
 
-            <div className={styles.headerContent}>
-              <div className={styles.profileAvatar}>
-                <i className="fas fa-user"></i>
+                <div className={styles.headerContent}>
+                  <div className={styles.profileAvatar}>
+                    <FontAwesomeIcon icon="fa-light fa-user" />
+                  </div>
+
+                  <div className={styles.profileInfo}>
+                    <h3 className={styles.profileName}>
+                      {`${studentDetails.personalInfo.first_name} ${studentDetails.personalInfo.last_name}`}
+                    </h3>
+                    
+                    <div className={styles.badgeContainer}>
+                      <span className={styles.infoBadge}>
+                        TUP-ID: {studentDetails.generatedID}
+                      </span>
+                      <span className={styles.infoBadge}>
+                        {studentDetails.personalInfo.course || 'N/A'}
+                      </span>
+                      <span className={styles.infoBadge}>
+                        Class of {studentDetails.personalInfo.gradyear || 'N/A'}
+                      </span>
+                    </div>
+
+                    <div className={styles.contactInfo}>
+                      <div className={styles.contactItem}>
+                        <i className="fas fa-envelope"></i>
+                        <span>{studentDetails.personalInfo.email_address || 'N/A'}</span>
+                      </div>
+                      <div className={styles.contactItem}>
+                        <i className="fas fa-phone"></i>
+                        <span>{studentDetails.personalInfo.contact_no || 'N/A'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className={styles.profileInfo}>
-                <h3 className={styles.profileName}>
-                  {`${studentDetails.personalInfo.first_name} ${studentDetails.personalInfo.last_name}`}
-                </h3>
-                
-                <div className={styles.badgeContainer}>
-                  <span className={styles.infoBadge}>
-                    TUP-ID: {studentDetails.generatedID}
-                  </span>
-                  <span className={styles.infoBadge}>
-                    {studentDetails.personalInfo.course || 'N/A'}
-                  </span>
-                  <span className={styles.infoBadge}>
-                    Class of {studentDetails.personalInfo.gradyear || 'N/A'}
-                  </span>
-                </div>
+              <div className={styles.profileTabs}>
+                <button 
+                  className={`${styles.profileTab} ${modalTab === 'overview' ? styles.activeProfileTab : ''}`}
+                  onClick={() => setModalTab('overview')}
+                >
+                  Overview
+                </button>
+                <button 
+                  className={`${styles.profileTab} ${modalTab === 'tracer1' ? styles.activeProfileTab : ''}`}
+                  onClick={() => setModalTab('tracer1')}
+                >
+                  Tracer 1
+                </button>
+                <button 
+                  className={`${styles.profileTab} ${modalTab === 'tracer2' ? styles.activeProfileTab : ''}`}
+                  onClick={() => setModalTab('tracer2')}
+                >
+                  Tracer 2
+                </button>
+            </div>  
 
-                <div className={styles.contactInfo}>
-                  <div className={styles.contactItem}>
-                    <i className="fas fa-envelope"></i>
-                    <span>{studentDetails.personalInfo.email_address || 'N/A'}</span>
-                  </div>
-                  <div className={styles.contactItem}>
-                    <i className="fas fa-phone"></i>
-                    <span>{studentDetails.personalInfo.contact_no || 'N/A'}</span>
-                  </div>
-                </div>
+              <div className={styles.profileContent}>
+                {modalTab === 'overview' && (
+                  <TracerComparisonTab 
+                      studentData={studentDetails} 
+                      tracerStatus={studentDetails.tracerStatus} // ✅ pass tracerStatus
+                    />                
+                    )}
+                {modalTab === 'tracer1' && <Tracer1Tab studentData={studentDetails} />}
+                {modalTab === 'tracer2' && <Tracer2Tab studentData={studentDetails} />}
               </div>
-            </div>
-          </div>
 
-          <div className={styles.profileTabs}>
-            <button 
-              className={`${styles.profileTab} ${modalTab === 'overview' ? styles.activeProfileTab : ''}`}
-              onClick={() => setModalTab('overview')}
-            >
-              Overview
-            </button>
-            <button 
-              className={`${styles.profileTab} ${modalTab === 'tracer1' ? styles.activeProfileTab : ''}`}
-              onClick={() => setModalTab('tracer1')}
-            >
-              Tracer 1
-            </button>
-            <button 
-              className={`${styles.profileTab} ${modalTab === 'tracer2' ? styles.activeProfileTab : ''}`}
-              onClick={() => setModalTab('tracer2')}
-            >
-              Tracer 2
-            </button>
-          </div>  
-
-          <div className={styles.profileContent}>
-            {modalTab === 'overview' && (
-              <TracerComparisonTab studentData={studentDetails} />
-            )}
-            {modalTab === 'tracer1' && <Tracer1Tab studentData={studentDetails} />}
-            {modalTab === 'tracer2' && <Tracer2Tab studentData={studentDetails} />}
-          </div>
-
-          {/* Moved footer outside the tab content */}
-          <div className={styles.modalFooter}>
-            <button className={styles.closeModalBtn} onClick={() => setStudentDetails(null)}>
-              Close
-            </button>
-          </div>
-        </>
-      ) : (
-        <p>Error loading student details.</p>
-      )}
-    </div>
-  </div>
-)}
+              {/* Moved footer outside the tab content */}
+              <div className={styles.modalFooter}>
+                <button className={styles.closeModalBtn} onClick={() => setStudentDetails(null)}>
+                  Close
+                </button>
+              </div>
+            </>
+          ) : (
+            <p>Error loading student details.</p>
+          )}
+        </div>
+      </div>
+    )}
     </section>
   );
 }

@@ -10,6 +10,7 @@ const GraduateListSchema = new mongoose.Schema({
   contact: { type: String }, // Keep contact field but make it optional
   tupId: { type: String }, // Add TUP-ID field
   gradYear: { type: Number, required: true },
+  importedDate:{ type: Date}
 });
 
 export default mongoose.model("Graduate", GraduateListSchema);

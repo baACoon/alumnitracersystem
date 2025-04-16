@@ -231,3 +231,475 @@
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+
+/* Main container */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Batch list grid */
+.batchGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.batchCard {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+
+.batchCard:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.batchContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.batchTitle {
+  font-weight: 500;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.batchSubtitle {
+  color: #718096;
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0;
+}
+
+/* Add Batch Button */
+.addBatchWrapper {
+  margin-top: 1rem;
+}
+
+.addBatchButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.addBatchButton:hover {
+  background-color: #c53030;
+}
+
+.plusIcon {
+  margin-right: 0.5rem;
+  font-weight: bold;
+}
+
+/* Add Batch Dialog */
+.addBatchDialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.addBatchForm {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 500px;
+}
+
+.dialogTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.formField {
+  margin-bottom: 1rem;
+}
+
+.formField label {
+  display: block;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.cancelButton {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  color: #4a5568;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.saveButton {
+  background-color: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+/* Batch Detail View */
+.batchDetailContainer {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.batchHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.backIcon {
+  font-size: 1.25rem;
+}
+
+.batchHeading {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Import Section */
+.importSection {
+  margin-bottom: 2rem;
+}
+
+.importTitle {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.importControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fileInputContainer {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.fileInputLabel {
+  background-color: #ecc94b;
+  color: #1a202c;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  display: inline-block;
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileName {
+  margin-left: 0.75rem;
+  font-size: 0.875rem;
+  color: #718096;
+}
+
+.uploadButton {
+  display: flex;
+  align-items: center;
+  background-color: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.uploadButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.uploadIcon {
+  margin-right: 0.5rem;
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.statCard {
+  background-color: #f7fafc;
+  padding: 1rem;
+  border-radius: 0.375rem;
+}
+
+.statLabel {
+  color: #718096;
+  font-size: 0.875rem;
+  margin: 0 0 0.25rem;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Graduates Table */
+.graduatesTableSection {
+  margin-top: 2rem;
+}
+
+.tableTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.tableContainer {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.graduatesTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHeader {
+  background-color: #f7fafc;
+  font-weight: 700;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+}
+.tableHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.searchInputWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+}
+
+.searchBar {
+  width: 100%;
+  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #888;
+}
+
+.tableRow {
+  border-top: 1px solid #e2e8f0;
+}
+
+.tableRow td {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+}
+
+.courseCell {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.loadingCell, .emptyCell {
+  text-align: center;
+  padding: 2rem !important;
+  color: #718096;
+}
+
+/* Pagination */
+/* Update these styles in your GraduatesList.module.css file */
+
+/* Pagination */
+.pagination {
+  margin-top: 1rem;
+  padding: 0.5rem 0;
+}
+
+.paginationContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.paginationPrev, 
+.paginationNext {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  color: #4a5568;
+}
+
+.paginationNumber {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  color: #4a5568;
+}
+
+.paginationActive {
+  background-color: #e53e3e;
+  color: white;
+  border-color: #e53e3e;
+}
+
+.paginationDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.paginationEllipsis {
+  width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+.tableHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.searchInputWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+}
+
+.searchBar {
+  width: 100%;
+  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #888;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .batchGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .importControls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .fileInputContainer {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .batchGrid {
+    grid-template-columns: 1fr;
+  }
+}
