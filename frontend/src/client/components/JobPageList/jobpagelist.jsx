@@ -165,25 +165,67 @@ function JobListMainPage() {
             <span className="closeButton" onClick={() => setSelectedJob(null)}>
               &times;
             </span>
-            <h2>{selectedJob.title}</h2>
-            <p><strong>Company:</strong> {selectedJob.company}</p>
-            <p><strong>Location:</strong> {selectedJob.location}</p>
-            <p><strong>Type:</strong> {selectedJob.type}</p>
-            <p><strong>Description:</strong> {selectedJob.jobDescription}</p>
-            <p><strong>College:</strong> {selectedJob.college || 'N/A'}</p>
-            <p><strong>Key Responsibilities:</strong></p>
-            <ul>
-              {selectedJob.responsibilities?.map((resp, idx) => (
-                <li key={idx}>{resp}</li>
-              )) || <li>N/A</li>}
-            </ul>
-            <p><strong>Qualifications:</strong> {selectedJob.qualifications}</p>
-            <p><strong>Source:</strong> {selectedJob.source}</p>
-            <p><strong>Status:</strong> {selectedJob.status}</p>
-            <p><strong>Date Published:</strong> {selectedJob.createdAt ? new Date(selectedJob.createdAt).toLocaleDateString() : 'N/A'}</p>
+
+            <p className="job-date">
+              {selectedJob.createdAt
+                ? new Date(selectedJob.createdAt).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric"
+                  })
+                : "N/A"}
+            </p>
+
+            <h2 className="job-title">{selectedJob.title}</h2>
+            <h4 className="job-subheader">
+              {selectedJob.company} &nbsp;&nbsp;
+              <span className="job-type">{selectedJob.type}</span>
+            </h4>
+
+            {/* Description Section */}
+            <div className="job-section">
+              <h4>Job Description</h4>
+              <p>{selectedJob.jobDescription}</p>
+            </div>
+
+            {/* Responsibilities & Qualifications */}
+            <div className="job-2col-container">
+              <div className="job-col">
+                <h4>Key Responsibilities</h4>
+                <ul>
+                  {selectedJob.responsibilities?.length > 0 ? (
+                    selectedJob.responsibilities.map((resp, idx) => (
+                      <li key={idx}>{resp}</li>
+                    ))
+                  ) : (
+                    <li>N/A</li>
+                  )}
+                </ul>
+              </div>
+
+              <div className="job-col">
+                <h4>Qualifications</h4>
+                <p>{selectedJob.qualifications || "N/A"}</p>
+              </div>
+            </div>
+
+            {/* Extra Info */}
+            <div className="job-section">
+              <h4>More Information</h4>
+              <a href={selectedJob.source} className="job-link" target="_blank" rel="noreferrer">
+                {selectedJob.source}
+              </a>
+            </div>
+
+            {/* Optional Details */}
+            <div className="job-section">
+              <p><strong>Status:</strong> {selectedJob.status}</p>
+              <p><strong>College:</strong> {selectedJob.college || "N/A"}</p>
+            </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }
