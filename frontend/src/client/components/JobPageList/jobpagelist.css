@@ -360,6 +360,15 @@
   color: white;
 }
 
+.job-container-box {
+  background-color: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-top: 20px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+
 
 /* Zoom bounce animation */
 @keyframes zoomBounce {
