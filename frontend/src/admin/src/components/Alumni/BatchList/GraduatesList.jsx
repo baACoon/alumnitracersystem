@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from './GraduatesList.module.css';
 import axios from "axios";
-import { Search, Delete } from "lucide-react"; // Import icons if available
+import { Search,X, AlertTriangle, Trash2 } from "lucide-react"; // Import icons if available
 
 
 const API_BASE_URL = "http://localhost:5050"; // Change this to your actual backend URL
@@ -81,6 +81,10 @@ export function GraduatesList() {
   const [searchQuery, setSearchQuery] = useState('');
   const graduatesPerPage = 10;
 
+   // New state for delete confirmation modal
+   const [showDeleteModal, setShowDeleteModal] = useState(false);
+   const [batchToDelete, setBatchToDelete] = useState(null);
+   const [confirmText, setConfirmText] = useState('');
   // Fetch all graduates on component mount
   useEffect(() => {
     fetchGraduates();
@@ -266,11 +270,34 @@ export function GraduatesList() {
     setIsAddingBatch(false);
   };
 
-  const handleDeleteBatch = (batchYear) => {
-    const confirmDelete = window.confirm(`Are you sure you want to delete Batch ${batchYear}?`);
-    if (confirmDelete) {
-      setBatches(batches.filter(batch => batch.year !== batchYear));
-      setSelectedBatch(null);
+ 
+  // Open delete modal
+  const handleOpenDeleteModal = (e, batchYear) => {
+    e.stopPropagation(); // Prevent batch selection when clicking delete icon
+    setBatchToDelete(batchYear);
+    setShowDeleteModal(true);
+    setConfirmText('');
+  };
+
+  // Close delete modal
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setBatchToDelete(null);
+    setConfirmText('');
+  };
+
+  // Delete batch if confirmation is correct
+  const handleDeleteBatch = () => {
+    if (confirmText === `BATCH ${batchToDelete}`) {
+      setBatches(batches.filter(batch => batch.year !== batchToDelete));
+      setShowDeleteModal(false);
+      setBatchToDelete(null);
+      setConfirmText('');
+      
+      // If we were viewing the batch that was deleted, go back to the batch list
+      if (selectedBatch === batchToDelete) {
+        setSelectedBatch(null);
+      }
     }
   };
 
@@ -285,6 +312,14 @@ export function GraduatesList() {
                 className={styles.batchCard}
                 onClick={() => handleBatchClick(batch.year)}
               >
+                {/* Add delete icon to each batch card */}
+                <button 
+                  className={styles.deleteBatchIcon}
+                  onClick={(e) => handleOpenDeleteModal(e, batch.year)}
+                  aria-label={`Delete batch ${batch.year}`}
+                >
+                  <Trash2 size={16} />
+                </button>
                 <div className={styles.batchContent}>
                   <h3 className={styles.batchTitle}>BATCH {batch.year}</h3>
                   <p className={styles.batchSubtitle}>{batch.title}</p>
@@ -350,9 +385,6 @@ export function GraduatesList() {
             <button className={styles.backButton} onClick={handleBack}>
               <span className={styles.backIcon}>←</span>
             </button>
-            <Delete className={styles.deleteBatchButton} onClick={() => handleDeleteBatch(selectedBatch)}>
-                Delete Batch
-            </Delete>
             <h1 className={styles.batchHeading}>BATCH {selectedBatch} GRADUATES</h1>
           </div>
 
@@ -473,6 +505,71 @@ export function GraduatesList() {
                 )}
               </div>
             </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.deleteModal}>
+            <button className={styles.closeModalButton} onClick={handleCloseDeleteModal} aria-label="Close">
+              <X size={20} />
+            </button>
+
+            <div className={styles.modalContent}>
+              <div className={styles.modalIconWrapper}>
+                <div className={styles.modalIcon}>
+                  <Trash2 size={32} className={styles.trashIcon} />
+                </div>
+                <h2 className={styles.modalTitle}>Delete BATCH {batchToDelete}</h2>
+              </div>
+
+              <div className={styles.warningBox}>
+                <div className={styles.warningContent}>
+                  <AlertTriangle size={20} className={styles.warningIcon} />
+                  <p className={styles.warningText}>Unexpected bad things will happen if you don't read this!</p>
+                </div>
+              </div>
+
+              <div className={styles.modalMessage}>
+                <p>
+                  This will permanently delete the <strong>BATCH {batchToDelete}</strong> container, all uploaded CSV
+                  files, and all graduate records associated with this batch.
+                </p>
+                <p>
+                  This action <strong>cannot</strong> be undone. Please be certain.
+                </p>
+              </div>
+
+              <div className={styles.confirmField}>
+                <label htmlFor="confirmText" className={styles.confirmLabel}>
+                  To confirm, type "BATCH {batchToDelete}" in the box below
+                </label>
+                <input
+                  id="confirmText"
+                  type="text"
+                  className={styles.confirmInput}
+                  value={confirmText}
+                  onChange={(e) => setConfirmText(e.target.value)}
+                  placeholder={`BATCH ${batchToDelete}`}
+                />
+              </div>
+
+              <div className={styles.modalActions}>
+                <button className={styles.cancelDeleteButton} onClick={handleCloseDeleteModal}>
+                  Cancel
+                </button>
+                <button
+                  className={`${styles.confirmDeleteButton} ${
+                    confirmText === `BATCH ${batchToDelete}` ? styles.confirmDeleteEnabled : styles.confirmDeleteDisabled
+                  }`}
+                  onClick={handleDeleteBatch}
+                  disabled={confirmText !== `BATCH ${batchToDelete}`}
+                >
+                  Delete this batch
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

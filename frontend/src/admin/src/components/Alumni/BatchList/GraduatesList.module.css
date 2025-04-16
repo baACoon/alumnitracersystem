@@ -540,6 +540,397 @@
   justify-content: center;
 }
 
+/* Delete Button on Batch Card */
+/* GraduatesList.module.css */
+
+.container {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Batch Grid Layout */
+.batchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.batchCard {
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.batchCard:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: #d1d5db;
+}
+
+.batchContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.batchTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem 0;
+}
+
+.batchSubtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Delete Button on Batch Card */
+.deleteBatchIcon {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  color: #9ca3af;
+  background: transparent;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.35rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.batchCard:hover .deleteBatchIcon {
+  opacity: 1;
+}
+
+.deleteBatchIcon:hover {
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Add New Batch Button */
+.addBatchWrapper {
+  margin-top: 1rem;
+}
+
+.addBatchButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 250px;
+  padding: 0.75rem;
+  background-color: #fff;
+  border: 1px dashed #d1d5db;
+  border-radius: 0.5rem;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addBatchButton:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.plusIcon {
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+  line-height: 1;
+}
+
+/* Add Batch Dialog */
+.addBatchDialog {
+  max-width: 450px;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+  padding: 1.5rem;
+}
+
+.dialogTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.formField {
+  margin-bottom: 1rem;
+}
+
+.formField label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #4b5563;
+}
+
+.input {
+  width: 100%;
+  padding: 0.625rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  border-color: #dc2626;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.25);
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.cancelButton, .saveButton {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton {
+  background-color: #fff;
+  border: 1px solid #d1d5db;
+  color: #4b5563;
+}
+
+.cancelButton:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.saveButton {
+  background-color: #dc2626;
+  border: 1px solid #dc2626;
+  color: #fff;
+}
+
+.saveButton:hover {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+}
+
+/* Batch Detail View */
+.batchDetailContainer {
+  width: 100%;
+}
+
+.batchHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  margin-right: 1rem;
+  cursor: pointer;
+  border-radius: 9999px;
+}
+
+.backButton:hover {
+  background-color: #f3f4f6;
+}
+
+.backIcon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.batchHeading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.deleteBatchButton {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #dc2626;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 1.5rem;
+}
+
+.deleteBatchButton:hover {
+  background-color: rgba(220, 38, 38, 0.1);
+}
+
+/* Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(27, 31, 35, 0.5); /* GitHub-like dim */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Box */
+.deleteModal {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 480px;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+/* Close Button */
+.closeModalButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6e7781;
+}
+
+/* Header */
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Icon wrapper */
+.modalIconWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.trashIcon {
+  color: #cf222e;
+}
+
+/* Yellow alert box */
+.warningBox {
+  background-color: #fff8c5;
+  border: 1px solid #d4a72c;
+  border-radius: 6px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.warningIcon {
+  color: #d4a72c;
+}
+
+.warningText {
+  font-weight: 500;
+  color: #8c6d1f;
+}
+
+/* Description */
+.modalMessage {
+  font-size: 0.95rem;
+  color: #57606a;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+/* Confirmation field */
+.confirmField {
+  margin-bottom: 1.5rem;
+}
+
+.confirmLabel {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.confirmInput {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+/* Actions */
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.cancelDeleteButton,
+.confirmDeleteButton {
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+}
+
+.cancelDeleteButton {
+  background-color: #f6f8fa;
+  color: #24292f;
+}
+
+.confirmDeleteButton {
+  background-color: #cf222e;
+  color: white;
+}
+
+.confirmDeleteDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.confirmDeleteEnabled {
+  opacity: 1;
+  cursor: pointer;
+}
+
+
+
+
 .searchInputWrapper {
   position: relative;
   width: 100%;
