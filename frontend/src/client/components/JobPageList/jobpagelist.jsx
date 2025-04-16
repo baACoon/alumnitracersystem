@@ -160,86 +160,71 @@ function JobListMainPage() {
 
       {/* Modal */}
       {selectedJob && (
-          <div className="eventModal">
-            <div className="eventModalContent">
+        <div className="eventModal">
+          <div className="eventModalContent">
+            <span className="closeButton" onClick={() => setSelectedJob(null)}>
+              &times;
+            </span>
 
-              {/* CLOSE BUTTON */}
-              <span className="closeButton" onClick={() => setSelectedJob(null)}>
-                &times;
-              </span>
+            <p className="job-date">
+              {selectedJob.createdAt
+                ? new Date(selectedJob.createdAt).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric"
+                  })
+                : "N/A"}
+            </p>
 
-              {/* OUTSIDE HEADER */}
-              <p className="job-date">
-                {selectedJob.createdAt
-                  ? new Date(selectedJob.createdAt).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })
-                  : "N/A"}
-              </p>
-              <h2 className="job-title">{selectedJob.title}</h2>
-              <h4 className="job-subheader">
-                {selectedJob.company} &nbsp;&nbsp;
-                <span className="job-type">{selectedJob.type}</span>
-              </h4>
+            <h2 className="job-title">{selectedJob.title}</h2>
+            <h4 className="job-subheader">
+              {selectedJob.company} &nbsp;&nbsp;
+              <span className="job-type">{selectedJob.type}</span>
+            </h4>
 
-              {/* MAIN CONTAINER BOX FOR CONTENT */}
-              <div className="job-container-box">
+            {/* Description Section */}
+            <div className="job-section">
+              <h4>Job Description</h4>
+              <p>{selectedJob.jobDescription}</p>
+            </div>
 
-                {/* Job Description */}
-                <div className="job-section">
-                  <h4>Job Description</h4>
-                  <p>{selectedJob.jobDescription || "N/A"}</p>
-                </div>
+            {/* Responsibilities & Qualifications */}
+            <div className="job-2col-container">
+              <div className="job-col">
+                <h4>Key Responsibilities</h4>
+                <ul>
+                  {selectedJob.responsibilities?.length > 0 ? (
+                    selectedJob.responsibilities.map((resp, idx) => (
+                      <li key={idx}>{resp}</li>
+                    ))
+                  ) : (
+                    <li>N/A</li>
+                  )}
+                </ul>
+              </div>
 
-                {/* Responsibilities & Qualifications */}
-                <div className="job-2col-container">
-                  <div className="job-col">
-                    <h4>Key Responsibilities</h4>
-                    <ul>
-                      {selectedJob.responsibilities?.length > 0 ? (
-                        selectedJob.responsibilities.map((resp, idx) => (
-                          <li key={idx}>{resp}</li>
-                        ))
-                      ) : (
-                        <li>N/A</li>
-                      )}
-                    </ul>
-                  </div>
-                  <div className="job-col">
-                    <h4>Qualifications</h4>
-                    <p>{selectedJob.qualifications || "N/A"}</p>
-                  </div>
-                </div>
-
-                {/* More Info Link */}
-                <div className="job-section">
-                  <h4>More Information</h4>
-                  <a
-                    href={selectedJob.source}
-                    className="job-link"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {selectedJob.source || "N/A"}
-                  </a>
-                </div>
-
-                {/* Status & College */}
-                <div className="job-section">
-                  <p>
-                    <strong>Status:</strong> {selectedJob.status}
-                  </p>
-                  <p>
-                    <strong>College:</strong> {selectedJob.college || "N/A"}
-                  </p>
-                </div>
-
+              <div className="job-col">
+                <h4>Qualifications</h4>
+                <p>{selectedJob.qualifications || "N/A"}</p>
               </div>
             </div>
+
+            {/* Extra Info */}
+            <div className="job-section">
+              <h4>More Information</h4>
+              <a href={selectedJob.source} className="job-link" target="_blank" rel="noreferrer">
+                {selectedJob.source}
+              </a>
+            </div>
+
+            {/* Optional Details */}
+            <div className="job-section">
+              <p><strong>Status:</strong> {selectedJob.status}</p>
+              <p><strong>College:</strong> {selectedJob.college || "N/A"}</p>
+            </div>
           </div>
-        )}
+        </div>
+      )}
 
     </div>
   );
