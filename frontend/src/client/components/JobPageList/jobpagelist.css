@@ -309,8 +309,8 @@
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
 }
 
-.job-section strong {
-  color: #c31d3c;
+.job-section  {
+  color: #000000;
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 10px;

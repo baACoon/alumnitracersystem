@@ -183,8 +183,8 @@ function JobListMainPage() {
               </h4>
 
               {/* Description Section */}
-              <div className="job-section">
                 <h4>Job Description</h4>
+              <div className="job-section">
                 <p>{selectedJob.jobDescription}</p>
               </div>
 
