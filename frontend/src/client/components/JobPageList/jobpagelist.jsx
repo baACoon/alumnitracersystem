@@ -185,7 +185,7 @@ function JobListMainPage() {
             {/* Job Description */}
             <h4 className="job-label">Job Description</h4>
             <div className="job-section">
-              <p>{selectedJob.jobDescription || "No description provided."}</p>
+              <p>{selectedJob.description || "No description provided."}</p>
             </div>
 
             {/* Responsibilities and Qualifications (Side-by-Side) */}
