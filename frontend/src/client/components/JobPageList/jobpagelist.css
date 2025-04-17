@@ -362,6 +362,37 @@
   color: white;
 }
 
+.job-label {
+  color: #000000;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 25px;
+  margin-bottom: 8px;
+}
+
+.job-2col-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.job-col-wrapper {
+  flex: 1;
+}
+
+.job-col {
+  background-color: #fefefe;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+}
+
+.job-col ul {
+  padding-left: 20px;
+  list-style: disc;
+}
+
+
 
 
 
