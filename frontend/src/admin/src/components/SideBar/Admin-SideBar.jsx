@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import styles from "./Admin-SideBar.module.css";
 import './sidebarmodal.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 import {
   faGauge,
   faUsers,
@@ -78,7 +79,16 @@ export function Sidebar({ isOpen, toggleSidebar }) {
           <div
             class="selected"
             data-one="logout"
-          > {userName}
+          >  <span className="userIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                    <path
+                      fill="currentColor"
+                      d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm89.6 32h-8.7c-22.2 10.3-46.9 16-72.9 16s-50.6-5.7-72.9-16h-8.7C68.4 288 0 356.4 0 441.6C0 471 25 496 55.4 496h337.2c30.4 0 55.4-25 55.4-55.4c0-85.2-68.4-153.6-134.4-153.6z"
+                    />
+                    </svg>
+            </span>
+            
+            {userName}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="1em"

@@ -111,4 +111,19 @@
   .select:has(.options input[type="radio"]#option-3:checked) .selected::before {
     content: attr(data-three);
   }
+
+
+  .userIcon {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 8px;
+    font-size: 1.1em;
+  }
+  
+  .userIcon svg {
+    fill: white; /* or #fff depending on bg */
+    height: 1em;
+    width: 1em;
+  }
+  
   
