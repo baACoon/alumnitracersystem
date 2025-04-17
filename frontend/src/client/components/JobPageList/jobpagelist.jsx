@@ -183,15 +183,15 @@ function JobListMainPage() {
               </h4>
 
               {/* Description Section */}
-                <h4>Job Description</h4>
+              <h4>Job Description</h4>
               <div className="job-section">
                 <p>{selectedJob.jobDescription}</p>
               </div>
 
               {/* Responsibilities & Qualifications */}
               <div className="job-2col-container">
+                <h4>Key Responsibilities</h4>
                 <div className="job-col">
-                  <h4>Key Responsibilities</h4>
                   <ul>
                     {selectedJob.responsibilities?.length > 0 ? (
                       selectedJob.responsibilities.map((resp, idx) => (
@@ -203,8 +203,8 @@ function JobListMainPage() {
                   </ul>
                 </div>
 
-                <div className="job-col">
                   <h4>Qualifications</h4>
+                <div className="job-col">
                   <p>{selectedJob.qualifications || "N/A"}</p>
                 </div>
               </div>
