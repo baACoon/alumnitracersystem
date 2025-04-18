@@ -16,7 +16,7 @@ export const CompletedSurvey = () => {
                 const userId = localStorage.getItem("userId");
 
                 const response = await axios.get(
-                    `https://alumnitracersystem.onrender.com/surveys/completed/${userId}`,
+                    `http://localhost:5050/surveys/completed/${userId}`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }
@@ -50,7 +50,7 @@ export const CompletedSurvey = () => {
             const token = localStorage.getItem("token");
 
             const response = await axios.get(
-                `https://alumnitracersystem.onrender.com/surveys/${survey._id}`,
+                `http://localhost:5050/surveys/${survey._id}`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }

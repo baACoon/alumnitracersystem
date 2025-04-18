@@ -9,6 +9,7 @@ import FrontPage from '../src/client/components/Frontpage/frontpage';
 import CrossCheckSurveyForm from '../src/client/components/CrossCheck-Survey/CrossCheck-Survey';
 import Home from '../src/client/components/Home/home'
 import SurveyPage from '../src/client/components/Surveys/SurveyPage';
+import TracerSurvey2 from '../src/client/components/Surveys/TracerSurvey2/TracerSurvey2';
 import Events from '../src/client/components/Events/events';
 import JobPage from '../src/client/components/JobPage/jobpage';
 import JobPageGive from '../src/client/components/JobPageGive/jobpagegive';
@@ -33,6 +34,7 @@ function App() {
             <Route path="/RegisterSurveyForm" element={<CrossCheckSurveyForm />} />
             <Route path="/Home" element={<Home />} />
             <Route path="/SurveyPage" element={<SurveyPage />} />
+            <Route path="/TracerSurvey2" element={<TracerSurvey2 />} />
             <Route path="/Events" element={<Events />} />
             <Route path="/JobPage" element={<JobPage />} />
             <Route path="/JobPageGive" element={<JobPageGive />} />

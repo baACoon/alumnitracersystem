@@ -69,7 +69,7 @@ export const PendingSurvey = () => {
 
     fetchSurveys();
     checkTracer2Status();
-   // fetchTracer1Date();
+    // fetchTracer1Date();
   }, [userId]);
 
   const openSurveyModal = async (survey) => {
@@ -147,7 +147,7 @@ export const PendingSurvey = () => {
           <>
             {!tracer2Submitted && (
               <div
-                className={`${styles.surveyCard} ${styles.disabledCard}`}//original: className={`${styles.surveyCard} ${!isTracer2Open ? styles.disabledCard : ''}`}
+                className={`${styles.surveyCard} ${styles.disabledCard}`} //original: className={`${styles.surveyCard} ${!isTracer2Open ? styles.disabledCard : ''}`}
                 onClick={() => navigate("/TracerSurvey2")} //original: onClick={isTracer2Open ? () => navigate("/TracerSurvey2") : null}
                 style={{ order: -1 }}
               >
@@ -155,7 +155,7 @@ export const PendingSurvey = () => {
                   Tracer Survey 2
                 </h3>
                 
-               {/* <p className={`${styles.surveyDescription} ${!isTracer2Open ? styles.grayText : ''}`}>
+                {/* <p className={`${styles.surveyDescription} ${!isTracer2Open ? styles.grayText : ''}`}>
 
                   {!isTracer2Open
                     ? `Open on or after ${tracer2ReleaseDate?.toLocaleDateString()}`
