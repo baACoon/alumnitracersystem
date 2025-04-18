@@ -51,6 +51,7 @@ export function AlumniFilters() {
     course: ""
   });
   const [activeFilters, setActiveFilters] = useState([]);
+  const [filterApplied, setFilterApplied] = useState(false);
 
   const queryParams = new URLSearchParams();
       if (filters.batchYear) queryParams.append('batch', filters.batchYear);
@@ -58,17 +59,30 @@ export function AlumniFilters() {
       if (filters.course) queryParams.append('course', filters.course);
 
 
-  // Handle filter changes
-  const handleFilterChange = (type, value) => {
+   // Handle filter changes and apply them immediately
+   const handleFilterChange = (type, value) => {
     setFilters(prev => {
       const newFilters = { ...prev, [type]: value };
       if (type === "college") {
         // Reset course when college changes
         newFilters.course = "";
       }
+      
+      // Update active filters immediately
+      const updatedActiveFilters = [];
+      Object.entries(newFilters).forEach(([key, val]) => {
+        if (val) {
+          updatedActiveFilters.push({ type: key, value: val });
+        }
+      });
+      setActiveFilters(updatedActiveFilters);
+      setFilterApplied(true);
+      
       return newFilters;
     });
   };
+
+
 
   // Apply filters
   const applyFilters = () => {
@@ -82,21 +96,41 @@ export function AlumniFilters() {
     setShowFilters(false);
   };
 
-  // Reset filters
-  const resetFilters = () => {
-    setFilters({
-      batchYear: "",
-      college: "",
-      course: ""
-    });
-    setActiveFilters([]);
-  };
+    // Reset filters
+    const resetFilters = () => {
+      setFilters({
+        batchYear: "",
+        college: "",
+        course: ""
+      });
+      setActiveFilters([]);
+      setFilterApplied(false);
+      setShowFilters(false);
+    };
+  
 
   // Remove specific filter
   const removeFilter = (type) => {
-    setFilters(prev => ({ ...prev, [type]: "" }));
-    setActiveFilters(prev => prev.filter(filter => filter.type !== type));
+    setFilters(prev => {
+      const newFilters = { ...prev, [type]: "" };
+      // If college is removed, also remove course
+      if (type === "college") {
+        newFilters.course = "";
+      }
+      
+      // Update active filters immediately
+      const updatedActiveFilters = [];
+      Object.entries(newFilters).forEach(([key, val]) => {
+        if (val) {
+          updatedActiveFilters.push({ type: key, value: val });
+        }
+      });
+      setActiveFilters(updatedActiveFilters);
+      
+      return newFilters;
+    });
   };
+
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -156,8 +190,7 @@ export function AlumniFilters() {
                       <ChevronDown size={16} />
                     </span>
                   </button>
-  
-                  {showFilters && (
+                 {showFilters && (
                     <div className={styles.filterPopover}>
                       <h4 className={styles.filterTitle}>Filter Alumni</h4>
                       <div className={styles.filterDivider}></div>
@@ -210,8 +243,8 @@ export function AlumniFilters() {
                         <button className={styles.resetButton} onClick={resetFilters}>
                           Reset Filters
                         </button>
-                        <button className={styles.applyButton} onClick={applyFilters}>
-                          Apply Filters
+                        <button className={styles.applyButton} onClick={() => setShowFilters(false)}>
+                          Close Filters
                         </button>
                       </div>
                     </div>
@@ -227,14 +260,19 @@ export function AlumniFilters() {
                 <div className={styles.activeFiltersBar}>
                   <div className={styles.activeFiltersList}>
                     {activeFilters.map((filter) => (
-                      <div key={filter.type} className={styles.filterBadgeOutline}>
+                      <div 
+                        key={filter.type} 
+                        className={styles.filterBadgeOutline}
+                        title={
+                          filter.type === "batchYear" ? `Year: ${filter.value}` :
+                          filter.type === "college" ? `College: ${filter.value}` :
+                          `Course: ${filter.value}`
+                        }
+                      >
                         {filter.type === "batchYear" && `Year: ${filter.value}`}
                         {filter.type === "college" && `College: ${filter.value}`}
                         {filter.type === "course" && `Course: ${filter.value}`}
-                        <button
-                          className={styles.removeFilterButton}
-                          onClick={() => removeFilter(filter.type)}
-                        >
+                        <button className={styles.removeFilterButton} onClick={() => removeFilter(filter.type)}>
                           ×
                         </button>
                       </div>
@@ -255,6 +293,7 @@ export function AlumniFilters() {
                 batch={filters.batchYear}
                 college={filters.college}
                 course={filters.course}
+                filterApplied={filterApplied}
               />
             </>
           )}

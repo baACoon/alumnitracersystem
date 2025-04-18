@@ -242,28 +242,46 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  width: 100%; /* Ensure full width */
 }
+
 
 .activeFiltersList {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   align-items: center;
+  width: 100%; /* Take full width */
 }
 
 .filterBadgeOutline {
-  display: flex;
+  display: inline-flex; /* Changed from flex */
   align-items: center;
   gap: 4px;
-  padding: 2px 8px;
+  padding: 4px 12px; /* Slightly larger padding */
   background-color: #fff;
   border: 1px solid #d1d5db;
   border-radius: 9999px;
   font-size: 0.75rem;
-  max-width: 200px;
+  white-space: nowrap; /* Keep text in single line */
+  max-width: 100%; /* Allow to take needed space */
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Show full text on hover as a tooltip */
+.filterBadgeOutline:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  z-index: 10;
 }
 
 .removeFilterButton {

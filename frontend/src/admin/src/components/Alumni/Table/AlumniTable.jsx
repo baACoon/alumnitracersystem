@@ -11,13 +11,15 @@ import { Tracer2Tab } from './TracerTab2';
 
 
 
-export function AlumniTable({ batch, college, course, searchQuery }) {
+export function AlumniTable({ batch, college, course, searchQuery, filterApplied }) {
   const [alumniData, setAlumniData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [selectedAlumni, setSelectedAlumni] = useState(new Set());
   const [studentDetails, setStudentDetails] = useState(null);
   const [activeTab, setActiveTab] = useState('Alumni List');
   const [modalTab, setModalTab] = useState('overview');
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,6 +39,8 @@ export function AlumniTable({ batch, college, course, searchQuery }) {
          if (college) queryParams.append('college', college);
          if (course) queryParams.append('course', course);
 
+        // For simplicity, we'll fetch all and filter in the frontend
+        // In a production app, you'd want to send these filters to the backend
         const response = await axios.get('http://localhost:5050/api/alumni/all', {
           headers: { 'Authorization': `Bearer ${token}` },
         });
@@ -82,10 +86,59 @@ export function AlumniTable({ batch, college, course, searchQuery }) {
     };
 
     fetchData();
-  }, [navigate, batch, college, course]);
+  }, [navigate]);
+
+  // Apply filters when data, search query, or filters change
+  useEffect(() => {
+    let result = [...alumniData];
+    
+    // Apply batch filter
+    if (batch) {
+      result = result.filter(alumni => 
+        alumni.personalInfo.gradyear?.toString() === batch.toString()
+      );
+    }
+    
+    // Apply college filter
+    if (college) {
+      result = result.filter(alumni => 
+        alumni.personalInfo.college?.toUpperCase() === college.toUpperCase()
+      );
+    }
+    
+    // Apply course filter
+    if (course) {
+      result = result.filter(alumni => 
+        alumni.personalInfo.course?.toUpperCase() === course.toUpperCase()
+      );
+    }
+    
+    // Apply search query
+    if (searchQuery) {
+      const term = searchQuery.toLowerCase();
+      result = result.filter(alumni => {
+        const fields = [
+          alumni.personalInfo.first_name?.toLowerCase() || '',
+          alumni.personalInfo.last_name?.toLowerCase() || '',
+          alumni.personalInfo.gradyear?.toString().toLowerCase() || '',
+          alumni.personalInfo.course?.toLowerCase() || '',
+          alumni.generatedID?.toLowerCase() || '',
+          alumni.personalInfo.email_address?.toLowerCase() || ''
+        ];
+        
+        return fields.some(field => field.includes(term));
+      });
+    }
+    
+    setFilteredData(result);
+    
+    // Reset selected alumni when filters change
+    setSelectedAlumni(new Set());
+  }, [alumniData, batch, college, course, searchQuery]);
+
   
   const handleSelectAll = (e) => {
-    setSelectedAlumni(e.target.checked ? new Set(alumniData.map((alumni) => alumni.userId)) : new Set());
+    setSelectedAlumni(e.target.checked ? new Set(filteredData.map((alumni) => alumni.userId)) : new Set());
   };
 
   const handleSelectAlumni = (id) => {
@@ -110,14 +163,14 @@ export function AlumniTable({ batch, college, course, searchQuery }) {
 
       console.log('API response data:', studentRes.data);
 
-          if (studentRes.data?.data) {
-            setStudentDetails({
-              ...studentRes.data.data,
-              tracerStatus: statusRes.data.status,
-            });
-            console.log('Student Details:', studentRes.data.data);
-          } else {
-        console.error('Unexpected API response structure:', response.data);
+      if (studentRes.data?.data) {
+        setStudentDetails({
+          ...studentRes.data.data,
+          tracerStatus: statusRes.data.status,
+        });
+        console.log('Student Details:', studentRes.data.data);
+      } else {
+        console.error('Unexpected API response structure:', studentRes.data);
         alert('Failed to fetch student details.');
       }
     } catch (error) {
@@ -178,8 +231,8 @@ export function AlumniTable({ batch, college, course, searchQuery }) {
                       id="selectAll"
                       onChange={handleSelectAll}
                       aria-label="Select all alumni"
-                      checked={selectedAlumni.size === alumniData.length}
-                    />
+                      checked={selectedAlumni.size > 0 && selectedAlumni.size === filteredData.length}
+                      />
                   </th>
                   <th scope="col">TUP-ID</th>
                   <th scope="col">Name</th>
@@ -191,47 +244,52 @@ export function AlumniTable({ batch, college, course, searchQuery }) {
                 </tr>
               </thead>
               <tbody>
-                {filteredAlumni.length > 0 ? (
-                  filteredAlumni.map((alumni) => (
-                    <tr key={alumni.userId} onClick={() => openStudentDetails(alumni.userId)}>
-                      <td onClick={(e) => e.stopPropagation()}>
-                        <input
-                          type="checkbox"
-                          id={`select-${alumni.userId}`}
-                          checked={selectedAlumni.has(alumni.userId)}
-                          onChange={() => handleSelectAlumni(alumni.userId)}
-                          onClick={(e) => e.stopPropagation()}
-                          aria-label={`Select ${alumni.userId}`}
-                        />
-                      </td>
-                      <td>{alumni.generatedID}</td>
-                      <td>{`${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`}</td>
-                      <td>{alumni.personalInfo.email_address}</td>
-                      <td>{alumni.personalInfo.course}</td>
-                      <td>{alumni.personalInfo.gradyear}</td>
-                      <td>
-                        <span className={`${styles.tracerStatus} ${
-                          alumni.tracerStatus?.includes('&') ? styles.tracerStatusMultiple : styles.tracerStatusSingle
-                        }`}>
-                          {alumni.tracerStatus || 'No tracer'}
-                        </span>
-                      </td>
-                      <td>
-                        <button className={styles.actionButton} onClick={(e) => {
-                          e.stopPropagation();
-                          openStudentDetails(alumni.userId);
-                        }}>
-                          ›
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="8" style={{ textAlign: 'center', padding: '1rem', fontStyle: 'italic', color: 'gray' }}>
-                      Sorry, there is no ‘{searchQuery}’ in the alumni list.
+              {filteredData.length > 0 ? (
+                filteredData.map((alumni) => (
+                  <tr key={alumni.userId} onClick={() => openStudentDetails(alumni.userId)}>
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        id={`select-${alumni.userId}`}
+                        checked={selectedAlumni.has(alumni.userId)}
+                        onChange={() => handleSelectAlumni(alumni.userId)}
+                        onClick={(e) => e.stopPropagation()}
+                        aria-label={`Select ${alumni.userId}`}
+                      />
+                    </td>
+                    <td>{alumni.generatedID}</td>
+                    <td>{`${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`}</td>
+                    <td>{alumni.personalInfo.email_address}</td>
+                    <td>{alumni.personalInfo.course}</td>
+                    <td>{alumni.personalInfo.gradyear}</td>
+                    <td>
+                      <span className={`${styles.tracerStatus} ${
+                        alumni.tracerStatus?.includes('&') ? styles.tracerStatusMultiple : styles.tracerStatusSingle
+                      }`}>
+                        {alumni.tracerStatus || 'No tracer'}
+                      </span>
+                    </td>
+                    <td>
+                      <button className={styles.actionButton} onClick={(e) => {
+                        e.stopPropagation();
+                        openStudentDetails(alumni.userId);
+                      }}>
+                        ›
+                      </button>
                     </td>
                   </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: 'center', padding: '1rem', fontStyle: 'italic', color: 'gray' }}>
+                    {searchQuery 
+                      ? `Sorry, there is no "${searchQuery}" in the alumni list.`
+                      : batch || college || course 
+                        ? 'No alumni match all the selected filters.'
+                        : 'No alumni records found.'
+                    }
+                  </td>
+                </tr>
                 )}
               </tbody>
 
@@ -241,11 +299,12 @@ export function AlumniTable({ batch, college, course, searchQuery }) {
       )}
 
 
-      {activeTab === 'Tracer Comparison' && (
+      {/* {activeTab === 'Tracer Comparison' && (
         <div className={styles.emptyState}>
-          {/* Left blank as requested */}
+          Left blank as requested 
         </div>
-      )}
+      )}*/}
+      
       {studentDetails && (
       <div className={styles.modalOverlay} onClick={() => setStudentDetails(null)}>
         <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
