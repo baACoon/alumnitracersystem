@@ -7,6 +7,7 @@ export const CompletedSurvey = () => {
     const [completedSurveys, setCompletedSurveys] = useState([]);
     const [selectedSurvey, setSelectedSurvey] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [loading, setLoading] = useState(true); // ✅ loading state
 
     useEffect(() => {
         const fetchCompletedSurveys = async () => {
@@ -25,6 +26,8 @@ export const CompletedSurvey = () => {
             } catch (error) {
                 console.error("Error fetching completed surveys:", error);
                 setCompletedSurveys([]);
+            } finally {
+                setLoading(false); // ✅ stop loading
             }
         };
 
@@ -39,7 +42,7 @@ export const CompletedSurvey = () => {
 
     const handleSurveyClick = async (survey) => {
         if (!survey || !survey._id) {
-            alert("This survey cannot be viewed because it has -ID.");
+            alert("This survey cannot be viewed because it has no ID.");
             return;
         }
 
@@ -90,7 +93,19 @@ export const CompletedSurvey = () => {
             />
 
             <div className={styles.surveyList}>
-                {filteredSurveys.length > 0 ? (
+                {loading ? (
+                    <div className="loadingOverlay">
+                        <div className="loaderContainer">
+                            <svg viewBox="0 0 240 240" height="80" width="80" className="loader">
+                                <circle strokeLinecap="round" strokeDashoffset="-330" strokeDasharray="0 660" strokeWidth="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className="pl__ring pl__ringA"></circle>
+                                <circle strokeLinecap="round" strokeDashoffset="-110" strokeDasharray="0 220" strokeWidth="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className="pl__ring pl__ringB"></circle>
+                                <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className="pl__ring pl__ringC"></circle>
+                                <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className="pl__ring pl__ringD"></circle>
+                            </svg>
+                            <p>Loading...</p>
+                        </div>
+                    </div>
+                ) : filteredSurveys.length > 0 ? (
                     filteredSurveys.map((survey) => (
                         <div
                             key={survey._id}

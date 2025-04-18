@@ -10,6 +10,12 @@ export const PendingSurvey = () => {
   const [selectedSurvey, setSelectedSurvey] = useState(null);
   const [surveyQuestions, setSurveyQuestions] = useState([]);
   const [responses, setResponses] = useState({});
+  const [tracer2Submitted, setTracer2Submitted] = useState(false);
+  const [tracer2ReleaseDate, setTracer2ReleaseDate] = useState(null);
+
+  const today = new Date();
+  const userId = localStorage.getItem("userId");
+  const isTracer2Open = tracer2ReleaseDate && today >= new Date(tracer2ReleaseDate);
 
   useEffect(() => {
     const fetchSurveys = async () => {
@@ -20,13 +26,14 @@ export const PendingSurvey = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
+        let active = [];
         if (Array.isArray(response.data)) {
-          const active = response.data.filter((s) => s.status === "active");
-          setActiveSurveys(active);
+          active = response.data.filter((s) => s.status === "active");
         } else if (Array.isArray(response.data.surveys)) {
-          const active = response.data.surveys.filter((s) => s.status === "active");
-          setActiveSurveys(active);
+          active = response.data.surveys.filter((s) => s.status === "active");
         }
+
+        setActiveSurveys(active);
       } catch (error) {
         console.error("Error fetching active surveys:", error.response?.data || error.message);
         alert("Failed to load surveys.");
@@ -35,8 +42,35 @@ export const PendingSurvey = () => {
       }
     };
 
+    const checkTracer2Status = async () => {
+      try {
+        const res = await axios.get(`https://alumnitracersystem.onrender.com/api/survey2/status?userId=${userId}`);
+        setTracer2Submitted(res.data.submitted);
+      } catch (err) {
+        console.error("Failed to check Tracer 2 status:", err);
+      }
+    };
+
+    const fetchTracer1Date = async () => {
+      try {
+        const res = await axios.get(`https://alumnitracersystem.onrender.com/surveys/user-surveys`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        const tracer1Survey = res.data?.data?.[0];
+        if (tracer1Survey?.createdAt) {
+          const completedDate = new Date(tracer1Survey.createdAt);
+          completedDate.setFullYear(completedDate.getFullYear() + 2);
+          setTracer2ReleaseDate(completedDate);
+        }
+      } catch (err) {
+        console.error("Failed to get Tracer 1 survey date:", err);
+      }
+    };
+
     fetchSurveys();
-  }, []);
+    checkTracer2Status();
+    fetchTracer1Date();
+  }, [userId]);
 
   const openSurveyModal = async (survey) => {
     try {
@@ -65,36 +99,29 @@ export const PendingSurvey = () => {
     try {
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
-  
+
       const formattedResponses = Object.entries(responses).map(([questionId, answer]) => ({
         questionId,
         response: answer,
       }));
-  
+
       const payload = { userId, answers: formattedResponses };
-  
-      console.log("Submitting:", payload);
-  
+
       await axios.post(
         `https://alumnitracersystem.onrender.com/api/newSurveys/${selectedSurvey._id}/response`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
+
       alert("Survey submitted successfully!");
       setSelectedSurvey(null);
       setActiveSurveys((prev) => prev.filter((s) => s._id !== selectedSurvey._id));
-  
-      // Either reload the surveys or navigate
-      window.location.reload(); // or setActiveTab("completed");
-  
+      window.location.reload();
     } catch (error) {
       console.error("Submission error:", error.response || error.message);
       alert("Failed to submit survey.");
     }
   };
-  
-  
 
   const closeModal = () => {
     setSelectedSurvey(null);
@@ -104,21 +131,50 @@ export const PendingSurvey = () => {
     <div className={styles.surveyContainer}>
       <h2>AVAILABLE SURVEYS</h2>
       <div className={styles.surveyList}>
-        {loading ? (
-          <p>Loading surveys...</p>
-        ) : activeSurveys.length > 0 ? (
-          activeSurveys.map((survey) => (
-            <div
-              key={survey._id}
-              className={styles.surveyCard}
-              onClick={() => openSurveyModal(survey)}
-            >
-              <h3 className={styles.surveyTitle}>{survey.title}</h3>
-              <p className={styles.surveyDescription}>{survey.description}</p>
+      {loading ? (
+          <div className="loadingOverlay">
+            <div className="loaderContainer">
+              <svg viewBox="0 0 240 240" height="80" width="80" className="loader">
+                <circle strokeLinecap="round" strokeDashoffset="-330" strokeDasharray="0 660" strokeWidth="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className="pl__ring pl__ringA"></circle>
+                <circle strokeLinecap="round" strokeDashoffset="-110" strokeDasharray="0 220" strokeWidth="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className="pl__ring pl__ringB"></circle>
+                <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className="pl__ring pl__ringC"></circle>
+                <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className="pl__ring pl__ringD"></circle>
+              </svg>
+              <p>Loading...</p>
             </div>
-          ))
+          </div>
         ) : (
-          <p>No available surveys.</p>
+          <>
+            {!tracer2Submitted && (
+              <div
+                className={`${styles.surveyCard} ${!isTracer2Open ? styles.disabledCard : ''}`}
+                onClick={isTracer2Open ? () => navigate("/tracer2") : null}
+                style={{ order: -1 }}
+              >
+                <h3 className={`${styles.surveyTitle} ${!isTracer2Open ? styles.grayText : ''}`}>Tracer Survey 2</h3>
+                <p className={`${styles.surveyDescription} ${!isTracer2Open ? styles.grayText : ''}`}>
+                  {!isTracer2Open
+                    ? `Open on or after ${tracer2ReleaseDate?.toLocaleDateString()}`
+                    : "Your journey matters—share your story!"}
+                </p>
+              </div>
+            )}
+
+            {activeSurveys.length > 0 ? (
+              activeSurveys.map((survey) => (
+                <div
+                  key={survey._id}
+                  className={styles.surveyCard}
+                  onClick={() => openSurveyModal(survey)}
+                >
+                  <h3 className={styles.surveyTitle}>{survey.title}</h3>
+                  <p className={styles.surveyDescription}>{survey.description}</p>
+                </div>
+              ))
+            ) : (
+              <p>No available surveys.</p>
+            )}
+          </>
         )}
       </div>
 
