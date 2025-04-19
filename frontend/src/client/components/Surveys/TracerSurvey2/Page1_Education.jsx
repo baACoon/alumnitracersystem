@@ -65,23 +65,23 @@ const collegeCourses = {
 const Page1_Education = ({ data, updateForm }) => {
   const [availableCourses, setAvailableCourses] = useState([]);
 
-   const handleEducationChange = (index, field, value) => {
+   // In your handleEducationChange function:
+  const handleEducationChange = (index, field, value) => {
     const updatedEducation = [...data.education];
     
-    // If college is changing, reset course and update available courses
     if (field === "college") {
-      updatedEducation[index].course = "";
-      setAvailableCourses(collegeCourses[value] || []);
+      updatedEducation[index].course = [""]; // Reset to empty array
+      setAvailableCourses(collegeCourses[value[0]] || []); // Access first array element
     }
     
-    updatedEducation[index][field] = value;
+    updatedEducation[index][field] = Array.isArray(value) ? value : [value];
     updateForm("education", updatedEducation);
   };
 
   const addEducationRow = () => {
     updateForm("education", [
       ...data.education, 
-      { type: "", course: "", college: "", yearGraduated: "", institution: "" }
+      { degreeType: "", course: "", college: "", yearGraduated: "", institution: "" }
     ]);
   };
 
@@ -139,8 +139,8 @@ const Page1_Education = ({ data, updateForm }) => {
                 <tr key={index}>
                   <td>
                     <select 
-                      value={entry.type} 
-                      onChange={(e) => handleEducationChange(index, "type", e.target.value)}
+                      value={entry.degreeType[0] || ""}
+                      onChange={(e) => handleEducationChange(index, "degreeType", [e.target.value])}
                       className={styles.selectInput}
                     >
                       <option value="">Select Type</option>
@@ -151,8 +151,12 @@ const Page1_Education = ({ data, updateForm }) => {
                   </td>
                   <td>
                     <select
-                      value={entry.college}
-                      onChange={(e) => handleEducationChange(index, "college", e.target.value)}
+                      value={entry.college[0] || ""}
+                      onChange={(e) => {
+                        const college = e.target.value;
+                        handleEducationChange(index, "college", [college]);
+                        setAvailableCourses(collegeCourses[college] || []);
+                      }}
                       className={styles.selectInput}
                     >
                       <option value="">Select College</option>
@@ -165,13 +169,13 @@ const Page1_Education = ({ data, updateForm }) => {
                   </td>
                   <td>
                     <select
-                      value={entry.course}
-                      onChange={(e) => handleEducationChange(index, "course", e.target.value)}
+                      value={entry.course[0] || ""}
+                      onChange={(e) => handleEducationChange(index, "course", [e.target.value])}
                       className={styles.selectInput}
-                      disabled={!entry.college}
+                      disabled={!entry.college || entry.college.length === 0}
                     >
                       <option value="">Select Course</option>
-                      {collegeCourses[entry.college]?.map((course) => (
+                      {collegeCourses[entry.college[0]]?.map((course) => (
                         <option key={course} value={course}>
                           {course}
                         </option>

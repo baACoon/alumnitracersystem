@@ -16,24 +16,19 @@ const TracerSurvey2Schema = new mongoose.Schema(
       type: Date, 
       default: Date.now 
     },
-    education: {
-      type: [{
-        type: [String],
-        college: [String],
-        course: [String],
-        yearGraduated: String,
-        institution: String
-      }],
-      required: true
-    },
-    examinations: {
-      type: [{
-        examName: String,
-        dateTaken: String,
-        rating: String
-      }],
-      required: true
-    },
+    education: [{
+      degreeType: [String],   // ✅ renamed from "type" to avoid conflict
+      college: [String],
+      course: [String],
+      yearGraduated: [String],
+      institution: [String]
+    }],
+    
+    examinations: [{
+      examName: [String],
+      dateTaken: [String],
+      rating: [String]
+    }],
     reasons: {
       highGradesRelated: { undergraduate: Boolean, graduate: Boolean },
       goodHighSchoolGrades: { undergraduate: Boolean, graduate: Boolean },
@@ -50,31 +45,29 @@ const TracerSurvey2Schema = new mongoose.Schema(
       abroadEmployment: { undergraduate: Boolean, graduate: Boolean },
       noChoice: { undergraduate: Boolean, graduate: Boolean }
     },
-    trainings: {
-      type: [{
-        title: String,
-        duration: String,
-        institution: String
-      }],
-      required: true
-    },
+    trainings: [{
+      title: [String],
+      duration: [String],
+      institution: [String]
+    }],
     motivation: {
       promotion: Boolean,
       professionalDevelopment: Boolean,
-      others: String
+      others: Boolean
     },
     employmentStatus: {
       type: String,
       enum: ["employed", "unemployed", "self-employed", "further-study"],
       required: true
     },
+    // Change these fields in your schema:
     unemploymentReasons: {
       furtherStudy: Boolean,
       noJobOpportunity: Boolean,
       familyConcern: Boolean,
       didNotLook: Boolean,
       healthRelated: Boolean,
-      other: String,
+      other: Boolean,
       lackExperience: Boolean
     },
     jobDetails: {
@@ -90,7 +83,7 @@ const TracerSurvey2Schema = new mongoose.Schema(
         proximity: Boolean,
         peerInfluence: Boolean,
         familyInfluence: Boolean,
-        other: String
+        other: Boolean
       },
       jobRelatedToCourse: String,
       acceptingJobReasons: {
@@ -98,7 +91,7 @@ const TracerSurvey2Schema = new mongoose.Schema(
         careerChallenge: Boolean,
         specialSkill: Boolean,
         proximity: Boolean,
-        other: String
+        other: Boolean
       },
       changingJobReasons: {
         specialSkill: Boolean,
@@ -117,27 +110,21 @@ const TracerSurvey2Schema = new mongoose.Schema(
         schoolPlacement: Boolean,
         familyBusiness: Boolean,
         jobFair: Boolean,
-        other: String
+        other: Boolean
       },
       jobLandingTime: String,
-      jobLevel: {
-        rankClerical: { firstJob: Boolean, currentJob: Boolean },
-        professionalSupervisory: { firstJob: Boolean, currentJob: Boolean },
-        managerialExecutive: { firstJob: Boolean, currentJob: Boolean },
-        selfEmployed: { firstJob: Boolean, currentJob: Boolean }
-      },
-      // salaryRange: String,
-      // curriculumRelevant: String,
-      // competencies: {
-      //   communication: Boolean,
-      //   humanRelations: Boolean,
-      //   entrepreneurial: Boolean,
-      //   ITSkills: Boolean,
-      //   problemSolving: Boolean,
-      //   criticalThinking: Boolean,
-      //   other: String
-      // },
-      // curriculumSuggestions: String
+      jobLevel: String,
+      salaryRange: String,
+      curriculumRelevant: String,
+      competencies: {
+        communication: Boolean,
+        humanRelations: Boolean,
+        entrepreneurial: Boolean,
+        ITSkills: Boolean,
+        problemSolving: Boolean,
+        criticalThinking: Boolean,
+        other: Boolean,
+      }
     }
   },
   { 

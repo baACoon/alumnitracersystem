@@ -7,53 +7,75 @@ const router = express.Router();
 // POST - Submit Tracer Survey 2
 router.post("/submit", async (req, res) => {
   try {
+    // Add payload logging
+    console.log("Raw incoming payload:", req.body);
+    
     const { userId, ...surveyData } = req.body;
 
-    // Validate userId
+    // Enhanced validation
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ error: "Invalid user ID format" });
+      return res.status(400).json({ 
+        error: "Invalid user ID",
+        details: `Received: ${userId}` 
+      });
+    }
+    
+
+    // Check required array fields
+    if (!surveyData.education?.length || !surveyData.trainings?.length) {
+      return res.status(400).json({
+        error: "Missing required fields",
+        details: "Education and trainings arrays cannot be empty"
+      });
     }
 
-    // Create new survey with additional metadata
     const newSurvey = new TracerSurvey2({
       userId,
       ...surveyData,
-      surveyType: "Tracer2", // Automatically set
-      date: new Date()       // Explicit date capture
+      surveyType: "Tracer2",
+      date: new Date()
     });
 
-    // Validate before saving
+    // Explicit validation
     const validationError = newSurvey.validateSync();
     if (validationError) {
-      const errors = Object.values(validationError.errors).map(e => e.message);
-      return res.status(400).json({ 
+      const errors = {};
+      Object.keys(validationError.errors).forEach(key => {
+        errors[key] = validationError.errors[key].message;
+      });
+      return res.status(400).json({
         error: "Validation failed",
-        details: errors 
+        details: errors
       });
     }
 
-    await newSurvey.save();
+    const savedSurvey = await newSurvey.save();
     
-    res.status(201).json({ 
+    res.status(201).json({
       success: true,
-      message: "Tracer Survey 2 submitted successfully",
-      surveyId: newSurvey._id
+      message: "Survey submitted successfully",
+      surveyId: savedSurvey._id,
+      timestamp: savedSurvey.createdAt
     });
 
   } catch (error) {
-    console.error("Error submitting Tracer Survey 2:", error);
+    console.error("Full error:", error);
     
     if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(e => e.message);
-      return res.status(400).json({ 
+      const errors = {};
+      Object.keys(error.errors).forEach(key => {
+        errors[key] = error.errors[key].message;
+      });
+      return res.status(400).json({
         error: "Validation failed",
-        details: errors 
+        details: errors
       });
     }
     
-    res.status(500).json({ 
-      error: "Failed to submit Tracer Survey 2",
-      details: error.message 
+    res.status(500).json({
+      error: "Server error",
+      details: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 });

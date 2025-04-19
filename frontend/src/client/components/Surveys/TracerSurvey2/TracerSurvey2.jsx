@@ -15,8 +15,8 @@ function TracerSurvey2({ onBack }) {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    education: [{ type: [], college: [], course: [], yearGraduated: "", institution: "" }],
-    examinations: [{ examName: "", dateTaken: "", rating: "" }],
+    education: [{ degreeType: [], college: [], course: [], yearGraduated: [], institution: [] }],
+    examinations: [{ examName: [], dateTaken: [], rating: [] }],
     reasons: {
       highGradesRelated: { undergraduate: false, graduate: false },
       goodHighSchoolGrades: { undergraduate: false, graduate: false },
@@ -33,8 +33,8 @@ function TracerSurvey2({ onBack }) {
       abroadEmployment: { undergraduate: false, graduate: false },
       noChoice: { undergraduate: false, graduate: false },
     },
-    trainings: [{ title: "", duration: "", institution: "" }],
-    motivation: { promotion: false, professionalDevelopment: false, others: "" },
+    trainings: [{ title: [], duration: [], institution: [] }],
+    motivation: { promotion: false, professionalDevelopment: false, others: false },
     employmentStatus: "",
     unemploymentReasons: {
       furtherStudy: false,
@@ -42,7 +42,6 @@ function TracerSurvey2({ onBack }) {
       familyConcern: false,
       didNotLook: false,
       healthRelated: false,
-      other: "",
       lackExperience: false,
     },
     jobDetails: {
@@ -50,82 +49,29 @@ function TracerSurvey2({ onBack }) {
       lineOfBusiness: "",
       placeOfWork: "",
       firstJob: "",
-      stayingReasons: {
-        salariesBenefits: false,
-        careerChallenge: false,
-        specialSkill: false,
-        relatedToCourse: false,
-        proximity: false,
-        peerInfluence: false,
-        familyInfluence: false,
-        other: "",
-      },
+      stayingReasons: {},
       jobRelatedToCourse: "",
-      acceptingJobReasons: {
-        salariesBenefits: false,
-        careerChallenge: false,
-        specialSkill: false,
-        proximity: false,
-        other: "",
-      },
-      changingJobReasons: { 
-        specialSkill: false,
-        relatedToCourse: false,
-        proximity: false,
-        peerInfluence: false,
-        familyInfluence: false,
-        other: false,
-      },
+      acceptingJobReasons: {},
+      changingJobReasons: {},
       firstJobDuration: "",
-      firstJobSearch: {
-        advertisement: false,
-        walkIn: false,
-        recommended: false,
-        friends: false,
-        schoolPlacement: false,
-        familyBusiness: false,
-        jobFair: false,
-        other: "",
-      },
+      firstJobSearch: {},
       jobLandingTime: "",
-      jobLevel: {
-        rankClerical: { firstJob: false, currentJob: false },
-        professionalSupervisory: { firstJob: false, currentJob: false },
-        managerialExecutive: { firstJob: false, currentJob: false },
-        selfEmployed: { firstJob: false, currentJob: false },
-      },
-      // salaryRange: "",
-      // curriculumRelevant: "",
-      // competencies: {
-      //   communication: false,
-      //   humanRelations: false,
-      //   entrepreneurial: false,
-      //   ITSkills: false,
-      //   problemSolving: false,
-      //   criticalThinking: false,
-      //   other: "",
-      // },
-      // curriculumSuggestions: "",
+      jobLevel: "",
+      salaryRange: "",
+      curriculumRelevant: "",
+      competencies: {},
     },
+
   });
+  console.log(formData)
 
   const handleBack = () => {
-    if (Object.keys(formData).length > 0 && 
-        !window.confirm("You have unsaved changes. Leave anyway?")) {
-      return;
-    }
-    if (onBack) {
-      onBack();
-    } else {
-      navigate("/SurveyPage");
-    }
+    if (Object.keys(formData).length > 0 && !window.confirm("You have unsaved changes. Leave anyway?")) return;
+    onBack ? onBack() : navigate("/SurveyPage");
   };
 
   const handleUpdateForm = useCallback((section, data) => {
-    setFormData(prev => ({
-      ...prev,
-      [section]: data,
-    }));
+    setFormData(prev => ({ ...prev, [section]: data }));
   }, []);
 
   const validateForm = useCallback(() => {
@@ -134,19 +80,13 @@ function TracerSurvey2({ onBack }) {
         formData.education[0].college.length > 0 &&
         formData.education[0].course.length > 0 &&
         formData.education[0].yearGraduated &&
-        formData.examinations.every(exam => 
-          exam.examName && exam.dateTaken && exam.rating
-        )
+        formData.examinations.every(exam => exam.examName && exam.dateTaken && exam.rating)
       );
     }
     if (currentPage === 2) {
       return (
-        formData.trainings.every(training => 
-          training.title && training.duration && training.institution
-        ) &&
-        (formData.motivation.promotion || 
-         formData.motivation.professionalDevelopment || 
-         formData.motivation.others)
+        formData.trainings.every(training => training.title && training.duration && training.institution) &&
+        (formData.motivation.promotion || formData.motivation.professionalDevelopment || formData.motivation.others)
       );
     }
     if (currentPage === 3) {
@@ -162,10 +102,7 @@ function TracerSurvey2({ onBack }) {
 
   const handleNextPage = () => {
     if (!validateForm()) {
-      setSubmitStatus({ 
-        type: "error", 
-        message: "Please fill in all required fields" 
-      });
+      setSubmitStatus({ type: "error", message: "Please fill in all required fields" });
       return;
     }
     setSubmitStatus({ type: "", message: "" });
@@ -179,86 +116,89 @@ function TracerSurvey2({ onBack }) {
 
   const handleSubmit = async (e) => {
     e?.preventDefault();
-    
-    if (!validateForm()) {
-      setSubmitStatus({ 
-        type: "error", 
-        message: "Please fill in all required fields" 
-      });
+  
+    if (!formData.education.length || !formData.trainings.length) {
+      setSubmitStatus({ type: "error", message: "Education and training fields are required." });
       return;
     }
-
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      setSubmitStatus({ type: "error", message: "User not logged in" });
-      return;
-    }
-
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setSubmitStatus({ 
-        type: "error", 
-        message: "No token provided. Please log in again." 
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
+  
+    const payload = {
+      userId: localStorage.getItem("userId"),
+      education: formData.education.map(edu => ({
+        degreeType: Array.isArray(edu.degreeType) ? edu.degreeType : [edu.degreeType || ""],
+        college: Array.isArray(edu.college) ? edu.college : [edu.college || ""],
+        course: Array.isArray(edu.course) ? edu.course : [edu.course || ""],
+        yearGraduated: Array.isArray(edu.yearGraduated) ? edu.yearGraduated : [edu.yearGraduated || ""],
+        institution: Array.isArray(edu.institution) ? edu.institution : [edu.institution || ""]
+      })),
+      examinations: formData.examinations.map(exam => ({
+        examName: Array.isArray(exam.examName) ? exam.examName : [exam.examName || ""],
+        dateTaken: Array.isArray(exam.dateTaken) ? exam.dateTaken :[exam.dateTaken || ""],
+        rating: Array.isArray(exam.rating) ? exam.rating : [exam.rating || ""]
+      })),
+      reasons: formData.reasons,
+      trainings: formData.trainings.map(training => ({
+        title: Array.isArray(training.title) ? training.title : [training.title || ""],
+        duration: Array.isArray(training.duration) ? training.duration : [training.duration || ""],
+        institution: Array.isArray(training.institution) ? training.institution : [training.institution || ""]
+      })),
+      motivation: {
+        promotion: !!formData.motivation.promotion,
+        professionalDevelopment: !!formData.motivation.professionalDevelopment,
+        others: !!formData.motivation.others
+      },
+      employmentStatus: formData.employmentStatus || "unemployed",
+      unemploymentReasons: {
+        furtherStudy: !!formData.unemploymentReasons.furtherStudy,
+        noJobOpportunity: !!formData.unemploymentReasons.noJobOpportunity,
+        familyConcern: !!formData.unemploymentReasons.familyConcern,
+        didNotLook: !!formData.unemploymentReasons.didNotLook,
+        healthRelated: !!formData.unemploymentReasons.healthRelated,
+        lackExperience: !!formData.unemploymentReasons.lackExperience
+      },
+      jobDetails: {
+        ...formData.jobDetails,
+        stayingReasons: formData.jobDetails.stayingReasons || {},
+        acceptingJobReasons: formData.jobDetails.acceptingJobReasons || {},
+        changingJobReasons: formData.jobDetails.changingJobReasons || {},
+        firstJobSearch: formData.jobDetails.firstJobSearch || {},
+        jobLandingTime: formData.jobDetails.jobLandingTime || "",
+        jobLevel: formData.jobDetails.jobLevel || "",
+        salaryRange: formData.jobDetails.salaryRange || "",
+        curriculumRelevant: formData.jobDetails.curriculumRelevant || "",
+        competencies: formData.jobDetails.competencies || {}
+      },
+    };
+  
+    console.log("Submitting payload:", payload);
+  
     try {
       const response = await axios.post(
         'http://localhost:5050/tracerSurvey2/submit',
+        payload,
         {
-          // userId,
-          // education: formData.education,
-          // examinations: formData.examinations,
-          // reasons: formData.reasons,
-          // trainings: formData.trainings,
-          // motivation: formData.motivation,
-          // employmentStatus: formData.employmentStatus,
-          // unemploymentReasons: formData.unemploymentReasons,
-          // jobDetails: formData.jobDetails
-          userId,
-          educationDetails: {
-            education: formData.education,
-            examination: formData.examinations,
-            reasons: formData.reasons
-          },
-          trainingDetails: {
-            trainings: formData.trainings,
-            motivation: formData.motivation
-          },
-          employmentDetails: {
-            employmentStatus: formData.employmentStatus,
-            unemploymentReasons: formData.unemploymentReasons,
-            jobDetails: formData.jobDetails
-          }
-
-        },
-        { 
-          headers: { 
-            Authorization: `Bearer ${token}`,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
             'Content-Type': 'application/json'
-          } 
+          }
         }
       );
-
+  
       if (response.data.success) {
-        setSubmitStatus({ 
-          type: "success", 
-          message: "Survey submitted successfully!" 
-        });
-        setTimeout(() => navigate("/profile"), 2000);
+        setSubmitStatus({ type: "success", message: "Survey submitted successfully!" });
+        setTimeout(() => navigate("/SurveyPage"), 2000);
       }
     } catch (error) {
+      console.error("Submission error:", error.response?.data || error);
       setSubmitStatus({
         type: "error",
-        message: error.response?.data?.message || 
-               "Failed to submit survey. Please try again.",
+        message: error.response?.data?.message || "Failed to submit survey. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
+  
 
   return (
     <div className={styles.tracer2Container}>
@@ -275,55 +215,28 @@ function TracerSurvey2({ onBack }) {
         </div>
       )}
 
-      {currentPage === 1 && (
-        <Page1_Education 
-          data={formData} 
-          updateForm={handleUpdateForm} 
-        />
-      )}
-      {currentPage === 2 && (
-        <Page2_Training 
-          data={formData} 
-          updateForm={handleUpdateForm} 
-        />
-      )}
-      {currentPage === 3 && (
-        <Page3_Employment 
-          data={formData} 
-          updateForm={handleUpdateForm} 
-        />
-      )}
+      {currentPage === 1 && <Page1_Education data={formData} updateForm={handleUpdateForm} />}
+      {currentPage === 2 && <Page2_Training data={formData} updateForm={handleUpdateForm} />}
+      {currentPage === 3 && <Page3_Employment data={formData} updateForm={handleUpdateForm} />}
 
       <div className={styles.buttonRow}>
         {currentPage > 1 && (
-          <button 
-            className={styles.prevButton} 
-            onClick={handlePrevPage}
-            disabled={isSubmitting}
-          >
+          <button className={styles.prevButton} onClick={handlePrevPage} disabled={isSubmitting}>
             Previous
           </button>
         )}
         {currentPage < 3 ? (
-          <button 
-            className={styles.nextButton} 
-            onClick={handleNextPage}
-            disabled={isSubmitting}
-          >
+          <button className={styles.nextButton} onClick={handleNextPage} disabled={isSubmitting}>
             Next
           </button>
         ) : (
-          <button 
-            className={styles.submitButton} 
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-          >
+          <button className={styles.submitButton} onClick={handleSubmit} disabled={isSubmitting}>
             {isSubmitting ? "Submitting..." : "Submit"}
           </button>
         )}
       </div>
     </div>
   );
-};
+}
 
 export default TracerSurvey2;

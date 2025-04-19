@@ -42,14 +42,14 @@ export const PendingSurvey = () => {
       }
     };
 
-    const checkTracer2Status = async () => {
-      try {
-        const res = await axios.get(`http://localhost:5050/api/survey2/status?userId=${userId}`);
-        setTracer2Submitted(res.data.submitted);
-      } catch (err) {
-        console.error("Failed to check Tracer 2 status:", err);
-      }
-    };
+    // const checkTracer2Status = async () => {
+    //   try {
+    //     const res = await axios.get(`http://localhost:5050/api/survey2/status?userId=${userId}`);
+    //     setTracer2Submitted(res.data.submitted);
+    //   } catch (err) {
+    //     console.error("Failed to check Tracer 2 status:", err);
+    //   }
+    // };
 
     // const fetchTracer1Date = async () => {
     //   try {
@@ -68,7 +68,7 @@ export const PendingSurvey = () => {
     // };
 
     fetchSurveys();
-    checkTracer2Status();
+   // checkTracer2Status();
    // fetchTracer1Date();
   }, [userId]);
 
