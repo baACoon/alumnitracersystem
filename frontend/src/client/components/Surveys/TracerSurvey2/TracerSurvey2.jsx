@@ -15,8 +15,9 @@ function TracerSurvey2({ onBack }) {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    education: [{ degreeType: [], college: [], course: [], yearGraduated: [], institution: [] }],
+    education: [{ degreeType: [], college: [], course: [], yearGraduated: "", institution: [] }],
     examinations: [{ examName: [], dateTaken: [], rating: [] }],
+    noExams: false,
     reasons: {
       highGradesRelated: { undergraduate: false, graduate: false },
       goodHighSchoolGrades: { undergraduate: false, graduate: false },
@@ -34,7 +35,15 @@ function TracerSurvey2({ onBack }) {
       noChoice: { undergraduate: false, graduate: false },
     },
     trainings: [{ title: [], duration: [], institution: [] }],
-    motivation: { promotion: false, professionalDevelopment: false, others: false },
+    noTrainings: false,
+    motivation: {   
+      promotion: false,
+      professionalDevelopment: false,
+      personalInterest: false,
+      scholarship: false,
+      careerShift: false,
+      others: false
+    },
     employmentStatus: "",
     unemploymentReasons: {
       furtherStudy: false,
@@ -80,13 +89,25 @@ function TracerSurvey2({ onBack }) {
         formData.education[0].college.length > 0 &&
         formData.education[0].course.length > 0 &&
         formData.education[0].yearGraduated &&
-        formData.examinations.every(exam => exam.examName && exam.dateTaken && exam.rating)
+        (
+          formData.noExams || formData.examinations.every(
+            exam => exam.examName && exam.dateTaken && exam.rating
+          )
+        )
       );
     }
     if (currentPage === 2) {
       return (
-        formData.trainings.every(training => training.title && training.duration && training.institution) &&
-        (formData.motivation.promotion || formData.motivation.professionalDevelopment || formData.motivation.others)
+        (
+          formData.noTrainings || formData.trainings.every(
+            training => training.title && training.duration && training.institution
+          )
+        ) &&
+        (
+          formData.motivation.promotion ||
+          formData.motivation.professionalDevelopment ||
+          formData.motivation.others
+        )
       );
     }
     if (currentPage === 3) {
@@ -99,7 +120,7 @@ function TracerSurvey2({ onBack }) {
     }
     return false;
   }, [currentPage, formData]);
-
+  
   const handleNextPage = () => {
     if (!validateForm()) {
       setSubmitStatus({ type: "error", message: "Please fill in all required fields" });
@@ -117,10 +138,15 @@ function TracerSurvey2({ onBack }) {
   const handleSubmit = async (e) => {
     e?.preventDefault();
   
-    if (!formData.education.length || !formData.trainings.length) {
+    if (
+      !formData.education.length ||
+      (!formData.trainings.length && !formData.noTrainings)
+    ) {
       setSubmitStatus({ type: "error", message: "Education and training fields are required." });
       return;
     }
+    
+    
   
     const payload = {
       userId: localStorage.getItem("userId"),
@@ -128,24 +154,27 @@ function TracerSurvey2({ onBack }) {
         degreeType: Array.isArray(edu.degreeType) ? edu.degreeType : [edu.degreeType || ""],
         college: Array.isArray(edu.college) ? edu.college : [edu.college || ""],
         course: Array.isArray(edu.course) ? edu.course : [edu.course || ""],
-        yearGraduated: Array.isArray(edu.yearGraduated) ? edu.yearGraduated : [edu.yearGraduated || ""],
-        institution: Array.isArray(edu.institution) ? edu.institution : [edu.institution || ""]
+        yearGraduated: edu.yearGraduated || "",
+        institution: edu.institution || ""
       })),
-      examinations: formData.examinations.map(exam => ({
-        examName: Array.isArray(exam.examName) ? exam.examName : [exam.examName || ""],
-        dateTaken: Array.isArray(exam.dateTaken) ? exam.dateTaken :[exam.dateTaken || ""],
-        rating: Array.isArray(exam.rating) ? exam.rating : [exam.rating || ""]
+      examinations: formData.noExams ? [] : formData.examinations.map(exam => ({
+        examName: exam.examName || "",
+        dateTaken: exam.dateTaken || "",
+        rating: exam.rating || ""
       })),
       reasons: formData.reasons,
-      trainings: formData.trainings.map(training => ({
-        title: Array.isArray(training.title) ? training.title : [training.title || ""],
-        duration: Array.isArray(training.duration) ? training.duration : [training.duration || ""],
-        institution: Array.isArray(training.institution) ? training.institution : [training.institution || ""]
+      trainings: formData.noTrainings ? [] : formData.trainings.map(training => ({
+        title: training.title || "",
+        duration: training.duration || "",
+        institution: training.institution || ""
       })),
       motivation: {
         promotion: !!formData.motivation.promotion,
         professionalDevelopment: !!formData.motivation.professionalDevelopment,
-        others: !!formData.motivation.others
+        personalInterest: !!formData.motivation.personalInterest,
+        scholarship: !!formData.motivation.scholarship,
+        careerShift: !!formData.motivation.careerShift,
+        others: !!formData.motivation.others,
       },
       employmentStatus: formData.employmentStatus || "unemployed",
       unemploymentReasons: {

@@ -20,15 +20,25 @@ const TracerSurvey2Schema = new mongoose.Schema(
       degreeType: [String],   // ✅ renamed from "type" to avoid conflict
       college: [String],
       course: [String],
-      yearGraduated: [String],
-      institution: [String]
+      yearGraduated: String,
+      institution: String
     }],
-    
-    examinations: [{
-      examName: [String],
-      dateTaken: [String],
-      rating: [String]
-    }],
+    noExams: Boolean,
+    examinations: {
+      type: [{
+        examName: String,
+        dateTaken: String,
+        rating: String
+      }],
+      validate: {
+        validator: function (value) {
+          if (this.noExams) return value.length === 0;
+          return true;
+        },
+        message: "Examinations must be empty when 'noExams' is selected."
+      }
+    },
+
     reasons: {
       highGradesRelated: { undergraduate: Boolean, graduate: Boolean },
       goodHighSchoolGrades: { undergraduate: Boolean, graduate: Boolean },
@@ -45,19 +55,32 @@ const TracerSurvey2Schema = new mongoose.Schema(
       abroadEmployment: { undergraduate: Boolean, graduate: Boolean },
       noChoice: { undergraduate: Boolean, graduate: Boolean }
     },
-    trainings: [{
-      title: [String],
-      duration: [String],
-      institution: [String]
-    }],
+    noTrainings: Boolean,
+    trainings: {
+      type: [{
+        title: String,
+        duration: String,
+        institution: String
+      }],
+      validate: {
+        validator: function (value) {
+          if (this.noTrainings) return value.length === 0;
+          return true;
+        },
+        message: "Trainings must be empty when 'noTrainings' is selected."
+      }
+    },
     motivation: {
       promotion: Boolean,
       professionalDevelopment: Boolean,
+      personalInterest: Boolean,
+      scholarship: Boolean,
+      careerShift: Boolean,
       others: Boolean
     },
     employmentStatus: {
       type: String,
-      enum: ["employed", "unemployed", "self-employed", "further-study"],
+      enum: ["permanent", "contractual", "temporary", "selfEmployed", "unemployed"],
       required: true
     },
     // Change these fields in your schema:

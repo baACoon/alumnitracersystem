@@ -31,10 +31,28 @@ const Page2_Training = ({ data, updateForm }) => {
         <h3>Training(s)/Advanced Studies Attended after College</h3>
       </div>
 
+<div>
       <h3 className={styles.sectionTitle}>
         Please list down all the professional training programs or advanced studies you have attended after college.
+        {/* ✅ Checkbox to skip trainings */}
+        <label className={styles.noneOption}>
+        <input
+          type="checkbox"
+          checked={data.noTrainings}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            updateForm("noTrainings", checked);
+            updateForm("trainings", checked ? [] : [{ title: "", duration: "", institution: "" }]);
+          }}
+        />
+
+          I have not taken any professional examination.
+        </label>
       </h3>
 
+  {/* ✅ Only show training table if not skipped */}
+  {!data.noTrainings && (
+    <>
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
@@ -74,7 +92,12 @@ const Page2_Training = ({ data, updateForm }) => {
                 </td>
                 <td>
                   {data.trainings.length > 1 && (
-                    <button className={styles.removeButton} onClick={() => removeTrainingRow(index)}>✖</button>
+                    <button
+                      className={styles.removeButton}
+                      onClick={() => removeTrainingRow(index)}
+                    >
+                      ✖
+                    </button>
                   )}
                 </td>
               </tr>
@@ -82,37 +105,32 @@ const Page2_Training = ({ data, updateForm }) => {
           </tbody>
         </table>
       </div>
-
       <button className={styles.addButton} onClick={addTrainingRow}>+ Add Row</button>
+    </>
+  )}
+</div>
+     {/* Motivation for Pursuing Advanced Studies */}
+    <h3 className={styles.sectionTitle}>What made you pursue advanced studies?</h3>
+    <div className={styles.checkboxGroup}>
+      {[
+        { key: "promotion", label: "For Promotion" },
+        { key: "professionalDevelopment", label: "For Professional Development" },
+        { key: "personalInterest", label: "Personal Interest" },
+        { key: "scholarship", label: "Scholarship Opportunity" },
+        { key: "careerShift", label: "Career Shift or Change in Field" },
+        { key: "others", label: "Others" }
+      ].map(({ key, label }) => (
+        <label key={key} className={styles.check}>
+          <input
+            type="checkbox"
+            checked={data.motivation?.[key] || false}
+            onChange={(e) => handleMotivationChange(key, e.target.checked)}
+          />
+          {label}
+        </label>
+      ))}
+    </div>
 
-      {/* Motivation for Pursuing Advanced Studies */}
-      <h3 className={styles.sectionTitle}>What made you pursue advanced studies?</h3>
-      <div className={styles.motivationContainer}>
-        <label className={styles.motivationLabel}>
-          <input
-            type="checkbox"
-            checked={data.motivation.promotion}
-            onChange={(e) => handleMotivationChange("promotion", e.target.checked)}
-          />
-          For Promotion
-        </label>
-        <label className={styles.motivationLabel}>
-          <input
-            type="checkbox"
-            checked={data.motivation.professionalDevelopment}
-            onChange={(e) => handleMotivationChange("professionalDevelopment", e.target.checked)}
-          />
-          For Professional Development
-        </label>
-        <label className={styles.motivationLabel}>
-          <input
-            type="checkbox"
-            checked={data.motivation.others}
-            onChange={(e) => handleMotivationChange("others", e.target.checked)}
-          />
-          Others
-        </label>
-      </div>
     </div>
   );
 };

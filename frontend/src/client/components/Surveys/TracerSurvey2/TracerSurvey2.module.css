@@ -55,13 +55,18 @@
 .sectionTitle {
   font-size: 18px;
   color: #333;
-  font-weight: bold;
+  font-weight: 600;
   margin-top: 20px;
 }
 
-.titleContainerEduc {
+.titleContainer {
   margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+}
+
+.titleContainer h3{
+  color: #c31d3c;
+  font-weight: bold;
 }
 
 .tracer2Container p {
@@ -145,7 +150,8 @@
 }
 
 .radioGroup label {
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: normal;
   color: #333;
   display: flex;
   align-items: center;
@@ -167,7 +173,8 @@
 }
 
 .checkboxGroup label {
-  font-size: 16px;
+  font-size: 12px;
+  font-weight: normal;
   color: #333;
   display: flex;
   align-items: center;
@@ -178,6 +185,12 @@
   width: 20px;
   height: 20px;
   cursor: pointer;
+}
+
+.noneOption{
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: normal;
 }
 
 /* Other Input Field */
@@ -233,7 +246,8 @@
 }
 
 .businessOptions label {
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: normal;
   color: #333;
   display: flex;
   align-items: center;
@@ -254,28 +268,30 @@
 .removeButton,
 .nextButton,
 .prevButton {
-  padding: 10px 15px;
-  font-size: 14px;
+  padding: 5px 10px;
+  font-size: 12px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s ease;
+  text-transform: uppercase;
   margin-top: 10px;
 }
 
 /* Add Row Button */
 .addButton {
   background-color: white;
-  color: #313131;
+  color: #c31d3c;
+  font-weight: bold;
   text-transform: uppercase;
-  padding: 6px 12px;
   border: 1px solid #c31d3c;
-  border-radius: 20px;
-  margin-bottom: 20px;
+  border-radius: 5px;
+
 }
 
 .addButton:hover {
-  background-color: #f0f0f0;
+  background-color: #c31d3c;
+  color: white;
 }
 
 /* Remove Button */
@@ -292,23 +308,26 @@
 
 /* Next Button */
 .nextButton {
-  background-color: #555;
-  color: white;
+  background-color: none;
+  color: #c31d3c;
   margin-top: 20px;
 }
 
 .nextButton:hover {
-  background-color: #444;
+  color: #c31d3c;
+  font-weight: 900;
 }
 
 /* Previous Button */
 .prevButton {
-  background-color: #888;
-  color: white;
+  background-color: none;
+  color: #c31d3c;
+  margin-top: 20px;
 }
 
 .prevButton:hover {
-  background-color: #666;
+  color: #c31d3c;
+  font-weight: 900;
 }
 
 /* Submit Button */

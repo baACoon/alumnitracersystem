@@ -3,64 +3,65 @@ import styles from "./TracerSurvey2.module.css";
 
 const collegeCourses = {
   "College of Engineering": [
-    "Bachelor of Science in Civil Engineering",
-    "Bachelor of Science in Electrical Engineering",
-    "Bachelor of Science in Electronics Engineering",
-    "Bachelor of Science in Mechanical Engineering",
+    "Civil Engineering",
+    "Electrical Engineering",
+    "Electronics Engineering",
+    "Mechanical Engineering"
   ],
   "College of Science": [
-    "Bachelor of Applied Science in Laboratory Technology",
-    "Bachelor of Science in Computer Science",
-    "Bachelor of Science in Environmental Science",
-    "Bachelor of Science in Information System",
-    "Bachelor of Science in Information Technology",
+    "Applied Science in Laboratory Technology",
+    "Computer Science",
+    "Environmental Science",
+    "Information System",
+    "Information Technology"
   ],
   "College of Industrial Education": [
-    "Bachelor of Science Industrial Education Major in Information and Communication Technology",
-    "Bachelor of Science Industrial Education Major in Home Economics",
-    "Bachelor of Science Industrial Education Major in Industrial Arts",
-    "Bachelor of Technical Vocational Teachers Education Major in Animation",
-    "Bachelor of Technical Vocational Teachers Education Major in Automotive",
-    "Bachelor of Technical Vocational Teachers Education Major in Beauty Care and Wellness",
-    "Bachelor of Technical Vocational Teachers Education Major in Computer Programming",
-    "Bachelor of Technical Vocational Teachers Education Major in Electrical",
-    "Bachelor of Technical Vocational Teachers Education Major in Electronics",
-    "Bachelor of Technical Vocational Teachers Education Major in Food Service Management",
-    "Bachelor of Technical Vocational Teachers Education Major in Fashion and Garment",
-    "Bachelor of Technical Vocational Teachers Education Major in Heat Ventillation & Air Conditioning",
+    "Industrial Education Major in Information and Communication Technology",
+    "Industrial Education Major in Home Economics",
+    "Industrial Education Major in Industrial Arts",
+    "Technical Vocational Teachers Education Major in Animation",
+    "Technical Vocational Teachers Education Major in Automotive",
+    "Technical Vocational Teachers Education Major in Beauty Care and Wellness",
+    "Technical Vocational Teachers Education Major in Computer Programming",
+    "Technical Vocational Teachers Education Major in Electrical",
+    "Technical Vocational Teachers Education Major in Electronics",
+    "Technical Vocational Teachers Education Major in Food Service Management",
+    "Technical Vocational Teachers Education Major in Fashion and Garment",
+    "Technical Vocational Teachers Education Major in Heat Ventillation & Air Conditioning"
   ],
   "College of Liberal Arts": [
-    "Bachelor of Science in Business Management Major in Industrial Management",
-    "Bachelor of Science in Entreprenuership",
-    "Bachelor of Science Hospitality Management",
+    "Business Management Major in Industrial Management",
+    "Entrepreneurship",
+    "Hospitality Management"
   ],
   "College of Architecture and Fine Arts": [
-    "Bachelor of Science in Architecture",
-    "Bachelor of Fine Arts",
-    "Bachelor of Graphic Technology Major in Architecture Technology",
-    "Bachelor of Graphic Technology Major in Industrial Design",
-    "Bachelor of Graphic Technology Major in Mechanical Drafting Technology",
+    "Architecture",
+    "Fine Arts",
+    "Graphic Technology Major in Architecture Technology",
+    "Graphic Technology Major in Industrial Design",
+    "Graphic Technology Major in Mechanical Drafting Technology"
   ],
   "College of Industrial Technology": [
-    "Bachelor of Science in Food Technology",
-    "Bachelor of Engineering Technology Major in Civil Technology",
-    "Bachelor of Engineering Technology Major in Electrical Technology",
-    "Bachelor of Engineering Technology Major in Electronics Technology",
-    "Bachelor of Engineering Technology Major in Computer Engineering Technology",
-    "Bachelor of Engineering Technology Major in Instrumentation and Control Technology",
-    "Bachelor of Engineering Technology Major in Mechanical Technology",
-    "Bachelor of Engineering Technology Major in Mechatronics Technology",
-    "Bachelor of Engineering Technology Major in Railway Technology",
-    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Automative Technology",
-    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Heating Ventilation & Airconditioning/Refrigiration Technology",
-    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Power Plant Technology",
-    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Welding Technology",
-    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Dies and Moulds Technology",
-    "Bachelor of Technology in Apparel and Fashion",
-    "Bachelor of Technology in Culinary Technology",
-    "Bachelor of Technology in Print Media Technology",
-  ],
+    "Food Technology",
+    "Engineering Technology Major in Civil Technology",
+    "Engineering Technology Major in Electrical Technology",
+    "Engineering Technology Major in Electronics Technology",
+    "Engineering Technology Major in Computer Engineering Technology",
+    "Engineering Technology Major in Instrumentation and Control Technology",
+    "Engineering Technology Major in Mechanical Technology",
+    "Engineering Technology Major in Mechatronics Technology",
+    "Engineering Technology Major in Railway Technology",
+    "Engineering Technology Major in Mechanical Engineering Technology option in Automative Technology",
+    "Engineering Technology Major in Mechanical Engineering Technology option in Heating Ventilation & Airconditioning/Refrigeration Technology",
+    "Engineering Technology Major in Mechanical Engineering Technology option in Power Plant Technology",
+    "Engineering Technology Major in Mechanical Engineering Technology option in Welding Technology",
+    "Engineering Technology Major in Mechanical Engineering Technology option in Dies and Moulds Technology",
+    "Apparel and Fashion",
+    "Culinary Technology",
+    "Print Media Technology"
+  ]
 };
+
 
 const Page1_Education = ({ data, updateForm }) => {
   const [availableCourses, setAvailableCourses] = useState([]);
@@ -117,7 +118,7 @@ const Page1_Education = ({ data, updateForm }) => {
     <div>
       <div className={styles.titleContainer}>
         <p>Please fill all required fields</p>
-        <h3>Educational Background</h3>
+        <h3>EDUCATIONAL BACKGROUND</h3>
       </div>
 
       <div className="educationAttainment">
@@ -215,37 +216,85 @@ const Page1_Education = ({ data, updateForm }) => {
       </div>
       <button className={styles.addButton} onClick={addEducationRow}>+ Add Row</button>
 
-      {/* Professional Examinations Passed Table */}
+     {/* Professional Examinations Passed Table */}
       <div>
         <label htmlFor="" className={styles.sectionTitle}>Examination(s) Passed</label>
-        <div className={styles.tableContainer}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Name of Examination</th>
-                <th>Date Taken</th>
-                <th>Rating</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.examinations.map((entry, index) => (
-                <tr key={index}>
-                  <td><input type="text" value={entry.examName} onChange={(e) => handleExamChange(index, "examName", e.target.value)} placeholder="e.g., Civil Engineering Licensure" /></td>
-                  <td><input type="date" value={entry.dateTaken} onChange={(e) => handleExamChange(index, "dateTaken", e.target.value)} /></td>
-                  <td><input type="text" value={entry.rating} onChange={(e) => handleExamChange(index, "rating", e.target.value)} placeholder="e.g., 85.5%" /></td>
-                  <td>{data.examinations.length > 1 && <button className={styles.removeButton} onClick={() => removeExamRow(index)}>✖</button>}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+
+        {/* ✅ Checkbox to skip */}
+        <label className={styles.noneOption}>
+          <input
+            type="checkbox"
+            checked={data.noExams}
+            onChange={(e) => updateForm("noExams", e.target.checked)}
+          />
+          I have not taken any professional examination.
+        </label>
+
+        {/* ✅ Only show exam table if not skipped */}
+        {!data.noExams && (
+          <>
+            <div className={styles.tableContainer}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Name of Examination</th>
+                    <th>Date Taken</th>
+                    <th>Rating</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.examinations.map((entry, index) => (
+                    <tr key={index}>
+                      <td>
+                        <input
+                          type="text"
+                          value={entry.examName}
+                          onChange={(e) => handleExamChange(index, "examName", e.target.value)}
+                          placeholder="e.g., Civil Engineering Licensure"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="date"
+                          value={entry.dateTaken}
+                          onChange={(e) => handleExamChange(index, "dateTaken", e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          value={entry.rating}
+                          onChange={(e) => handleExamChange(index, "rating", e.target.value)}
+                          placeholder="e.g., 85.5%"
+                        />
+                      </td>
+                      <td>
+                        {data.examinations.length > 1 && (
+                          <button
+                            className={styles.removeButton}
+                            onClick={() => removeExamRow(index)}
+                          >
+                            ✖
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <button className={styles.addButton} onClick={addExamRow}>+ Add Row</button>
+          </>
+        )}
       </div>
-      <button className={styles.addButton} onClick={addExamRow}>+ Add Row</button>
+
 
       {/* Reasons for Taking Course Table */}
       <div>
-        <label htmlFor="" className={styles.sectionTitle}>Reason(s) for Taking the Course(s) or Pursuing Degree(s)</label>
+        <label htmlFor="" className={styles.sectionTitle}>
+          Reason(s) for Taking the Course(s) or Pursuing Degree(s)
+        </label>
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
@@ -256,25 +305,31 @@ const Page1_Education = ({ data, updateForm }) => {
               </tr>
             </thead>
             <tbody>
-              {Object.keys(data.reasons).map((reasonKey, index) => (
-                <tr key={index}>
-                  <td>{reasonKey.replace(/([A-Z])/g, " $1").trim()}</td>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={data.reasons[reasonKey].undergraduate}
-                      onChange={() => handleCheckboxChange(reasonKey, "undergraduate")}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={data.reasons[reasonKey].graduate}
-                      onChange={() => handleCheckboxChange(reasonKey, "graduate")}
-                    />
-                  </td>
-                </tr>
-              ))}
+              {Object.keys(data.reasons).map((reasonKey, index) => {
+                const label = reasonKey
+                  .replace(/([A-Z])/g, " $1")        // split camelCase
+                  .replace(/^./, (char) => char.toUpperCase()); // capitalize first letter
+
+                return (
+                  <tr key={index}>
+                    <td>{label}</td>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={data.reasons[reasonKey].undergraduate}
+                        onChange={() => handleCheckboxChange(reasonKey, "undergraduate")}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={data.reasons[reasonKey].graduate}
+                        onChange={() => handleCheckboxChange(reasonKey, "graduate")}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
