@@ -11,6 +11,9 @@ export const PendingSurvey = () => {
   const [surveyQuestions, setSurveyQuestions] = useState([]);
   const [responses, setResponses] = useState({});
   const [tracer2Submitted, setTracer2Submitted] = useState(false);
+  const [isTracerSurveyOpen, setIsTracerSurveyOpen] = useState(false);
+  const [nextTracerVersion, setNextTracerVersion] = useState(null);
+  const [releaseDate, setReleaseDate] = useState(null);
   const [tracer2ReleaseDate, setTracer2ReleaseDate] = useState(null);
 
   const today = new Date();
@@ -22,7 +25,7 @@ export const PendingSurvey = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await axios.get("https://alumnitracersystem.onrender.com/api/newSurveys", {
+        const response = await axios.get(`https://alumnitracersystem.onrender.com/api/newSurveys`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -42,10 +45,32 @@ export const PendingSurvey = () => {
       }
     };
 
+    const fetchLatestTracer = async () => {
+      try {
+        const res = await axios.get(`https://alumnitracersystem.onrender.com/tracerSurvey2/api/tracer2/latest/${userId}`)
+
+        const { nextVersion, releaseDate, eligible } = res.data;
+
+        setNextTracerVersion(nextVersion);
+        setReleaseDate(new Date(releaseDate));
+        setIsTracerSurveyOpen(eligible);
+      } catch (err) {
+        console.error("Error fetching latest tracer info:", err);
+      }
+    };
+
+    // // ✅ FORCED OVERRIDE FOR TESTING
+    // setTimeout(() => {
+    //   setIsTracerSurveyOpen(true);
+    //   setReleaseDate(new Date()); // just for UI display
+    // }, 1000);
+
     const checkTracer2Status = async () => {
       try {
-        const res = await axios.get(`https://alumnitracersystem.onrender.com/api/survey2/status?userId=${userId}`);
-        setTracer2Submitted(res.data.submitted);
+        const res = await axios.get(`https://alumnitracersystem.onrender.com/surveys/user-status/${userId}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        setTracer2Submitted(res.data.status.tracer2Completed);
       } catch (err) {
         console.error("Failed to check Tracer 2 status:", err);
       }
@@ -53,21 +78,26 @@ export const PendingSurvey = () => {
 
     const fetchTracer1Date = async () => {
       try {
-        const res = await axios.get(`https://alumnitracersystem.onrender.com/surveys/user-surveys`, {
+        const res = await axios.get(`https://alumnitracersystem.onrender.com/surveys/completed/${userId}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
-        const tracer1Survey = res.data?.data?.[0];
-        if (tracer1Survey?.createdAt) {
-          const completedDate = new Date(tracer1Survey.createdAt);
-          completedDate.setFullYear(completedDate.getFullYear() + 2);
-          setTracer2ReleaseDate(completedDate);
+        const tracer1Survey = res.data?.surveys?.find(s => s.surveyType === "Tracer1");
+        if (tracer1Survey?.dateCompleted) {
+          const completedDate = new Date();
+          completedDate.setDate(completedDate.getDate() - 1); // simulate release = yesterday
+          setTracer2ReleaseDate(completedDate)
+          // const completedDate = new Date(tracer1Survey.dateCompleted);
+          // completedDate.setFullYear(completedDate.getFullYear() + 2);
+          // setTracer2ReleaseDate(completedDate);
         }
       } catch (err) {
         console.error("Failed to get Tracer 1 survey date:", err);
       }
     };
 
+
     fetchSurveys();
+    fetchLatestTracer();
     checkTracer2Status();
     fetchTracer1Date();
   }, [userId]);
@@ -131,7 +161,7 @@ export const PendingSurvey = () => {
     <div className={styles.surveyContainer}>
       <h2>AVAILABLE SURVEYS</h2>
       <div className={styles.surveyList}>
-      {loading ? (
+        {loading ? (
           <div className="loadingOverlay">
             <div className="loaderContainer">
               <svg viewBox="0 0 240 240" height="80" width="80" className="loader">
@@ -146,18 +176,17 @@ export const PendingSurvey = () => {
         ) : (
           <>
             {!tracer2Submitted && (
-              <div
-                className={`${styles.surveyCard} ${!isTracer2Open ? styles.disabledCard : ''}`}
-                onClick={isTracer2Open ? () => navigate("/tracer2") : null}
-                style={{ order: -1 }}
-              >
-                <h3 className={`${styles.surveyTitle} ${!isTracer2Open ? styles.grayText : ''}`}>Tracer Survey 2</h3>
-                <p className={`${styles.surveyDescription} ${!isTracer2Open ? styles.grayText : ''}`}>
-                  {!isTracer2Open
-                    ? `Open on or after ${tracer2ReleaseDate?.toLocaleDateString()}`
-                    : "Your journey matters—share your story!"}
-                </p>
-              </div>
+              isTracerSurveyOpen ? (
+                <div className={styles.surveyCard} onClick={() => navigate(`/TracerSurvey2?v=${nextTracerVersion}`)} style={{ order: -1 }}>
+                  <h3>Tracer Survey {nextTracerVersion}</h3>
+                  <p>Now available – thank you for staying connected!</p>
+                </div>
+              ) : (
+                <div className={`${styles.surveyCard} ${styles.disabledCard}`} style={{ order: -1 }}>
+                  <h3 className={styles.grayText}>Tracer Survey {nextTracerVersion}</h3>
+                  <p className={styles.grayText}>Available on {releaseDate?.toLocaleDateString()}</p>
+                </div>
+              )
             )}
 
             {activeSurveys.length > 0 ? (

@@ -4,6 +4,7 @@ import path from "path";
 import { connectToDatabase } from '../backend/db/connection.js';
 import records from './record.js';
 import surveyRoutes from './routes/surveyroutes.js'; // Import survey routes
+import TracerSurvey2Routes from './routes/tracerSurvey2Routes.js'; // Import TracerSurvey2 routes
 import dynamicSurveyRoutes from './routes/dynamicSurveyRoutes.js'
 import adminlogreg from './models/adminlog_reg.js';
 import eventRoutes from './models/event.js'
@@ -15,16 +16,15 @@ import profileRoutes from './routes/profile.js';
 import alumnipage from './routes/alumnipageroutes.js';
 import dashboardRoutes from './routes/dashboardroutes.js';
 import uploadRoutes from './routes/uploadroutes.js';
-import tracerSurvey2Routes from './routes/tracerSurvey2Routes.js'
 import fs from 'fs';
 
 const PORT = process.env.PORT || 5050;
-const app = express();
+const app = express(); 
 
 dotenv.config();
 
 // Middleware
-app.use(cors({ origin: ['https://tupalumni.com', 'https://admin.tupalumni.com', 'http://localhost:3000','http://localhost:5050']}));
+app.use(cors({ origin: ['https://tupalumni.com', 'https://admin.tupalumni.com', 'http://localhost:3000','http://localhost:5050','http://localhost:3001']}));
 app.use(express.json());
 
 // Serve static files (uploaded images)
@@ -33,6 +33,7 @@ app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 // Routes
 app.use("/record", records); // Existing records routes
 app.use("/surveys", surveyRoutes); // Add survey routes
+app.use("/tracerSurvey2", TracerSurvey2Routes); // Add TracerSurvey2 routes
 app.use("/api/newSurveys", dynamicSurveyRoutes);
 app.use("/adminlog_reg", adminlogreg);
 app.use("/event", eventRoutes);
@@ -43,8 +44,6 @@ app.use("/profile", profileRoutes);
 app.use("/api/alumni", alumnipage);
 app.use("/dashboard", dashboardRoutes);
 app.use("/api", uploadRoutes);
-app.use("/api/survey2", tracerSurvey2Routes);
-
 
 // Connect to MongoDB Atlas before starting the server
 connectToDatabase()
