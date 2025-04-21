@@ -1,36 +1,67 @@
+"use client"
 
-import { Bar, BarChart, Cell, Pie, PieChart, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import {
+  Bar,
+  BarChart,
+  Cell,
+  Pie,
+  PieChart,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+  CartesianGrid,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
+  Treemap,
+  AreaChart,
+  Area,
+} from "recharts"
 import styles from "./Tracer2Analytics.module.css"
 
+// Color palette for charts
+const COLORS = ["#4CC3C8", "#FF6B81", "#FFD166", "#FF9F43", "#6C5CE7", "#C31D3C"]
+
 export default function Tracer2Analytics() {
-  // Sample data for the donut charts
-  const chartData = [
-    { name: "Category 1", value: 45, color: "#4CC3C8" }, // Teal
-    { name: "Category 2", value: 30, color: "#FF6B81" }, // Pink
-    { name: "Category 3", value: 20, color: "#FFD166" }, // Yellow
-    { name: "Category 4", value: 5, color: "#FF9F43" }, // Orange
-  ]
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  // Sample data for the bar charts
-  const barChartData = [
-    { category: "Red", value: 12 },
-    { category: "Blue", value: 19 },
-    { category: "Yellow", value: 3 },
-    { category: "Green", value: 5 },
-    { category: "Purple", value: 2 },
-    { category: "Orange", value: 3 },
-    { category: "Red", value: 12 },
-  ]
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        setLoading(true)
+        const res = await axios.get("http://localhost:5050/dashboard/tracer2/analytics")
+        setData(res.data)
+        setLoading(false)
+      } catch (err) {
+        console.error("Failed to fetch analytics:", err)
+        setError("Failed to load analytics data. Please try again later.")
+        setLoading(false)
+      }
+    }
+    fetchAnalytics()
+  }, [])
 
-  // Sample data for the occupation list
-  const occupationData = [
-    { occupation: "ELECTRICAL ENGINEERING", value: 57 },
-    { occupation: "MECHANICAL ENGINEERING", value: 54 },
-    { occupation: "TEACHER", value: 40 },
-    { occupation: "DENTIST", value: 34 },
-    { occupation: "WEB DEVELOPER", value: 21 },
-    { occupation: "CALL CENTER REPRESENTATIVE", value: 14 },
-  ]
+  // Helper function to format data for charts
+  const formatBarData = (obj) => {
+    if (!obj) return []
+    return Object.entries(obj).map(([name, value]) => ({ name, value }))
+  }
+
+  // Helper function to add colors to data
+  const addColors = (data) => {
+    return data.map((item, index) => ({
+      ...item,
+      color: COLORS[index % COLORS.length],
+    }))
+  }
 
   // Custom tooltip component for charts
   const CustomTooltip = ({ active, payload, label }) => {
@@ -44,37 +75,40 @@ export default function Tracer2Analytics() {
     return null
   }
 
-  // Reusable donut chart component
-  const DonutChart = ({ title }) => (
-    <div className={styles.card}>
-      <div className={styles.cardHeader}>
-        <h2 className={styles.cardTitle}>{title}</h2>
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}></div>
+        <p>Loading analytics data...</p>
       </div>
-      <div className={styles.cardContent}>
-        <div className={styles.chartContainer}>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={chartData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={2}
-              >
-                {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip />} />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className={styles.errorContainer}>
+        <p className={styles.errorMessage}>{error}</p>
+        <button className={styles.retryButton} onClick={() => window.location.reload()}>
+          Retry
+        </button>
       </div>
-    </div>
-  )
+    )
+  }
+
+  if (!data) return null
+
+  // Format data for advanced degree holders
+  const degreeHolderData = [
+    { name: "Doctorate", value: data.advancedDegreeHolders?.doctorate || 0, color: COLORS[0] },
+    { name: "Masters", value: data.advancedDegreeHolders?.masters || 0, color: COLORS[1] },
+  ]
+
+  // Format data for core competencies radar chart
+  const coreCompetenciesData = formatBarData(data.jobData?.coreCompetencies || {}).map((item) => ({
+    subject: item.name,
+    A: item.value,
+    fullMark: 100,
+  }))
 
   return (
     <div className={styles.dashboardGrid}>
@@ -86,63 +120,64 @@ export default function Tracer2Analytics() {
             <h2 className={styles.cardTitle}>TRACER SURVEY FORM RESPONDENTS</h2>
           </div>
           <div className={styles.cardContent}>
-            <span className={styles.counterValue}>3</span>
+            <span className={styles.counterValue}>{data.totalRespondents || 0}</span>
           </div>
         </div>
 
-        {/* Educational Attainment Chart */}
+        {/* Degree Holders Chart */}
         <div className={`${styles.card} ${styles.educationalAttainmentCard}`}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>EDUCATIONAL ATTAINMENT</h2>
+            <h2 className={styles.cardTitle}>DEGREE HOLDERS (MASTERAL & DOCTORATE)</h2>
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
                   <Pie
-                    data={chartData}
+                    data={degreeHolderData}
                     dataKey="value"
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    outerRadius={100}
+                    innerRadius={60}
+                    outerRadius={80}
                     paddingAngle={2}
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                   >
-                    {chartData.map((entry, index) => (
+                    {degreeHolderData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
                   <Tooltip content={<CustomTooltip />} />
+                  <Legend />
                 </PieChart>
               </ResponsiveContainer>
             </div>
           </div>
         </div>
 
-        {/* Examination Passed Chart */}
-        <div className={`${styles.card} ${styles.examinationPassedCard}`}>
+        {/* Job Level Chart */}
+        <div className={`${styles.card} ${styles.jobLevelCard}`}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>EXAMINATION PASSED</h2>
+            <h2 className={styles.cardTitle}>JOB LEVEL</h2>
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
               <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie
-                    data={chartData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    paddingAngle={2}
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
+                <BarChart
+                  data={addColors(formatBarData(data.jobData?.jobLevel || {}))}
+                  layout="vertical"
+                  margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
+                >
+                  <XAxis type="number" />
+                  <YAxis type="category" dataKey="name" />
                   <Tooltip content={<CustomTooltip />} />
-                </PieChart>
+                  <Bar dataKey="value">
+                    {formatBarData(data.jobData?.jobLevel || {}).map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -154,83 +189,55 @@ export default function Tracer2Analytics() {
         {/* Reasons of Taking the Course */}
         <div className={`${styles.card} ${styles.reasonsCard}`}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>REASONS OF TAKING THE COURSE</h2>
+            <h2 className={styles.cardTitle}>REASONS FOR TAKING THE COURSE/PURSUING DEGREES</h2>
           </div>
           <div className={styles.cardContent}>
-            <div className={styles.splitCharts}>
-              <div className={styles.splitChart}>
-                <h3 className={styles.subTitle}>UNDERGRADUATE PROGRAMS</h3>
-                <div className={styles.chartContainer}>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <PieChart>
-                      <Pie
-                        data={chartData}
-                        dataKey="value"
-                        nameKey="name"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={100}
-                        paddingAngle={2}
-                      >
-                        {chartData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip content={<CustomTooltip />} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-              <div className={styles.splitChart}>
-                <h3 className={styles.subTitle}>GRADUATE PROGRAMS</h3>
-                <div className={styles.chartContainer}>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <PieChart>
-                      <Pie
-                        data={chartData}
-                        dataKey="value"
-                        nameKey="name"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={100}
-                        paddingAngle={2}
-                      >
-                        {chartData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip content={<CustomTooltip />} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
+            <div className={styles.chartContainer}>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={addColors(formatBarData(data.reasons || {}))}
+                  layout="vertical"
+                  margin={{ top: 5, right: 30, left: 120, bottom: 5 }}
+                >
+                  <XAxis type="number" />
+                  <YAxis type="category" dataKey="name" width={120} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="value">
+                    {formatBarData(data.reasons || {}).map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
 
-        {/* Prof Training Program */}
-        <div className={`${styles.card} ${styles.trainingProgramCard}`}>
+        {/* Curriculum Alignment */}
+        <div className={`${styles.card} ${styles.curriculumAlignmentCard}`}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>PROF TRAINING PROGRAM</h2>
+            <h2 className={styles.cardTitle}>CURRICULUM ALIGNMENT TO JOB</h2>
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={200}>
+              <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
-                    data={chartData}
+                    data={addColors(formatBarData(data.jobData?.curriculumAlignment || {}))}
                     dataKey="value"
                     nameKey="name"
                     cx="50%"
                     cy="50%"
                     outerRadius={100}
                     paddingAngle={2}
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                   >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    {formatBarData(data.jobData?.curriculumAlignment || {}).map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip content={<CustomTooltip />} />
+                  <Legend />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -247,31 +254,26 @@ export default function Tracer2Analytics() {
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 20 }}>
-                  <XAxis dataKey="category" />
-                  <YAxis domain={[0, 20]} />
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={addColors(formatBarData(data.employmentStatus || {}))}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={120}
+                    paddingAngle={2}
+                    label
+                  >
+                    {formatBarData(data.employmentStatus || {}).map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
                   <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="value" fill="#7DD3FC" name="# of Votes" />
-                </BarChart>
+                  <Legend />
+                </PieChart>
               </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-
-        {/* Present Occupation */}
-        <div className={`${styles.card} ${styles.occupationCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>PRESENT OCCUPATION</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.occupationList}>
-              {occupationData.map((item, index) => (
-                <div key={index} className={styles.occupationItem}>
-                  <span className={styles.occupationName}>{item.occupation}</span>
-                  <span className={styles.occupationValue}>{item.value}</span>
-                </div>
-              ))}
             </div>
           </div>
         </div>
@@ -282,27 +284,54 @@ export default function Tracer2Analytics() {
         {/* Line of Business */}
         <div className={`${styles.card} ${styles.lineOfBusinessCard}`}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>LINE OF BUSINESS</h2>
+            <h2 className={styles.cardTitle}>MAJOR LINE OF BUSINESS</h2>
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie
-                    data={chartData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    paddingAngle={2}
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                </PieChart>
+              <ResponsiveContainer width="100%" height={250}>
+                <Treemap
+                  data={addColors(formatBarData(data.jobData?.lineOfBusiness || {}))}
+                  dataKey="value"
+                  nameKey="name"
+                  ratio={4 / 3}
+                  stroke="#fff"
+                  content={({ root, depth, x, y, width, height, index, payload, colors, rank, name }) => {
+                    const formattedData = addColors(formatBarData(data.jobData?.lineOfBusiness || {}))
+                    return (
+                      <g>
+                        <rect
+                          x={x}
+                          y={y}
+                          width={width}
+                          height={height}
+                          style={{
+                            fill: formattedData[index % formattedData.length]?.color || COLORS[0],
+                            stroke: "#fff",
+                            strokeWidth: 2 / (depth + 1e-10),
+                            strokeOpacity: 1 / (depth + 1e-10),
+                          }}
+                        />
+                        {width > 30 && height > 30 && (
+                          <text x={x + width / 2} y={y + height / 2 + 7} textAnchor="middle" fill="#fff" fontSize={14}>
+                            {name}
+                          </text>
+                        )}
+                        {width > 30 && height > 30 && (
+                          <text
+                            x={x + width / 2}
+                            y={y + height / 2 - 7}
+                            textAnchor="middle"
+                            fill="#fff"
+                            fontSize={14}
+                            fontWeight="bold"
+                          >
+                            {formattedData[index % formattedData.length]?.value || 0}
+                          </text>
+                        )}
+                      </g>
+                    )
+                  }}
+                />
               </ResponsiveContainer>
             </div>
           </div>
@@ -315,51 +344,55 @@ export default function Tracer2Analytics() {
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={200}>
+              <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
-                    data={chartData}
+                    data={addColors(formatBarData(data.jobData?.placeOfWork || {}))}
                     dataKey="value"
                     nameKey="name"
                     cx="50%"
                     cy="50%"
                     outerRadius={100}
                     paddingAngle={2}
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                   >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    {formatBarData(data.jobData?.placeOfWork || {}).map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip content={<CustomTooltip />} />
+                  <Legend />
                 </PieChart>
               </ResponsiveContainer>
             </div>
           </div>
         </div>
 
-        {/* First Job After College */}
-        <div className={`${styles.card} ${styles.firstJobCard}`}>
+        {/* How did you find your first job */}
+        <div className={`${styles.card} ${styles.findFirstJobCard}`}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>FIRST JOB AFTER COLLEGE</h2>
+            <h2 className={styles.cardTitle}>HOW DID YOU FIND YOUR FIRST JOB</h2>
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={200}>
+              <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
-                    data={chartData}
+                    data={addColors(formatBarData(data.jobData?.firstJobSearch || {}))}
                     dataKey="value"
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    outerRadius={100}
+                    innerRadius={40}
+                    outerRadius={80}
                     paddingAngle={2}
                   >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    {formatBarData(data.jobData?.firstJobSearch || {}).map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip content={<CustomTooltip />} />
+                  <Legend />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -369,30 +402,22 @@ export default function Tracer2Analytics() {
 
       {/* ROW 5 */}
       <div className={styles.row5}>
-        {/* Job Related Course */}
-        <div className={`${styles.card} ${styles.jobRelatedCourseCard}`}>
+        {/* Core Competencies */}
+        <div className={`${styles.card} ${styles.coreCompetenciesCard}`}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>JOB RELATED COURSE</h2>
+            <h2 className={styles.cardTitle}>CORE COMPETENCIES THAT HELPED IN JOB</h2>
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie
-                    data={chartData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    paddingAngle={2}
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                </PieChart>
+              <ResponsiveContainer width="100%" height={300}>
+                <RadarChart outerRadius={90} data={coreCompetenciesData}>
+                  <PolarGrid />
+                  <PolarAngleAxis dataKey="subject" />
+                  <PolarRadiusAxis angle={30} domain={[0, 100]} />
+                  <Radar name="Skills" dataKey="A" stroke="#C31D3C" fill="#C31D3C" fillOpacity={0.6} />
+                  <Legend />
+                  <Tooltip />
+                </RadarChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -401,17 +426,27 @@ export default function Tracer2Analytics() {
         {/* First Job Duration */}
         <div className={`${styles.card} ${styles.firstJobDurationCard}`}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>FIRST JOB DURATION</h2>
+            <h2 className={styles.cardTitle}>HOW LONG DID YOU STAY IN YOUR FIRST JOB</h2>
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                  <XAxis dataKey="category" />
-                  <YAxis domain={[0, 20]} />
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart
+                  data={addColors(formatBarData(data.jobData?.firstJobDuration || {}))}
+                  margin={{ top: 10, right: 30, left: 0, bottom: 40 }}
+                >
+                  <defs>
+                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#C31D3C" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#C31D3C" stopOpacity={0.1} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="name" angle={-45} textAnchor="end" height={70} />
+                  <YAxis />
+                  <CartesianGrid strokeDasharray="3 3" />
                   <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="value" fill="#7DD3FC" name="# of Votes" />
-                </BarChart>
+                  <Area type="monotone" dataKey="value" stroke="#C31D3C" fillOpacity={1} fill="url(#colorValue)" />
+                </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -420,39 +455,60 @@ export default function Tracer2Analytics() {
 
       {/* ROW 6 */}
       <div className={styles.row6}>
-        {/* Reason for Changing Job */}
-        <div className={`${styles.card} ${styles.reasonChangingJobCard}`}>
+        {/* Time to Land First Job */}
+        <div className={`${styles.card} ${styles.firstJobLandingTimeCard}`}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>REASON FOR CHANGING JOB</h2>
+            <h2 className={styles.cardTitle}>HOW LONG DID IT TAKE TO LAND YOUR FIRST JOB</h2>
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                  <XAxis dataKey="category" />
-                  <YAxis domain={[0, 20]} />
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={addColors(formatBarData(data.jobData?.jobLandingTime || {}))}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" angle={-45} textAnchor="end" height={70} />
+                  <YAxis />
                   <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="value" fill="#7DD3FC" name="# of Votes" />
+                  <Bar dataKey="value">
+                    {formatBarData(data.jobData?.jobLandingTime || {}).map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
         </div>
 
-        {/* First Job Landing Time */}
-        <div className={`${styles.card} ${styles.firstJobLandingTimeCard}`}>
+        {/* Curriculum Alignment to Job */}
+        <div className={`${styles.card} ${styles.curriculumJobAlignmentCard}`}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>FIRST JOB LANDING TIME</h2>
+            <h2 className={styles.cardTitle}>WAS YOUR CURRICULUM ALIGNED TO YOUR JOB?</h2>
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                  <XAxis dataKey="category" />
-                  <YAxis domain={[0, 20]} />
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={addColors(formatBarData(data.jobData?.curriculumAlignment || {}))}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={70}
+                    outerRadius={90}
+                    paddingAngle={2}
+                    label
+                  >
+                    {formatBarData(data.jobData?.curriculumAlignment || {}).map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
                   <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="value" fill="#7DD3FC" name="# of Votes" />
-                </BarChart>
+                  <Legend />
+                </PieChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -461,4 +517,3 @@ export default function Tracer2Analytics() {
     </div>
   )
 }
-

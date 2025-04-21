@@ -1,5 +1,6 @@
 import express from "express";
 import { SurveySubmission } from "./surveyroutes.js";
+import TracerSurvey2 from "../models/TracerSurvey2.js";
 
 const router = express.Router();
 
@@ -123,6 +124,91 @@ router.get("/tracer1-analytics", async (req, res) => {
   } catch (error) {
     console.error("Error fetching tracer1 analytics:", error);
     res.status(500).json({ success: false, message: "Failed to fetch analytics data." });
+  }
+});
+
+router.get("/tracer2/analytics", async (req, res) => {
+  try {
+    const submissions = await TracerSurvey2.find({ version: 2 });
+
+    // 1. Total Respondents
+    const totalRespondents = submissions.length;
+
+    // 2. Advanced Degree Holders (Masteral / Doctorate)
+    const advancedDegreeHolders = submissions.filter(entry =>
+      entry.education.some(edu =>
+        edu.degreeType.some(type =>
+          /master|doctorate|phd/i.test(type)
+        )
+      )
+    ).length;
+
+    // 3. Reasons for Taking Course
+    const reasons = {};
+    submissions.forEach(entry => {
+      for (const [key, obj] of Object.entries(entry.reasons || {})) {
+        if (!reasons[key]) reasons[key] = { undergraduate: 0, graduate: 0 };
+        if (obj.undergraduate) reasons[key].undergraduate++;
+        if (obj.graduate) reasons[key].graduate++;
+      }
+    });
+
+    // 4. Employment Status
+    const employmentStatus = {};
+    submissions.forEach(entry => {
+      const key = entry.employmentStatus;
+      employmentStatus[key] = (employmentStatus[key] || 0) + 1;
+    });
+
+    // 5–11. Job Details (if employed)
+    const jobData = {
+      lineOfBusiness: {},
+      placeOfWork: {},
+      firstJobDuration: {},
+      firstJobSearch: {},
+      jobLandingTime: {},
+      jobLevel: {},
+      curriculumAlignment: {},
+      coreCompetencies: {}
+    };
+
+    submissions.forEach(entry => {
+      const job = entry.jobDetails || {};
+
+      if (entry.employmentStatus !== "unemployed") {
+        const count = (field, value) => {
+          if (value) jobData[field][value] = (jobData[field][value] || 0) + 1;
+        };
+
+        count("lineOfBusiness", job.lineOfBusiness);
+        count("placeOfWork", job.placeOfWork);
+        count("firstJobDuration", job.firstJobDuration);
+        count("jobLandingTime", job.jobLandingTime);
+        count("jobLevel", job.jobLevel);
+        count("curriculumAlignment", job.curriculumRelevant);
+
+        // First Job Search (multi-checkbox)
+        Object.entries(job.firstJobSearch || {}).forEach(([key, val]) => {
+          if (val) jobData.firstJobSearch[key] = (jobData.firstJobSearch[key] || 0) + 1;
+        });
+
+        // Core Competencies (multi-checkbox)
+        Object.entries(job.competencies || {}).forEach(([key, val]) => {
+          if (val) jobData.coreCompetencies[key] = (jobData.coreCompetencies[key] || 0) + 1;
+        });
+      }
+    });
+
+    res.json({
+      totalRespondents,
+      advancedDegreeHolders,
+      reasons,
+      employmentStatus,
+      jobData
+    });
+  } catch (err) {
+    console.error("Error generating tracer2 analytics:", err);
+    res.status(500).json({ error: "Failed to generate analytics." });
   }
 });
   

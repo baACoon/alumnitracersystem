@@ -16,7 +16,7 @@ import profileRoutes from './routes/profile.js';
 import alumnipage from './routes/alumnipageroutes.js';
 import dashboardRoutes from './routes/dashboardroutes.js';
 import uploadRoutes from './routes/uploadroutes.js';
-import reminderRoutes from "./routes/reminderroutes.js";
+// import reminderRoutes from "./routes/reminderroutes.js";
 import notificationRoutes from "./routes/notificationroutes.js"
 import fs from 'fs';
 
@@ -46,7 +46,7 @@ app.use("/profile", profileRoutes);
 app.use("/api/alumni", alumnipage);
 app.use("/dashboard", dashboardRoutes);
 app.use("/api", uploadRoutes);
-app.use("/api/reminders", reminderRoutes);
+// app.use("/api/reminders", reminderRoutes);
 app.use("/api/notifications", notificationRoutes);
 // Connect to MongoDB Atlas before starting the server
 connectToDatabase()
