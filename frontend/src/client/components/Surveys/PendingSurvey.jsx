@@ -11,11 +11,14 @@ export const PendingSurvey = () => {
   const [surveyQuestions, setSurveyQuestions] = useState([]);
   const [responses, setResponses] = useState({});
   const [tracer2Submitted, setTracer2Submitted] = useState(false);
+  const [isTracerSurveyOpen, setIsTracerSurveyOpen] = useState(false);
+  const [nextTracerVersion, setNextTracerVersion] = useState(null);
+  const [releaseDate, setReleaseDate] = useState(null);
   const [tracer2ReleaseDate, setTracer2ReleaseDate] = useState(null);
 
   const today = new Date();
   const userId = localStorage.getItem("userId");
-  //const isTracer2Open = tracer2ReleaseDate && today >= new Date(tracer2ReleaseDate);
+  const isTracer2Open = tracer2ReleaseDate && today >= new Date(tracer2ReleaseDate);
 
   useEffect(() => {
     const fetchSurveys = async () => {
@@ -42,34 +45,61 @@ export const PendingSurvey = () => {
       }
     };
 
-    // const checkTracer2Status = async () => {
-    //   try {
-    //     const res = await axios.get(`http://localhost:5050/api/survey2/status?userId=${userId}`);
-    //     setTracer2Submitted(res.data.submitted);
-    //   } catch (err) {
-    //     console.error("Failed to check Tracer 2 status:", err);
-    //   }
-    // };
+    const fetchLatestTracer = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5050/tracerSurvey2/api/tracer2/latest/${userId}`)
 
-    // const fetchTracer1Date = async () => {
-    //   try {
-    //     const res = await axios.get(`http://localhost:5050/surveys/user-surveys`, {
-    //       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    //     });
-    //     const tracer1Survey = res.data?.data?.[0];
-    //     if (tracer1Survey?.createdAt) {
-    //       const completedDate = new Date(tracer1Survey.createdAt);
-    //       completedDate.setFullYear(completedDate.getFullYear() + 2);
-    //       setTracer2ReleaseDate(completedDate);
-    //     }
-    //   } catch (err) {
-    //     console.error("Failed to get Tracer 1 survey date:", err);
-    //   }
-    // };
+        const { nextVersion, releaseDate, eligible } = res.data;
+
+        setNextTracerVersion(nextVersion);
+        setReleaseDate(new Date(releaseDate));
+        setIsTracerSurveyOpen(eligible);
+      } catch (err) {
+        console.error("Error fetching latest tracer info:", err);
+      }
+    };
+
+    // // ✅ FORCED OVERRIDE FOR TESTING
+    setTimeout(() => {
+      setIsTracerSurveyOpen(true);
+      setReleaseDate(new Date()); // just for UI display
+    }, 1000);
+
+    const checkTracer2Status = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5050/surveys/user-status/${userId}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        setTracer2Submitted(res.data.status.tracer2Completed);
+      } catch (err) {
+        console.error("Failed to check Tracer 2 status:", err);
+      }
+    };
+
+    const fetchTracer1Date = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5050/surveys/completed/${userId}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        const tracer1Survey = res.data?.surveys?.find(s => s.surveyType === "Tracer1");
+        if (tracer1Survey?.dateCompleted) {
+          const completedDate = new Date();
+          completedDate.setDate(completedDate.getDate() - 1); // simulate release = yesterday
+          setTracer2ReleaseDate(completedDate)
+          // const completedDate = new Date(tracer1Survey.dateCompleted);
+          // completedDate.setFullYear(completedDate.getFullYear() + 2);
+          // setTracer2ReleaseDate(completedDate);
+        }
+      } catch (err) {
+        console.error("Failed to get Tracer 1 survey date:", err);
+      }
+    };
+
 
     fetchSurveys();
-   // checkTracer2Status();
-   // fetchTracer1Date();
+    fetchLatestTracer();
+    checkTracer2Status();
+    fetchTracer1Date();
   }, [userId]);
 
   const openSurveyModal = async (survey) => {
@@ -131,7 +161,7 @@ export const PendingSurvey = () => {
     <div className={styles.surveyContainer}>
       <h2>AVAILABLE SURVEYS</h2>
       <div className={styles.surveyList}>
-      {loading ? (
+        {loading ? (
           <div className="loadingOverlay">
             <div className="loaderContainer">
               <svg viewBox="0 0 240 240" height="80" width="80" className="loader">
@@ -146,22 +176,17 @@ export const PendingSurvey = () => {
         ) : (
           <>
             {!tracer2Submitted && (
-              <div
-                className={`${styles.surveyCard} ${styles.disabledCard}`}//original: className={`${styles.surveyCard} ${!isTracer2Open ? styles.disabledCard : ''}`}
-                onClick={() => navigate("/TracerSurvey2")} //original: onClick={isTracer2Open ? () => navigate("/TracerSurvey2") : null}
-                style={{ order: -1 }}
-              >
-                <h3 className={`${styles.surveyTitle} ${styles.grayText}`}>  {/* original:    <h3 className={`${styles.surveyTitle} ${!isTracer2Open ? styles.grayText : ''}`}></h3> */}
-                  Tracer Survey 2
-                </h3>
-                
-               {/* <p className={`${styles.surveyDescription} ${!isTracer2Open ? styles.grayText : ''}`}>
-
-                  {!isTracer2Open
-                    ? `Open on or after ${tracer2ReleaseDate?.toLocaleDateString()}`
-                    : "Your journey matters—share your story!"}
-                </p> */}
-              </div>
+              isTracerSurveyOpen ? (
+                <div className={styles.surveyCard} onClick={() => navigate(`/TracerSurvey2?v=${nextTracerVersion}`)} style={{ order: -1 }}>
+                  <h3>Tracer Survey {nextTracerVersion}</h3>
+                  <p>Now available – thank you for staying connected!</p>
+                </div>
+              ) : (
+                <div className={`${styles.surveyCard} ${styles.disabledCard}`} style={{ order: -1 }}>
+                  <h3 className={styles.grayText}>Tracer Survey {nextTracerVersion}</h3>
+                  <p className={styles.grayText}>Available on {releaseDate?.toLocaleDateString()}</p>
+                </div>
+              )
             )}
 
             {activeSurveys.length > 0 ? (

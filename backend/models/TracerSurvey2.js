@@ -12,6 +12,12 @@ const TracerSurvey2Schema = new mongoose.Schema(
       default: "Tracer2",
       immutable: true
     },
+    version: {
+      type: Number,
+      required: true,
+      default: 2
+    },
+    
     date: { 
       type: Date, 
       default: Date.now 
@@ -78,7 +84,7 @@ const TracerSurvey2Schema = new mongoose.Schema(
       careerShift: Boolean,
       others: Boolean
     },
-    employmentStatus: {
+    job_status: {
       type: String,
       enum: ["permanent", "contractual", "temporary", "selfEmployed", "unemployed"],
       required: true
@@ -95,6 +101,9 @@ const TracerSurvey2Schema = new mongoose.Schema(
     },
     jobDetails: {
       occupation: String,
+      company_name: String,
+      year_started: String,
+      type_of_organization: String,
       lineOfBusiness: String,
       placeOfWork: String,
       firstJob: String,
@@ -136,9 +145,9 @@ const TracerSurvey2Schema = new mongoose.Schema(
         other: Boolean
       },
       jobLandingTime: String,
-      jobLevel: String,
+      position: String,
       salaryRange: String,
-      curriculumRelevant: String,
+      work_alignment: String,
       competencies: {
         communication: Boolean,
         humanRelations: Boolean,
