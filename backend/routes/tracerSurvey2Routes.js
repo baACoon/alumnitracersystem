@@ -8,8 +8,13 @@ router.get("/user-status/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const hasTracer2 = await TracerSurvey2.exists({ userId });
-    
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user ID format" });
+    }
+
+    // FIXED: convert string to ObjectId before query
+    const hasTracer2 = await TracerSurvey2.exists({ userId: new mongoose.Types.ObjectId(userId) });
+
     res.json({
       status: {
         tracer2Completed: !!hasTracer2
@@ -20,6 +25,7 @@ router.get("/user-status/:userId", async (req, res) => {
     res.status(500).json({ error: "Failed to check Tracer 2 completion" });
   }
 });
+
 
 
 
