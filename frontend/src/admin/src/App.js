@@ -1,53 +1,40 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
-import {BrowserRouter, Routes, Route} from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-
-{/* for Client path */}
-import FrontPage from '../../client/components/Frontpage/frontpage';
-import CrossCheckSurveyForm from '../src/client/components/CrossCheck-Survey/CrossCheck-Survey';
-import Home from '../src/client/components/Home/home'
-import SurveyPage from '../src/client/components/Surveys/SurveyPage';
-import TracerSurvey2 from '../src/client/components/Surveys/TracerSurvey2/TracerSurvey2';
-import Events from '../src/client/components/Events/events';
-import JobPage from '../src/client/components/JobPage/jobpage';
-import JobPageGive from '../src/client/components/JobPageGive/jobpagegive';
-import AddJobForm from '../src/client/components/JobPageGive/addjobForm';
-import JobPageList from '../src/client/components/JobPageList/jobpagelist';
-import Contact from '../src/client/components/Contact/contact';
-import Profile from '../src/client/components/Profile/profile';
-import SurveyForm from '../src/client/components/SurveyForm/SurveyForm';
-import CompletedForm from '../src/client/components/CompletedForm/CompletedForm';
-
-
+//import Dashboard from './components/Dashboard/Dashboard';
+import Dashboard from './components/Dashboard/MainPage/Dashboard';
+import AlumniPage from './components/Alumni/Page/AlumniPage';
+import SurveyContent from './components/AdminSurvey/Content/SurveyContent';
+import EvenTabs from './components/Event/EventTabs';
+import Opportunities from './components/Opportunities/Admin-Opportunities';
+import Navbar from './components/Navbar';
+import Login from './Pages/Login';
+import Register from './Pages/Register';
 
 function App() {
   return (
     <div className="App">
-      <div className="backgroundWrapper">
-        <BrowserRouter>
-          <Routes>
-            {/* CLIENT path */}
-            <Route index element={<FrontPage />} />
-            <Route path="/Frontpage" element={<FrontPage />} />
-            <Route path="/RegisterSurveyForm" element={<CrossCheckSurveyForm />} />
-            <Route path="/Home" element={<Home />} />
-            <Route path="/SurveyPage" element={<SurveyPage />} />
-            <Route path="/TracerSurvey2" element={<TracerSurvey2 />} />
-            <Route path="/Events" element={<Events />} />
-            <Route path="/JobPage" element={<JobPage />} />
-            <Route path="/JobPageGive" element={<JobPageGive />} />
-            <Route path="/JobPageGive/addjobform" element={<AddJobForm />} />
-            <Route path="/JobPageList" element={<JobPageList />} />
-            <Route path="/Contact" element={<Contact />} />
-            <Route path="/Profile" element={<Profile />} />
-            <Route path="/SurveyForm" element={<SurveyForm />} />
-            <Route path="/CompletedForm" element={<CompletedForm />} />
-       
-          </Routes>
-        </BrowserRouter>
-      </div>
+      <BrowserRouter>
+        <Routes>
+          {/* Default route: Redirect to Login */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<Login />} />
+
+          {/* Other admin paths */}
+          <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/alumni-page" element={<AlumniPage />} />
+          <Route path="/SurveyContent" element={<SurveyContent />} />
+          <Route path="/EventTabs" element={<EvenTabs />} />
+          <Route path="/Opportunities" element={<Opportunities />} />
+          <Route path="/navbar" element={<Navbar />} />
+          <Route path="/register" element={<Register />} />
+          
+          {/* Catch all route */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
