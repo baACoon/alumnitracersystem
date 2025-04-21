@@ -4,6 +4,25 @@ import mongoose from "mongoose";
 
 const router = express.Router();
 
+router.get("/user-status/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const hasTracer2 = await TracerSurvey2.exists({ userId });
+    
+    res.json({
+      status: {
+        tracer2Completed: !!hasTracer2
+      }
+    });
+  } catch (err) {
+    console.error("Error checking Tracer 2 status:", err);
+    res.status(500).json({ error: "Failed to check Tracer 2 completion" });
+  }
+});
+
+
+
 // POST - Submit Tracer Survey 2
 router.post("/tracerSurvey2/submit", async (req, res) => {
   try {
