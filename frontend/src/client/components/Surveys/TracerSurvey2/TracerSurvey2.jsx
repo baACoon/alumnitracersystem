@@ -44,7 +44,7 @@ function TracerSurvey2({ onBack }) {
       careerShift: false,
       others: false
     },
-    employmentStatus: "",
+    job_status: "",
     unemploymentReasons: {
       furtherStudy: false,
       noJobOpportunity: false,
@@ -55,6 +55,9 @@ function TracerSurvey2({ onBack }) {
     },
     jobDetails: {
       occupation: "",
+      company_name: "",
+      year_started: "",
+      type_of_organization: "",
       lineOfBusiness: "",
       placeOfWork: "",
       firstJob: "",
@@ -65,9 +68,9 @@ function TracerSurvey2({ onBack }) {
       firstJobDuration: "",
       firstJobSearch: {},
       jobLandingTime: "",
-      jobLevel: "",
+      position: "",
       salaryRange: "",
-      curriculumRelevant: "",
+      work_alignment: "",
       competencies: {},
     },
 
@@ -112,8 +115,11 @@ function TracerSurvey2({ onBack }) {
     }
     if (currentPage === 3) {
       return (
-        formData.employmentStatus &&
+        formData.job_status &&
         formData.jobDetails.occupation &&
+        formData.jobDetails.company_name &&
+        formData.jobDetails.year_started &&
+        formData.jobDetails.type_of_organization &&
         formData.jobDetails.lineOfBusiness &&
         formData.jobDetails.placeOfWork
       );
@@ -176,7 +182,7 @@ function TracerSurvey2({ onBack }) {
         careerShift: !!formData.motivation.careerShift,
         others: !!formData.motivation.others,
       },
-      employmentStatus: formData.employmentStatus || "unemployed",
+      job_status: formData.job_status || "unemployed",
       unemploymentReasons: {
         furtherStudy: !!formData.unemploymentReasons.furtherStudy,
         noJobOpportunity: !!formData.unemploymentReasons.noJobOpportunity,
@@ -192,9 +198,9 @@ function TracerSurvey2({ onBack }) {
         changingJobReasons: formData.jobDetails.changingJobReasons || {},
         firstJobSearch: formData.jobDetails.firstJobSearch || {},
         jobLandingTime: formData.jobDetails.jobLandingTime || "",
-        jobLevel: formData.jobDetails.jobLevel || "",
+        position: formData.jobDetails.position || "",
         salaryRange: formData.jobDetails.salaryRange || "",
-        curriculumRelevant: formData.jobDetails.curriculumRelevant || "",
+        work_alignment: formData.jobDetails.work_alignment || "",
         competencies: formData.jobDetails.competencies || {}
       },
     };

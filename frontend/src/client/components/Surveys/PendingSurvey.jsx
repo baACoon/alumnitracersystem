@@ -60,10 +60,10 @@ export const PendingSurvey = () => {
     };
 
     // // ✅ FORCED OVERRIDE FOR TESTING
-    // setTimeout(() => {
-    //   setIsTracerSurveyOpen(true);
-    //   setReleaseDate(new Date()); // just for UI display
-    // }, 1000);
+    setTimeout(() => {
+      setIsTracerSurveyOpen(true);
+      setReleaseDate(new Date()); // just for UI display
+    }, 1000);
 
     const checkTracer2Status = async () => {
       try {
