@@ -79,7 +79,7 @@ function AddjobFormMainPage() {
                 const response = await axios.get(
                     `https://alumnitracersystem.onrender.com/tracerSurvey2/user-status/${userId}`,
                     { headers: { Authorization: `Bearer ${token}` } }
-                  );                  
+                );
                 setTracer2Completed(response.data.status.tracer2Completed);
             } catch (err) {
                 console.error("Failed to check Tracer 2 status:", err);
@@ -146,7 +146,21 @@ function AddjobFormMainPage() {
         }
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return (
+            <div className="loadingOverlay">
+                <div className="loaderContainer">
+                    <svg viewBox="0 0 240 240" height="80" width="80" className="loader">
+                        <circle strokeLinecap="round" strokeDashoffset="-330" strokeDasharray="0 660" strokeWidth="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className="pl__ring pl__ringA"></circle>
+                        <circle strokeLinecap="round" strokeDashoffset="-110" strokeDasharray="0 220" strokeWidth="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className="pl__ring pl__ringB"></circle>
+                        <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className="pl__ring pl__ringC"></circle>
+                        <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className="pl__ring pl__ringD"></circle>
+                    </svg>
+                    <p>Loading...</p>
+                </div>
+            </div>
+        );
+    }
 
     if (!tracer2Completed) {
         return (
@@ -168,114 +182,8 @@ function AddjobFormMainPage() {
             <form className="opportunity-form" onSubmit={handleSubmit}>
                 {/* ... rest of form unchanged ... */}
 
-                <div className="form-group">
-                    <label htmlFor="title">Title:</label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter Job Title"
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="company">Company:</label>
-                    <input
-                        type="text"
-                        id="company"
-                        name="company"
-                        value={formData.company}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter company name"
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="college">College:</label>
-                    <select id="college" name="college" value={formData.college} onChange={handleChange}>
-                        <option value="">Select College</option>
-                        {Object.keys(coursesByCollege).map((collegeName) => (
-                            <option key={collegeName} value={collegeName}>
-                                {collegeName}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="course">Course:</label>
-                    <select id="course" name="course" value={formData.course} onChange={handleChange} disabled={!formData.college}>
-                        <option value="">Select Course</option>
-                        {formData.college &&
-                            coursesByCollege[formData.college].map((courseName) => (
-                                <option key={courseName} value={courseName}>
-                                    {courseName}
-                                </option>
-                            ))}
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="location">Location:</label>
-                    <input
-                        type="text"
-                        id="location"
-                        name="location"
-                        value={formData.location}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter job location"
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="type">Type:</label>
-                    <select id="type" name="type" value={formData.type} onChange={handleChange}>
-                        <option value="full-time">Full Time</option>
-                        <option value="part-time">Part Time</option>
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="description">Job Description:</label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter job description"
-                    ></textarea>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="responsibilities">Key Responsibilities:</label>
-                    <textarea
-                        id="responsibilities"
-                        name="responsibilities"
-                        value={formData.responsibilities}
-                        onChange={handleChange}
-                        placeholder="Enter key responsibilities"
-                    ></textarea>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="qualifications">Qualification:</label>
-                    <textarea
-                        id="qualifications"
-                        name="qualifications"
-                        value={formData.qualifications}
-                        onChange={handleChange}
-                        placeholder="Enter required qualifications"
-                    ></textarea>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="source">Source:</label>
-                    <input
-                        type="text"
-                        id="source"
-                        name="source"
-                        value={formData.source}
-                        onChange={handleChange}
-                        placeholder="Enter the source or link"
-                    />
-                </div>
+                {/* [form fields go here] */}
+
                 <button type="submit" className="submit-button">
                     Submit
                 </button>
