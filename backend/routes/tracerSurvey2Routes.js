@@ -5,80 +5,67 @@ import mongoose from "mongoose";
 const router = express.Router();
 
 // POST - Submit Tracer Survey 2
-router.post("/submit", async (req, res) => {
+router.post("/tracerSurvey2/submit", async (req, res) => {
   try {
-    // Add payload logging
-    console.log("Raw incoming payload:", req.body);
-    
     const { userId, ...surveyData } = req.body;
 
-    // Enhanced validation
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ 
-        error: "Invalid user ID",
-        details: `Received: ${userId}` 
-      });
-    }
-    
-
-    // Check required array fields
-    if (!surveyData.education?.length || !surveyData.trainings?.length) {
       return res.status(400).json({
-        error: "Missing required fields",
-        details: "Education and trainings arrays cannot be empty"
+        error: "Invalid user ID",
+        details: `Received: ${userId}`
       });
     }
+
+    // 🧠 Fetch most recent version for user
+    const latestSubmission = await TracerSurvey2.find({ userId }).sort({ version: -1 }).limit(1);
+    const newVersion = latestSubmission.length > 0
+      ? latestSubmission[0].version + 1
+      : 2;
 
     const newSurvey = new TracerSurvey2({
       userId,
-      ...surveyData,
-      surveyType: "Tracer2",
-      date: new Date()
+      version: newVersion,
+      ...surveyData
     });
 
-    // Explicit validation
-    const validationError = newSurvey.validateSync();
-    if (validationError) {
-      const errors = {};
-      Object.keys(validationError.errors).forEach(key => {
-        errors[key] = validationError.errors[key].message;
-      });
-      return res.status(400).json({
-        error: "Validation failed",
-        details: errors
-      });
-    }
+    await newSurvey.save();
 
-    const savedSurvey = await newSurvey.save();
-    
     res.status(201).json({
       success: true,
-      message: "Survey submitted successfully",
-      surveyId: savedSurvey._id,
-      timestamp: savedSurvey.createdAt
+      message: `Tracer Survey v${newVersion} submitted successfully.`,
+      version: newVersion
     });
-
-  } catch (error) {
-    console.error("Full error:", error);
-    
-    if (error.name === 'ValidationError') {
-      const errors = {};
-      Object.keys(error.errors).forEach(key => {
-        errors[key] = error.errors[key].message;
-      });
-      return res.status(400).json({
-        error: "Validation failed",
-        details: errors
-      });
-    }
-    
-    res.status(500).json({
-      error: "Server error",
-      details: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
+  } catch (err) {
+    console.error("Tracer Survey Submission Error:", err);
+    res.status(500).json({ error: "Failed to submit survey.", details: err.message });
   }
 });
+
+// routes/tracerSurvey2Routes.js
+router.get("/api/tracer2/latest/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const latest = await TracerSurvey2.find({ userId })
+      .sort({ version: -1 })
+      .limit(1);
+
+    const latestVersion = latest.length ? latest[0].version : 1;
+    const latestDate = latest.length ? new Date(latest[0].createdAt) : new Date();
+
+    const nextReleaseDate = new Date(latestDate);
+    nextReleaseDate.setFullYear(nextReleaseDate.getFullYear() + 2);
+
+    res.json({
+      nextVersion: latestVersion + 1,
+      releaseDate: nextReleaseDate,
+      eligible: new Date() >= nextReleaseDate
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch latest tracer info." });
+  }
+});
+
 
 // GET - Fetch all submissions with pagination and filtering
 router.get("/", async (req, res) => {

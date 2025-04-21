@@ -210,7 +210,7 @@ function CrossCheckSurveyForm() {
 
       if (response.data.success) {
         setSubmitStatus({ type: "success", message: "Survey submitted successfully!" });
-        setTimeout(() => navigate("/profile"), 2000); // Redirect to homepage after 2 seconds
+        setTimeout(() => navigate("/Profile"), 2000); // Redirect to homepage after 2 seconds
         setFormData({
           first_name: "",
           middle_name: "",

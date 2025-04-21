@@ -154,9 +154,9 @@ function TracerSurvey2({ onBack }) {
         degreeType: Array.isArray(edu.degreeType) ? edu.degreeType : [edu.degreeType || ""],
         college: Array.isArray(edu.college) ? edu.college : [edu.college || ""],
         course: Array.isArray(edu.course) ? edu.course : [edu.course || ""],
-        yearGraduated: edu.yearGraduated || "",
-        institution: edu.institution || ""
-      })),
+        yearGraduated: Array.isArray(edu.yearGraduated) ? edu.yearGraduated[0] : edu.yearGraduated || "",
+        institution: Array.isArray(edu.institution) ? edu.institution[0] : edu.institution || ""
+      })),      
       examinations: formData.noExams ? [] : formData.examinations.map(exam => ({
         examName: exam.examName || "",
         dateTaken: exam.dateTaken || "",
@@ -203,7 +203,7 @@ function TracerSurvey2({ onBack }) {
   
     try {
       const response = await axios.post(
-        'http://localhost:5050/tracerSurvey2/submit',
+        'http://localhost:5050/tracerSurvey2/tracerSurvey2/submit',
         payload,
         {
           headers: {

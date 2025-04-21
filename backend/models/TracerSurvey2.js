@@ -12,6 +12,12 @@ const TracerSurvey2Schema = new mongoose.Schema(
       default: "Tracer2",
       immutable: true
     },
+    version: {
+      type: Number,
+      required: true,
+      default: 2
+    },
+    
     date: { 
       type: Date, 
       default: Date.now 
