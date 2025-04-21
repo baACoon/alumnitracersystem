@@ -77,9 +77,9 @@ function AddjobFormMainPage() {
 
             try {
                 const response = await axios.get(
-                    `https://alumnitracersystem.onrender.com/surveys/user-status/${userId}`,
+                    `https://alumnitracersystem.onrender.com/tracerSurvey2/user-status/${userId}`,
                     { headers: { Authorization: `Bearer ${token}` } }
-                );
+                  );                  
                 setTracer2Completed(response.data.status.tracer2Completed);
             } catch (err) {
                 console.error("Failed to check Tracer 2 status:", err);
