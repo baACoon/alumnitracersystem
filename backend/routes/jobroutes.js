@@ -1,9 +1,11 @@
+// jobroutes.js
 import express from 'express';
 import { protect } from '../middlewares/authmiddleware.js';
 import Job from '../models/job.js';
 
 const router = express.Router();
 
+// Post job by alumni
 router.post('/jobpost', protect, async (req, res) => {
     try {
         const { title, company, location, type, description, responsibilities, qualifications, source, college, course } = req.body;
@@ -21,9 +23,9 @@ router.post('/jobpost', protect, async (req, res) => {
             responsibilities,
             qualifications,
             source,
-            college,  
-            course,   
-            createdBy: req.user.id, 
+            college,
+            course,
+            createdBy: req.user.id,
             status: 'Pending',
         });
 
@@ -35,16 +37,16 @@ router.post('/jobpost', protect, async (req, res) => {
     }
 });
 
-
-// Fetch all jobs (with optional filtering by status)
+// Fetch jobs for logged-in user only
 router.get('/jobpost', protect, async (req, res) => {
     try {
         const { status } = req.query;
-        const filter = status ? { status: { $in: status.split(',') } } : {};
+        const filter = {
+            ...(status && { status: { $in: status.split(',') } }),
+            createdBy: req.user.id // Filter by current user's jobs
+        };
 
-        const jobs = await Job.find(filter)
-            .populate('createdBy', 'name email') 
-            .sort({ createdAt: -1 });
+        const jobs = await Job.find(filter).sort({ createdAt: -1 });
 
         res.status(200).json(jobs);
     } catch (error) {
@@ -52,7 +54,7 @@ router.get('/jobpost', protect, async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch jobs.' });
     }
 });
-  
+
 // Approve a job posting
 router.post('/:id/approve', protect, async (req, res) => {
     try {
@@ -62,9 +64,7 @@ router.post('/:id/approve', protect, async (req, res) => {
             { new: true }
         );
 
-        if (!job) {
-            return res.status(404).json({ message: 'Job not found.' });
-        }
+        if (!job) return res.status(404).json({ message: 'Job not found.' });
 
         res.status(200).json({ message: 'Job approved successfully.', job });
     } catch (error) {
@@ -73,28 +73,29 @@ router.post('/:id/approve', protect, async (req, res) => {
     }
 });
 
+// Delete job
 router.delete('/:id', protect, async (req, res) => {
     try {
-        const job = await Job.findByIdAndDelete(req.params.id);
+        const job = await Job.findById(req.params.id);
+        if (!job) return res.status(404).json({ message: 'Job not found.' });
 
-        if (!job) {
-            return res.status(404).json({ message: 'Job not found.' });
+        if (job.createdBy.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'Unauthorized to delete this job.' });
         }
 
+        await job.deleteOne();
         res.status(200).json({ message: 'Job deleted successfully.' });
     } catch (error) {
-        console.error('Error deleting job:', error.message);
+        console.error('Error deleting job:', error);
         res.status(500).json({ message: 'Failed to delete job.' });
     }
 });
 
+// Deny a job with feedback
 router.post('/:id/deny', protect, async (req, res) => {
     try {
         const { feedback } = req.body;
-
-        if (!feedback) {
-            return res.status(400).json({ error: 'Feedback is required to deny a job.' });
-        }
+        if (!feedback) return res.status(400).json({ error: 'Feedback is required to deny a job.' });
 
         const job = await Job.findByIdAndUpdate(
             req.params.id,
@@ -102,9 +103,7 @@ router.post('/:id/deny', protect, async (req, res) => {
             { new: true }
         );
 
-        if (!job) {
-            return res.status(404).json({ error: 'Job not found.' });
-        }
+        if (!job) return res.status(404).json({ error: 'Job not found.' });
 
         res.status(200).json({ message: 'Job denied successfully.', job });
     } catch (error) {
@@ -113,31 +112,25 @@ router.post('/:id/deny', protect, async (req, res) => {
     }
 });
 
+// Add comment to job
 router.post('/:id/comments', protect, async (req, res) => {
     try {
         const { comment } = req.body;
-
-        if (!comment) {
-            return res.status(400).json({ message: 'Comment is required.' });
-        }
+        if (!comment) return res.status(400).json({ message: 'Comment is required.' });
 
         const job = await Job.findById(req.params.id);
+        if (!job) return res.status(404).json({ message: 'Job not found.' });
 
-        if (!job) {
-            return res.status(404).json({ message: 'Job not found.' });
-        }
-
-        // Add the comment to the job's comments array
         const newComment = {
             text: comment,
-            user: req.user.id, // Associate the comment with the logged-in user
+            user: req.user.id,
             date: new Date(),
         };
 
         job.comments = [...(job.comments || []), newComment];
         await job.save();
 
-        res.status(201).json(newComment); // Return the newly added comment
+        res.status(201).json(newComment);
     } catch (error) {
         console.error('Error adding comment:', error.message);
         res.status(500).json({ message: 'Failed to add comment.' });
@@ -148,10 +141,7 @@ router.post('/:id/comments', protect, async (req, res) => {
 router.get('/:id/comments', protect, async (req, res) => {
     try {
         const job = await Job.findById(req.params.id).populate('comments.user', 'name email');
-
-        if (!job) {
-            return res.status(404).json({ message: 'Job not found.' });
-        }
+        if (!job) return res.status(404).json({ message: 'Job not found.' });
 
         res.status(200).json(job.comments || []);
     } catch (error) {
@@ -160,25 +150,11 @@ router.get('/:id/comments', protect, async (req, res) => {
     }
 });
 
-router.delete('/:id', protect, async (req, res) => {
-    try {
-      const job = await Job.findByIdAndDelete(req.params.id);
-      if (!job) {
-        return res.status(404).json({ message: 'Job not found.' });
-      }
-      res.status(200).json({ message: 'Job deleted successfully.' });
-    } catch (error) {
-      console.error('Error deleting job:', error);
-      res.status(500).json({ message: 'Failed to delete job.' });
-    }
-  });
-
- // Admin only - Create Job
- router.post('/create', protect, async (req, res) => {
+// Admin only: Create job post
+router.post('/create', protect, async (req, res) => {
     try {
         const { title, company, location, type, description, responsibilities, qualifications, source, college, course } = req.body;
 
-        // Check for required fields
         if (!college || !course || !title || !company || !location || !description) {
             return res.status(400).json({ message: "All required fields must be provided!" });
         }
@@ -192,20 +168,18 @@ router.delete('/:id', protect, async (req, res) => {
             responsibilities,
             qualifications,
             source,
-            college,  
-            course,   
-            createdBy: req.user.id, 
-            status: 'Published', // Always set status to Published for admin
+            college,
+            course,
+            createdBy: req.user.id,
+            status: 'Published',
         });
 
         await job.save();
-        res.status(201).json({ message: 'Job posted successfully. Pending admin approval.' });
+        res.status(201).json({ message: 'Job posted successfully.' });
     } catch (error) {
         console.error('Error posting job:', error.message);
-        res.status(500).json({ message: 'Failed to post the job.', error: error.message }); // Include error message for debugging
+        res.status(500).json({ message: 'Failed to post the job.', error: error.message });
     }
 });
-
-
 
 export default router;
