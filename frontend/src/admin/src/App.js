@@ -5,7 +5,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom"
 
 
 {/* for Client path */}
-import FrontPage from '../src/client/components/Frontpage/frontpage';
+import FrontPage from '../../client/components/Frontpage/frontpage';
 import CrossCheckSurveyForm from '../src/client/components/CrossCheck-Survey/CrossCheck-Survey';
 import Home from '../src/client/components/Home/home'
 import SurveyPage from '../src/client/components/Surveys/SurveyPage';
