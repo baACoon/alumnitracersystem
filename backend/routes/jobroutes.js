@@ -41,12 +41,15 @@ router.post('/jobpost', protect, async (req, res) => {
 router.get('/jobpost', protect, async (req, res) => {
     try {
         const { status } = req.query;
-        const filter = {
-            ...(status && { status: { $in: status.split(',') } }),
-            createdBy: req.user.id // Filter by current user's jobs
-        };
+        const filter = status ? { status: { $in: status.split(',') } } : {};
 
-        const jobs = await Job.find(filter).sort({ createdAt: -1 });
+        console.log('[ADMIN FETCH] Filter:', filter);
+
+        const jobs = await Job.find(filter)
+            .populate('createdBy', 'name email')
+            .sort({ createdAt: -1 });
+
+        console.log('[ADMIN FETCH] Found jobs:', jobs.length);
 
         res.status(200).json(jobs);
     } catch (error) {
