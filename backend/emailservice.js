@@ -13,6 +13,54 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+// Send email notification to one email
+export const sendEmailNotification = async (subject, message) => {
+    try {
+      console.log("Fetching alumni emails for tracer notification...");
+      const users = await SurveySubmission.find({}, "personalInfo.email_address personalInfo.fullname");
+  
+      const recipients = users.map((user) => ({
+        email: user.personalInfo.email_address,
+        name: user.personalInfo.fullname || "Alumni"
+      }));
+  
+      console.log("Target emails:", recipients);
+  
+      if (recipients.length === 0) {
+        console.log("No emails found, skipping tracer reminders.");
+        return;
+      }
+  
+      for (const { email, name } of recipients) {
+        try {
+          if (!validateEmail(email)) {
+            console.warn(`Skipping invalid email: ${email}`);
+            continue;
+          }
+  
+          // Replace {{name}} placeholder with actual name
+          const personalizedText = message.replace(/\{\{name\}\}/g, name);
+          const personalizedHTML = `<p>${personalizedText.replace(/\n/g, "<br>")}</p>`;
+  
+          const mailOptions = {
+            from: `"TUPATS Team" <zoetobypalomo@gmail.com>`, // ✅ Friendly display name
+            to: email,
+            subject: subject,
+            text: personalizedText, // ✅ Plain text fallback
+            html: personalizedHTML  // ✅ HTML version
+          };
+  
+          await transporter.sendMail(mailOptions);
+          console.log(`✅ Email sent to: ${email}`);
+        } catch (error) {
+          console.error(`❌ Failed to send to ${email}:`, error.message);
+        }
+      }
+    } catch (error) {
+      console.error("❌ Error sending notification emails:", error);
+    }
+  };
+
 export const sendArticleNotification = async (articleTitle, articleContent) => {
     try {
         console.log("Fetching user emails...");

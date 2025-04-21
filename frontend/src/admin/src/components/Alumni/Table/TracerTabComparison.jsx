@@ -181,11 +181,16 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
 
   // Helper function to extract company name and position for career progression
   const getCareerInfo = (tracerData) => {
-    if (!tracerData || !tracerData.data) return { company: "N/A", position: "N/A" };
+    if (!tracerData || !tracerData.data) return { 
+      company: "N/A", 
+      position: "N/A",
+      year_started: "N/A"
+    };
     
     return {
       company: tracerData.data.company_name || "N/A",
-      position: tracerData.data.position || tracerData.data.occupation || "N/A"
+      position: tracerData.data.position || tracerData.data.occupation || "N/A",
+      year_started: tracerData.data.year_started || "N/A"
     };
   };
 
@@ -342,7 +347,12 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
               <div className={styles.timelineYear}>Tracer 1 ({tracers.tracer1.year})</div>
               <div className={styles.timelinePosition}>{tracer1Career.position}</div>
               <div className={styles.timelineCompany}>{tracer1Career.company}</div>
-            </div>
+                {tracer1Career.year_started && (
+                  <div className={styles.timelineDuration}>
+                    Started: {tracer1Career.year_started}
+                  </div>
+                )}
+              </div>
             {tracers.tracer2.completed && (
               <>
                 <div className={styles.timelineArrow}>→</div>

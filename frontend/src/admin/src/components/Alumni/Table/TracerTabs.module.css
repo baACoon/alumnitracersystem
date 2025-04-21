@@ -493,3 +493,313 @@
     width: 100%;
   }
 }
+
+
+/* Add these styles to your existing TracerTabs.module.css file */
+
+.tracerContainer {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tracerNotCompleted {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.iconContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 64px;
+  background-color: #f5f5f5;
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+.clockIcon {
+  color: #e53935;
+}
+
+.tracerTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 10px;
+  color: #333;
+}
+
+.tracerMessage {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 25px;
+  max-width: 400px;
+}
+
+.reminderCard {
+  width: 100%;
+  max-width: 450px;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.methodSection {
+  margin-bottom: 20px;
+}
+
+.sectionLabel {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.methodOptions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.methodOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border: 2px solid #eaeaea;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.methodOption:hover {
+  background-color: #f9f9f9;
+}
+
+.methodOptionSelected {
+  border-color: #e53935;
+}
+
+.methodRadio {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.methodOption svg {
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.methodOption span {
+  font-size: 13px;
+  color: #333;
+}
+
+.bothIcons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.plus {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.separator {
+  height: 1px;
+  background-color: #eaeaea;
+  margin: 15px 0;
+}
+
+.messageSection {
+  margin-bottom: 15px;
+}
+
+.messageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.templateSelector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.templateLabel {
+  font-size: 12px;
+  color: #666;
+}
+
+.templateSelect {
+  font-size: 13px;
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.messageArea {
+  width: 100%;
+  min-height: 120px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.scheduleOption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.scheduleCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.checkboxUI {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.scheduleCheckbox input:checked + .checkboxUI {
+  background-color: #e53935;
+  border-color: #e53935;
+}
+
+.checkIcon {
+  color: white;
+  display: none;
+}
+
+.scheduleCheckbox input:checked + .checkboxUI .checkIcon {
+  display: block;
+}
+
+.scheduleCheckbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.scheduleLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+.infoIcon {
+  color: #999;
+  cursor: pointer;
+}
+
+.scheduleInputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.inputLabel {
+  font-size: 13px;
+  color: #666;
+}
+
+.dateInputWrapper, .timeInputWrapper {
+  position: relative;
+}
+
+.dateInput, .timeInput {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  padding-right: 30px;
+}
+
+.inputIcon {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  pointer-events: none;
+}
+
+.sendButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sendButton:hover {
+  background-color: #d32f2f;
+}
+
+.sentButton {
+  background-color: #43a047;
+}
+
+.sentButton:hover {
+  background-color: #388e3c;
+}
+
+.buttonIcon {
+  flex-shrink: 0;
+}
+
+@media (max-width: 500px) {
+  .methodOptions {
+    grid-template-columns: 1fr;
+  }
+  
+  .scheduleInputs {
+    grid-template-columns: 1fr;
+  }
+}
