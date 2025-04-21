@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './addjobForm.css';
 import Header from '../Header/header';
 import Footer from '../FooterClient/Footer';
+import axios from 'axios';
 
 function AddJobForm() {
     return (
@@ -16,6 +17,8 @@ function AddJobForm() {
 
 function AddjobFormMainPage() {
     const navigate = useNavigate();
+    const [tracer2Completed, setTracer2Completed] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const goToJobPageGive = () => {
         navigate('/JobPageGive');
@@ -67,12 +70,34 @@ function AddjobFormMainPage() {
 
     const [message, setMessage] = useState('');
 
+    useEffect(() => {
+        const checkTracer2Completion = async () => {
+            const userId = localStorage.getItem('userId');
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await axios.get(
+                    `https://alumnitracersystem.onrender.com/surveys/user-status/${userId}`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                setTracer2Completed(response.data.status.tracer2Completed);
+            } catch (err) {
+                console.error("Failed to check Tracer 2 status:", err);
+                setTracer2Completed(false);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkTracer2Completion();
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
             [name]: value,
-            ...(name === "college" ? { course: "" } : {}), // Reset course if college changes
+            ...(name === "college" ? { course: "" } : {}),
         }));
     };
 
@@ -99,13 +124,10 @@ function AddjobFormMainPage() {
 
             if (!response.ok) {
                 setMessage(data.message || 'Failed to post the job.');
-                console.error('Error Response:', data);
                 return;
             }
 
-            console.log('Response Data:', data);
             setMessage('Job posted successfully. Pending admin approval.');
-            
             setFormData({
                 title: '',
                 company: '',
@@ -124,6 +146,19 @@ function AddjobFormMainPage() {
         }
     };
 
+    if (loading) return <p>Loading...</p>;
+
+    if (!tracer2Completed) {
+        return (
+            <div className="form-container">
+                <h2>You must complete Tracer Survey 2 before posting a job.</h2>
+                <a className="back-button" onClick={() => navigate('/TracerSurvey2')}>
+                    Go to Tracer Survey 2
+                </a>
+            </div>
+        );
+    }
+
     return (
         <div className="form-container">
             <a onClick={goToJobPageGive} className="back-button">
@@ -131,6 +166,8 @@ function AddjobFormMainPage() {
             </a>
             <h1 className="form-title">POST A JOB OPPORTUNITY</h1>
             <form className="opportunity-form" onSubmit={handleSubmit}>
+                {/* ... rest of form unchanged ... */}
+
                 <div className="form-group">
                     <label htmlFor="title">Title:</label>
                     <input
