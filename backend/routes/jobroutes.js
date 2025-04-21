@@ -38,25 +38,27 @@ router.post('/jobpost', protect, async (req, res) => {
 });
 
 // Fetch jobs for logged-in user only
+
 router.get('/jobpost', protect, async (req, res) => {
     try {
-        const { status } = req.query;
-        const filter = status ? { status: { $in: status.split(',') } } : {};
-
-        console.log('[ADMIN FETCH] Filter:', filter);
-
-        const jobs = await Job.find(filter)
-            .populate('createdBy', 'name email')
-            .sort({ createdAt: -1 });
-
-        console.log('[ADMIN FETCH] Found jobs:', jobs.length);
-
-        res.status(200).json(jobs);
+      const { status, createdBy } = req.query;
+      const filter = {};
+  
+      if (status) {
+        filter.status = { $in: status.split(',') };
+      }
+  
+      if (createdBy) {
+        filter.createdBy = createdBy;
+      }
+  
+      const jobs = await Job.find(filter).sort({ createdAt: -1 });
+      res.status(200).json(jobs);
     } catch (error) {
-        console.error('Error fetching jobs:', error.message);
-        res.status(500).json({ error: 'Failed to fetch jobs.' });
+      console.error('Error fetching jobs:', error.message);
+      res.status(500).json({ error: 'Failed to fetch jobs.' });
     }
-});
+  });
 
 // Approve a job posting
 router.post('/:id/approve', protect, async (req, res) => {
