@@ -142,6 +142,7 @@ function CrossCheckSurveyForm() {
         formData.occupation.trim() &&
         formData.company_name.trim() &&
         formData.year_started &&
+        formData.job_level &&
         formData.position.trim() &&
         formData.job_status &&
         formData.type_of_organization &&
@@ -197,6 +198,7 @@ function CrossCheckSurveyForm() {
           occupation: formData.occupation,
           company_name: formData.company_name,
           year_started: formData.year_started,
+          job_level: formData.job_level,
           position: formData.position,
           job_status: formData.job_status,
           type_of_organization: formData.type_of_organization,
@@ -229,6 +231,7 @@ function CrossCheckSurveyForm() {
           company_name: "",
           year_started: "",
           job_status: "",
+          job_level: "",
           position: "",
           type_of_organization: "",
           work_alignment: "",
@@ -537,6 +540,23 @@ function CrossCheckSurveyForm() {
                                       max={new Date().getFullYear()}
                                       className={styles["form-input"]}
                                   />
+                              </div>
+
+                              <div className={styles["form-group"]}>
+                                <label htmlFor="job_level">Job Level: *</label>
+                                <select
+                                  id="job_level"
+                                  name="job_level"
+                                  value={formData.job_level}
+                                  onChange={handleChange}
+                                  required
+                                  className={styles["form-select"]}
+                                >
+                                  <option value="">Select Job Level</option>
+                                  <option value="Entry-level">Entry-level</option>
+                                  <option value="Mid-level">Mid-level</option>
+                                  <option value="Senior/Executive">Senior/Executive</option>
+                                </select>
                               </div>
   
                               <div className={styles["form-group"]}>
