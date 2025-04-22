@@ -195,23 +195,28 @@ const Page3_Employment = ({ data, updateForm }) => {
           <h3 className={styles.sectionTitle}>Major Line of Business of the Company</h3>
           <div className={styles.businessOptions}>
             {[
-              "Agriculture, Hunting, and Forestry",
+              "Agriculture & Forestry",
               "Fishing",
-              "Mining and Quarrying",
+              "Mining & Quarrying",
               "Manufacturing",
-              "Electricity, Gas, and Water Supply",
+              "Utilities (Power/Water)",
               "Construction",
-              "Wholesale and Retail Trade, repair of motor vehicles, motorcycles, and personal and household goods",
-              "Hotels and Restaurants",
-              "Transport Storage and Communication",
-              "Financial Intermediation",
-              "Real Estate, Renting, and Business Activities",
-              "Public Administration and Defense; Compulsory Social Security",
+              "Retail & Motor Repair",
+              "Hotels & Restaurants",
+              "Transport & Logistics",
+              "Banking & Finance",
+              "Real Estate & Business",
+              "Government & Public Service",
               "Education",
-              "Health and Social Work",
-              "Other Community, Social, and Personal Service Activities",
-              "Private Households with Employed Persons",
-              "Extra-territorial Organizations and Bodies",
+              "Healthcare & Social Work",
+              "Community & Social Services",
+              "Domestic Services",
+              "International Organizations",
+              "Information Technology",
+              "BPO / Call Centers",
+              "Media & Communication",
+              "Freelance / Self-Employed",
+              "Startups & Innovation"
             ].map((business, index) => (
               <label key={index}>
                 <input

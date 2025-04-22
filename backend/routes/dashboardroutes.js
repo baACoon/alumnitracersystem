@@ -127,6 +127,7 @@ router.get("/tracer1-analytics", async (req, res) => {
   }
 });
 
+// tracer 2 apis
 router.get("/tracer2/analytics", async (req, res) => {
   try {
     const submissions = await TracerSurvey2.find({ version: 2 });
@@ -134,14 +135,26 @@ router.get("/tracer2/analytics", async (req, res) => {
     // 1. Total Respondents
     const totalRespondents = submissions.length;
 
+    const totalEmployed = submissions.filter(entry => {
+      const status = (entry.job_status || "").toLowerCase().trim();
+      return status && status !== "unemployed";
+    }).length;
+    
+    
+
     // 2. Advanced Degree Holders (Masteral / Doctorate)
-    const advancedDegreeHolders = submissions.filter(entry =>
-      entry.education.some(edu =>
-        edu.degreeType.some(type =>
-          /master|doctorate|phd/i.test(type)
-        )
-      )
-    ).length;
+    const advancedDegreeHolders = { masters: 0, doctorate: 0 };
+
+    submissions.forEach(entry => {
+      (entry.education || []).forEach(edu => {
+        (edu.degreeType || []).forEach(type => {
+          const lower = type.toLowerCase();
+          if (lower.includes("master")) advancedDegreeHolders.masters++;
+          if (lower.includes("doctor") || lower.includes("phd")) advancedDegreeHolders.doctorate++;
+        });
+      });
+    });
+
 
     // 3. Reasons for Taking Course
     const reasons = {};
@@ -154,10 +167,12 @@ router.get("/tracer2/analytics", async (req, res) => {
     });
 
     // 4. Employment Status
-    const employmentStatus = {};
+    const job_status = {};
     submissions.forEach(entry => {
-      const key = entry.employmentStatus;
-      employmentStatus[key] = (employmentStatus[key] || 0) + 1;
+      const raw = (entry.job_status || "").trim().toLowerCase();
+      const normalized = raw || "Unemployed";
+      const label = normalized.charAt(0).toUpperCase() + normalized.slice(1);
+      job_status[label] = (job_status[label] || 0) + 1;
     });
 
     // 5–11. Job Details (if employed)
@@ -167,15 +182,15 @@ router.get("/tracer2/analytics", async (req, res) => {
       firstJobDuration: {},
       firstJobSearch: {},
       jobLandingTime: {},
-      jobLevel: {},
-      curriculumAlignment: {},
+      position: {},
+      work_alignment: {},
       coreCompetencies: {}
     };
 
     submissions.forEach(entry => {
       const job = entry.jobDetails || {};
 
-      if (entry.employmentStatus !== "unemployed") {
+      if (entry.job_status !== "unemployed") {
         const count = (field, value) => {
           if (value) jobData[field][value] = (jobData[field][value] || 0) + 1;
         };
@@ -184,8 +199,8 @@ router.get("/tracer2/analytics", async (req, res) => {
         count("placeOfWork", job.placeOfWork);
         count("firstJobDuration", job.firstJobDuration);
         count("jobLandingTime", job.jobLandingTime);
-        count("jobLevel", job.jobLevel);
-        count("curriculumAlignment", job.curriculumRelevant);
+        count("position", job.position);
+        count("work_alignment", job.work_alignment);
 
         // First Job Search (multi-checkbox)
         Object.entries(job.firstJobSearch || {}).forEach(([key, val]) => {
@@ -201,9 +216,10 @@ router.get("/tracer2/analytics", async (req, res) => {
 
     res.json({
       totalRespondents,
+      totalEmployed,
       advancedDegreeHolders,
       reasons,
-      employmentStatus,
+      job_status,
       jobData
     });
   } catch (err) {

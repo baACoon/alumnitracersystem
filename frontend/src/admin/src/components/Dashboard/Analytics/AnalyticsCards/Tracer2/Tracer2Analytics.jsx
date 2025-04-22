@@ -44,6 +44,85 @@ export default function Tracer2Analytics() {
         console.error("Failed to fetch analytics:", err)
         setError("Failed to load analytics data. Please try again later.")
         setLoading(false)
+
+        // For development/preview purposes, set mock data
+        // setData({
+        //   totalRespondents: 350,
+        //   advancedDegreeHolders: {
+        //     doctorate: 15,
+        //     masters: 35,
+        //   },
+        //   job_status: {
+        //     Employed: 280,
+        //     Unemployed: 70,
+        //     "Self-employed": 45,
+        //     "Part-time": 30,
+        //     "Further Studies": 25,
+        //   },
+        //   jobData: {
+        //     position: {
+        //       "Entry Level": 45,
+        //       Junior: 30,
+        //       "Mid-level": 15,
+        //       Senior: 8,
+        //       Management: 2,
+        //     },
+        //     coreCompetencies: {
+        //       "Technical Skills": 80,
+        //       Communication: 75,
+        //       "Problem Solving": 85,
+        //       Teamwork: 90,
+        //       Leadership: 65,
+        //       Adaptability: 70,
+        //     },
+        //     lineOfBusiness: {
+        //       Education: 30,
+        //       "IT & Technology": 25,
+        //       Healthcare: 20,
+        //       Finance: 15,
+        //       Manufacturing: 10,
+        //     },
+        //     placeOfWork: {
+        //       "Local (Within City)": 40,
+        //       "Within Province": 25,
+        //       "Within Country": 20,
+        //       International: 15,
+        //     },
+        //     firstJobSearch: {
+        //       "Job Portal": 35,
+        //       Referral: 30,
+        //       "Campus Recruitment": 20,
+        //       "Social Media": 10,
+        //       Internship: 5,
+        //     },
+        //     firstJobDuration: {
+        //       "Less than 6 months": 15,
+        //       "6-12 months": 25,
+        //       "1-2 years": 35,
+        //       "2-3 years": 18,
+        //       "3+ years": 7,
+        //     },
+        //     jobLandingTime: {
+        //       "Before Graduation": 10,
+        //       "Within 1 month": 25,
+        //       "1-3 months": 35,
+        //       "3-6 months": 20,
+        //       "6+ months": 10,
+        //     },
+        //     work_alignment: {
+        //       "Strongly Aligned": 40,
+        //       "Moderately Aligned": 35,
+        //       "Slightly Aligned": 15,
+        //       "Not Aligned": 10,
+        //     },
+        //   },
+        //   reasons: {
+        //     "Career Advancement": { undergraduate: 45, graduate: 60 },
+        //     "Personal Interest": { undergraduate: 30, graduate: 25 },
+        //     "Required by Employer": { undergraduate: 20, graduate: 35 },
+        //     "Family Influence": { undergraduate: 5, graduate: 10 },
+        //   },
+        // })
       }
     }
     fetchAnalytics()
@@ -54,6 +133,22 @@ export default function Tracer2Analytics() {
     if (!obj) return []
     return Object.entries(obj).map(([name, value]) => ({ name, value }))
   }
+
+  const formatReasonsData = (obj) => {
+    if (!obj) return []
+    return Object.entries(obj).map(([name, value]) => ({
+      name,
+      undergraduate: value.undergraduate || 0,
+      graduate: value.graduate || 0,
+    }))
+  }
+
+  const formatRadarData = (obj) =>
+    Object.entries(obj).map(([key, val]) => ({
+      skill: key,
+      value: val,
+    }));
+  
 
   // Helper function to add colors to data
   const addColors = (data) => {
@@ -84,7 +179,7 @@ export default function Tracer2Analytics() {
     )
   }
 
-  if (error) {
+  if (error && !data) {
     return (
       <div className={styles.errorContainer}>
         <p className={styles.errorMessage}>{error}</p>
@@ -97,6 +192,10 @@ export default function Tracer2Analytics() {
 
   if (!data) return null
 
+  // Calculate employed and unemployed counts
+  const employedCount = data.totalEmployed || 0;
+  const unemployedCount = data.job_status?.Unemployed || 0
+
   // Format data for advanced degree holders
   const degreeHolderData = [
     { name: "Doctorate", value: data.advancedDegreeHolders?.doctorate || 0, color: COLORS[0] },
@@ -104,16 +203,12 @@ export default function Tracer2Analytics() {
   ]
 
   // Format data for core competencies radar chart
-  const coreCompetenciesData = formatBarData(data.jobData?.coreCompetencies || {}).map((item) => ({
-    subject: item.name,
-    A: item.value,
-    fullMark: 100,
-  }))
+  const coreCompetenciesData = formatRadarData(data.jobData?.coreCompetencies || {})
 
   return (
     <div className={styles.dashboardGrid}>
-      {/* ROW 1 */}
-      <div className={styles.row1}>
+      {/* ROW 0 - Total Responses */}
+      <div className={styles.row0}>
         {/* Respondents Counter */}
         <div className={`${styles.card} ${styles.respondentsCard}`}>
           <div className={styles.cardHeader}>
@@ -123,7 +218,10 @@ export default function Tracer2Analytics() {
             <span className={styles.counterValue}>{data.totalRespondents || 0}</span>
           </div>
         </div>
+      </div>
 
+      {/* ROW 1 - Degree Holder, Total Employed, Total Unemployed */}
+      <div className={styles.row1}>
         {/* Degree Holders Chart */}
         <div className={`${styles.card} ${styles.educationalAttainmentCard}`}>
           <div className={styles.cardHeader}>
@@ -156,98 +254,32 @@ export default function Tracer2Analytics() {
           </div>
         </div>
 
-        {/* Job Level Chart */}
-        <div className={`${styles.card} ${styles.jobLevelCard}`}>
+        {/* Total Employed Counter */}
+        {/* Total Employed Counter */}
+        <div className={`${styles.card} ${styles.employedCard}`}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>JOB LEVEL</h2>
+            <h2 className={styles.cardTitle}>TOTAL NUMBER OF EMPLOYED</h2>
           </div>
           <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart
-                  data={addColors(formatBarData(data.jobData?.jobLevel || {}))}
-                  layout="vertical"
-                  margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
-                >
-                  <XAxis type="number" />
-                  <YAxis type="category" dataKey="name" />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="value">
-                    {formatBarData(data.jobData?.jobLevel || {}).map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <span className={styles.counterValue}>{employedCount}</span>
+          </div>
+        </div>
+
+
+        {/* Total Unemployed Counter */}
+        <div className={`${styles.card} ${styles.unemployedCard}`}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>TOTAL NUMBER OF UNEMPLOYED</h2>
+          </div>
+          <div className={styles.cardContent}>
+            <span className={styles.counterValue}>{unemployedCount}</span>
           </div>
         </div>
       </div>
 
-      {/* ROW 2 */}
+      {/* ROW 2 - Employment Status, Job Level, Core Competencies */}
       <div className={styles.row2}>
-        {/* Reasons of Taking the Course */}
-        <div className={`${styles.card} ${styles.reasonsCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>REASONS FOR TAKING THE COURSE/PURSUING DEGREES</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={addColors(formatBarData(data.reasons || {}))}
-                  layout="vertical"
-                  margin={{ top: 5, right: 30, left: 120, bottom: 5 }}
-                >
-                  <XAxis type="number" />
-                  <YAxis type="category" dataKey="name" width={120} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="value">
-                    {formatBarData(data.reasons || {}).map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-
-        {/* Curriculum Alignment */}
-        <div className={`${styles.card} ${styles.curriculumAlignmentCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>CURRICULUM ALIGNMENT TO JOB</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={addColors(formatBarData(data.jobData?.curriculumAlignment || {}))}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    paddingAngle={2}
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {formatBarData(data.jobData?.curriculumAlignment || {}).map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ROW 3 */}
-      <div className={styles.row3}>
-        {/* Present Employment Status */}
+        {/* Employment Status */}
         <div className={`${styles.card} ${styles.employmentStatusCard}`}>
           <div className={styles.cardHeader}>
             <h2 className={styles.cardTitle}>PRESENT EMPLOYMENT STATUS</h2>
@@ -257,16 +289,16 @@ export default function Tracer2Analytics() {
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
-                    data={addColors(formatBarData(data.employmentStatus || {}))}
+                    data={addColors(formatBarData(data.job_status || {}))}
                     dataKey="value"
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    outerRadius={120}
+                    outerRadius={100}
                     paddingAngle={2}
                     label
                   >
-                    {formatBarData(data.employmentStatus || {}).map((_, index) => (
+                    {formatBarData(data.job_status || {}).map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -277,10 +309,59 @@ export default function Tracer2Analytics() {
             </div>
           </div>
         </div>
+
+        {/* Job Level Chart */}
+        <div className={`${styles.card} ${styles.jobLevelCard}`}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>JOB LEVEL</h2>
+          </div>
+          <div className={styles.cardContent}>
+            <div className={styles.chartContainer}>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={addColors(formatBarData(data.jobData?.position || {}))}
+                  layout="vertical"
+                  margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
+                >
+                  <XAxis type="number" />
+                  <YAxis type="category" dataKey="name" />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="value">
+                    {formatBarData(data.jobData?.position || {}).map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        {/* Core Competencies */}
+        <div className={`${styles.card} ${styles.coreCompetenciesCard}`}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>CORE COMPETENCIES THAT HELPED IN JOB</h2>
+          </div>
+          <div className={styles.cardContent}>
+            <div className={styles.chartContainer}>
+            <ResponsiveContainer width="100%" height={300}>
+              <RadarChart data={formatRadarData(data.jobData.coreCompetencies)}>
+                <PolarGrid />
+                <PolarAngleAxis dataKey="skill" />
+                <PolarRadiusAxis />
+                <Radar name="Skills" dataKey="value" stroke="#d32f2f" fill="#d32f2f" fillOpacity={0.6} />
+                <Tooltip />
+                <Legend />
+              </RadarChart>
+            </ResponsiveContainer>
+
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* ROW 4 */}
-      <div className={styles.row4}>
+      {/* ROW 3 - Major Line, Place of work */}
+      <div className={styles.row3}>
         {/* Line of Business */}
         <div className={`${styles.card} ${styles.lineOfBusinessCard}`}>
           <div className={styles.cardHeader}>
@@ -288,7 +369,7 @@ export default function Tracer2Analytics() {
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer width="100%" height={300}>
                 <Treemap
                   data={addColors(formatBarData(data.jobData?.lineOfBusiness || {}))}
                   dataKey="value"
@@ -344,7 +425,7 @@ export default function Tracer2Analytics() {
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
                     data={addColors(formatBarData(data.jobData?.placeOfWork || {}))}
@@ -367,7 +448,10 @@ export default function Tracer2Analytics() {
             </div>
           </div>
         </div>
+      </div>
 
+      {/* ROW 4 - How did you find your first job, How long did you stay in your first job, How long did it take for you to land your first job */}
+      <div className={styles.row4}>
         {/* How did you find your first job */}
         <div className={`${styles.card} ${styles.findFirstJobCard}`}>
           <div className={styles.cardHeader}>
@@ -398,30 +482,6 @@ export default function Tracer2Analytics() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* ROW 5 */}
-      <div className={styles.row5}>
-        {/* Core Competencies */}
-        <div className={`${styles.card} ${styles.coreCompetenciesCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>CORE COMPETENCIES THAT HELPED IN JOB</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
-                <RadarChart outerRadius={90} data={coreCompetenciesData}>
-                  <PolarGrid />
-                  <PolarAngleAxis dataKey="subject" />
-                  <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                  <Radar name="Skills" dataKey="A" stroke="#C31D3C" fill="#C31D3C" fillOpacity={0.6} />
-                  <Legend />
-                  <Tooltip />
-                </RadarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
 
         {/* First Job Duration */}
         <div className={`${styles.card} ${styles.firstJobDurationCard}`}>
@@ -430,7 +490,7 @@ export default function Tracer2Analytics() {
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <AreaChart
                   data={addColors(formatBarData(data.jobData?.firstJobDuration || {}))}
                   margin={{ top: 10, right: 30, left: 0, bottom: 40 }}
@@ -451,10 +511,7 @@ export default function Tracer2Analytics() {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* ROW 6 */}
-      <div className={styles.row6}>
         {/* Time to Land First Job */}
         <div className={`${styles.card} ${styles.firstJobLandingTimeCard}`}>
           <div className={styles.cardHeader}>
@@ -462,7 +519,7 @@ export default function Tracer2Analytics() {
           </div>
           <div className={styles.cardContent}>
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart
                   data={addColors(formatBarData(data.jobData?.jobLandingTime || {}))}
                   margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
@@ -481,6 +538,34 @@ export default function Tracer2Analytics() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* ROW 5 - Reasons for pursuing advanced studies, Course alignment to work */}
+      <div className={styles.row5}>
+        {/* Reasons for pursuing advanced studies */}
+        <div className={`${styles.card} ${styles.reasonsCard}`}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>REASONS FOR PURSUING ADVANCED STUDIES</h2>
+          </div>
+          <div className={styles.cardContent}>
+            <div className={styles.chartContainer}>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={formatReasonsData(data.reasons || {})}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" angle={-45} textAnchor="end" height={70} />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="undergraduate" name="Undergraduate" fill="#4CC3C8" />
+                  <Bar dataKey="graduate" name="Graduate" fill="#FF6B81" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
 
         {/* Curriculum Alignment to Job */}
         <div className={`${styles.card} ${styles.curriculumJobAlignmentCard}`}>
@@ -492,7 +577,7 @@ export default function Tracer2Analytics() {
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
-                    data={addColors(formatBarData(data.jobData?.curriculumAlignment || {}))}
+                    data={addColors(formatBarData(data.jobData?.work_alignment || {}))}
                     dataKey="value"
                     nameKey="name"
                     cx="50%"
@@ -502,7 +587,7 @@ export default function Tracer2Analytics() {
                     paddingAngle={2}
                     label
                   >
-                    {formatBarData(data.jobData?.curriculumAlignment || {}).map((_, index) => (
+                    {formatBarData(data.jobData?.work_alignment || {}).map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
