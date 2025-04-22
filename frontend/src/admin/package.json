@@ -38,6 +38,7 @@
     "recharts": "^2.15.2",
     "redux": "^5.0.1",
     "shadcn-ui": "^0.9.5",
+    "styled-components": "^6.1.17",
     "zustand": "^5.0.2"
   }
 }
