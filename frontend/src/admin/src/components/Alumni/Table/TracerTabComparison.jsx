@@ -349,7 +349,7 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
               <div className={styles.timelineCompany}>{tracer1Career.company}</div>
                 {tracer1Career.year_started && (
                   <div className={styles.timelineDuration}>
-                    Started: {tracer1Career.year_started}
+                    Started:{tracer1Career.year_started}
                   </div>
                 )}
               </div>
@@ -359,8 +359,13 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
                 <div className={styles.timelinePoint}>
                   <div className={styles.timelineYear}>Tracer 2 ({tracers.tracer2.year})</div>
                   <div className={styles.timelinePosition}>{tracer2Career.position}</div>
-                  <div className={styles.timelineCompany}>{tracer2Career.company}</div>
-                </div>
+                  <div className={styles.timelineCompany}>{tracer1Career.company}</div>
+                    {tracer1Career.year_started && (
+                      <div className={styles.timelineDuration}>
+                        Started:{tracer1Career.year_started}
+                      </div>
+                    )}
+                  </div>
               </>
             )}
           </div>

@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import { Student } from "../record.js";
+import TracerSurvey2 from "../models/TracerSurvey2.js";
 
 const router = express.Router();
 
@@ -86,15 +87,17 @@ router.get("/user-status/:userId", authenticateToken, async (req, res) => {
   const objectId = new mongoose.Types.ObjectId(userId); // Important!
 
   const completedTypes = await SurveySubmission.find({ userId: objectId }).distinct('surveyType');
+  const tracer2 = await TracerSurvey2.findOne({ userId: objectId });
+
   console.log("📥 Received request for user-status:", req.params.userId);
+
   const status = {
     tracer1Completed: completedTypes.includes("Tracer1"),
-    tracer2Completed: completedTypes.includes("Tracer2"),
-    currentlyTaking: completedTypes.length === 0 ? "Tracer1" : null,
+    tracer2Completed: !!tracer2,
+    currentlyTaking: completedTypes.length === 0 ? "Tracer1" : !tracer2 ? "Tracer2" : null,
   };
 
   res.json({ status });
 });
-
 
 export default router;

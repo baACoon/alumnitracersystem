@@ -1,12 +1,13 @@
+// ✅ Updated Backend Controller: getAlumniById
 import express from 'express';
 import mongoose from 'mongoose';
-import { Student } from '../record.js'; // Import the existing Student schema
-import { SurveySubmission } from "./surveyroutes.js"; // Import the existing SurveySubmission schema
+import { Student } from '../record.js';
+import { SurveySubmission } from "./surveyroutes.js";
+import TracerSurvey2 from '../models/TracerSurvey2.js';
 import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-// Middleware to authenticate token
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -20,7 +21,6 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// Get all alumni (with filters and pagination)
 router.get('/all', authenticateToken, async (req, res) => {
   try {
     const page = Math.max(1, parseInt(req.query.page) || 1);
@@ -28,13 +28,13 @@ router.get('/all', authenticateToken, async (req, res) => {
 
     const college = req.query.college?.trim() || null;
     const course = req.query.course?.trim() || null;
-    const batch = req.query.batch ? parseInt(req.query.batch) : null; // ✅ CORRECTED
+    const batch = req.query.batch ? parseInt(req.query.batch) : null;
 
     const query = {};
     if (batch) query["personalInfo.gradyear"] = batch;
     if (college && college !== "") query["personalInfo.college"] = college;
     if (course && course !== "") query["personalInfo.course"] = course;
-    console.log("Applied filter query:", query); // ✅ Debugging line
+    console.log("Applied filter query:", query);
 
     const surveys = await SurveySubmission.aggregate([
       { $match: query },
@@ -86,54 +86,59 @@ router.get('/all', authenticateToken, async (req, res) => {
   }
 });
 
-// Get details of a specific latestSurvey by userId
-router.get('/user/:userId', authenticateToken, async (req, res) => {
+router.get("/user/:userId", authenticateToken, async (req, res) => {
   try {
     const { userId } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ error: 'Invalid userId format.' });
-    }
-
     const student = await Student.findById(userId).lean();
-    if (!student) {
-      return res.status(404).json({ error: 'Student not found.' });
+    if (!student) return res.status(404).json({ error: 'Student not found.' });
+
+    const tracer1Surveys = await SurveySubmission.find({ userId }).sort({ createdAt: -1 }).lean();
+    const tracer2Survey = await TracerSurvey2.findOne({ userId }).sort({ createdAt: -1 }).lean();
+
+    const surveys = tracer1Surveys.map(s => ({
+      title: s.surveyType || 'Tracer 1',
+      date: s.createdAt,
+      createdAt: s.createdAt,
+      employmentInfo: s.employmentInfo || {},
+      personalInfo: s.personalInfo || {}
+    }));
+
+        const latestSurvey = tracer1Surveys[0];
+
+    if (tracer2Survey) {
+      surveys.push({
+        title: 'Tracer 2',
+        date: tracer2Survey.createdAt,
+        createdAt: tracer2Survey.createdAt,
+        employmentInfo: {
+          job_status: tracer2Survey.job_status,
+          occupation: tracer2Survey.jobDetails?.occupation,
+          company_name: tracer2Survey.jobDetails?.company_name,
+          year_started: tracer2Survey.jobDetails?.year_started || 'N/A',
+          position: tracer2Survey.jobDetails?.position,
+          type_of_organization: tracer2Survey.jobDetails?.type_of_organization,
+          work_alignment: tracer2Survey.jobDetails?.work_alignment,
+          reasons_for_accepting: tracer2Survey.jobDetails?.acceptingJobReasons || {},
+          reasons_for_staying: tracer2Survey.jobDetails?.stayingReasons || {},
+          is_present_employment: tracer2Survey.jobDetails?.firstJob === 'Yes',
+          time_to_land_job: tracer2Survey.jobDetails?.jobLandingTime || 'N/A'
+        },
+        personalInfo: {
+          sex: tracer2Survey.sex || 'N/A',
+          nationality: tracer2Survey.nationality || 'N/A',
+          gradyear: latestSurvey?.personalInfo?.gradyear || student.gradyear || 'N/A'
+        }
+      });
     }
-
-    const surveys = await SurveySubmission.find({ userId }).sort({ createdAt: -1 }).lean();
-
-    if (surveys.length === 0) {
-      return res.status(404).json({ error: 'No surveys found for the specified user.' });
-    }
-
-    const latestSurvey = surveys[0];
 
     res.status(200).json({
       success: true,
       data: {
         generatedID: student.generatedID || 'N/A',
         profileImage: student.profileImage || null,
-        personalInfo: {
-          first_name: student.first_name || latestSurvey.personalInfo?.first_name || 'N/A',
-          last_name: student.last_name || latestSurvey.personalInfo?.last_name || 'N/A',
-          middle_name: student.middle_name || latestSurvey.personalInfo?.middle_name || 'N/A',
-          birthdate: student.birthdate || latestSurvey.personalInfo?.birthdate || 'N/A',
-          address: student.address || latestSurvey.personalInfo?.address || 'N/A',
-          contact_no: student.contact_no || latestSurvey.personalInfo?.contact_no || 'N/A',
-          email_address: student.email_address || latestSurvey.personalInfo?.email_address || 'N/A',
-          degree: latestSurvey.personalInfo?.degree || latestSurvey.degree || 'N/A',
-          college: latestSurvey.personalInfo?.college || latestSurvey.college || 'N/A',
-          course: latestSurvey.personalInfo?.course || latestSurvey.course || 'N/A',
-          gradyear: student.gradyear || latestSurvey.personalInfo?.gradyear || 'N/A'
-        },
-        employmentInfo: latestSurvey.employmentInfo || {},
-        surveys: surveys.map(s => ({
-          title: s.surveyType || 'Untitled Survey',
-          date: s.surveyDate || s.createdAt,
-          createdAt: s.createdAt,
-          employmentInfo: s.employmentInfo || {},
-          personalInfo: s.personalInfo || {}
-        })) || []
+        personalInfo: latestSurvey?.personalInfo || {},
+        employmentInfo: latestSurvey?.employmentInfo || {},
+        surveys
       }
     });
   } catch (error) {
@@ -141,7 +146,5 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch latestSurvey details.' });
   }
 });
-
-
 
 export default router;
