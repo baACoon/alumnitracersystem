@@ -76,25 +76,37 @@ function AddjobFormMainPage() {
 
     useEffect(() => {
         const checkTracer2Completion = async () => {
+          try {
+            if (typeof window === "undefined" || !window.localStorage) {
+              console.warn("localStorage not available");
+              return;
+            }
+      
             const userId = localStorage.getItem('userId');
             const token = localStorage.getItem('token');
-
-            try {
-                const response = await axios.get(
-                    `https://alumnitracersystem.onrender.com/tracerSurvey2/user-status/${userId}`,
-                    { headers: { Authorization: `Bearer ${token}` } }
-                );
-                setTracer2Completed(response.data.status.tracer2Completed);
-            } catch (err) {
-                console.error("Failed to check Tracer 2 status:", err);
-                setTracer2Completed(false);
-            } finally {
-                setLoading(false);
+      
+            if (!userId || !token) {
+              console.warn("No token or userId found in localStorage");
+              return;
             }
+      
+            const response = await axios.get(
+              `https://alumnitracersystem.onrender.com/tracerSurvey2/user-status/${userId}`,
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+      
+            setTracer2Completed(response.data.status.tracer2Completed);
+          } catch (err) {
+            console.error("Failed to check Tracer 2 status:", err);
+            setTracer2Completed(false);
+          } finally {
+            setLoading(false);
+          }
         };
-
+      
         checkTracer2Completion();
-    }, []);
+      }, []);
+      
 
     const handleChange = (e) => {
         const { name, value } = e.target;
