@@ -24,6 +24,10 @@ function AddjobFormMainPage() {
         navigate('/JobPageGive');
     };
 
+    const goToSurveyPage = () => {
+        navigate('/SurveyPage')
+    }
+
     const coursesByCollege = {
         "College of Engineering": [
             "Bachelor of Science in Civil Engineering",
@@ -166,7 +170,7 @@ function AddjobFormMainPage() {
         return (
             <div className="form-container">
                 <h2>You must complete Tracer Survey 2 before posting a job.</h2>
-                <a className="back-button" onClick={() => navigate('/TracerSurvey2')}>
+                <a className="back-button" onClick={goToSurveyPage}>
                     Go to Tracer Survey 2
                 </a>
             </div>

@@ -17,6 +17,7 @@ import JobPageList from '../src/client/components/JobPageList/jobpagelist';
 import Contact from '../src/client/components/Contact/contact';
 import Profile from '../src/client/components/Profile/profile';
 import SurveyForm from '../src/client/components/SurveyForm/SurveyForm';
+import SurveyPage from '../src/client/components/Surveys/SurveyPage';
 
 
 
@@ -40,6 +41,8 @@ function App() {
             <Route path="/Contact" element={<Contact />} />
             <Route path="/Profile" element={<Profile />} />
             <Route path="/SurveyForm" element={<SurveyForm />} />
+            <Route path="/SurveyPage" element={<SurveyPage />} />
+
        
           </Routes>
         </BrowserRouter>
