@@ -447,9 +447,35 @@
 }
 
 .infoIcon {
+  position: relative;
+  display: inline-block;
   font-size: 20px;
   margin-right: 12px;
   color: #555;
+  cursor: pointer;
+}
+
+/* Tooltip styling */
+.infoIcon::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+  z-index: 99;
+}
+
+.infoIcon:hover::after {
+  opacity: 1;
 }
 
 .infoContent {
@@ -546,10 +572,12 @@
 .reminderCard {
   width: 100%;
   max-width: 450px;
+  min-width: 400px; /* ✅ add this */
   border: 1px solid #eaeaea;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  
 }
 
 .methodSection {
@@ -661,6 +689,7 @@
   border-radius: 4px;
   font-size: 14px;
   resize: vertical;
+  overflow: hidden;
 }
 
 .scheduleOption {
@@ -714,11 +743,6 @@
   gap: 6px;
   font-size: 14px;
   color: #333;
-}
-
-.infoIcon {
-  color: #999;
-  cursor: pointer;
 }
 
 .scheduleInputs {
@@ -802,4 +826,46 @@
   .scheduleInputs {
     grid-template-columns: 1fr;
   }
+}
+
+/* Tracer2Tab.css */
+.send-btn {
+  background-color: #1D4ED8;
+  color: white;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  padding: 0.7rem 2rem;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.send-btn:hover {
+  background-color: #1E40AF;
+}
+
+.spinner {
+  width: 1.3rem;
+  height: 1.3rem;
+  margin-right: 0.75rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.success-msg {
+  margin-top: 1rem;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  background: #EDFBD8;
+  border: 1px solid #84D65A;
+  border-radius: 8px;
+  color: #2B641E;
 }
