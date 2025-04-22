@@ -146,6 +146,7 @@ const TracerSurvey2Schema = new mongoose.Schema(
       },
       jobLandingTime: String,
       position: String,
+      job_level: String,
       salaryRange: String,
       work_alignment: String,
       competencies: {

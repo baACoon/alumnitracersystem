@@ -69,6 +69,7 @@ function TracerSurvey2({ onBack }) {
       firstJobSearch: {},
       jobLandingTime: "",
       position: "",
+      job_level: "",
       salaryRange: "",
       work_alignment: "",
       competencies: {},
@@ -199,6 +200,7 @@ function TracerSurvey2({ onBack }) {
         firstJobSearch: formData.jobDetails.firstJobSearch || {},
         jobLandingTime: formData.jobDetails.jobLandingTime || "",
         position: formData.jobDetails.position || "",
+        job_level: formData.jobDetails.job_level || "",
         salaryRange: formData.jobDetails.salaryRange || "",
         work_alignment: formData.jobDetails.work_alignment || "",
         competencies: formData.jobDetails.competencies || {}
@@ -242,7 +244,7 @@ function TracerSurvey2({ onBack }) {
         <img src={Tuplogo} alt="TUP logo" className={styles.logo} />
         <img src={Alumnilogo} alt="Alumni logo" className={styles.logo} />
       </div>
-      <h2 className={styles.title}>Tracer Survey 2</h2>
+      <h2 className={styles.title}>TRACE SURVEY FORM </h2>
 
       {submitStatus.message && (
         <div className={submitStatus.type === "error" ? styles.errorMessage : styles.successMessage}>

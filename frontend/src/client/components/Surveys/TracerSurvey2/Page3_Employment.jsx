@@ -166,6 +166,16 @@ const Page3_Employment = ({ data, updateForm }) => {
             className={styles.textInput}          
           />
 
+          {/* Present Occupation */}
+          <h3 className={styles.sectionTitle}>Position in the Company</h3>
+          <input
+            type="text"
+            value={data.jobDetails?.position || ""}  // Safely access `occupation`
+            onChange={(e) => updateForm("jobDetails", { ...data.jobDetails, position: e.target.value })}
+            placeholder="e.g., Sales Representative, Marketing Manager, Administrative Assistant"
+            className={styles.textInput}
+          />
+
           <h3 className={styles.sectionTitle}>Year Started</h3>
           <input 
             type="text" 
@@ -429,23 +439,16 @@ const Page3_Employment = ({ data, updateForm }) => {
           </div>
 
           <h3 className={styles.sectionTitle}>Job Level</h3>
-          <div className={styles.businessOptions}>
-            {[
-              "Rank & File / Clerical", "Professional / Supervisory",
-              "Managerial / Executive", "Self-Employed"
-            ].map(level => (
-              <label key={level}>
-                <input
-                  type="radio"
-                  name="position"
-                  value={level}
-                  checked={data.jobDetails.position === level}
-                  onChange={(e) => handleJobDetailsChange("position", level)}
-                />
-                {level}
-              </label>
-            ))}
-          </div>
+          <select
+            value={data.jobDetails.job_level || ""}
+            onChange={(e) => handleJobDetailsChange("job_level", e.target.value)}
+            className={styles.selectInput}
+          >
+            <option value="">Select Job Level</option>
+            <option value="Entry-level">Entry-level</option>
+            <option value="Mid-level">Mid-level</option>
+            <option value="Senior/Executive">Senior/Executive</option>
+          </select>
 
           <h3 className={styles.sectionTitle}>Monthly Salary Range</h3>
           <select
