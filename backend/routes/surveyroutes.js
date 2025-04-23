@@ -52,7 +52,7 @@ router.post("/submit/:surveyType", authenticateToken, async (req, res) => {
   const submission = new SurveySubmission({ userId, surveyType, ...req.body });
   await submission.save();
 
-  res.status(201).json({ message: `Survey ${surveyType} submitted successfully` });
+  res.status(201).json({ success: true, message: `Survey ${surveyType} submitted successfully` });
 });
 
 router.get("/pending/:userId", authenticateToken, async (req, res) => {

@@ -366,7 +366,7 @@ const Register_NewAlumni = ({ closeModal }) => {
                                     setFirstName('');
                                     setLastName('');
                                     setYear('');
-                                }} className={styles.secondaryButton}>
+                                }} className={styles.primaryButton}>
                                     Try Different Info
                                 </button>
                             </div>
@@ -416,9 +416,9 @@ const Register_NewAlumni = ({ closeModal }) => {
 
                 {/* Step 2c: Verified, show registration form */}
                 {verificationStatus === 'verified' && !generatedID && (
-                    <form onSubmit={handleSubmit} className={styles.registerForm}>
+                    <form onSubmit={handleSubmit} className={styles.verificationResult}>
                         <h3>Complete Registration</h3>
-                        <p>Verified: {firstName} {lastName} ({gradyear})</p>
+                        <p className={styles.verifyName}><strong>Verified: {firstName} {lastName} ({gradyear})</strong></p>
                         <input 
                             type="password" 
                             placeholder="Password" 
@@ -437,10 +437,10 @@ const Register_NewAlumni = ({ closeModal }) => {
                         />
                         <button 
                             type="submit" 
-                            className={styles.submitButtonNewAlumni}
+                            className={styles.primaryButton}
                             disabled={loading}
                         >
-                            {loading ? 'Registering...' : 'Register'}
+                            {loading ? 'Registering...' : 'REGISTER'}
                         </button>
                     </form>
                 )}
@@ -450,11 +450,11 @@ const Register_NewAlumni = ({ closeModal }) => {
                     <div className={styles.uniqueIdModal}>
                         <h3>Registration Successful!</h3>
                         <p>Your User ID:</p>
-                        <p className={styles.generatedId}><strong>{generatedID}</strong></p>
+                        <h4 className={styles.generatedId}><strong>{generatedID}</strong></h4> 
                         <p>Please save this ID. This serves as your username to login.</p>
                         <button 
                             onClick={handleCrossCheckSurveyFormClick} 
-                            className={styles.submitButtonNewAlumni}
+                            className={styles.primaryButton}
                         >
                             Go to Survey
                         </button>

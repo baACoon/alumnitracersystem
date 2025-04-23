@@ -24,6 +24,137 @@
     animation: fadeInSlideUp 0.4s ease-out forwards;
 }
 
+/* Modal styling */
+.verificationResult {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 24px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: left;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.verificationResult h3 {
+  color: #c12542;
+  font-size: 20px;
+  margin-top: 0;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.verifyName{
+  text-align: center;
+}
+
+.verificationResult p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.verificationResult strong {
+  font-weight: 600;
+  color: #5d0e1d;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.primaryButton {
+  background-color: #c12542;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 45%;
+  text-align: center;
+}
+
+.primaryButton:hover {
+  background-color: #350e15;
+}
+
+.secondaryButton {
+  background-color: #c12542;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 45%;
+  text-align: center;
+}
+
+.secondaryButton:hover {
+  background-color: #350e15;
+}
+
+.inputFieldNewAlumni {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 11px;
+  transition: border-color 0.2s;
+}
+
+.inputFieldNewAlumni:focus {
+  border-color: #c12542;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(193, 37, 66, 0.2);
+}
+
+/* Animation for modal appearance */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Recovery steps styling */
+.verificationResult > div {
+  margin-top: 16px;
+}
+
+.verificationResult > div > p {
+  margin-bottom: 12px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Code verification and password reset sections */
+.verificationResult > div > button {
+  width: 50%;
+  margin: 10px auto;
+  display: block;
+}
+
+
 /* Close button */
 .closeButtonNewAlumni {
     position: absolute;
@@ -102,6 +233,13 @@
   .uniqueIdModal h3 {
     font-size: 1.5em;
     margin-bottom: 10px;
+    color: #ffffff; /* Darker text for readability */
+  }
+
+  .uniqueIdModal h4 {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    padding: 10px;
     color: #ffffff; /* Darker text for readability */
   }
   
@@ -213,19 +351,7 @@
     stroke: #5D0E1D;
     animation-name: ringD;
   }
-  .primaryButton{
-    padding: 10px;
-    background-color: #C12542;
-    color: white;
-    border: none;
-    width: 40%;
-    margin-left: 5px;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    
-  }
+
   .secondaryButton{
     padding: 10px;
     background-color: #C12542;
