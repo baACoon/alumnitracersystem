@@ -105,6 +105,12 @@
   }
 }
 
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
 .searchIcon {
   position: absolute;
   left: 0.625rem;

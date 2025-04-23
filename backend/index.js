@@ -17,7 +17,8 @@ import alumnipage from './routes/alumnipageroutes.js';
 import dashboardRoutes from './routes/dashboardroutes.js';
 import uploadRoutes from './routes/uploadroutes.js';
 // import reminderRoutes from "./routes/reminderroutes.js";
-import notificationRoutes from "./routes/notificationroutes.js"
+import notificationRoutes from "./routes/notificationroutes.js";
+import recoverRoutes from './routes/recoverRoutes.js';
 import fs from 'fs';
 
 const PORT = process.env.PORT || 5050;
@@ -48,6 +49,7 @@ app.use("/dashboard", dashboardRoutes);
 app.use("/api", uploadRoutes);
 // app.use("/api/reminders", reminderRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use('/api/recover', recoverRoutes);
 // Connect to MongoDB Atlas before starting the server
 connectToDatabase()
   .then(() => {

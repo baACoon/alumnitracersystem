@@ -9,6 +9,56 @@ import { TracerComparisonTab } from './TracerTabComparison';
 import { Tracer1Tab } from './TracerTab1';
 import { Tracer2Tab } from './TracerTab2';
 
+function Pagination({ currentPage, totalPages, setCurrentPage }) {
+  const getPageNumbers = () => {
+    const pages = [];
+    pages.push(1);
+
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+
+    if (start > 2) pages.push("...");
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    if (end < totalPages - 1) pages.push("...");
+    if (totalPages > 1) pages.push(totalPages);
+
+    return pages;
+  };
+
+  return (
+    <div className={styles.paginationContent}>
+      <button
+        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+        disabled={currentPage === 1}
+        className={`${styles.paginationPrev} ${currentPage === 1 ? styles.paginationDisabled : ""}`}
+      >
+        Previous
+      </button>
+      {getPageNumbers().map((page, index) =>
+        page === "..." ? (
+          <span key={`ellipsis-${index}`} className={styles.paginationEllipsis}>...</span>
+        ) : (
+          <button
+            key={`page-${page}`}
+            onClick={() => setCurrentPage(page)}
+            className={`${styles.paginationNumber} ${currentPage === page ? styles.paginationActive : ""}`}
+          >
+            {page}
+          </button>
+        )
+      )}
+      <button
+        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+        disabled={currentPage === totalPages}
+        className={`${styles.paginationNext} ${currentPage === totalPages ? styles.paginationDisabled : ""}`}
+      >
+        Next
+      </button>
+    </div>
+  );
+}
 
 
 export function AlumniTable({ batch, college, course, searchQuery, filterApplied }) {
@@ -18,6 +68,9 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
   const [studentDetails, setStudentDetails] = useState(null);
   const [activeTab, setActiveTab] = useState('Alumni List');
   const [modalTab, setModalTab] = useState('overview');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const navigate = useNavigate();
 
 
@@ -244,55 +297,75 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
                 </tr>
               </thead>
               <tbody>
-              {filteredData.length > 0 ? (
-                filteredData.map((alumni) => (
-                  <tr key={alumni.userId} onClick={() => openStudentDetails(alumni.userId)}>
-                    <td onClick={(e) => e.stopPropagation()}>
-                      <input
-                        type="checkbox"
-                        id={`select-${alumni.userId}`}
-                        checked={selectedAlumni.has(alumni.userId)}
-                        onChange={() => handleSelectAlumni(alumni.userId)}
-                        onClick={(e) => e.stopPropagation()}
-                        aria-label={`Select ${alumni.userId}`}
-                      />
-                    </td>
-                    <td>{alumni.generatedID}</td>
-                    <td>{`${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`}</td>
-                    <td>{alumni.personalInfo.email_address}</td>
-                    <td>{alumni.personalInfo.course}</td>
-                    <td>{alumni.personalInfo.gradyear}</td>
-                    <td>
-                      <span className={`${styles.tracerStatus} ${
-                        alumni.tracerStatus?.includes('&') ? styles.tracerStatusMultiple : styles.tracerStatusSingle
-                      }`}>
-                        {alumni.tracerStatus || 'No tracer'}
-                      </span>
-                    </td>
-                    <td>
-                      <button className={styles.actionButton} onClick={(e) => {
-                        e.stopPropagation();
-                        openStudentDetails(alumni.userId);
-                      }}>
-                        ›
-                      </button>
+                {filteredData.length > 0 ? (
+                  <>
+                    {filteredData
+                      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                      .map((alumni) => (
+                        <tr key={alumni.userId} onClick={() => openStudentDetails(alumni.userId)}>
+                          <td onClick={(e) => e.stopPropagation()}>
+                            <input
+                              type="checkbox"
+                              id={`select-${alumni.userId}`}
+                              checked={selectedAlumni.has(alumni.userId)}
+                              onChange={() => handleSelectAlumni(alumni.userId)}
+                              onClick={(e) => e.stopPropagation()}
+                              aria-label={`Select ${alumni.userId}`}
+                            />
+                          </td>
+                          <td>{alumni.generatedID}</td>
+                          <td>{`${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`}</td>
+                          <td>{alumni.personalInfo.email_address}</td>
+                          <td>{alumni.personalInfo.course}</td>
+                          <td>{alumni.personalInfo.gradyear}</td>
+                          <td>
+                            <span className={`${styles.tracerStatus} ${
+                              alumni.tracerStatus?.includes('&') ? styles.tracerStatusMultiple : styles.tracerStatusSingle
+                            }`}>
+                              {alumni.tracerStatus || 'No tracer'}
+                            </span>
+                          </td>
+                          <td>
+                            <button
+                              className={styles.actionButton}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openStudentDetails(alumni.userId);
+                              }}
+                            >
+                              ›
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+
+                    {/* 👇 Insert Pagination Below the Last Row */}
+                    <tr>
+                      <td colSpan="8" style={{ textAlign: 'center', paddingTop: '1rem' }}>
+                        {filteredData.length > itemsPerPage && (
+                          <div className={styles.paginationWrapper}>
+                            <Pagination
+                              currentPage={currentPage}
+                              totalPages={totalPages}
+                              setCurrentPage={setCurrentPage}
+                            />
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  </>
+                ) : (
+                  <tr>
+                    <td colSpan="8" style={{ textAlign: 'center', padding: '1rem', fontStyle: 'italic', color: 'gray' }}>
+                      {searchQuery 
+                        ? `Sorry, there is no "${searchQuery}" in the alumni list.`
+                        : batch || college || course 
+                          ? 'No alumni match all the selected filters.'
+                          : 'No alumni records found.'}
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="8" style={{ textAlign: 'center', padding: '1rem', fontStyle: 'italic', color: 'gray' }}>
-                    {searchQuery 
-                      ? `Sorry, there is no "${searchQuery}" in the alumni list.`
-                      : batch || college || course 
-                        ? 'No alumni match all the selected filters.'
-                        : 'No alumni records found.'
-                    }
-                  </td>
-                </tr>
                 )}
               </tbody>
-
             </table>
           </div>
         </>
