@@ -13,6 +13,49 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+
+  // ✅ Send email notification to a SINGLE alumni
+export const sendSingleEmailNotification = async (subject, message, recipientEmail) => {
+    try {
+      console.log("🎯 Sending single email to:", recipientEmail);
+  
+      const user = await SurveySubmission.findOne(
+        { "personalInfo.email_address": recipientEmail },
+        "personalInfo.email_address personalInfo.fullname"
+      );
+  
+      if (!user) {
+        console.log(`No alumni found with email: ${recipientEmail}`);
+        return;
+      }
+  
+      const email = user.personalInfo.email_address;
+      const name = user.personalInfo.fullname || "Alumni";
+  
+      if (!validateEmail(email)) {
+        console.warn(`Invalid email address provided: ${email}`);
+        return;
+      }
+  
+      const personalizedText = message.replace(/\{\{name\}\}/g, name);
+      const personalizedHTML = `<p>${personalizedText.replace(/\n/g, "<br>")}</p>`;
+  
+      const mailOptions = {
+        from: `"TUPATS Team" <zoetobypalomo@gmail.com>`,
+        to: email,
+        subject,
+        text: personalizedText,
+        html: personalizedHTML
+      };
+  
+      await transporter.sendMail(mailOptions);
+      console.log(`✅ Email successfully sent to: ${email}`);
+    } catch (error) {
+      console.error("❌ Error sending notification email:", error);
+    }
+  };
+  
+
 export const sendArticleNotification = async (articleTitle, articleContent) => {
     try {
         console.log("Fetching user emails...");
@@ -86,7 +129,7 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
         
                         // Email content
                         const mailOptions = {
-                            from: "zoetobypalomo@gmail.com",
+                            from: `"TUPATS Team" <zoetobypalomo@gmail.com>`,
                             to: email,
                             subject: `New Event: ${eventTitle}`,
                             html: `
@@ -117,7 +160,7 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
         
                 for (const email of emails) {
                     const mailOptions = {
-                        from: "zoetobypalomo@gmail.com",
+                        from: `"TUPATS Team" <zoetobypalomo@gmail.com>`,
                         to: email,
                         subject: `New Job Opportunity: ${jobTitle} at ${company}`,
                         html: `
