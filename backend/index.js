@@ -19,8 +19,6 @@ import uploadRoutes from './routes/uploadroutes.js';
 // import reminderRoutes from "./routes/reminderroutes.js";
 import notificationRoutes from "./routes/notificationroutes.js";
 import recoverRoutes from './routes/recoverRoutes.js';
-import fs from 'fs';
-
 const PORT = process.env.PORT || 5050;
 const app = express(); 
 

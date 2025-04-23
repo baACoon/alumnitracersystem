@@ -20,6 +20,54 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+router.post('/send-reset-code', async (req, res) => {
+  const { alumniID } = req.body;
+  try {
+    const student = await Student.findOne({ generatedID: alumniID });
+    if (!student) return res.status(404).json({ message: 'Student not found' });
+
+    const graduate = await Graduate.findOne({
+      firstName: new RegExp(`^${student.firstName}$`, 'i'),
+      lastName: new RegExp(`^${student.lastName}$`, 'i'),
+      gradYear: student.gradyear
+    });
+
+    if (!graduate || !graduate.email) {
+      return res.status(404).json({ message: 'Email not found for this user' });
+    }
+
+    const code = Math.floor(100000 + Math.random() * 900000);
+    recoveryCodes[graduate.email] = { code, expires: Date.now() + 15 * 60 * 1000 };
+
+    await transporter.sendMail({
+      from: `"Alumni Security Bot" <${process.env.EMAIL_USER}>`,
+      to: graduate.email,
+      subject: '[Secure Code] Password Reset Request',
+      text: `
+      Hey ${graduate.firstName || 'Alumni'},
+
+      Your temporary reset code is:
+
+       CODE: ${code}
+
+      This code is valid for 15 minutes.
+
+      If you didn’t request a password reset, no worries—just ignore this message. 
+      But if you did, enter the code to complete the process and regain access.
+
+      Stay safe,  
+      – DevOps Security // Alumni Tracer System
+            `.trim()
+          });
+
+    return res.json({ email: graduate.email, message: 'Reset code sent successfully' });
+  } catch (err) {
+    console.error("Send reset code error:", err);
+    return res.status(500).json({ message: 'Server error while sending reset code' });
+  }
+});
+
+
 // Step 1: Request recovery code
 router.post('/request-code', async (req, res) => {
   const { email } = req.body;
@@ -32,12 +80,24 @@ router.post('/request-code', async (req, res) => {
     const code = Math.floor(100000 + Math.random() * 900000);
     recoveryCodes[email] = { code, expires: Date.now() + 15 * 60 * 1000 };
 
-    // Send email with recovery code
+    // Send email with recovery code in tech-style format
     await transporter.sendMail({
-      from: `"Alumni Recovery" <${process.env.EMAIL_USER}>`,
+      from: `"Alumni Recovery Team" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: 'Your Recovery Code',
-      text: `Your alumni recovery code is: ${code}. It expires in 15 minutes.`,
+      subject: '[Secure Code Inside]',
+      text: `
+      Hey ${graduate.firstName || 'User'},
+
+      Your temporary access code is:
+
+       ${code}
+
+      This code is valid for the next 15 minutes. If you didn't request this code, no worries — just ignore this message.
+
+      System generated. No reply necessary.
+            
+      – DevOps Security // Alumni Recovery Portal
+            `.trim(),
     });
 
     res.json({ message: 'Recovery code sent to graduate email.' });
@@ -46,6 +106,7 @@ router.post('/request-code', async (req, res) => {
     res.status(500).json({ message: 'Error sending code.', error });
   }
 });
+
 
 // Step 2: Verify code
 router.post('/verify-code', (req, res) => {

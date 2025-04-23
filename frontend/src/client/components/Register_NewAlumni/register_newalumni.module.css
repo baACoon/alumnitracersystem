@@ -213,6 +213,31 @@
     stroke: #5D0E1D;
     animation-name: ringD;
   }
+  .primaryButton{
+    padding: 10px;
+    background-color: #C12542;
+    color: white;
+    border: none;
+    width: 40%;
+    margin-left: 5px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    
+  }
+  .secondaryButton{
+    padding: 10px;
+    background-color: #C12542;
+    color: white;
+    border: none;
+    width: 40%;
+    margin-left: 5px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
   
   /* Animations */
   @keyframes ringA {
