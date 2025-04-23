@@ -108,3 +108,31 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
             }
         };
         
+        export const sendJobNotification = async (jobTitle, company, description) => {
+            try {
+                console.log("Fetching user emails for job notification...");
+                const users = await SurveySubmission.find({}, "personalInfo.email_address");
+        
+                const emails = users.map((user) => user.personalInfo.email_address).filter(validateEmail);
+        
+                for (const email of emails) {
+                    const mailOptions = {
+                        from: "zoetobypalomo@gmail.com",
+                        to: email,
+                        subject: `New Job Opportunity: ${jobTitle} at ${company}`,
+                        html: `
+                            <h2>${jobTitle}</h2>
+                            <p><strong>Company:</strong> ${company}</p>
+                            <p>${description}</p>
+                            <p><a href="https://tupalumni.com">View Job Listings</a></p>
+                        `,
+                    };
+        
+                    await transporter.sendMail(mailOptions);
+                    console.log(`Job email sent to: ${email}`);
+                }
+            } catch (error) {
+                console.error("Error sending job notifications:", error);
+            }
+        };
+        

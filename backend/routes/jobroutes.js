@@ -2,6 +2,7 @@
 import express from 'express';
 import { protect } from '../middlewares/authmiddleware.js';
 import Job from '../models/job.js';
+import { sendJobNotification } from '../emailservice.js'; 
 
 const router = express.Router();
 
@@ -38,27 +39,26 @@ router.post('/jobpost', protect, async (req, res) => {
 });
 
 // Fetch jobs for logged-in user only
-
 router.get('/jobpost', protect, async (req, res) => {
     try {
-      const { status, createdBy } = req.query;
-      const filter = {};
-  
-      if (status) {
-        filter.status = { $in: status.split(',') };
-      }
-  
-      if (createdBy) {
-        filter.createdBy = createdBy;
-      }
-  
-      const jobs = await Job.find(filter).sort({ createdAt: -1 });
-      res.status(200).json(jobs);
+        const { status, createdBy } = req.query;
+        const filter = {};
+
+        if (status) {
+            filter.status = { $in: status.split(',') };
+        }
+
+        if (createdBy) {
+            filter.createdBy = createdBy;
+        }
+
+        const jobs = await Job.find(filter).sort({ createdAt: -1 });
+        res.status(200).json(jobs);
     } catch (error) {
-      console.error('Error fetching jobs:', error.message);
-      res.status(500).json({ error: 'Failed to fetch jobs.' });
+        console.error('Error fetching jobs:', error.message);
+        res.status(500).json({ error: 'Failed to fetch jobs.' });
     }
-  });
+});
 
 // Approve a job posting
 router.post('/:id/approve', protect, async (req, res) => {
@@ -70,6 +70,9 @@ router.post('/:id/approve', protect, async (req, res) => {
         );
 
         if (!job) return res.status(404).json({ message: 'Job not found.' });
+
+        // ✅ Send email when admin approves a pending job
+        await sendJobNotification(job.title, job.company, job.description);
 
         res.status(200).json({ message: 'Job approved successfully.', job });
     } catch (error) {
@@ -158,7 +161,7 @@ router.get('/:id/comments', protect, async (req, res) => {
 // Admin only: Create job post
 router.post('/create', protect, async (req, res) => {
     try {
-        const { title, company, location, type, description, responsibilities, qualifications, source, college, course } = req.body;
+        const { title, company, location, type, description, responsibilities, qualifications, source, college, course, status } = req.body;
 
         if (!college || !course || !title || !company || !location || !description) {
             return res.status(400).json({ message: "All required fields must be provided!" });
@@ -176,10 +179,16 @@ router.post('/create', protect, async (req, res) => {
             college,
             course,
             createdBy: req.user.id,
-            status: 'Published',
+            status: status || 'Published',
         });
 
         await job.save();
+
+        // ✅ Send notification if admin directly publishes the job
+        if (job.status === 'Published') {
+            await sendJobNotification(job.title, job.company, job.description);
+        }
+
         res.status(201).json({ message: 'Job posted successfully.' });
     } catch (error) {
         console.error('Error posting job:', error.message);
