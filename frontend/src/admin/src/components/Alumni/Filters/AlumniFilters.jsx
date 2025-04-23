@@ -1,94 +1,136 @@
-import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import React, { useState, useEffect } from "react";
 import styles from "./AlumniFilters.module.css";
 import { AlumniTable } from "../Table/AlumniTable";
 import { GraduatesList } from "../BatchList/GraduatesList";
 import SidebarLayout from "../../SideBar/SideBarLayout";
+import { Search, ChevronDown } from "lucide-react"; // Import icons if available
 
-export function AlumniFilters() {
-  const [activeTab, setActiveTab] = useState("registered");
-  const [batch, setBatch] = useState("");
-  const [college, setCollege] = useState("");
-  const [course, setCourse] = useState("");
-  const [activeFilter, setActiveFilter] = useState(null);
+const batchYears = Array.from({ length: 10 }, (_, i) => 2016 + i);
 
-  const coursesByCollege = {
-    "College of Engineering": [
+const colleges = [
+  "College of Engineering",
+  "College of Science",
+  "College of Industrial Technology",
+  "College of Liberal Arts",
+  "College of Architecture and Fine Arts"
+];
+
+const courses = {
+  "College of Engineering": [
     "Bachelor of Science in Civil Engineering",
     "Bachelor of Science in Electrical Engineering",
     "Bachelor of Science in Electronics Engineering",
-    "Bachelor of Science in Mechanical Engineering",
+    "Bachelor of Science in Mechanical Engineering"
   ],
   "College of Science": [
     "Bachelor of Applied Science in Laboratory Technology",
-    "Bachelor of Science in Computer Science",
-    "Bachelor of Science in Environmental Science",
-    "Bachelor of Science in Information System",
-    "Bachelor of Science in Information Technology",
+    "Bachelor of Science in Computer Science"
   ],
-  "College of Industrial Education": [
-    "Bachelor of Science Industrial Education Major in Information and Communication Technology",
-    "Bachelor of Science Industrial Education Major in Home Economics",
-    "Bachelor of Science Industrial Education Major in Industrial Arts",
-    "Bachelor of Technical Vocational Teachers Education Major in Animation",
-    "Bachelor of Technical Vocational Teachers Education Major in Automotive",
-    "Bachelor of Technical Vocational Teachers Education Major in Beauty Care and Wellness",
-    "Bachelor of Technical Vocational Teachers Education Major in Computer Programming",
-    "Bachelor of Technical Vocational Teachers Education Major in Electrical",
-    "Bachelor of Technical Vocational Teachers Education Major in Electronics",
-    "Bachelor of Technical Vocational Teachers Education Major in Food Service Management",
-    "Bachelor of Technical Vocational Teachers Education Major in Fashion and Garment",
-    "Bachelor of Technical Vocational Teachers Education Major in Heat Ventillation & Air Conditioning",
+  "College of Industrial Technology": [
+    "Bachelor of Engineering Technology",
+    "Bachelor of Technical Teacher Education"
   ],
   "College of Liberal Arts": [
-    "Bachelor of Science in Business Management Major in Industrial Management",
-    "Bachelor of Science in Entreprenuership",
-    "Bachelor of Science Hospitality Management",
+    "Bachelor of Arts in Communication",
+    "Bachelor of Arts in Political Science"
   ],
   "College of Architecture and Fine Arts": [
     "Bachelor of Science in Architecture",
-    "Bachelor of Fine Arts",
-    "Bachelor of Graphic Technology Major in Architecture Technology",
-    "Bachelor of Graphic Technology Major in Industrial Design",
-    "Bachelor of Graphic Technology Major in Mechanical Drafting Technology",
-  ],
-  "College of Industrial Technology": [
-    "Bachelor of Science in Food Technology",
-    "Bachelor of Engineering Technology Major in Civil Technology",
-    "Bachelor of Engineering Technology Major in Electrical Technology",
-    "Bachelor of Engineering Technology Major in Electronics Technology",
-    "Bachelor of Engineering Technology Major in Computer Engineering Technology",
-    "Bachelor of Engineering Technology Major in Instrumentation and Control Technology",
-    "Bachelor of Engineering Technology Major in Mechanical Technology",
-    "Bachelor of Engineering Technology Major in Mechatronics Technology",
-    "Bachelor of Engineering Technology Major in Railway Technology",
-    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Automative Technology",
-    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Heating Ventilation & Airconditioning/Refrigiration Technology",
-    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Power Plant Technology",
-    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Welding Technology",
-    "Bachelor of Engineering Technology Major in Mechanical Engineering Technology option in Dies and Moulds Technology",
-    "Bachelor of Technology in Apparel and Fashion",
-    "Bachelor of Technology in Culinary Technology",
-    "Bachelor of Technology in Print Media Technology",
-  ],
+    "Bachelor of Fine Arts"
+  ]
+};
+
+
+export function AlumniFilters() {
+  const [activeTab, setActiveTab] = useState("registered");
+  const [showFilters, setShowFilters] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filters, setFilters] = useState({
+    batchYear: "",
+    college: "",
+    course: ""
+  });
+  const [activeFilters, setActiveFilters] = useState([]);
+  const [filterApplied, setFilterApplied] = useState(false);
+
+  const queryParams = new URLSearchParams();
+      if (filters.batchYear) queryParams.append('batch', filters.batchYear);
+      if (filters.college) queryParams.append('college', filters.college);
+      if (filters.course) queryParams.append('course', filters.course);
+
+
+   // Handle filter changes and apply them immediately
+   const handleFilterChange = (type, value) => {
+    setFilters(prev => {
+      const newFilters = { ...prev, [type]: value };
+      if (type === "college") {
+        // Reset course when college changes
+        newFilters.course = "";
+      }
+      
+      // Update active filters immediately
+      const updatedActiveFilters = [];
+      Object.entries(newFilters).forEach(([key, val]) => {
+        if (val) {
+          updatedActiveFilters.push({ type: key, value: val });
+        }
+      });
+      setActiveFilters(updatedActiveFilters);
+      setFilterApplied(true);
+      
+      return newFilters;
+    });
   };
 
-  const handleBatchChange = (e) => {
-    setBatch(e.target.value);
-    setActiveFilter("batch");
+
+
+  // Apply filters
+  const applyFilters = () => {
+    const newActiveFilters = [];
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) {
+        newActiveFilters.push({ type: key, value });
+      }
+    });
+    setActiveFilters(newActiveFilters);
+    setShowFilters(false);
   };
 
-  const handleCollegeChange = (e) => {
-    setCollege(e.target.value);
-    setActiveFilter("college");
-    setCourse(""); // Reset course when college changes
+    // Reset filters
+    const resetFilters = () => {
+      setFilters({
+        batchYear: "",
+        college: "",
+        course: ""
+      });
+      setActiveFilters([]);
+      setFilterApplied(false);
+      setShowFilters(false);
+    };
+  
+
+  // Remove specific filter
+  const removeFilter = (type) => {
+    setFilters(prev => {
+      const newFilters = { ...prev, [type]: "" };
+      // If college is removed, also remove course
+      if (type === "college") {
+        newFilters.course = "";
+      }
+      
+      // Update active filters immediately
+      const updatedActiveFilters = [];
+      Object.entries(newFilters).forEach(([key, val]) => {
+        if (val) {
+          updatedActiveFilters.push({ type: key, value: val });
+        }
+      });
+      setActiveFilters(updatedActiveFilters);
+      
+      return newFilters;
+    });
   };
 
-  const handleCourseChange = (e) => {
-    setCourse(e.target.value);
-    setActiveFilter("course");
-  };
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -96,96 +138,171 @@ export function AlumniFilters() {
 
   return (
     <SidebarLayout>
-    <section className={styles.filterSection} aria-label="Alumni filters">
-      <h2 className={styles.databaseTitle}>ALUMNI DATABASE</h2>
-
-      {/* Filter Controls */}
-      <div className={styles.filterControls} role="group" aria-label="Filter controls">
-        {/* Batch Filter */}
-        <div className={styles.filterButtonContainer}>
-          <label htmlFor="batch" className={styles.filterLabel}>Batch:</label>
-          <select
-            id="batch"
-            className={`${styles.filterButton} ${activeFilter === "batch" ? styles.filterButtonActive : ""}`}
-            value={batch}
-            onChange={handleBatchChange}
-          >
-            <option value="">All Batches</option>
-            {Array.from({ length: 10 }, (_, i) => 2024 - i).map((year) => (
-              <option key={year} value={year}>
-                Batch {year}
-              </option>
-            ))}
-          </select>
+      <section className={styles.filterSection} aria-label="Alumni filters">
+        <h2 className={styles.databaseTitle}>ALUMNI MANAGEMENT</h2>
+  
+        <div className={styles.mainContent}>
+          <div className={styles.tabAndSearchContainer}>
+            <div className={styles.viewToggle} role="tablist">
+              <button
+                role="tab"
+                aria-selected={activeTab === "registered"}
+                className={`${styles.tab} ${activeTab === "registered" ? styles.activeTab : ""}`}
+                onClick={() => handleTabChange("registered")}
+              >
+                REGISTERED ALUMNI
+                {activeFilters.length > 0 && (
+                  <span className={styles.filterBadge}>{activeFilters.length}</span>
+                )}
+              </button>
+              <button
+                role="tab"
+                aria-selected={activeTab === "graduates"}
+                className={`${styles.tab} ${activeTab === "graduates" ? styles.activeTab : ""}`}
+                onClick={() => handleTabChange("graduates")}
+              >
+                LIST OF GRADUATES
+              </button>
+            </div>
+  
+            {activeTab === "registered" && (
+              <div className={styles.searchAndFilterContainer}>
+                <div className={styles.searchContainer}>
+                  <span className={styles.searchIcon}>
+                    <Search size={16} />
+                  </span>
+                  <input
+                    type="search"
+                    placeholder="Search alumni..."
+                    className={styles.searchInput}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+  
+                <div className={styles.filterButtonWrapper}>
+                  <button
+                    className={styles.filterButton}
+                    onClick={() => setShowFilters(!showFilters)}
+                  >
+                    <span>Filters</span>
+                    <span className={styles.filterIcon}>
+                      <ChevronDown size={16} />
+                    </span>
+                  </button>
+                 {showFilters && (
+                    <div className={styles.filterPopover}>
+                      <h4 className={styles.filterTitle}>Filter Alumni</h4>
+                      <div className={styles.filterDivider}></div>
+  
+                      <div className={styles.filterGroup}>
+                        <label className={styles.filterLabel}>Batch Year</label>
+                        <select
+                          className={styles.filterSelect}
+                          value={filters.batchYear}
+                          onChange={(e) => handleFilterChange("batchYear", e.target.value)}
+                        >
+                          <option value="">Select batch year</option>
+                          {batchYears.map((year) => (
+                            <option key={year} value={year}>{year}</option>
+                          ))}
+                        </select>
+                      </div>
+  
+                      <div className={styles.filterGroup}>
+                        <label className={styles.filterLabel}>College</label>
+                        <select
+                          className={styles.filterSelect}
+                          value={filters.college}
+                          onChange={(e) => handleFilterChange("college", e.target.value)}
+                        >
+                          <option value="">Select college</option>
+                          {colleges.map((college) => (
+                            <option key={college} value={college}>{college}</option>
+                          ))}
+                        </select>
+                      </div>
+  
+                      <div className={styles.filterGroup}>
+                        <label className={styles.filterLabel}>Course</label>
+                        <select
+                          className={styles.filterSelect}
+                          value={filters.course}
+                          onChange={(e) => handleFilterChange("course", e.target.value)}
+                          disabled={!filters.college}
+                        >
+                          <option value="">Select course</option>
+                          {filters.college && courses[filters.college] &&
+                            courses[filters.college].map((course) => (
+                              <option key={course} value={course}>{course}</option>
+                            ))}
+                        </select>
+                      </div>
+  
+                      <div className={styles.filterActions}>
+                        <button className={styles.resetButton} onClick={resetFilters}>
+                          Reset Filters
+                        </button>
+                        <button className={styles.applyButton} onClick={() => setShowFilters(false)}>
+                          Close Filters
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+  
+          {activeTab === "registered" && (
+            <>
+              {activeFilters.length > 0 && (
+                <div className={styles.activeFiltersBar}>
+                  <div className={styles.activeFiltersList}>
+                    {activeFilters.map((filter) => (
+                      <div 
+                        key={filter.type} 
+                        className={styles.filterBadgeOutline}
+                        title={
+                          filter.type === "batchYear" ? `Year: ${filter.value}` :
+                          filter.type === "college" ? `College: ${filter.value}` :
+                          `Course: ${filter.value}`
+                        }
+                      >
+                        {filter.type === "batchYear" && `Year: ${filter.value}`}
+                        {filter.type === "college" && `College: ${filter.value}`}
+                        {filter.type === "course" && `Course: ${filter.value}`}
+                        <button className={styles.removeFilterButton} onClick={() => removeFilter(filter.type)}>
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                    {activeFilters.length > 0 && (
+                      <button
+                        className={styles.clearAllButton}
+                        onClick={resetFilters}
+                      >
+                        Clear All
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+              <AlumniTable 
+                searchQuery={searchQuery}
+                batch={filters.batchYear}
+                college={filters.college}
+                course={filters.course}
+                filterApplied={filterApplied}
+              />
+            </>
+          )}
+  
+          {activeTab === "graduates" && <GraduatesList />}
         </div>
-
-        {/* College Filter */}
-        <div className={styles.filterButtonContainer}>
-          <label htmlFor="college" className={styles.filterLabel}>College:</label>
-          <select
-            id="college"
-            className={`${styles.filterButton} ${activeFilter === "college" ? styles.filterButtonActive : ""}`}
-            value={college}
-            onChange={handleCollegeChange}
-          >
-            <option value="">All Colleges</option>
-            {Object.keys(coursesByCollege).map((collegeName) => (
-              <option key={collegeName} value={collegeName}>
-                {collegeName}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Course Filter */}
-        <div className={styles.filterButtonContainer}>
-          <label htmlFor="course" className={styles.filterLabel}>Course:</label>
-          <select
-            id="course"
-            className={`${styles.filterButton} ${activeFilter === "course" ? styles.filterButtonActive : ""}`}
-            value={course}
-            onChange={handleCourseChange}
-            disabled={!college}
-          >
-            <option value="">Select Course</option>
-            {college &&
-              coursesByCollege[college].map((courseName) => (
-                <option key={courseName} value={courseName}>
-                  {courseName}
-                </option>
-              ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Tabs for Registered Alumni and List of Graduates */}
-      <div className={styles.viewToggle} role="tablist">
-        <button
-          role="tab"
-          aria-selected={activeTab === "registered"}
-          className={`${styles.tab} ${activeTab === "registered" ? styles.activeTab : ""}`}
-          onClick={() => handleTabChange("registered")}
-        >
-          REGISTERED ALUMNI
-        </button>
-        <button
-          role="tab"
-          aria-selected={activeTab === "graduates"}
-          className={`${styles.tab} ${activeTab === "graduates" ? styles.activeTab : ""}`}
-          onClick={() => handleTabChange("graduates")}
-        >
-          LIST OF GRADUATES
-        </button>
-      </div>
-
-      {/* Conditional Rendering */}
-      {activeTab === "registered" && <AlumniTable />}
-      {activeTab === "graduates" && <GraduatesList />}
-    </section>
-
-    
+      </section>
     </SidebarLayout>
-  );
+  );  
 }
 
 export default AlumniFilters;

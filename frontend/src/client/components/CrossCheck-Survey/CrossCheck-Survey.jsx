@@ -118,7 +118,7 @@ function CrossCheckSurveyForm() {
       course: selectedCourse,
     }));
   };
-
+ 
 
   const validateForm = useCallback(() => {
     if (currentPage === 1) {
@@ -142,6 +142,7 @@ function CrossCheckSurveyForm() {
         formData.occupation.trim() &&
         formData.company_name.trim() &&
         formData.year_started &&
+        formData.job_level &&
         formData.position.trim() &&
         formData.job_status &&
         formData.type_of_organization &&
@@ -176,7 +177,7 @@ function CrossCheckSurveyForm() {
 
     setIsSubmitting(true);
     try {
-      const response = await axios.post('https://alumnitracersystem.onrender.com/surveys/submit', {
+      const response = await axios.post('https://alumnitracersystem.onrender.com/surveys/submit/Tracer1', {// Or Tracer2 if submitting that        userId,
         userId,
         personalInfo: {
           first_name: formData.first_name,
@@ -197,6 +198,7 @@ function CrossCheckSurveyForm() {
           occupation: formData.occupation,
           company_name: formData.company_name,
           year_started: formData.year_started,
+          job_level: formData.job_level,
           position: formData.position,
           job_status: formData.job_status,
           type_of_organization: formData.type_of_organization,
@@ -210,7 +212,7 @@ function CrossCheckSurveyForm() {
 
       if (response.data.success) {
         setSubmitStatus({ type: "success", message: "Survey submitted successfully!" });
-        setTimeout(() => navigate("/profile"), 2000); // Redirect to homepage after 2 seconds
+        setTimeout(() => navigate("/Profile"), 2000); // Redirect to homepage after 2 seconds
         setFormData({
           first_name: "",
           middle_name: "",
@@ -229,6 +231,7 @@ function CrossCheckSurveyForm() {
           company_name: "",
           year_started: "",
           job_status: "",
+          job_level: "",
           position: "",
           type_of_organization: "",
           work_alignment: "",
@@ -537,6 +540,23 @@ function CrossCheckSurveyForm() {
                                       max={new Date().getFullYear()}
                                       className={styles["form-input"]}
                                   />
+                              </div>
+
+                              <div className={styles["form-group"]}>
+                                <label htmlFor="job_level">Job Level: *</label>
+                                <select
+                                  id="job_level"
+                                  name="job_level"
+                                  value={formData.job_level}
+                                  onChange={handleChange}
+                                  required
+                                  className={styles["form-select"]}
+                                >
+                                  <option value="">Select Job Level</option>
+                                  <option value="Entry-level">Entry-level</option>
+                                  <option value="Mid-level">Mid-level</option>
+                                  <option value="Senior/Executive">Senior/Executive</option>
+                                </select>
                               </div>
   
                               <div className={styles["form-group"]}>

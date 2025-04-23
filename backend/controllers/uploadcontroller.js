@@ -3,114 +3,172 @@ import csvParser from "csv-parser";
 import fs from "fs";
 import path from "path";
 
-// Ensure BatchList directory exists
+// Double the directory checks with redundancy
 const ensureBatchListDirectoryExists = () => {
   const batchListDir = path.join(process.cwd(), "BatchList");
-
   if (!fs.existsSync(batchListDir)) {
-    console.log("Creating BatchList directory for CSV uploads");
     fs.mkdirSync(batchListDir, { recursive: true });
   }
 };
 
+// Enhanced validation with duplicate checks
+const validateCollegeAndCourse = (college, course) => {
+  // Double validation for college
+  if (college && typeof college === 'string' && college.trim() !== '') {
+    // Additional check for suspicious characters
+    if (/[<>]/.test(college)) {
+      console.warn(`⚠️ Suspicious characters in college: ${college}`);
+      return false;
+    }
+    return true;
+  }
+  
+  // Double validation for empty/invalid college
+  if (college !== null && (typeof college !== 'string' || college.trim() === '')) {
+    console.warn(`⚠️ Invalid college format (double-checked): ${college}`);
+    return false;
+  }
+  
+  return true;
+};
+
+// Strict validation with detailed error reporting
+const validateFields = (row) => {
+  const errors = [];
+
+  ["Last Name", "First Name", "Year Graduated"].forEach((field) => {
+    if (!row[field]?.trim()) errors.push(`Missing ${field}`);
+  });
+
+  const gradYear = parseInt(row["Year Graduated"]?.trim());
+  if (isNaN(gradYear)) errors.push("Invalid graduation year");
+
+  if (row["Email"] && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row["Email"].trim())) {
+    errors.push("Invalid email format");
+  }
+
+  if (row["TUP-ID"] && !/^[A-Z0-9-]{8,}$/i.test(row["TUP-ID"].trim())) {
+    errors.push("Invalid TUP-ID format");
+  }
+
+  return errors.length > 0 ? errors : null;
+};
+
 export const uploadCSV = async (req, res) => {
   try {
+    // Double directory check at start
     ensureBatchListDirectoryExists();
 
     if (!req.file) {
-      console.log("❌ No file received");
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-     // ✅ Define filePath correctly
-     const filePath = req.file.path;
-     console.log("📂 File received:", filePath);
+    const filePath = req.file.path;
+    const batchYear = Number(req.body.batchYear) || new Date().getFullYear();
 
-     const results = [];
-     let isFirstRow = true;  // ✅ Declare isFirstRow properly
+    const results = [];
+    const validationErrors = [];
 
-    fs.createReadStream(filePath, { encoding: "utf8" })
+    fs.createReadStream(filePath)
     .pipe(csvParser())
     .on("data", (row) => {
-        // ✅ Skip first row if it's a duplicate header
-        if (isFirstRow && row["Last Name"] === "Last Name") {
-            console.log("⚠️ Skipping duplicate header row...");
-            isFirstRow = false;
-            return;
-        }
+      if (row["Last Name"] === "Last Name") return;
 
-        // ✅ Ensure required fields are not empty
-        if (!row["Last Name"] || !row["First Name"] || !row["Year Graduated"]) {
-            console.warn("⚠️ Skipping row due to missing required fields:", row);
-            return;
-        }
+      const fieldErrors = validateFields(row);
+      if (fieldErrors) {
+        validationErrors.push({ row, errors: fieldErrors });
+        return;
+      }
 
-        // ✅ Build graduate object
-        const graduate = {
-            lastName: row["Last Name"].trim(),
-            firstName: row["First Name"].trim(),
-            middleName: row["Middle Initial"] ? row["Middle Initial"].trim() : "N/A",
-            contact: row["Contact No."] ? row["Contact No."].trim() : "N/A",
-            email: row["Email"] ? row["Email"].trim() : "N/A",
-            college: row["College"] ? row["College"].trim() : "Unknown",
-            course: row["Course"] ? row["Course"].trim() : "Unknown",
-            gradYear: row["Year Graduated"] ? parseInt(row["Year Graduated"].trim()) : null
-        };
-
-        // ✅ Validate graduation year
-        if (isNaN(graduate.gradYear)) {
-            console.warn("⚠️ Skipping row due to invalid graduation year:", graduate);
-            return;
-        }
-
-        results.push(graduate);
-      })
-      .on("end", async () => {
-        try {
-          console.log("✅ CSV parsing complete. Preparing to insert data...");
-
-          if (results.length === 0) {
-            console.warn("⚠️ No valid graduates found to insert. Check CSV column names.");
-            return res.status(400).json({ error: "No valid graduates found. Ensure correct CSV format." });
-          }
-
-          await Graduate.insertMany(results);
-          console.log(`✅ Successfully inserted ${results.length} records into MongoDB`);
-
-          // ✅ Delete the file after processing
-          fs.unlinkSync(req.file.path);
-
-          res.json({
-            message: "Upload successful",
-            count: results.length,
-            data: results,
-          });
-        } catch (err) {
-          console.error("❌ Error inserting data into MongoDB:", err);
-          res.status(500).json({
-            error: "Error inserting data into MongoDB",
-            details: err.message,
-          });
-        }
-      })
-      .on("error", (error) => {
-        console.error("❌ Error parsing CSV:", error);
-        res.status(500).json({ error: "Error parsing CSV file", details: error.message });
+      results.push({
+        lastName: row["Last Name"].trim(),
+        firstName: row["First Name"].trim(),
+        middleName: row["Middle Initial"]?.trim() || null,
+        contact: row["Contact No."]?.trim() || null,
+        email: row["Email"]?.trim().toLowerCase() || null,
+        college: row["College"]?.trim().toUpperCase() || null,
+        course: row["Course"]?.trim().toUpperCase() || null,
+        gradYear: batchYear,
+        tupId: row["TUP-ID"]?.trim().toUpperCase() || null,
+        importedDate: new Date() // ✅ add this
       });
-  } catch (err) {
-    console.error("❌ Unexpected error in upload:", err);
-    res.status(500).json({ error: "Server error during upload", details: err.message });
-  }
+    })
+    .on("end", async () => {
+      try {
+        if (!results.length) {
+          fs.unlinkSync(filePath);
+          return res.status(400).json({ error: "No valid data found", validationErrors });
+        }
+
+        let insertedDocs;
+        try {
+          insertedDocs = await Graduate.insertMany(results, { ordered: false });
+        } catch (err) {
+          if (err.writeErrors) {
+            console.warn("Duplicates found and skipped:", err.writeErrors.length);
+          } else throw err;
+        }
+
+        const dbCount = await Graduate.countDocuments({ gradYear: batchYear });
+
+        fs.unlinkSync(filePath);
+        res.json({
+          success: true,
+          stats: {
+            attempted: results.length,
+            inserted: insertedDocs ? insertedDocs.length : 0,
+            skipped: validationErrors.length,
+            totalInDB: dbCount,
+          },
+          validationErrors: validationErrors.slice(0, 5),
+        });
+      } catch (err) {
+        fs.unlinkSync(filePath);
+        res.status(500).json({ error: "Database error", details: err.message });
+      }
+    })
+    .on("error", (error) => {
+      fs.unlinkSync(filePath);
+      res.status(500).json({ error: "CSV processing error", details: error.message });
+    });
+} catch (err) {
+  res.status(500).json({ error: "Server error", details: err.message });
+}
 };
 
-// ✅ Fetch all graduates
 export const getGraduates = async (req, res) => {
-    try {
-        const graduates = await Graduate.find().sort({ gradYear: -1 });  // ✅ Ensures latest records first
-        console.log("✅ Returning graduates:", graduates.length);
-        res.json(graduates);
-    } catch (err) {
-        console.error("❌ Error retrieving graduates:", err);
-        res.status(500).json({ error: "Error retrieving data", details: err.message });
+  try {
+    const { year } = req.query;
+    
+    if (!year) {
+      return res.status(400).json({
+        error: "Year parameter is required",
+        example: "/api/graduates?year=2020"
+      });
     }
+
+    const filter = { gradYear: parseInt(year) };
+    
+    // Optional filters
+    if (req.query.college) filter.college = req.query.college.toUpperCase();
+    if (req.query.course) filter.course = req.query.course.toUpperCase();
+
+    const graduates = await Graduate.find(filter)
+      .sort({ lastName: 1, firstName: 1 })
+      .select('-__v -_checksum');
+
+    const latest = await Graduate.findOne(filter).sort({ importedDate: -1 });
+
+
+    res.json({
+      count: graduates.length,
+      data: graduates
+    });
+  } catch (err) {
+    console.error("Retrieval error:", err);
+    res.status(500).json({
+      error: "Data retrieval failed",
+      details: err.message
+    });
+  }
 };

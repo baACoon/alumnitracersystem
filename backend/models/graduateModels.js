@@ -5,9 +5,12 @@ const GraduateListSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   middleName: { type: String, required: true },
   college: { type: String },
-  course: { type: String},
-  email: { type: String, required: true }, // ✅ Matches "Program" field in CSV
-  gradYear: { type: Number, required: true }, // ✅ Correct type (Number)
+  course: { type: String },
+  email: { type: String, required: true },
+  contact: { type: String }, // Keep contact field but make it optional
+  tupId: { type: String }, // Add TUP-ID field
+  gradYear: { type: Number, required: true },
+  importedDate:{ type: Date}
 });
 
 export default mongoose.model("Graduate", GraduateListSchema);
