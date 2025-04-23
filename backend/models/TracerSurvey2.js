@@ -86,7 +86,7 @@ const TracerSurvey2Schema = new mongoose.Schema(
     },
     job_status: {
       type: String,
-      enum: ["permanent", "contractual", "temporary", "selfEmployed", "unemployed"],
+      enum: ["Permanent", "Contractual/ProjectBased", "Temporary", "Self-employed", "Unemployed"],
       required: true
     },
     // Change these fields in your schema:

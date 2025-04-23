@@ -227,5 +227,108 @@ router.get("/tracer2/analytics", async (req, res) => {
     res.status(500).json({ error: "Failed to generate analytics." });
   }
 });
+router.get("/tracer/comparison", async (req, res) => {
+  try {
+    const tracer1Submissions = await SurveySubmission.find({ surveyType: "Tracer1" });
+    const tracer2Submissions = await TracerSurvey2.find({ version: 2 });
+
+    const tracer1Map = new Map();
+    tracer1Submissions.forEach((doc) => {
+      tracer1Map.set(doc.userId.toString(), doc);
+    });
+
+    const usersWithBoth = tracer2Submissions.filter((doc) => tracer1Map.has(doc.userId.toString()));
+
+    let employmentRate = {
+      tracer1: { Employed: 0, Unemployed: 0 },
+      tracer2: { Employed: 0, Unemployed: 0 },
+    };
+
+    let curriculumAlignment = {
+      tracer1: {},
+      tracer2: {},
+    };
+
+    let job_level = {
+      tracer1: {},
+      tracer2: {}
+    };
+    
+    let jobLevelCount1 = 0;
+    let jobLevelCount2 = 0;
+
+    usersWithBoth.forEach((tracer2Doc) => {
+      const userId = tracer2Doc.userId.toString();
+      const tracer1Doc = tracer1Map.get(userId);
+
+      const employedTypes = ["Permanent", "Contractual/ProjectBased", "Temporary", "Self-employed"];
+
+      const emp1 = tracer1Doc.employmentInfo?.job_status || "Unemployed";
+      const emp2 = tracer2Doc.job_status || "Unemployed";
+
+      const isEmp1 = employedTypes.includes(emp1);
+      const isEmp2 = employedTypes.includes(emp2);
+
+      employmentRate.tracer1[isEmp1 ? "Employed" : "Unemployed"]++;
+      employmentRate.tracer2[isEmp2 ? "Employed" : "Unemployed"]++;
+
+      const align1 = tracer1Doc.employmentInfo?.work_alignment?.trim() || "Unknown";
+      const align2 = tracer2Doc.jobDetails?.work_alignment?.trim() || "Unknown";
+
+      curriculumAlignment.tracer1[align1] = (curriculumAlignment.tracer1[align1] || 0) + 1;
+      curriculumAlignment.tracer2[align2] = (curriculumAlignment.tracer2[align2] || 0) + 1;
+
+       // Tracer 1 job level (ignore NotApplicable)
+      const level1 = tracer1Doc.employmentInfo?.job_level;
+      if (level1 && level1 !== "NotApplicable") {
+        job_level.tracer1[level1] = (job_level.tracer1[level1] || 0) + 1;
+        jobLevelCount1++;
+      }
+
+      // Tracer 2 job level (only if available)
+      const level2 = tracer2Doc.jobDetails?.job_level;
+      if (level2) {
+        job_level.tracer2[level2] = (job_level.tracer2[level2] || 0) + 1;
+        jobLevelCount2++;
+  }
+    });
+
+    const toPercent = (obj) => {
+      const sum = Object.values(obj).reduce((a, b) => a + b, 0) || 1;
+      const percent = {};
+      for (let key in obj) {
+        percent[key] = Math.round((obj[key] / sum) * 100);
+      }
+      return percent;
+    };
+
+    const toPercentJob = (obj, total) => {
+      const percent = {};
+      for (let key in obj) {
+        percent[key] = total ? Math.round((obj[key] / total) * 100) : 0;
+      }
+      return percent;
+    };
+
+    res.json({
+      employmentRate: {
+        tracer1: toPercent(employmentRate.tracer1),
+        tracer2: toPercent(employmentRate.tracer2),
+      },
+      curriculumAlignment: {
+        tracer1: toPercent(curriculumAlignment.tracer1),
+        tracer2: toPercent(curriculumAlignment.tracer2),
+      },
+      job_level: {
+        tracer1: toPercent(job_level.tracer1, jobLevelCount1),
+        tracer2: toPercent(job_level.tracer2, jobLevelCount2),
+      },
+      
+    });
+  } catch (err) {
+    console.error("/tracer/comparison error", err);
+    res.status(500).json({ error: "Failed to generate comparison." });
+  }
+});
   
   export default router;

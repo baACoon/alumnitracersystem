@@ -121,11 +121,11 @@ const Page3_Employment = ({ data, updateForm }) => {
       <h3 className={styles.sectionTitle}>Present Employment Status</h3>
       <div className={styles.businessOptions}>
         {[
-          { label: "Permanent", value: "permanent" },
-          { label: "Contractual/Project Base", value: "contractual" },
-          { label: "Temporary", value: "temporary" },
-          { label: "Self-Employed", value: "selfEmployed" },
-          { label: "Unemployed", value: "unemployed" },
+          { label: "Permanent", value: "Permanent" },
+          { label: "Contractual/Project Base", value: "Contractual/ProjectBased" },
+          { label: "Temporary", value: "Temporary" },
+          { label: "Self-Employed", value: "Self-employed" },
+          { label: "Unemployed", value: "Unemployed" },
         ].map(({ label, value }) => (
           <label key={value}>
             <input
@@ -140,12 +140,12 @@ const Page3_Employment = ({ data, updateForm }) => {
         ))}
       </div>
 
-      {data.job_status === "unemployed"
+      {data.job_status === "Unemployed"
         ? renderUnemploymentReasons()
         : null}
 
       {/* If NOT unemployed, show the rest of the job-related questions */}
-      {data.job_status !== "unemployed" && (
+      {data.job_status !== "Unemployed" && (
         <>
           {/* Present Occupation */}
           <h3 className={styles.sectionTitle}>Present Occupation</h3>

@@ -89,6 +89,7 @@ function CrossCheckSurveyForm() {
     company_name: "",
     year_started: "",
     job_status: "",
+    job_level: "",
     position: "",
     type_of_organization: "",
     work_alignment: "",
@@ -501,6 +502,28 @@ function CrossCheckSurveyForm() {
                   <h2 className={styles["section-title"]}>Occupational Information</h2>
                     <div className={styles["form-grid"]}>
                       {/* Occupational Information Fields */}
+                      
+                      <div className={styles["form-group"]}>
+                                  <label htmlFor="job_status">Employment Status: *</label>
+                                  <select
+                                      id="job_status"
+                                      name="job_status"
+                                      value={formData.job_status}
+                                      onChange={handleChange}
+                                      required
+                                      className={styles["form-select"]}
+                                  >
+                                      <option value="">Select Status</option>
+                                      <option value="Permanent">Permanent</option>
+                                      <option value="Contractual/ProjectBased">Contractual/Project Based</option>
+                                      <option value="Temporary">Temporary</option>
+                                      <option value="Self-employed">Self-employed</option>
+                                      <option value="Unemployed">Unemployed</option>
+                                  </select>
+                              </div>
+
+                              <p>If "Unemployed", insert N/A</p>
+
                           <div className={styles["form-group"]}>
                               <label htmlFor="occupation">Occupation: *</label>
                               <input
@@ -556,6 +579,7 @@ function CrossCheckSurveyForm() {
                                   <option value="Entry-level">Entry-level</option>
                                   <option value="Mid-level">Mid-level</option>
                                   <option value="Senior/Executive">Senior/Executive</option>
+                                  <option value="NotApplicable">Not Applicable</option>
                                 </select>
                               </div>
   
@@ -572,24 +596,7 @@ function CrossCheckSurveyForm() {
                                   />
                               </div>
   
-                              <div className={styles["form-group"]}>
-                                  <label htmlFor="job_status">Employment Status: *</label>
-                                  <select
-                                      id="job_status"
-                                      name="job_status"
-                                      value={formData.job_status}
-                                      onChange={handleChange}
-                                      required
-                                      className={styles["form-select"]}
-                                  >
-                                      <option value="">Select Status</option>
-                                      <option value="Permanent">Permanent</option>
-                                      <option value="Contractual/Project Based">Contractual/Project Based</option>
-                                      <option value="Temporary">Temporary</option>
-                                      <option value="Self-employed">Self-employed</option>
-                                      <option value="Unemployed">Unemployed</option>
-                                  </select>
-                              </div>
+                              
   
                               <div className={styles["form-group"]}>
                                   <label htmlFor="type_of_organization">Type of Organization: *</label>
@@ -606,6 +613,8 @@ function CrossCheckSurveyForm() {
                                       <option value="NGO">NGO</option>
                                       <option value="Government">Government</option>
                                       <option value="Self-employed">Self-employed</option>
+                                      <option value="NotApplicable">Not Applicable</option>
+
                                   </select>
                               </div>
                               <div className={styles["form-group"]}>
