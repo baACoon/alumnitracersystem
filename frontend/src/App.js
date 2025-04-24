@@ -18,7 +18,6 @@ import JobPageList from '../src/client/components/JobPageList/jobpagelist';
 import Contact from '../src/client/components/Contact/contact';
 import Profile from '../src/client/components/Profile/profile';
 import SurveyForm from '../src/client/components/SurveyForm/SurveyForm';
-import CompletedForm from '../src/client/components/CompletedForm/CompletedForm';
 import RecoverAccount from './client/components/Register_NewAlumni/recover_account';
 
 
@@ -43,7 +42,6 @@ function App() {
             <Route path="/Contact" element={<Contact />} />
             <Route path="/Profile" element={<Profile />} />
             <Route path="/SurveyForm" element={<SurveyForm />} />
-            <Route path="/CompletedForm" element={<CompletedForm />} />
             <Route path="/RecoverAccount" element={<RecoverAccount />} />
           </Routes>
         </BrowserRouter>
