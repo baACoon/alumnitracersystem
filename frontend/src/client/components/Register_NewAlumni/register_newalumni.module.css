@@ -1,273 +1,424 @@
 /* Modal overlay */
 .modalOverlayNewAlumni {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    animation: fadeInOverlay 0.3s ease-out forwards;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  animation: fadeInOverlay 0.3s ease-out forwards;
 }
 
 /* Modal content */
 .modalContentNewAlumni {
-    background-color: #5D0E1D;
-    border-radius: 8px;
-    padding: 30px;
-    width: 450px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
-    animation: fadeInSlideUp 0.4s ease-out forwards;
+  background-color: #5D0E1D;
+  border-radius: 8px;
+  padding: 30px;
+  width: 450px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  animation: fadeInSlideUp 0.4s ease-out forwards;
 }
+
+/* Modal styling */
+.verificationResult {
+background-color: #ffffff;
+border-radius: 8px;
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+padding: 24px;
+width: 100%;
+margin: 0 auto;
+text-align: left;
+animation: fadeIn 0.3s ease-in-out;
+}
+
+.verificationResult h3 {
+color: #c12542;
+font-size: 20px;
+margin-top: 0;
+margin-bottom: 16px;
+border-bottom: 1px solid #eee;
+padding-bottom: 12px;
+text-align: center;
+font-weight: 600;
+}
+
+.verifyName{
+text-align: center;
+}
+
+.verificationResult p {
+margin: 8px 0;
+font-size: 14px;
+color: #333;
+line-height: 1.5;
+}
+
+.verificationResult strong {
+font-weight: 600;
+color: #5d0e1d;
+text-transform: uppercase;
+font-size: 13px;
+}
+
+.buttonGroup {
+display: flex;
+justify-content: center;
+gap: 10px;
+margin-top: 20px;
+}
+
+.primaryButton {
+background-color: #c12542;
+color: white;
+border: none;
+border-radius: 6px;
+padding: 10px 16px;
+font-size: 14px;
+font-weight: 500;
+cursor: pointer;
+transition: background-color 0.3s;
+width: 45%;
+text-align: center;
+}
+
+.primaryButton:hover {
+background-color: #350e15;
+}
+
+.secondaryButton {
+background-color: #c12542;
+color: white;
+border: none;
+border-radius: 6px;
+padding: 10px 16px;
+font-size: 14px;
+font-weight: 500;
+cursor: pointer;
+transition: background-color 0.3s;
+width: 45%;
+text-align: center;
+}
+
+.secondaryButton:hover {
+background-color: #350e15;
+}
+
+.inputFieldNewAlumni {
+width: 100%;
+padding: 12px;
+margin: 8px 0 16px;
+border: 1px solid #ddd;
+border-radius: 6px;
+font-size: 11px;
+transition: border-color 0.2s;
+}
+
+.inputFieldNewAlumni:focus {
+border-color: #c12542;
+outline: none;
+box-shadow: 0 0 0 2px rgba(193, 37, 66, 0.2);
+}
+
+/* Animation for modal appearance */
+@keyframes fadeIn {
+from {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+to {
+  opacity: 1;
+  transform: translateY(0);
+}
+}
+
+/* Recovery steps styling */
+.verificationResult > div {
+margin-top: 16px;
+}
+
+.verificationResult > div > p {
+margin-bottom: 12px;
+font-weight: 500;
+text-align: center;
+}
+
+/* Code verification and password reset sections */
+.verificationResult > div > button {
+width: 50%;
+margin: 10px auto;
+display: block;
+}
+
 
 /* Close button */
 .closeButtonNewAlumni {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    color: #ffffff;
-    background: transparent;
-    border: none;
-    cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  color: #ffffff;
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 .closeButtonNewAlumni:hover {
-    color: #db4040;
+  color: #db4040;
 }
 
 /* Modal title */
 .modalTitleNewAlumni {
-    font-size: 24px;
-    color: #ffffff;
-    margin-bottom: 20px;
-    text-align: center;
+  font-size: 24px;
+  color: #ffffff;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 /* Form styling */
 .registerForm {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Input fields and select elements */
 .inputFieldNewAlumni {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    font-size: 11px;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 11px;
 }
 
 /* Button */
 .submitButtonNewAlumni {
-    width: 50%;
-    align-self: center;
-    padding: 12px;
-    background-color: #C12542;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  width: 50%;
+  align-self: center;
+  padding: 12px;
+  background-color: #C12542;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .submitButtonNewAlumni:hover {
-    background-color: #350e15;
+  background-color: #350e15;
 }
 
 /* Modal container */
 .uniqueIdModal {
-    position: fixed; /* Keeps the modal in place */
-    top: 50%; /* Centers vertically */
-    left: 50%; /* Centers horizontally */
-    transform: translate(-50%, -50%); /* Centers the modal exactly */
-    width: 100%; /* Adjust width for responsiveness */
-    max-width: 450px; /* Sets a max width */
-    background-color: #380a12; /* Background color for the modal */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
-    border-radius: 8px; /* Rounded corners */
-    padding: 20px; /* Space inside the modal */
-    text-align: center; /* Aligns text */
-    z-index: 1000; /* Ensures the modal is above other elements */
-  }
-  
-  /* Modal title */
-  .uniqueIdModal h3 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-    color: #ffffff; /* Darker text for readability */
-  }
-  
-  /* Modal text */
-  .uniqueIdModal p {
-    font-size: 1em;
-    font-weight: 500;
-    margin-bottom: 15px;
-    color: #ffffff; /* Slightly lighter text */
-  }
-  
-  /* Emphasized User ID */
-  .uniqueIdModal strong {
-    color: #ffffff; /* Highlighted color for User ID */
-    font-weight: bold;
-    background-color: #C12542;
-    padding: 10px;
-    text-transform: lowercase;
-  }
-  
+  position: fixed; /* Keeps the modal in place */
+  top: 50%; /* Centers vertically */
+  left: 50%; /* Centers horizontally */
+  transform: translate(-50%, -50%); /* Centers the modal exactly */
+  width: 100%; /* Adjust width for responsiveness */
+  max-width: 450px; /* Sets a max width */
+  background-color: #380a12; /* Background color for the modal */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Space inside the modal */
+  text-align: center; /* Aligns text */
+  z-index: 1000; /* Ensures the modal is above other elements */
+}
 
-  /* Fade-in Animation */
+/* Modal title */
+.uniqueIdModal h3 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #ffffff; /* Darker text for readability */
+}
+
+.uniqueIdModal h4 {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  padding: 10px;
+  color: #ffffff; /* Darker text for readability */
+}
+
+/* Modal text */
+.uniqueIdModal p {
+  font-size: 1em;
+  font-weight: 500;
+  margin-bottom: 15px;
+  color: #ffffff; /* Slightly lighter text */
+}
+
+/* Emphasized User ID */
+.uniqueIdModal strong {
+  color: #ffffff; /* Highlighted color for User ID */
+  font-weight: bold;
+  background-color: #C12542;
+  padding: 10px;
+  text-transform: lowercase;
+}
+
+
+/* Fade-in Animation */
 @keyframes fadeInSlideUp {
-    from {
-        opacity: 0;
-        transform: translateY(50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+      opacity: 0;
+      transform: translateY(50px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
 }
 
 /* Fade-out Animation */
 @keyframes fadeOutSlideDown {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(50px);
-    }
+  from {
+      opacity: 1;
+      transform: translateY(0);
+  }
+  to {
+      opacity: 0;
+      transform: translateY(50px);
+  }
 }
 
 /* Fade in Overlay */
 @keyframes fadeInOverlay {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+  from {
+      opacity: 0;
+  }
+  to {
+      opacity: 1;
+  }
 }
 
 /* Fade out Overlay */
 @keyframes fadeOutOverlay {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
+  from {
+      opacity: 1;
+  }
+  to {
+      opacity: 0;
+  }
 }
 
 /* Add class when closing */
 .modalOverlayNewAlumni.fadeOut {
-    animation: fadeOutOverlay 0.3s ease-out forwards;
+  animation: fadeOutOverlay 0.3s ease-out forwards;
 }
 
 .modalContentNewAlumni.fadeOut {
-    animation: fadeOutSlideDown 0.3s ease-out forwards;
+  animation: fadeOutSlideDown 0.3s ease-out forwards;
 }
 
 /* Loader Styling */
 .loaderContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .loader {
-    width: 80px;
-    height: 80px;
-  }
-  
-  /* Ensure animation applies */
-  .pl__ring {
-    animation: ringA 2s linear infinite;
-  }
-  
-  .pl__ringA {
-    stroke: #5D0E1D;
-    animation-name: ringA;
-  }
-  
-  .pl__ringB {
-    stroke: rgb(185, 179, 179);
-    animation-name: ringB;
-  }
-  
-  .pl__ringC {
-    stroke: rgb(185, 179, 179);
-    animation-name: ringC;
-  }
-  
-  .pl__ringD {
-    stroke: #5D0E1D;
-    animation-name: ringD;
-  }
-  
-  /* Animations */
-  @keyframes ringA {
-    0% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -330; }
-    12% { stroke-dasharray: 60 600; stroke-width: 30; stroke-dashoffset: -335; }
-    32% { stroke-dasharray: 60 600; stroke-width: 30; stroke-dashoffset: -595; }
-    40%, 54% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -660; }
-    100% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -990; }
-  }
-  
-  @keyframes ringB {
-    0% { stroke-dasharray: 0 220; stroke-width: 20; stroke-dashoffset: -110; }
-    20% { stroke-dasharray: 20 200; stroke-width: 30; stroke-dashoffset: -115; }
-    100% { stroke-dasharray: 0 220; stroke-width: 20; stroke-dashoffset: -330; }
-  }
-  
-  @keyframes ringC {
-    0% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: 0; }
-    28% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -175; }
-    100% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: -440; }
-  }
-  
-  @keyframes ringD {
-    0% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: 0; }
-    36% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -175; }
-    100% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: -440; }
-  }
-  
-  /* Loading Overlay */
-  .loadingOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.8);
-  }
-  
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader {
+  width: 80px;
+  height: 80px;
+}
+
+/* Ensure animation applies */
+.pl__ring {
+  animation: ringA 2s linear infinite;
+}
+
+.pl__ringA {
+  stroke: #5D0E1D;
+  animation-name: ringA;
+}
+
+.pl__ringB {
+  stroke: rgb(185, 179, 179);
+  animation-name: ringB;
+}
+
+.pl__ringC {
+  stroke: rgb(185, 179, 179);
+  animation-name: ringC;
+}
+
+.pl__ringD {
+  stroke: #5D0E1D;
+  animation-name: ringD;
+}
+
+.secondaryButton{
+  padding: 10px;
+  background-color: #C12542;
+  color: white;
+  border: none;
+  width: 40%;
+  margin-left: 5px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Animations */
+@keyframes ringA {
+  0% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -330; }
+  12% { stroke-dasharray: 60 600; stroke-width: 30; stroke-dashoffset: -335; }
+  32% { stroke-dasharray: 60 600; stroke-width: 30; stroke-dashoffset: -595; }
+  40%, 54% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -660; }
+  100% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -990; }
+}
+
+@keyframes ringB {
+  0% { stroke-dasharray: 0 220; stroke-width: 20; stroke-dashoffset: -110; }
+  20% { stroke-dasharray: 20 200; stroke-width: 30; stroke-dashoffset: -115; }
+  100% { stroke-dasharray: 0 220; stroke-width: 20; stroke-dashoffset: -330; }
+}
+
+@keyframes ringC {
+  0% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: 0; }
+  28% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -175; }
+  100% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: -440; }
+}
+
+@keyframes ringD {
+  0% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: 0; }
+  36% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -175; }
+  100% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: -440; }
+}
+
+/* Loading Overlay */
+.loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+
 /* Responsive design */
 @media (max-width: 500px) {
-    .modalContentNewAlumni {
-        width: 90%;
-        padding: 20px;
-    }
+  .modalContentNewAlumni {
+      width: 90%;
+      padding: 20px;
+  }
 
-    .inputFieldNewAlumni {
-        padding: 10px;
-    }
+  .inputFieldNewAlumni {
+      padding: 10px;
+  }
 
-    .submitButtonNewAlumni {
-        padding: 10px;
-    }
+  .submitButtonNewAlumni {
+      padding: 10px;
+  }
 }

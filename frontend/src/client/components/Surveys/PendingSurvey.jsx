@@ -47,7 +47,7 @@ export const PendingSurvey = () => {
 
     const fetchLatestTracer = async () => {
       try {
-        const res = await axios.get(`https://alumnitracersystem.onrender.com/tracerSurvey2/api/tracer2/latest/${userId}`)
+        const res = await axios.get(`https://alumnitracersystem.onrender.com/api/tracer2/latest/${userId}`)
 
         const { nextVersion, releaseDate, eligible } = res.data;
 
@@ -60,10 +60,10 @@ export const PendingSurvey = () => {
     };
 
     // // ✅ FORCED OVERRIDE FOR TESTING
-    // setTimeout(() => {
-    //   setIsTracerSurveyOpen(true);
-    //   setReleaseDate(new Date()); // just for UI display
-    // }, 1000);
+    setTimeout(() => {
+      setIsTracerSurveyOpen(true);
+      setReleaseDate(new Date()); // just for UI display
+    }, 1000);
 
     const checkTracer2Status = async () => {
       try {
@@ -175,7 +175,7 @@ export const PendingSurvey = () => {
           </div>
         ) : (
           <>
-            {!tracer2Submitted && (
+            {isTracerSurveyOpen || releaseDate ? (
               isTracerSurveyOpen ? (
                 <div className={styles.surveyCard} onClick={() => navigate(`/TracerSurvey2?v=${nextTracerVersion}`)} style={{ order: -1 }}>
                   <h3>Tracer Survey {nextTracerVersion}</h3>
@@ -187,7 +187,7 @@ export const PendingSurvey = () => {
                   <p className={styles.grayText}>Available on {releaseDate?.toLocaleDateString()}</p>
                 </div>
               )
-            )}
+            ) : null}
 
             {activeSurveys.length > 0 ? (
               activeSurveys.map((survey) => (

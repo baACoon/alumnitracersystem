@@ -5,7 +5,7 @@ const Page3_Employment = ({ data, updateForm }) => {
 
   // Handle Input Changes
   const handleEmploymentStatusChange = (value) => {
-    updateForm("employmentStatus", value);
+    updateForm("job_status", value);
   };
 
   const handleUnemploymentReasonChange = (field, value) => {
@@ -121,18 +121,18 @@ const Page3_Employment = ({ data, updateForm }) => {
       <h3 className={styles.sectionTitle}>Present Employment Status</h3>
       <div className={styles.businessOptions}>
         {[
-          { label: "Permanent", value: "permanent" },
-          { label: "Contractual/Project Base", value: "contractual" },
-          { label: "Temporary", value: "temporary" },
-          { label: "Self-Employed", value: "selfEmployed" },
-          { label: "Unemployed", value: "unemployed" },
+          { label: "Permanent", value: "Permanent" },
+          { label: "Contractual/Project Base", value: "Contractual/ProjectBased" },
+          { label: "Temporary", value: "Temporary" },
+          { label: "Self-Employed", value: "Self-employed" },
+          { label: "Unemployed", value: "Unemployed" },
         ].map(({ label, value }) => (
           <label key={value}>
             <input
               type="radio"
-              name="employmentStatus"
+              name="job_status"
               value={value}
-              checked={data.employmentStatus === value}
+              checked={data.job_status === value}
               onChange={() => handleEmploymentStatusChange(value)}
             />
             {label}
@@ -140,12 +140,12 @@ const Page3_Employment = ({ data, updateForm }) => {
         ))}
       </div>
 
-      {data.employmentStatus === "unemployed"
+      {data.job_status === "Unemployed"
         ? renderUnemploymentReasons()
         : null}
 
       {/* If NOT unemployed, show the rest of the job-related questions */}
-      {data.employmentStatus !== "unemployed" && (
+      {data.job_status !== "Unemployed" && (
         <>
           {/* Present Occupation */}
           <h3 className={styles.sectionTitle}>Present Occupation</h3>
@@ -157,27 +157,76 @@ const Page3_Employment = ({ data, updateForm }) => {
             className={styles.textInput}
           />
 
+          <h3 className={styles.sectionTitle}>Company Name</h3>
+          <input 
+            type="text" 
+            value={data.jobDetails?.company_name || ""}
+            onChange={(e) => updateForm("jobDetails", { ...data.jobDetails, company_name: e.target.value })}
+            placeholder="e.g., ABC Corporation, XYZ Inc."
+            className={styles.textInput}          
+          />
+
+          {/* Present Occupation */}
+          <h3 className={styles.sectionTitle}>Position in the Company</h3>
+          <input
+            type="text"
+            value={data.jobDetails?.position || ""}  // Safely access `occupation`
+            onChange={(e) => updateForm("jobDetails", { ...data.jobDetails, position: e.target.value })}
+            placeholder="e.g., Sales Representative, Marketing Manager, Administrative Assistant"
+            className={styles.textInput}
+          />
+
+          <h3 className={styles.sectionTitle}>Year Started</h3>
+          <input 
+            type="text" 
+            value={data.jobDetails?.year_started || ""}
+            onChange={(e) => updateForm("jobDetails", { ...data.jobDetails, year_started: e.target.value })}
+            placeholder="e.g., 2021"
+            className={styles.textInput}          
+          />
+
+          <h3 className={styles.sectionTitle}>Type of Organization</h3>
+          <div className={styles.businessOptions}>
+            {["Private", "NGO", "Government", "Self-Employed"].map((type, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+                  name="type_of_organization"
+                  value={type}
+                  checked={data.jobDetails?.type_of_organization === type}  // Use optional chaining to avoid error if data.jobDetails is undefined
+                  onChange={() => updateForm("jobDetails", { ...data.jobDetails, type_of_organization: type })}
+                />
+                {type}
+                </label>
+            ))}
+          </div>
+
           {/* Major Line of Business of the Company*/}
           <h3 className={styles.sectionTitle}>Major Line of Business of the Company</h3>
           <div className={styles.businessOptions}>
             {[
-              "Agriculture, Hunting, and Forestry",
+              "Agriculture & Forestry",
               "Fishing",
-              "Mining and Quarrying",
+              "Mining & Quarrying",
               "Manufacturing",
-              "Electricity, Gas, and Water Supply",
+              "Utilities (Power/Water)",
               "Construction",
-              "Wholesale and Retail Trade, repair of motor vehicles, motorcycles, and personal and household goods",
-              "Hotels and Restaurants",
-              "Transport Storage and Communication",
-              "Financial Intermediation",
-              "Real Estate, Renting, and Business Activities",
-              "Public Administration and Defense; Compulsory Social Security",
+              "Retail & Motor Repair",
+              "Hotels & Restaurants",
+              "Transport & Logistics",
+              "Banking & Finance",
+              "Real Estate & Business",
+              "Government & Public Service",
               "Education",
-              "Health and Social Work",
-              "Other Community, Social, and Personal Service Activities",
-              "Private Households with Employed Persons",
-              "Extra-territorial Organizations and Bodies",
+              "Healthcare & Social Work",
+              "Community & Social Services",
+              "Domestic Services",
+              "International Organizations",
+              "Information Technology",
+              "BPO / Call Centers",
+              "Media & Communication",
+              "Freelance / Self-Employed",
+              "Startups & Innovation"
             ].map((business, index) => (
               <label key={index}>
                 <input
@@ -390,23 +439,16 @@ const Page3_Employment = ({ data, updateForm }) => {
           </div>
 
           <h3 className={styles.sectionTitle}>Job Level</h3>
-          <div className={styles.businessOptions}>
-            {[
-              "Rank & File / Clerical", "Professional / Supervisory",
-              "Managerial / Executive", "Self-Employed"
-            ].map(level => (
-              <label key={level}>
-                <input
-                  type="radio"
-                  name="jobLevel"
-                  value={level}
-                  checked={data.jobDetails.jobLevel === level}
-                  onChange={(e) => handleJobDetailsChange("jobLevel", level)}
-                />
-                {level}
-              </label>
-            ))}
-          </div>
+          <select
+            value={data.jobDetails.job_level || ""}
+            onChange={(e) => handleJobDetailsChange("job_level", e.target.value)}
+            className={styles.selectInput}
+          >
+            <option value="">Select Job Level</option>
+            <option value="Entry-level">Entry-level</option>
+            <option value="Mid-level">Mid-level</option>
+            <option value="Senior/Executive">Senior/Executive</option>
+          </select>
 
           <h3 className={styles.sectionTitle}>Monthly Salary Range</h3>
           <select
@@ -427,10 +469,10 @@ const Page3_Employment = ({ data, updateForm }) => {
               <label key={opt}>
                 <input
                   type="radio"
-                  name="curriculumRelevant"
+                  name="work_alignment"
                   value={opt}
-                  checked={data.jobDetails.curriculumRelevant === opt}
-                  onChange={() => handleJobDetailsChange("curriculumRelevant", opt)}
+                  checked={data.jobDetails.work_alignment === opt}
+                  onChange={() => handleJobDetailsChange("work_alignment", opt)}
                 />
                 {opt}
               </label>
