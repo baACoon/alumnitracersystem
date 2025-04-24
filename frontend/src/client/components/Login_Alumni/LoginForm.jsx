@@ -22,7 +22,7 @@ const TestLoginForm = ({ closeModal }) => {
     const formData = { alumniID, password };
 
     try {
-      const response = await fetch('http://localhost:5050/record/login', {
+      const response = await fetch('https://alumnitracersystem.onrender.com/record/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -51,7 +51,7 @@ const TestLoginForm = ({ closeModal }) => {
     if (!resetAlumniID) return alert("Enter Alumni ID");
   
     try {
-      const response = await fetch('http://localhost:5050/api/recover/send-reset-code', {
+      const response = await fetch('https://alumnitracersystem.onrender.com/api/recover/send-reset-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ alumniID: resetAlumniID })
@@ -79,7 +79,7 @@ const TestLoginForm = ({ closeModal }) => {
     if (!resetCode || !resetEmail) return alert("Code and email required");
 
     try {
-      const response = await fetch('http://localhost:5050/api/recover/verify-code', {
+      const response = await fetch('https://alumnitracersystem.onrender.com/api/recover/verify-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: resetEmail, code: resetCode })
@@ -104,7 +104,7 @@ const TestLoginForm = ({ closeModal }) => {
     if (!newPassword) return alert("Enter a new password");
 
     try {
-      const response = await fetch('http://localhost:5050/api/recover/reset-password', {
+      const response = await fetch('https://alumnitracersystem.onrender.com/api/recover/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: resetToken, newPassword })
