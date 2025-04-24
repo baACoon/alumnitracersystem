@@ -1,17 +1,16 @@
 import express from "express";
 import bcrypt from "bcryptjs";
-import mongoose from "mongoose"; // Also wag mo to kalimutan i addd
+import mongoose from "mongoose";
 import jwt from 'jsonwebtoken';
-import Graduate from "./models/graduateModels.js";  // Correct, with file extension
+import Graduate from "./models/graduateModels.js";
 
 const router = express.Router();
 
-//database to az. Pwede mo tong iseparate ng file pero pwede mo rin sila ipagsama nalang
-//line 10-21 ayan yung nagdagdag and mapapansin mo sa router.post they call Student. Nabago rin yung structure. 
-//check mo yung convo namin ni gpt and also pwede mo naman ipaupdate yung adminlog_reg.js mo kay jpt, tulad na ginawa ko
+// Student Schema
 const studentSchema = new mongoose.Schema({
   surveys: [{type: mongoose.Schema.Types.ObjectId, ref: 'Survey'}],
   gradyear: { type: Number, required: true },
+  firstName: { type: String, required: true }, // Added firstName field which was missing
   lastName: { type: String, required: true },
   generatedID: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -58,9 +57,9 @@ router.post("/register", async (req, res) => {
 
     // Exact match verification with case-insensitive comparison
     const graduate = await Graduate.findOne({
-      firstName: { $regex: new RegExp(`^${firstName.trim()}$`, "i") },  // Direct match with spaces allowed
-      lastName: { $regex: new RegExp(`^${lastName.trim()}$`, "i") },   // Same for last name
-      gradYear: parseInt(gradyear),  // Ensuring the year is correct
+      firstName: { $regex: new RegExp(`^${normalizedFirstName}$`, "i") },
+      lastName: { $regex: new RegExp(`^${normalizedLastName}$`, "i") },
+      gradYear: parsedGradYear,
     });    
     
     console.log("Graduate verification:", {
@@ -73,17 +72,34 @@ router.post("/register", async (req, res) => {
     // If no matching graduate is found, prevent registration
     if (!graduate) {
       return res.status(401).json({
-        error: "Verification failed. You are not in our graduate records.",
-        details: error.message
+        error: "Verification failed. You are not in our graduate records."
       });
     }
+
+    // Check if user already exists (additional check)
+    // In your backend's /register route
+    // Sample backend logic
+    const existingStudent = await Student.findOne({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      gradyear: req.body.gradyear,
+    });
+
+    if (existingStudent) {
+      return res.status(409).json({
+          error: "An account already exists with this name and graduation year."
+      });
+    }
+
+    
+
     // Generate unique user ID
     const randomID = Math.floor(10000 + Math.random() * 90000); // Generate random 5-digit number
-    const generatedID = `${lastName.toLowerCase()}-${randomID}`;
+    const generatedID = `${normalizedLastName.toLowerCase()}-${randomID}`;
 
     // Check for existing user with the same generated ID
-    const existingUser = await Student.findOne({ generatedID });
-    if (existingUser) {
+    const existingUserWithID = await Student.findOne({ generatedID });
+    if (existingUserWithID) {
       console.log("Error: Duplicate user ID generated");
       return res.status(500).json({ error: "Error generating unique user ID. Please try again." });
     }
@@ -93,9 +109,10 @@ router.post("/register", async (req, res) => {
 
     // Create and save the new user
     const newUser = new Student({
-      gradyear,
-      lastName,
-      generatedID, // Store the unique ID
+      gradyear: parsedGradYear,
+      firstName: normalizedFirstName,  // Store first name too
+      lastName: normalizedLastName,
+      generatedID,
       password: hashedPassword,
       registrationDate: new Date(),
     });
@@ -143,26 +160,75 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.post("/check-account", async (req, res) => {
+  const { firstName, lastName, gradyear } = req.body;
+
+  try {
+      // First check if they're a graduate
+      const graduate = await Graduate.findOne({
+          firstName: { $regex: new RegExp(`^${firstName.trim()}$`, "i") },
+          lastName: { $regex: new RegExp(`^${lastName.trim()}$`, "i") },
+          gradYear: parseInt(gradyear)
+      });
+
+      if (!graduate) {
+        return res.status(404).json({ error: "Graduate not found" });
+      }
+
+       // Then check if they're registered as a student
+    const student = await Student.findOne({
+      firstName: { $regex: new RegExp(`^${firstName.trim()}$`, "i") },
+      lastName: { $regex: new RegExp(`^${lastName.trim()}$`, "i") },
+      gradyear: parseInt(gradyear)
+    });
+
+    res.json({
+      exists: !!student,
+      user: student ? {
+        generatedID: student.generatedID,
+        registrationDate: student.registrationDate
+      } : null,
+      graduate: {
+        firstName: graduate.firstName,
+        lastName: graduate.lastName,
+        gradYear: graduate.gradYear
+      }
+    });
+    
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.get("/verify-graduate", async (req, res) => {
   const { firstName, lastName, gradYear } = req.query;
   
   try {
-    const graduate = await Graduate.findOne({
-      firstName: { $regex: new RegExp(`^${firstName}$`, 'i') },
-      lastName: { $regex: new RegExp(`^${lastName}$`, 'i') },
-      gradYear: parseInt(gradYear)
-    });
+      console.log("Verifying graduate:", { firstName, lastName, gradYear });
+      
+      if (!firstName || !lastName || !gradYear) {
+          return res.status(400).json({ error: "Missing required fields" });
+      }
 
-    res.json({ 
-      found: !!graduate,
-      graduate: graduate ? { 
-        firstName: graduate.firstName, 
-        lastName: graduate.lastName, 
-        gradYear: graduate.gradYear 
-      } : null
-    });
+      const graduate = await Graduate.findOne({
+          firstName: { $regex: new RegExp(`^${firstName.trim()}$`, 'i') },
+          lastName: { $regex: new RegExp(`^${lastName.trim()}$`, 'i') },
+          gradYear: parseInt(gradYear)
+      });
+
+      console.log("Graduate verification result:", !!graduate);
+
+      res.json({ 
+          found: !!graduate,
+          graduate: graduate ? { 
+              firstName: graduate.firstName, 
+              lastName: graduate.lastName, 
+              gradYear: graduate.gradYear 
+          } : null
+      });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+      console.error("Error verifying graduate:", error);
+      res.status(500).json({ error: error.message });
   }
 });
 
@@ -253,11 +319,8 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ error: "Alumni ID and password are required." });
     }
 
-    
     // Find user by alumni ID
     const user = await Student.findOne({ generatedID: alumniID });
-    
-
 
     if (!user) {
       console.log(`Error: User not found with ID: ${alumniID}`);
