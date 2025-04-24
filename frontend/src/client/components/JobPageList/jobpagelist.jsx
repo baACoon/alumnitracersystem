@@ -183,7 +183,7 @@ function JobListMainPage() {
             </h4>
 
             {/* Job Description */}
-            <h4 className="job-label">Job Description</h4>
+            <h4 className="job-description">Job Description</h4>
             <div className="job-section">
               <p>{selectedJob.description || "No description provided."}</p>
             </div>
@@ -227,7 +227,7 @@ function JobListMainPage() {
             </div>
 
             {/* Footer */}
-            <div className="job-section">
+            <div className="job-status">
               <p><strong>Status:</strong> {selectedJob.status}</p>
               <p><strong>College:</strong> {selectedJob.college || "N/A"}</p>
             </div>
