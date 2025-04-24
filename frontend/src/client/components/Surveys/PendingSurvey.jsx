@@ -47,7 +47,7 @@ export const PendingSurvey = () => {
 
     const fetchLatestTracer = async () => {
       try {
-        const res = await axios.get(`https://alumnitracersystem.onrender.com/api/tracer2/latest/${userId}`)
+        const res = await axios.get(`https://alumnitracersystem.onrender.com/tracerSurvey2/api/tracer2/latest/${userId}`)
 
         const { nextVersion, releaseDate, eligible } = res.data;
 
