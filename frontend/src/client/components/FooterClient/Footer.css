@@ -17,6 +17,8 @@
   padding: 20px 40px;
   flex-wrap: wrap;
   text-align: center;
+  position: fixed;
+  bottom: 0;
 }
 
 /* Logos left & right */
