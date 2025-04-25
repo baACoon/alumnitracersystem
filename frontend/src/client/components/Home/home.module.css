@@ -47,27 +47,30 @@
 }
 
 /* tupats container */
-.tupatsContainer{
-    background-color: #C31D3C;
-    padding: 20px;
-    width: 100%;
-    position: absolute;
-    left: 0px;
-    overflow: hidden;
-    margin-top: -5em;
+.tupatsContainer {
+  background-color: #C31D3C;
+  padding: 20px;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  overflow: hidden;
+  margin-top: -5em;
+  text-align: center;
 }
 
-.tupatsContainer h1{
-    color: white;
-    text-align: center;
+.tupatsContainer h1 {
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 0.5em;
 }
 
-.tupatsContainer p{
-    color: white;
-    width: 70%;
-    text-align: center;
-    margin-left: 12em;
-    line-height: 1.5;
+.tupatsContainer p {
+  color: white;
+  margin: 0 auto;
+  width: 90%;
+  max-width: 900px;
+  line-height: 1.6;
+  font-size: 1rem;
 }
 
 
@@ -206,6 +209,23 @@
     }
   }
   
+
+  /* 📱 Responsive adjustments */
+@media (max-width: 768px) {
+  .tupatsContainer {
+    padding: 15px;
+    margin-top: -3em;
+  }
+
+  .tupatsContainer h1 {
+    font-size: 1.5rem;
+  }
+
+  .tupatsContainer p {
+    width: 95%;
+    font-size: 0.95rem;
+  }
+}
 
 
     

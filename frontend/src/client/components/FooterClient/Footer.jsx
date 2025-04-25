@@ -14,7 +14,7 @@ function FooterClient() {
 
         {/* Text Content */}
         <div className="footer-text">
-          <h1 className="footer-title">TUP-Manila Alumni Association</h1>
+          <h1 className="footer-title">TUP-Manila Alumni Association Inc.</h1>
           <p className="footer-p">
             Bulwagang Alumni, Technological University of the Philippines, <br />
             Ayala Blvd. Ermita, Manila, <br />
