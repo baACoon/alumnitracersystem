@@ -19,7 +19,7 @@ export default function ReportsTab() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5050/tempReport/reports")
+        const response = await fetch("https://alumnitracersystem.onrender.com:5050/tempReport/reports")
         const result = await response.json()
         setRawData(result.reports || [])
         setFetchError("")
@@ -88,7 +88,7 @@ export default function ReportsTab() {
       return;
     }
   
-    const url = `http://localhost:5050/tempReport/export/${encodeURIComponent(type)}`;
+    const url = `https://alumnitracersystem.onrender.com/tempReport/export/${encodeURIComponent(type)}`;
     const win = window.open(url, "_blank");
   
     if (!win) {

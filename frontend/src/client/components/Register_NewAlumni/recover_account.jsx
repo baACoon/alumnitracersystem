@@ -16,7 +16,7 @@ const RecoverAccount = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5050/api/recover/request-code', {
+      const response = await fetch('https://alumnitracersystem.onrender.com/api/recover/request-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -41,7 +41,7 @@ const RecoverAccount = () => {
     if (!code) return alert('Please enter the 6-digit code.');
 
     try {
-      const response = await fetch('http://localhost:5050/api/recover/verify-code', {
+      const response = await fetch('https://alumnitracersystem.onrender.com/api/recover/verify-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code }),
@@ -70,7 +70,7 @@ const RecoverAccount = () => {
 
     try {
       const token = localStorage.getItem('recoveryToken');
-      const response = await fetch('http://localhost:5050/api/recover/reset-password', {
+      const response = await fetch('https://alumnitracersystem.onrender.com/api/recover/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, newPassword }),

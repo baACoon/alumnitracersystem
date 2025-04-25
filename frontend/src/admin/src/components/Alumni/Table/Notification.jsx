@@ -29,7 +29,7 @@ const Notification = ({ studentData }) => {
     }
   
     try {
-      const response = await axios.post(`http://localhost:5050/api/notifications/send-notification`, {
+      const response = await axios.post(`https://alumnitracersystem.onrender.com/api/notifications/send-notification`, {
         email,
         subject,
         message: text
