@@ -16,6 +16,7 @@ import {
   PolarRadiusAxis,
   Radar,
 } from "recharts"
+import { Search, ChevronDown } from "lucide-react"
 import styles from "./GeneralTracer.module.css"
 
 // Color palette for charts
@@ -24,16 +25,129 @@ const COLORS = {
   tracer2: "#C31D3C",
 }
 
+// Define available batch years, colleges, and courses (similar to AlumniFilters)
+const batchYears = Array.from({ length: 10 }, (_, i) => 2016 + i);
+
+const colleges = [
+  "College of Engineering",
+  "College of Science",
+  "College of Industrial Technology",
+  "College of Liberal Arts",
+  "College of Architecture and Fine Arts"
+];
+
+const courses = {
+  "College of Engineering": [
+    "Bachelor of Science in Civil Engineering",
+    "Bachelor of Science in Electrical Engineering",
+    "Bachelor of Science in Electronics Engineering",
+    "Bachelor of Science in Mechanical Engineering"
+  ],
+  "College of Science": [
+    "Bachelor of Applied Science in Laboratory Technology",
+    "Bachelor of Science in Computer Science"
+  ],
+  "College of Industrial Technology": [
+    "Bachelor of Engineering Technology",
+    "Bachelor of Technical Teacher Education"
+  ],
+  "College of Liberal Arts": [
+    "Bachelor of Arts in Communication",
+    "Bachelor of Arts in Political Science"
+  ],
+  "College of Architecture and Fine Arts": [
+    "Bachelor of Science in Architecture",
+    "Bachelor of Fine Arts"
+  ]
+};
+
 export default function GeneralTracer() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  
+  // Filter states
+  const [showFilters, setShowFilters] = useState(false)
+  const [filters, setFilters] = useState({
+    batchYear: "",
+    college: "",
+    course: ""
+  })
+  const [activeFilters, setActiveFilters] = useState([])
+  const [filterApplied, setFilterApplied] = useState(false)
+
+  // Handle filter changes
+  const handleFilterChange = (type, value) => {
+    setFilters(prev => {
+      const newFilters = { ...prev, [type]: value };
+      if (type === "college") {
+        // Reset course when college changes
+        newFilters.course = "";
+      }
+      
+      // Update active filters immediately
+      const updatedActiveFilters = [];
+      Object.entries(newFilters).forEach(([key, val]) => {
+        if (val) {
+          updatedActiveFilters.push({ type: key, value: val });
+        }
+      });
+      setActiveFilters(updatedActiveFilters);
+      setFilterApplied(true);
+      
+      return newFilters;
+    });
+  };
+
+  // Reset filters
+  const resetFilters = () => {
+    setFilters({
+      batchYear: "",
+      college: "",
+      course: ""
+    });
+    setActiveFilters([]);
+    setFilterApplied(false);
+    setShowFilters(false);
+  };
+
+  // Remove specific filter
+  const removeFilter = (type) => {
+    setFilters(prev => {
+      const newFilters = { ...prev, [type]: "" };
+      // If college is removed, also remove course
+      if (type === "college") {
+        newFilters.course = "";
+      }
+      
+      // Update active filters immediately
+      const updatedActiveFilters = [];
+      Object.entries(newFilters).forEach(([key, val]) => {
+        if (val) {
+          updatedActiveFilters.push({ type: key, value: val });
+        }
+      });
+      setActiveFilters(updatedActiveFilters);
+      
+      return newFilters;
+    });
+  };
 
   useEffect(() => {
     const fetchComparisonData = async () => {
       try {
         setLoading(true);
-        const res = await fetch("https://alumnitracersystem.onrender.com/dashboard/tracer/comparison");
+        
+        // Construct query parameters
+        const queryParams = new URLSearchParams();
+        if (filters.batchYear) queryParams.append('batch', filters.batchYear);
+        if (filters.college) queryParams.append('college', filters.college);
+        if (filters.course) queryParams.append('course', filters.course);
+
+        // Add query parameters to URL
+        const url = `http://localhost:5050/dashboard/tracer/comparison${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+        
+        const res = await fetch(url);
         const json = await res.json();
         setData(json);
       } catch (err) {
@@ -45,8 +159,7 @@ export default function GeneralTracer() {
     };
   
     fetchComparisonData();
-  }, []);
-  
+  }, [filters]); // Re-fetch when filters change
 
   // Format data for comparison charts
   const formatComparisonData = (dataObj, category) => {
@@ -145,7 +258,6 @@ export default function GeneralTracer() {
       },
     }
   }
-  
 
   // Custom tooltip component for charts
   const CustomTooltip = ({ active, payload, label }) => {
@@ -193,9 +305,118 @@ export default function GeneralTracer() {
       <div className={styles.dashboardHeader}>
         <h1 className={styles.dashboardTitle}>Tracer Survey Comparison</h1>
         <p className={styles.dashboardDescription}>
-        2-Year Gap Analysis
+          2-Year Gap Analysis
         </p>
       </div>
+
+      {/* Filter Section */}
+      <div className={styles.filterSection}>
+        <div className={styles.filterButtonWrapper}>
+          <button
+            className={styles.filterButton}
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <span>Filters</span>
+            <span className={styles.filterIcon}>
+              <ChevronDown size={16} />
+            </span>
+          </button>
+          
+          {showFilters && (
+            <div className={styles.filterPopover}>
+              <h4 className={styles.filterTitle}>Filter Tracer Data</h4>
+              <div className={styles.filterDivider}></div>
+
+              <div className={styles.filterGroup}>
+                <label className={styles.filterLabel}>Batch Year</label>
+                <select
+                  className={styles.filterSelect}
+                  value={filters.batchYear}
+                  onChange={(e) => handleFilterChange("batchYear", e.target.value)}
+                >
+                  <option value="">Select batch year</option>
+                  {batchYears.map((year) => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.filterGroup}>
+                <label className={styles.filterLabel}>College</label>
+                <select
+                  className={styles.filterSelect}
+                  value={filters.college}
+                  onChange={(e) => handleFilterChange("college", e.target.value)}
+                >
+                  <option value="">Select college</option>
+                  {colleges.map((college) => (
+                    <option key={college} value={college}>{college}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.filterGroup}>
+                <label className={styles.filterLabel}>Course</label>
+                <select
+                  className={styles.filterSelect}
+                  value={filters.course}
+                  onChange={(e) => handleFilterChange("course", e.target.value)}
+                  disabled={!filters.college}
+                >
+                  <option value="">Select course</option>
+                  {filters.college && courses[filters.college] &&
+                    courses[filters.college].map((course) => (
+                      <option key={course} value={course}>{course}</option>
+                    ))}
+                </select>
+              </div>
+
+              <div className={styles.filterActions}>
+                <button className={styles.resetButton} onClick={resetFilters}>
+                  Reset Filters
+                </button>
+                <button className={styles.applyButton} onClick={() => setShowFilters(false)}>
+                  Close Filters
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Active Filters Display */}
+      {activeFilters.length > 0 && (
+        <div className={styles.activeFiltersBar}>
+          <div className={styles.activeFiltersList}>
+            {activeFilters.map((filter) => (
+              <div 
+                key={filter.type} 
+                className={styles.filterBadgeOutline}
+                title={
+                  filter.type === "batchYear" ? `Year: ${filter.value}` :
+                  filter.type === "college" ? `College: ${filter.value}` :
+                  `Course: ${filter.value}`
+                }
+              >
+                {filter.type === "batchYear" && `Year: ${filter.value}`}
+                {filter.type === "college" && `College: ${filter.value}`}
+                {filter.type === "course" && `Course: ${filter.value}`}
+                <button className={styles.removeFilterButton} onClick={() => removeFilter(filter.type)}>
+                  ×
+                </button>
+              </div>
+            ))}
+            {activeFilters.length > 0 && (
+              <button
+                className={styles.clearAllButton}
+                onClick={resetFilters}
+              >
+                Clear All
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className={styles.overallSummary}>
         <h2 className={styles.summaryTitle}>Overall Analysis</h2>
@@ -324,6 +545,7 @@ export default function GeneralTracer() {
             data.curriculumAlignment.tracer1["Very much aligned"] + data.curriculumAlignment.tracer1["Aligned"]
             ? "Continue with the current curriculum structure while incorporating emerging industry trends to maintain relevance."
             : "Consider curriculum revisions to better align with industry needs and enhance graduate employability and career advancement opportunities."}
+          {activeFilters.length > 0 && ` These insights are specific to the filtered group of alumni.`}
         </p>
       </div>
     </div>

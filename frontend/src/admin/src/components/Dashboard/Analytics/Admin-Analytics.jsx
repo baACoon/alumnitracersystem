@@ -69,7 +69,7 @@ export default function Analytics() {
   return (
     <section className={styles.filterSection} aria-label="Dashboard filters">
       <div className={styles.filterControls} role="group" aria-label="Filter controls">
-        {/* Batch Filter */}
+        {/* Batch Filter 
         <div className={styles.filterButtonContainer}>
           <label htmlFor="batch" className={styles.filterLabel}>Batch:</label>
           <select
@@ -86,7 +86,7 @@ export default function Analytics() {
             ))}
           </select>
         </div>
-        {/* College Filter */}
+        {/* College Filter 
         <div className={styles.filterButtonContainer}>
           <label htmlFor="college" className={styles.filterLabel}>
             College:
@@ -108,7 +108,7 @@ export default function Analytics() {
           </select>
         </div>
 
-        {/* Course Filter */}
+        {/* Course Filter 
         <div className={styles.filterButtonContainer}>
           <label htmlFor="course" className={styles.filterLabel}>
             Course:
@@ -130,7 +130,7 @@ export default function Analytics() {
                 </option>
               ))}
           </select>
-        </div>
+        </div>*/}
       </div>
 
       <div className={styles.analyticsContainer}>

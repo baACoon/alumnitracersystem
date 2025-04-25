@@ -1,185 +1,179 @@
-import React, { useState } from "react";
-import styles from "./Reports-Content.module.css";
+import React, { useState, useEffect } from "react"
+import { Download } from "lucide-react"
+import styles from "./Reports-Content.module.css"
+import FilterDropdown from "./FilterReport"
+import ReportsTable from "./TableReports"
 
-export default function ReportsContent()  {
-    const [college, setCollege] = useState("");
-      const [course, setCourse] = useState("");
-      const [activeFilter, setActiveFilter] = useState(null);
-    
-      const coursesByCollege = {
-        "College of Engineering": [
-          "Bachelor of Science in Civil Engineering",
-          "Bachelor of Science in Electrical Engineering",
-          "Bachelor of Science in Electronics Engineering",
-          "Bachelor of Science in Mechanical Engineering",
-        ],
-        "College of Science": [
-          "Bachelor of Applied Science in Laboratory Technology",
-          "Bachelor of Science in Computer Science",
-          "Bachelor of Science in Environmental Science",
-          "Bachelor of Science in Information System",
-          "Bachelor of Science in Information Technology",
-        ],
-        "College of Industrial Education": [
-          "Bachelor of Science Industrial Education Major in Information and Communication Technology",
-          "Bachelor of Science Industrial Education Major in Home Economics",
-          "Bachelor of Science Industrial Education Major in Industrial Arts",
-        ],
-        "College of Liberal Arts": [
-          "Bachelor of Science in Business Management Major in Industrial Management",
-          "Bachelor of Science in Entrepreneurship",
-          "Bachelor of Science in Hospitality Management",
-        ],
-        "College of Architecture and Fine Arts": [
-          "Bachelor of Science in Architecture",
-          "Bachelor of Fine Arts",
-          "Bachelor of Graphic Technology Major in Architecture Technology",
-        ],
-      };
-    
-      const handleCollegeChange = (e) => {
-        setCollege(e.target.value);
-        setActiveFilter("college");
-        setCourse(""); // Reset course when college changes
-      };
-    
-      const handleCourseChange = (e) => {
-        setCourse(e.target.value);
-        setActiveFilter("course");
-      };
-
-  const [detailedAlumniRecords, setDetailedAlumniRecords] = useState([
-    { id: 1, name: "John Doe", batch: 2020, course: "CIT", status: "Employed", position: "Software Engineer", company: "TechCorp", location: "New York" },
-    { id: 2, name: "Jane Smith", batch: 2019, course: "COE", status: "Unemployed", position: "", company: "", location: "Los Angeles" },
-    { id: 3, name: "Emily Davis", batch: 2020, course: "COE", status: "Employed", position: "Teacher", company: "High School", location: "Chicago" },
-    // Add more sample data here...
-  ]);
-
-  const generateWrittenSummary = () => {
-    const totalAlumni = detailedAlumniRecords.length;
-    const employed = detailedAlumniRecords.filter((record) => record.status === "Employed").length;
-    const unemployed = totalAlumni - employed;
-
-    const employmentRate = ((employed / totalAlumni) * 100).toFixed(2);
+export default function ReportsTab() {
+  const [selectedBatch, setSelectedBatch] = useState("")
+  const [selectedTracerType, setSelectedTracerType] = useState("")
+  const [selectedVersion, setSelectedVersion] = useState("")
+  const [selectedCustomSurvey, setSelectedCustomSurvey] = useState("")
+  const [rawData, setRawData] = useState([])
+  const [filteredData, setFilteredData] = useState([])
+  const [totalResponses, setTotalResponses] = useState(0)
+  const [isExportEnabled, setIsExportEnabled] = useState(false)
+  const [fetchError, setFetchError] = useState("")
 
 
-    const summary = `
-      As of now, a total of ${totalAlumni} alumni records have been documented. Among them, ${employed} (${employmentRate}%) are currently employed, while ${unemployed} are unemployed. 
-      The data highlights the employment distribution and survey participation rates, helping the institution track alumni progress effectively.
-    `;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:5050/tempReport/reports")
+        const result = await response.json()
+        setRawData(result.reports || [])
+        setFetchError("")
+      } catch (error) {
+        console.error("Error fetching reports:", error)
+        setRawData([])
+        setFetchError("Failed to fetch survey report data.")
+      }
+    }
+    fetchData()
+  }, [])
 
-    return summary.trim();
+  useEffect(() => {
+    let newData = [...rawData]
+
+    if (selectedBatch) {
+      newData = newData.filter((item) => item.batch === selectedBatch)
+    }
+
+    // Tracer filter
+    if (selectedTracerType === "Tracer 1") {
+      newData = newData.filter((item) => item.tracer1)
+    }
+
+    if (selectedTracerType === "Tracer 2") {
+      newData = newData.filter((item) => item.tracer2)
+      if (selectedVersion) {
+        newData = newData.filter((item) => item.version === selectedVersion)
+      }
+    }
+
+    // Custom Survey filter (separate logic)
+    if (selectedCustomSurvey) {
+      newData = newData.filter((item) => item.customSurvey === selectedCustomSurvey)
+    }
+
+    setFilteredData(newData)
+
+    const total = newData.reduce((sum, item) => sum + item.responses, 0)
+    setTotalResponses(total)
+
+    setIsExportEnabled(
+      selectedBatch || selectedTracerType || selectedVersion || selectedCustomSurvey
+    )
+  }, [selectedBatch, selectedTracerType, selectedVersion, selectedCustomSurvey, rawData])
+
+  const getUniqueValues = (key) => {
+    if (!Array.isArray(rawData)) return []
+    return [...new Set(rawData.map(item => item[key]).filter(Boolean))]
+  }
+
+  const getBatches = () => getUniqueValues("batch")
+  const getVersionOptions = () => getUniqueValues("version")
+  const getCustomSurveyOptions = () => getUniqueValues("customSurvey")
+
+  const handleReset = () => {
+    setSelectedBatch("")
+    setSelectedTracerType("")
+    setSelectedVersion("")
+    setSelectedCustomSurvey("")
+  }
+
+  const exportSurvey = (type) => {
+    if (!type) {
+      alert("Please select a survey to export.");
+      return;
+    }
+  
+    const url = `http://localhost:5050/tempReport/export/${encodeURIComponent(type)}`;
+    const win = window.open(url, "_blank");
+  
+    if (!win) {
+      alert("Popup blocked. Please allow popups for this site.");
+    }
   };
-
-  const exportWrittenSummary = () => {
-    const summary = generateWrittenSummary();
-    const blob = new Blob([summary], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "Alumni_Report_Summary.txt";
-    link.click();
-  };
+  
 
   return (
-    <div className={styles.reports}>
-      <div className={styles.filters}>
-        <input type="text" placeholder="SEARCH ALUMNI" />
-            {/* Filter Controls */}
-            <div
-                className={styles.filterControls}
-                role="group"
-                aria-label="Filter controls"
-            >
-            <div className={styles.filterButtonContainer}>
-                <label htmlFor="college" className={styles.filterLabel}>
-                    Batch:
-                </label>
-                <select>
-                    <option value="">All Batch</option>
-                    <option value="2020">2020</option>
-                    <option value="2019">2019</option>
-                </select>
-            {/* College Filter */}
-            
-                <label htmlFor="college" className={styles.filterLabel}>
-                    College:
-                </label>
-                <select
-                    id="college"
-                    className={`${styles.filterButton} ${
-                    activeFilter === "college" ? styles.filterButtonActive : ""
-                    }`}
-                    value={college}
-                    onChange={handleCollegeChange}
-                >
-                <option value="">All Colleges</option>
-                    {Object.keys(coursesByCollege).map((collegeName) => (
-                        <option key={collegeName} value={collegeName}>
-                        {collegeName}
-                        </option>
-                    ))}
-                </select>
-            </div>
-        
-            {/* Course Filter */}
-            <div className={styles.filterButtonContainer}>
-                <label htmlFor="course" className={styles.filterLabel}>
-                    Course:
-                </label>
-                <select
-                    id="course"
-                    className={`${styles.filterButton} ${
-                    activeFilter === "course" ? styles.filterButtonActive : ""
-                    }`}
-                    value={course}
-                    onChange={handleCourseChange}
-                    disabled={!college}
-                    >
-                    <option value="">Select Course</option>
-                    {college && coursesByCollege[college].map((courseName) => (
-                        <option key={courseName} value={courseName}>
-                        {courseName}
-                    </option>
-                    ))}
-                </select>
-            </div>
-        </div>
-    </div>
-    <div className={styles.actions}>
-        <button onClick={() => handleExport("CSV")}>Export as CSV</button>
-        <button onClick={() => handleExport("PDF")}>Export as PDF</button>
-        <button onClick={exportWrittenSummary}>Export Written Summary</button>
-    </div>
+    <div className={styles.reportsContainer}>
+      <div className={styles.filtersSection}>
+        <div className={styles.filtersGrid}>
+          <FilterDropdown label="Batch" options={getBatches()} value={selectedBatch} onChange={setSelectedBatch} />
 
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Batch</th>
-            <th>Course</th>
-            <th>Employment Status</th>
-            <th>Job Position</th>
-            <th>Company</th>
-            <th>Location</th>
-          
-          </tr>
-        </thead>
-        <tbody>
-          {detailedAlumniRecords.map((record) => (
-            <tr key={record.id}>
-              <td>{record.id}</td>
-              <td>{record.name}</td>
-              <td>{record.batch}</td>
-              <td>{record.course}</td>
-              <td>{record.status}</td>
-              <td>{record.position}</td>
-              <td>{record.company}</td>
-              <td>{record.location}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          <FilterDropdown
+            label="Tracer Type"
+            options={["Tracer 1", "Tracer 2"]}
+            value={selectedTracerType}
+            onChange={(value) => {
+              setSelectedTracerType(value)
+              setSelectedVersion("")
+            }}
+          />
+
+          {selectedTracerType === "Tracer 2" && (
+            <FilterDropdown
+              label="Version"
+              options={getVersionOptions()}
+              value={selectedVersion}
+              onChange={setSelectedVersion}
+            />
+          )}
+
+          {getCustomSurveyOptions().length > 0 && (
+            <FilterDropdown
+              label="Custom Survey"
+              options={getCustomSurveyOptions()}
+              value={selectedCustomSurvey}
+              onChange={setSelectedCustomSurvey}
+            />
+          )}
+        </div>
+
+        <div className={styles.filterActions}>
+          <button className={styles.resetButton} onClick={handleReset}>
+            Reset Filters
+          </button>
+          <button
+            className={`${styles.exportButton} ${!isExportEnabled ? styles.disabled : ""}`}
+            onClick={() => {
+              if (selectedCustomSurvey) {
+                exportSurvey(selectedCustomSurvey)
+              } else if (selectedTracerType === "Tracer 1") {
+                exportSurvey("Tracer1")
+              } else if (selectedTracerType === "Tracer 2") {
+                exportSurvey("Tracer2")
+              } else {
+                alert("Please select a survey type to export.")
+              }
+            }}
+            
+            disabled={!isExportEnabled}
+          >
+            <Download size={16} />
+            Export Responses
+          </button>
+        </div>
+      </div>
+
+      <div className={styles.resultsSection}>
+        <div className={styles.responseStats}>
+          <h2 className={styles.sectionTitle}>Survey Responses</h2>
+          <div className={styles.responsesCount}>
+            <span className={styles.countLabel}>Total Responses:</span>
+            <span className={styles.countValue}>{totalResponses}</span>
+          </div>
+        </div>
+        {fetchError && (
+          <div className={styles.errorBox}>
+            ⚠️ {fetchError}
+          </div>
+        )}
+
+        <ReportsTable data={filteredData} />
+      </div>
     </div>
-  );
-};
+  )
+}
