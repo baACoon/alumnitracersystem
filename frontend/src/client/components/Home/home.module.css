@@ -48,7 +48,7 @@
 
 /* tupats container */
 .tupatsContainer {
-  background-color: #C31D3C;
+  background-color: #580808;
   padding: 20px;
   width: 100%;
   position: absolute;
@@ -96,7 +96,7 @@
     cursor: pointer; /* Indicates it's clickable */
     transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
     box-shadow:  -9px 9px 7px #929090,
-                 9px -9px 0px #C31D3C;
+                 9px -9px 0px #580808;
   }
   
   /* Restore skew for content inside */
@@ -118,7 +118,7 @@
   /* Animation for hover */
   .slantedBox:hover h2,
   .slantedBox:hover p {
-    color: #C31D3C; /* Highlighted text color */
+    color: #580808; /* Highlighted text color */
   }
 
 
@@ -141,7 +141,7 @@
 }
 
 .pl__ringA {
-  stroke: #5D0E1D;
+  stroke: #580808;
   animation-name: ringA;
 }
 
@@ -156,7 +156,7 @@
 }
 
 .pl__ringD {
-  stroke: #5D0E1D;
+  stroke: #580808;
   animation-name: ringD;
 }
 

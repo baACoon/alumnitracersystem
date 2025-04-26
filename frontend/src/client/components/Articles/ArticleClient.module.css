@@ -17,7 +17,7 @@
   .sectionTitle h1 {
     font-size: 1.8rem;
     font-weight: bold;
-    color: #c31d3c;
+    color: #580808;
     margin-bottom: 5px;
   }
   
@@ -26,14 +26,14 @@
     margin: 0 auto;
     border: 0;
     height: 2px;
-    background-color: #c31d3c;
+    background-color: #000000;
   }
   
   /* No Articles Message */
   .noArticleMessage {
     text-align: center;
     font-size: 1.2rem;
-    color: #777;
+    color: #000000;
   }
   
   /* Article Grid */
@@ -85,7 +85,7 @@
   .articleText h3 {
     font-size: 1.5rem;
     text-transform: uppercase;
-    color: #c31d3c;
+    color: #580808;
     margin: 0;
     margin-bottom: 5px; /* Space between title and date */
     font-weight: bold;
