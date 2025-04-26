@@ -14,7 +14,7 @@
 .surveyContainer h2 {
     font-size: 18px;
     margin-bottom: 15px;
-    color: #2c9f47;
+    color: #116a26;
     font-weight: 900;
 }
 
@@ -36,14 +36,14 @@
 }
 
 .surveyCard:hover {
-    background: #2c9f47;
+    background: #116a26;
     color: white;
 }
 
 .checkIcon {
     font-size: 20px;
     font-weight: bold;
-    color: #2c9f47;
+    color: #116a26;
     margin-right: 10px;
 }
 
@@ -67,7 +67,7 @@
 }
 
 .viewButton {
-    background: #2c9f47;
+    background: #116a26;
     color: white;
     border: none;
     padding: 8px 16px;
@@ -77,7 +77,7 @@
 }
 
 .viewButton:hover {
-    background: #1e7535;
+    background: #116a26;
 }
 
 .noResults {
@@ -155,7 +155,7 @@
   }
   
   .pl__ringA {
-    stroke: #5D0E1D;
+    stroke: #580808;
     animation-name: ringA;
   }
   
@@ -170,7 +170,7 @@
   }
   
   .pl__ringD {
-    stroke: #5D0E1D;
+    stroke: #580808;
     animation-name: ringD;
   }
   
