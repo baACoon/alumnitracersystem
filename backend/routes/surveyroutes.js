@@ -69,18 +69,26 @@ router.get("/pending/:userId", authenticateToken, async (req, res) => {
 });
 
 router.get("/completed/:userId", authenticateToken, async (req, res) => {
-  const { userId } = req.params;
-  const submissions = await SurveySubmission.find({ userId }).sort({ createdAt: -1 });
+  try {
+    const { userId } = req.params;
+    const objectId = new mongoose.Types.ObjectId(userId); // ✅ convert to ObjectId
 
-  const completedSurveys = submissions.map(survey => ({
-    id: survey._id,
-    surveyType: survey.surveyType,
-    title: `${survey.surveyType} Survey`,
-    dateCompleted: survey.createdAt.toLocaleDateString(),
-  }));
+    const submissions = await SurveySubmission.find({ userId: objectId }).sort({ createdAt: -1 });
 
-  res.json({ surveys: completedSurveys });
+    const completedSurveys = submissions.map(survey => ({
+      id: survey._id,
+      surveyType: survey.surveyType,
+      title: `${survey.surveyType} Survey`,
+      dateCompleted: survey.createdAt.toLocaleDateString(),
+    }));
+
+    res.json({ surveys: completedSurveys });
+  } catch (error) {
+    console.error("Failed to fetch completed surveys:", error);
+    res.status(500).json({ message: "Failed to fetch completed surveys", error: error.message });
+  }
 });
+
 
 router.get("/user-status/:userId", authenticateToken, async (req, res) => {
   const { userId } = req.params;

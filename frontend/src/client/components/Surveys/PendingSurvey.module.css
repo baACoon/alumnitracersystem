@@ -1,192 +1,412 @@
 .surveyContainer {
-
-    margin: 20px auto;
-   
+  margin: 20px auto;
 }
 
 .surveyContainer h2 {
-    font-size: 18px;
-    margin-bottom: 20px;
-    color: #c31d3c;
-    font-weight: 900;
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #c31d3c;
+  font-weight: 900;
 }
 
 .surveyList {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .surveyCard {
-    background: #f8f8f8;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
-    transition: 0.3s ease-in-out;
+  background: #f8f8f8;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: 0.3s ease-in-out;
 }
 
 .surveyCard:hover {
-    background: #c31d3c;
-    color: white;
+  background: #c31d3c;
+  color: white;
 }
 
 .surveyTitle {
-    font-size: 18px;
-    cursor: pointer;
-    text-decoration: none;
+  font-size: 18px;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .surveyTitle:hover {
-    color: white;
+  color: white;
 }
 
-.surveyDate{
-    font-size: 14px;
-    color: #757575;
+.surveyDate {
+  font-size: 14px;
+  color: #757575;
 }
 
-.surveyCard:hover .surveyDate{
-    color: white;
-}   
-
+.surveyCard:hover .surveyDate {
+  color: white;
+}
 
 .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modalContent {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    max-height: 90vh;
-    overflow-y: auto;
-    width: 90%;
-    max-width: 600px;
-    position: relative;
-  }
-  
-  .closeModal {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-  }
-  
-  .submitBtn {
-    margin-top: 1rem;
-    background-color: #0088cc;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
 
-  .grayText {
-    color: #999999;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-  
+  to {
+    opacity: 1;
+  }
+}
 
- .disabledCard{
-    background-color: #f0f0f0;
-    cursor: not-allowed;
-    transition: background-color 0.2s ease;
- }
+.modalContent {
+  background: white;
+  border-radius: 12px;
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease-out;
+}
 
- .disabledCard:hover{
-    background-color: #4a4a4a;
- }
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 
- 
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.closeModal {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.closeModal:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.modalDescription {
+  padding: 1rem 1.5rem;
+  color: #666;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.surveyForm {
+  padding: 1.5rem;
+}
+
+.questionBox {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.questionBox:last-child {
+  border-bottom: none;
+}
+
+.questionText {
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.textInput {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.textInput:focus {
+  border-color: #c31d3c;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(195, 29, 60, 0.1);
+}
+
+.optionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.radioLabel:hover {
+  background-color: #f8f8f8;
+}
+
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radioCustom {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  margin-right: 10px;
+  transition: all 0.2s;
+}
+
+.radioInput:checked + .radioCustom {
+  border-color: #c31d3c;
+}
+
+.radioInput:checked + .radioCustom:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c31d3c;
+}
+
+.radioText {
+  font-size: 0.95rem;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 1.5rem;
+}
+
+.submitBtn {
+  background-color: #c31d3c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.submitBtn:hover {
+  background-color: #a51832;
+}
+
+.cancelBtn {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.cancelBtn:hover {
+  background-color: #e0e0e0;
+}
+
+.grayText {
+  color: #999999;
+}
+
+.disabledCard {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+  transition: background-color 0.2s ease;
+}
+
+.disabledCard:hover {
+  background-color: #4a4a4a;
+}
+
 /* Loader Styling */
 .loaderContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader {
+  width: 80px;
+  height: 80px;
+}
+
+/* Ensure animation applies */
+.pl__ring {
+  animation: ringA 2s linear infinite;
+}
+
+.pl__ringA {
+  stroke: #5d0e1d;
+  animation-name: ringA;
+}
+
+.pl__ringB {
+  stroke: rgb(185, 179, 179);
+  animation-name: ringB;
+}
+
+.pl__ringC {
+  stroke: rgb(185, 179, 179);
+  animation-name: ringC;
+}
+
+.pl__ringD {
+  stroke: #5d0e1d;
+  animation-name: ringD;
+}
+
+/* Animations */
+@keyframes ringA {
+  0% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
   }
-  
-  .loader {
-    width: 80px;
-    height: 80px;
+  12% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -335;
   }
-  
-  /* Ensure animation applies */
-  .pl__ring {
-    animation: ringA 2s linear infinite;
+  32% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -595;
   }
-  
-  .pl__ringA {
-    stroke: #5D0E1D;
-    animation-name: ringA;
+  40%,
+  54% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -660;
   }
-  
-  .pl__ringB {
-    stroke: rgb(185, 179, 179);
-    animation-name: ringB;
+  100% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -990;
   }
-  
-  .pl__ringC {
-    stroke: rgb(185, 179, 179);
-    animation-name: ringC;
+}
+
+@keyframes ringB {
+  0% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -110;
   }
-  
-  .pl__ringD {
-    stroke: #5D0E1D;
-    animation-name: ringD;
+  20% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -115;
   }
-  
-  /* Animations */
-  @keyframes ringA {
-    0% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -330; }
-    12% { stroke-dasharray: 60 600; stroke-width: 30; stroke-dashoffset: -335; }
-    32% { stroke-dasharray: 60 600; stroke-width: 30; stroke-dashoffset: -595; }
-    40%, 54% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -660; }
-    100% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -990; }
+  100% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
   }
-  
-  @keyframes ringB {
-    0% { stroke-dasharray: 0 220; stroke-width: 20; stroke-dashoffset: -110; }
-    20% { stroke-dasharray: 20 200; stroke-width: 30; stroke-dashoffset: -115; }
-    100% { stroke-dasharray: 0 220; stroke-width: 20; stroke-dashoffset: -330; }
+}
+
+@keyframes ringC {
+  0% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
   }
-  
-  @keyframes ringC {
-    0% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: 0; }
-    28% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -175; }
-    100% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: -440; }
+  28% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
   }
-  
-  @keyframes ringD {
-    0% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: 0; }
-    36% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -175; }
-    100% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: -440; }
+  100% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
   }
-  
-  /* Loading Overlay */
-  .loadingOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.8);
+}
+
+@keyframes ringD {
+  0% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
   }
-  
+  36% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
+  100% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
+}
+
+/* Loading Overlay */
+.loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.8);
+}
