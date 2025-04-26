@@ -420,5 +420,246 @@ router.get("/export/:surveyType", async (req, res) => {
     res.status(500).json({ message: "Failed to export.", error: error.message });
   }
 });
+
+router.get("/chart-summary/:surveyType", async (req, res) => {
+  const { surveyType } = req.params;
+  const { batch, surveyId } = req.query;
+
+  try {
+    if (surveyType === "Tracer1") {
+      let query = { surveyType: "Tracer1" };
+      if (batch) {
+        const students = await Student.find({ gradyear: batch }).select("_id");
+        const ids = students.map(stud => stud._id);
+        query.userId = { $in: ids };
+      }
+      if (surveyId) {
+        query._id = surveyId;
+      }
+
+      const tracer1 = await SurveySubmission.find(query).populate("userId");
+
+      const degreeTypes = {};
+      const collegeData = {};
+      const employmentStatus = { Employed: 0, Unemployed: 0 };
+      const typeOfOrganization = {};
+      const workAlignment = {};
+      const yearStarted = {};
+
+      tracer1.forEach((entry) => {
+        const employment = entry.employmentInfo?.job_status;
+        if (employment) employmentStatus[employment] = (employmentStatus[employment] || 0) + 1;
+
+        (entry.educInfo?.degreeType || []).forEach((deg) => {
+          degreeTypes[deg] = (degreeTypes[deg] || 0) + 1;
+        });
+
+        const college = entry.educInfo?.college;
+        if (college) collegeData[college] = (collegeData[college] || 0) + 1;      
+
+        const org = entry.employmentInfo?.type_of_organization;
+        if (org) typeOfOrganization[org] = (typeOfOrganization[org] || 0) + 1;
+
+        const alignment = entry.employmentInfo?.work_alignment;
+        if (alignment) workAlignment[alignment] = (workAlignment[alignment] || 0) + 1;
+
+        const year = entry.employmentInfo?.year_started;
+        if (year) yearStarted[year] = (yearStarted[year] || 0) + 1;
+      });
+
+      return res.json({
+        success: true,
+        data: {
+          respondentCount: tracer1.length,
+          degreeData: Object.entries(degreeTypes).map(([name, value]) => ({ name, value })),
+          collegeData: Object.entries(collegeData).map(([name, value]) => ({ name, value })), // ADD THIS LINE!
+          employmentStatusData: Object.entries(employmentStatus).map(([name, value]) => ({ name, value })),
+          organizationTypeData: Object.entries(typeOfOrganization).map(([name, value]) => ({ name, value })),
+          workAlignmentData: Object.entries(workAlignment).map(([name, value]) => ({ name, value })),
+          yearStartedData: Object.entries(yearStarted).map(([name, value]) => ({ name, value }))
+        }
+      });
+      
+
+    } else if (surveyType === "Tracer2") {
+      let query = {};
+      if (batch) {
+        const students = await Student.find({ gradyear: batch }).select("_id");
+        const ids = students.map(stud => stud._id);
+        query.userId = { $in: ids };
+      }
+      if (surveyId) {
+        query._id = surveyId;
+      }
+    
+      const tracer2 = await TracerSurvey2.find(query).populate("userId");
+    
+      // Employment status
+      const employmentStatus = { Employed: 0, Unemployed: 0, "Self-employed": 0, "Part-time": 0, "Further Studies": 0 };
+      
+      // Advanced degrees
+      const advancedDegreeHolders = { doctorate: 0, masters: 0 };
+      
+      // Job data
+      const jobData = {
+        position: {},
+        coreCompetencies: {},
+        lineOfBusiness: {},
+        placeOfWork: {},
+        firstJobSearch: {},
+        firstJobDuration: {},
+        jobLandingTime: {},
+        work_alignment: {}
+      };
+      
+      // Reasons for advanced studies
+      const reasons = {
+        "Career Advancement": { undergraduate: 0, graduate: 0 },
+        "Personal Interest": { undergraduate: 0, graduate: 0 },
+        "Required by Employer": { undergraduate: 0, graduate: 0 },
+        "Family Influence": { undergraduate: 0, graduate: 0 }
+      };
+    
+      tracer2.forEach((entry) => {
+        // Employment status
+        const employment = entry.job_status;
+        if (employment) employmentStatus[employment] = (employmentStatus[employment] || 0) + 1;
+    
+        // Advanced degrees
+        (entry.education || []).forEach((edu) => {
+          if (edu.degreeType?.includes("Doctorate")) advancedDegreeHolders.doctorate++;
+          if (edu.degreeType?.includes("Masters")) advancedDegreeHolders.masters++;
+        });
+    
+        // Job position
+        const position = entry.jobDetails?.position;
+        if (position) {
+          jobData.position[position] = (jobData.position[position] || 0) + 1;
+        }
+    
+        // Core competencies
+        if (entry.jobDetails?.competencies) {
+          Object.entries(entry.jobDetails.competencies).forEach(([skill, value]) => {
+            if (value) {
+              jobData.coreCompetencies[skill] = (jobData.coreCompetencies[skill] || 0) + 1;
+            }
+          });
+        }
+    
+        // Line of business
+        const business = entry.jobDetails?.lineOfBusiness;
+        if (business) {
+          jobData.lineOfBusiness[business] = (jobData.lineOfBusiness[business] || 0) + 1;
+        }
+    
+        // Place of work
+        const place = entry.jobDetails?.placeOfWork;
+        if (place) {
+          jobData.placeOfWork[place] = (jobData.placeOfWork[place] || 0) + 1;
+        }
+    
+        // First job search method
+        if (entry.jobDetails?.firstJobSearch) {
+          Object.entries(entry.jobDetails.firstJobSearch).forEach(([method, value]) => {
+            if (value) {
+              jobData.firstJobSearch[method] = (jobData.firstJobSearch[method] || 0) + 1;
+            }
+          });
+        }
+    
+        // First job duration
+        const duration = entry.jobDetails?.firstJobDuration;
+        if (duration) {
+          jobData.firstJobDuration[duration] = (jobData.firstJobDuration[duration] || 0) + 1;
+        }
+    
+        // Job landing time
+        const landingTime = entry.jobDetails?.jobLandingTime;
+        if (landingTime) {
+          jobData.jobLandingTime[landingTime] = (jobData.jobLandingTime[landingTime] || 0) + 1;
+        }
+    
+        // Work alignment
+        const alignment = entry.jobDetails?.work_alignment;
+        if (alignment) {
+          jobData.work_alignment[alignment] = (jobData.work_alignment[alignment] || 0) + 1;
+        }
+    
+        // Reasons for advanced studies
+        if (entry.motivation) {
+          const isAdvancedDegreeHolder = entry.education?.some(edu => 
+            edu.degreeType?.includes("Masters") || edu.degreeType?.includes("Doctorate")
+          );
+          
+          Object.entries(entry.motivation).forEach(([reason, value]) => {
+            if (value && reasons[reason]) {
+              if (isAdvancedDegreeHolder) {
+                reasons[reason].graduate++;
+              } else {
+                reasons[reason].undergraduate++;
+              }
+            }
+          });
+        }
+      });
+    
+      // Calculate total employed (excluding unemployed and further studies)
+      const totalEmployed = employmentStatus.Employed + employmentStatus["Self-employed"] + employmentStatus["Part-time"];
+    
+      return res.json({
+        success: true,
+        data: {
+          respondentCount: tracer2.length,
+          totalEmployed,
+          advancedDegreeHolders,
+          job_status: employmentStatus,
+          jobData,
+          reasons,
+          // Keep existing data for compatibility
+          degreeData: Object.entries(advancedDegreeHolders).map(([name, value]) => ({ name, value })),
+          employmentStatusData: Object.entries(employmentStatus).map(([name, value]) => ({ name, value })),
+          workAlignmentData: Object.entries(jobData.work_alignment).map(([name, value]) => ({ name, value })),
+          // Add college data if needed
+          collegeData: [] // You may need to populate this based on your data
+        }
+      });
+    } else {
+      // Custom Surveys
+      const survey = await CreatedSurvey.findOne({ title: new RegExp(`^${surveyType}$`, "i") });
+      if (!survey) return res.status(404).json({ success: false, message: "Survey not found" });
+
+      const questions = await Question.find({ surveyId: survey._id });
+      const responses = await Response.find({ surveyId: survey._id });
+
+      const pieData = {};
+
+      questions.forEach((q, qIdx) => {
+        const optionsCount = {};
+
+        responses.forEach(res => {
+          const ans = res.answers[qIdx];
+          if (ans?.response) {
+            optionsCount[ans.response] = (optionsCount[ans.response] || 0) + 1;
+          }
+        });
+
+        pieData[q.questionText] = optionsCount;
+      });
+
+      return res.json({
+        success: true,
+        data: {
+          pieData,
+          respondentCount: responses.length
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Chart summary error:", error);
+    res.status(500).json({ success: false, message: "Failed to generate chart summary.", error: error.message });
+  }
+});
+
+
   
 export default router;
