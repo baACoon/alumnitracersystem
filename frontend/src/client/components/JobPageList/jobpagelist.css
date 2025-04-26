@@ -11,13 +11,13 @@
 .back-button {
   display: inline-block;
   margin-bottom: 20px;
-  color: #c31d3c;
+  color: #580808;
   cursor: pointer;
   text-decoration: none;
   font-size: 14px;
   font-weight: bold;
   padding: 5px 10px;
-  border: 1px solid #c31d3c;
+  border: 1px solid #580808;
   border-radius: 5px;
   background-color: #fff;
 }
@@ -98,76 +98,6 @@
   color: #1d9bf0;
 }
 
-/* Comments section */
-.comments-section {
-  margin-top: 15px;
-  border-top: 1px solid #e1e8ed;
-  padding-top: 10px;
-}
-
-.comments-section h4 {
-  margin-bottom: 10px;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.comment {
-  background: #f7f9fa;
-  padding: 10px;
-  border: 1px solid #e1e8ed;
-  border-radius: 5px;
-  margin-bottom: 10px;
-}
-
-/* Comment input and post button container */
-.comment-input-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-
-.comment-input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  min-width: 200px;
-}
-
-.post-button {
-  background-color: #c31d3c;
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.post-button:hover {
-  background-color: #8f263a;
-}
-
-.see-more-btn{
-  display: inline-block;
-  margin-bottom: 20px;
-  color: #c31d3c;
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 5px 10px;
-  border: 1px solid #c31d3c;
-  border-radius: 5px;
-  background-color: #fff;
-}
-
-.see-more-btn:hover{
-  background-color: #c31d3c;
-  color: #fff;
-}
 /* Loader styles 
 .loader {
   display: flex;
@@ -281,7 +211,7 @@
 
 .job-title {
   font-size: 2rem;
-  color: #c31d3c;
+  color: #580808;
   text-align: center;
   margin-bottom: 5px;
   font-weight: 700;
@@ -338,7 +268,7 @@
 }
 
 .job-col h4 {
-  color: #c31d3c;
+  color: #580808;
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 10px;
@@ -353,7 +283,7 @@
   display: inline-block;
   word-break: break-all;
   font-weight: bold;
-  color: #c31d3c;
+  color: #580808;
   background-color: #f5f5f5;
   padding: 10px 12px;
   border-radius: 6px;

@@ -28,7 +28,7 @@
   
   /* Hover effect */
   .JobPageBox:hover {
-    background-color: #C31D3C; /* Change background color */
+    background-color: #580808; /* Change background color */
     transform: translateY(-10px);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
   }
@@ -77,7 +77,7 @@
 }
 
 .pl__ringA {
-  stroke: #5D0E1D;
+  stroke: #580808;
   animation-name: ringA;
 }
 
@@ -92,7 +92,7 @@
 }
 
 .pl__ringD {
-  stroke: #5D0E1D;
+  stroke: #580808;
   animation-name: ringD;
 }
 

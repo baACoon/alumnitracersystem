@@ -51,7 +51,7 @@
   }
   
   .closejobmodal {
-    background-color: #c31d3c;
+    background-color: #580808;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -71,7 +71,7 @@
 
 
 .yesdel-btn{
-  background-color: #27a543;
+  background-color: #116a26;
   color: white;
   border: none;
   border-radius: 5px;
@@ -80,7 +80,7 @@
 }
 
 .canceldel-btn{
-  background-color: #c31d3c;
+  background-color: #580808;
   color: white;
   border: none;
   border-radius: 5px;

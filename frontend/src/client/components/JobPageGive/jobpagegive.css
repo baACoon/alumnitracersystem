@@ -36,7 +36,7 @@
   }
 
   .add-button {
-    background-color: #27a543; /* Blue background */
+    background-color: #116a26; /* Blue background */
     color: #fff; /* White text */
     font-size: 14px;
     padding: 8px 15px;
@@ -168,7 +168,7 @@
 .back-button {
   display: inline-block;
   margin-bottom: 15px;
-  color: #c31d3c;
+  color: #580808;
   cursor: pointer;
   text-decoration: none;
   font-size: 14px;
