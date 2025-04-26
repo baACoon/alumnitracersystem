@@ -38,12 +38,13 @@
 .homePercentage .percent2 h2 {
     font-size: 30px;
     margin-top: -10px;
+    color: white;
 }
 
 
 /* Specific color for percent-1 */
 .homePercentage .percent1 h1 {
-    color: #ffffff;
+    color: #580808;
 }
 
 /* tupats container */
