@@ -44,7 +44,7 @@
 
 /* Specific color for percent-1 */
 .homePercentage .percent1 h1 {
-    color: #580808;
+    color: #F92C2C;
 }
 
 /* tupats container */
@@ -108,6 +108,7 @@
 
   .slantedBox h2{
     font-style: italic;
+    color: #580808;
   }
   
   /* Hover effect for slanted boxes */
