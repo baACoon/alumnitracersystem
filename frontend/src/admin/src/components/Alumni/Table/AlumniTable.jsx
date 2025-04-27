@@ -13,52 +13,50 @@ function Pagination({ currentPage, totalPages, setCurrentPage }) {
   const getPageNumbers = () => {
     const pages = [];
     pages.push(1);
-
     const start = Math.max(2, currentPage - 1);
     const end = Math.min(totalPages - 1, currentPage + 1);
-
-    if (start > 2) pages.push("...");
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-    if (end < totalPages - 1) pages.push("...");
+    if (start > 2) pages.push('...');
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (end < totalPages - 1) pages.push('...');
     if (totalPages > 1) pages.push(totalPages);
-
     return pages;
   };
 
   return (
-    <div className={styles.paginationContent}>
+    <div className={styles.paginationWrapper}>
       <button
         onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
         disabled={currentPage === 1}
-        className={`${styles.paginationPrev} ${currentPage === 1 ? styles.paginationDisabled : ""}`}
+        className={styles.paginationButton}
       >
         Previous
       </button>
+
       {getPageNumbers().map((page, index) =>
-        page === "..." ? (
-          <span key={`ellipsis-${index}`} className={styles.paginationEllipsis}>...</span>
+        page === '...' ? (
+          <span key={index} className={styles.paginationEllipsis}>...</span>
         ) : (
           <button
-            key={`page-${page}`}
+            key={page}
             onClick={() => setCurrentPage(page)}
-            className={`${styles.paginationNumber} ${currentPage === page ? styles.paginationActive : ""}`}
+            className={`${styles.paginationButton} ${currentPage === page ? styles.paginationActive : ''}`}
           >
             {page}
           </button>
         )
       )}
+
       <button
         onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
         disabled={currentPage === totalPages}
-        className={`${styles.paginationNext} ${currentPage === totalPages ? styles.paginationDisabled : ""}`}
+        className={styles.paginationButton}
       >
         Next
       </button>
     </div>
   );
 }
+
 
 
 export function AlumniTable({ batch, college, course, searchQuery, filterApplied }) {
@@ -69,7 +67,7 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
   const [activeTab, setActiveTab] = useState('Alumni List');
   const [modalTab, setModalTab] = useState('overview');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const navigate = useNavigate();
 
@@ -184,9 +182,7 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
     }
     
     setFilteredData(result);
-    
-    // Reset selected alumni when filters change
-    setSelectedAlumni(new Set());
+    setCurrentPage(1); // reset to page 1 when filters/search change
   }, [alumniData, batch, college, course, searchQuery]);
 
   
@@ -260,151 +256,121 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
     return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   };
 
+  const currentData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  return (
-    <section className={styles.tableSection}>
-      {/*<div className={styles.tabs}>
-        <button 
-          className={`${styles.tabButton} ${activeTab === 'Alumni List' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('Alumni List')}
-        >
-          Alumni List
-        </button>
-      </div>*/}
 
-      {activeTab === 'Alumni List' && (
-        <>
-          <div className={styles.tableWrapper} role="region" aria-label="Alumni table" tabIndex="0">
-            <table className={styles.alumniTable}>
-              <thead>
-                <tr>
-                  <th scope="col">
-                    <input
-                      type="checkbox"
-                      id="selectAll"
-                      onChange={handleSelectAll}
-                      aria-label="Select all alumni"
-                      checked={selectedAlumni.size > 0 && selectedAlumni.size === filteredData.length}
+ return (
+  <section className={styles.tableSection}>
+    {activeTab === 'Alumni List' && (
+      <>
+        <div className={styles.tableWrapper} role="region" aria-label="Alumni table" tabIndex="0">
+          <table className={styles.alumniTable}>
+            <thead>
+              <tr>
+                <th scope="col">
+                  <input
+                    type="checkbox"
+                    id="selectAll"
+                    onChange={handleSelectAll}
+                    aria-label="Select all alumni"
+                    checked={selectedAlumni.size > 0 && selectedAlumni.size === currentData.length}
+                  />
+                </th>
+                <th scope="col">TUP-ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Course</th>
+                <th scope="col">Year Graduated</th>
+                <th scope="col">Tracer Status</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentData.length > 0 ? (
+                currentData.map((alumni) => (
+                  <tr key={alumni.userId} onClick={() => openStudentDetails(alumni.userId)}>
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        id={`select-${alumni.userId}`}
+                        checked={selectedAlumni.has(alumni.userId)}
+                        onChange={() => handleSelectAlumni(alumni.userId)}
+                        onClick={(e) => e.stopPropagation()}
+                        aria-label={`Select ${alumni.userId}`}
                       />
-                  </th>
-                  <th scope="col">TUP-ID</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Course</th>
-                  <th scope="col">Year Graduated</th>
-                  <th scope="col">Tracer Status</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredData.length > 0 ? (
-                  <>
-                    {filteredData
-                      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                      .map((alumni) => (
-                        <tr key={alumni.userId} onClick={() => openStudentDetails(alumni.userId)}>
-                          <td onClick={(e) => e.stopPropagation()}>
-                            <input
-                              type="checkbox"
-                              id={`select-${alumni.userId}`}
-                              checked={selectedAlumni.has(alumni.userId)}
-                              onChange={() => handleSelectAlumni(alumni.userId)}
-                              onClick={(e) => e.stopPropagation()}
-                              aria-label={`Select ${alumni.userId}`}
-                            />
-                          </td>
-                          <td>{alumni.generatedID}</td>
-                          <td>{`${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`}</td>
-                          <td>{alumni.personalInfo.email_address}</td>
-                          <td>{alumni.personalInfo.course}</td>
-                          <td>{alumni.personalInfo.gradyear}</td>
-                          <td>
-                            <span className={`${styles.tracerStatus} ${
-                              alumni.tracerStatus?.includes('&') ? styles.tracerStatusMultiple : styles.tracerStatusSingle
-                            }`}>
-                              {alumni.tracerStatus || 'No tracer'}
-                            </span>
-                          </td>
-                          <td>
-                            <button
-                              className={styles.actionButton}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openStudentDetails(alumni.userId);
-                              }}
-                            >
-                              ›
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-
-                    {/* 👇 Insert Pagination Below the Last Row */}
-                    <tr>
-                      <td colSpan="8" style={{ textAlign: 'center', paddingTop: '1rem' }}>
-                        {filteredData.length > itemsPerPage && (
-                          <div className={styles.paginationWrapper}>
-                            <Pagination
-                              currentPage={currentPage}
-                              totalPages={totalPages}
-                              setCurrentPage={setCurrentPage}
-                            />
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  </>
-                ) : (
-                  <tr>
-                    <td colSpan="8" style={{ textAlign: 'center', padding: '1rem', fontStyle: 'italic', color: 'gray' }}>
-                      {searchQuery 
-                        ? `Sorry, there is no "${searchQuery}" in the alumni list.`
-                        : batch || college || course 
-                          ? 'No alumni match all the selected filters.'
-                          : 'No alumni records found.'}
+                    </td>
+                    <td>{alumni.generatedID}</td>
+                    <td>{`${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`}</td>
+                    <td>{alumni.personalInfo.email_address}</td>
+                    <td>{alumni.personalInfo.course}</td>
+                    <td>{alumni.personalInfo.gradyear}</td>
+                    <td>
+                      <span className={`${styles.tracerStatus} ${
+                        alumni.tracerStatus?.includes('&') ? styles.tracerStatusMultiple : styles.tracerStatusSingle
+                      }`}>
+                        {alumni.tracerStatus || 'No tracer'}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        className={styles.actionButton}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openStudentDetails(alumni.userId);
+                        }}
+                      >
+                        ›
+                      </button>
                     </td>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </>
-      )}
-
-
-      {/* {activeTab === 'Tracer Comparison' && (
-        <div className={styles.emptyState}>
-          Left blank as requested 
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: 'center', padding: '1rem', fontStyle: 'italic', color: 'gray' }}>
+                    {searchQuery
+                      ? `Sorry, there is no "${searchQuery}" in the alumni list.`
+                      : batch || college || course
+                      ? 'No alumni match all the selected filters.'
+                      : 'No alumni records found.'}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
-      )}*/}
-      
-      {studentDetails && (
+
+        {/* Move Pagination OUTSIDE the table */}
+        {filteredData.length > itemsPerPage && (
+          <div className={styles.paginationWrapper}>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+            />
+          </div>
+        )}
+      </>
+    )}
+
+    {/* Modal Section - untouched */}
+    {studentDetails && (
       <div className={styles.modalOverlay} onClick={() => setStudentDetails(null)}>
         <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
           <button className={styles.closeButton} onClick={() => setStudentDetails(null)}>
             ×
           </button>
-          
+
           {studentDetails.personalInfo ? (
             <>
-            <div className={`${styles.modalHeader} ${styles.gradientHeader}`}>
-                <button 
-                  className={styles.closeButton} 
-                  onClick={() => setStudentDetails(null)}
-                >
-                  <i className="fas fa-times"></i>
-                </button>
-
+              <div className={`${styles.modalHeader} ${styles.gradientHeader}`}>
                 <div className={styles.headerContent}>
                   <div className={styles.profileAvatar}>
                     <FontAwesomeIcon icon="fa-light fa-user" />
                   </div>
-
                   <div className={styles.profileInfo}>
                     <h3 className={styles.profileName}>
                       {`${studentDetails.personalInfo.first_name} ${studentDetails.personalInfo.last_name}`}
                     </h3>
-                    
                     <div className={styles.badgeContainer}>
                       <span className={styles.infoBadge}>
                         TUP-ID: {studentDetails.generatedID}
@@ -416,7 +382,6 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
                         Class of {studentDetails.personalInfo.gradyear || 'N/A'}
                       </span>
                     </div>
-
                     <div className={styles.contactInfo}>
                       <div className={styles.contactItem}>
                         <i className="fas fa-envelope"></i>
@@ -432,38 +397,34 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
               </div>
 
               <div className={styles.profileTabs}>
-                <button 
+                <button
                   className={`${styles.profileTab} ${modalTab === 'overview' ? styles.activeProfileTab : ''}`}
                   onClick={() => setModalTab('overview')}
                 >
                   Overview
                 </button>
-                <button 
+                <button
                   className={`${styles.profileTab} ${modalTab === 'tracer1' ? styles.activeProfileTab : ''}`}
                   onClick={() => setModalTab('tracer1')}
                 >
                   Tracer 1
                 </button>
-                <button 
+                <button
                   className={`${styles.profileTab} ${modalTab === 'tracer2' ? styles.activeProfileTab : ''}`}
                   onClick={() => setModalTab('tracer2')}
                 >
                   Tracer 2
                 </button>
-            </div>  
+              </div>
 
               <div className={styles.profileContent}>
                 {modalTab === 'overview' && (
-                  <TracerComparisonTab 
-                      studentData={studentDetails} 
-                      tracerStatus={studentDetails.tracerStatus} // ✅ pass tracerStatus
-                    />                
-                    )}
+                  <TracerComparisonTab studentData={studentDetails} tracerStatus={studentDetails.tracerStatus} />
+                )}
                 {modalTab === 'tracer1' && <Tracer1Tab studentData={studentDetails} />}
                 {modalTab === 'tracer2' && <Tracer2Tab studentData={studentDetails} />}
               </div>
 
-              {/* Moved footer outside the tab content */}
               <div className={styles.modalFooter}>
                 <button className={styles.closeModalBtn} onClick={() => setStudentDetails(null)}>
                   Close
@@ -476,8 +437,8 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
         </div>
       </div>
     )}
-    </section>
-  );
+  </section>
+);
 }
 
 export default AlumniTable;
