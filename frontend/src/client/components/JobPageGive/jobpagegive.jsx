@@ -155,26 +155,73 @@ function JobGiveMainPage() {
       )}
 
       {showJobModal && selectedJob && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2>{selectedJob.title}</h2>
-            <p><strong>College:</strong> {selectedJob.college || 'N/A'}</p>
-            <p><strong>Location:</strong> {selectedJob.location}</p>
-            <p><strong>Job Status:</strong> {selectedJob.status}</p>
-            <p><strong>Date Published:</strong> {selectedJob.createdAt ? new Date(selectedJob.createdAt).toLocaleDateString() : 'N/A'}</p>
-            <p><strong>Job Description:</strong> {selectedJob.description}</p>
-            <p><strong>Key Responsibilities:</strong></p>
-            <ul>
-              {selectedJob.responsibilities?.map((resp, index) => (
-                <li key={index}>{resp}</li>
-              )) || <li>N/A</li>}
-            </ul>
-            <p><strong>Qualifications:</strong> {selectedJob.qualifications}</p>
-            <p><strong>Source:</strong> {selectedJob.source}</p>
-            <button className="closejobmodal" onClick={() => setShowJobModal(false)}>Close</button>
+        <div className="eventModal">
+          <div className="eventModalContent">
+            <span className="closeButton" onClick={() => setShowJobModal(false)}>&times;</span>
+
+            {/* Date and Title */}
+            <p className="job-date">
+              {selectedJob.createdAt
+                ? new Date(selectedJob.createdAt).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric"
+                  })
+                : "N/A"}
+            </p>
+            <h2 className="job-title">{selectedJob.title}</h2>
+            <h4 className="job-subheader">
+              {selectedJob.company} &nbsp;&nbsp;
+              <span className="job-type">{selectedJob.type}</span>
+            </h4>
+
+            {/* Job Description */}
+            <h4 className="job-description">Job Description</h4>
+            <div className="job-section">
+              <p>{selectedJob.description || "No description provided."}</p>
+            </div>
+
+            {/* Responsibilities and Qualifications */}
+            <div className="job-2col-wrapper">
+              <div className="job-col-wrapper">
+                <h4 className="job-label">Key Responsibilities</h4>
+                <div className="job-col">
+                  <ul>
+                    {selectedJob.responsibilities?.length > 0 ? (
+                      selectedJob.responsibilities.map((resp, idx) => (
+                        <li key={idx}>{resp}</li>
+                      ))
+                    ) : (
+                      <li>N/A</li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="job-col-wrapper">
+                <h4 className="job-label">Qualifications</h4>
+                <div className="job-col">
+                  <p>{selectedJob.qualifications || "N/A"}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* More Information */}
+            <h4 className="job-label">More Information</h4>
+            <div className="job-section">
+              <a
+                href={selectedJob.source}
+                className="job-link"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {selectedJob.source}
+              </a>
+            </div>
           </div>
         </div>
       )}
+
 
       {showDeleteModal && selectedJob && (
         <div className="modal-overlay">
