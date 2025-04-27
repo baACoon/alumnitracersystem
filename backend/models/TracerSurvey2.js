@@ -82,7 +82,7 @@ const TracerSurvey2Schema = new mongoose.Schema(
       personalInterest: Boolean,
       scholarship: Boolean,
       careerShift: Boolean,
-      others: Boolean
+      none: Boolean,
     },
     job_status: {
       type: String,

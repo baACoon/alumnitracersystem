@@ -108,4 +108,67 @@ router.get("/user-status/:userId", authenticateToken, async (req, res) => {
   res.json({ status });
 });
 
+//MISPLACED API BuT WORKING (USED IN COMPLETED SURVEY)
+// ✅ View Single Tracer 1 Survey by ID
+router.get("/view/:submissionId", authenticateToken, async (req, res) => {
+  try {
+    const { submissionId } = req.params;
+
+    const survey = await SurveySubmission.findById(submissionId);
+
+    if (!survey) {
+      return res.status(404).json({ message: "Tracer 1 survey not found" });
+    }
+
+    res.json(survey);
+  } catch (error) {
+    console.error("Error fetching Tracer 1 survey details:", error);
+    res.status(500).json({ message: "Failed to fetch Tracer 1 survey details" });
+  }
+});
+
+// Get Tracer 2 survey for a user
+router.get("/tracer2/:userId", authenticateToken, async (req, res) => {
+  try {
+      const { userId } = req.params;
+      const survey = await TracerSurvey2.findOne({ userId });
+      if (!survey) return res.status(404).json({ message: "Tracer 2 survey not found" });
+      res.json(survey);
+  } catch (error) {
+      console.error("Error fetching Tracer 2 survey:", error);
+      res.status(500).json({ message: "Failed to fetch Tracer 2 survey" });
+  }
+});
+
+// Get Tracer 2 survey details by ID
+router.get("/tracer2/details/:id", authenticateToken, async (req, res) => {
+  try {
+      const { id } = req.params;
+      const survey = await TracerSurvey2.findById(id);
+      if (!survey) return res.status(404).json({ message: "Tracer 2 survey not found" });
+      res.json(survey);
+  } catch (error) {
+      console.error("Error fetching Tracer 2 survey details:", error);
+      res.status(500).json({ message: "Failed to fetch Tracer 2 survey details" });
+  }
+}); 
+
+// Get ALL Tracer 2 surveys (all versions) for a user
+router.get("/tracer2/all/:userId", authenticateToken, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const objectId = new mongoose.Types.ObjectId(userId);
+
+    const surveys = await TracerSurvey2.find({ userId: objectId }).sort({ createdAt: -1 });
+
+    // ✅ EVEN if no surveys, return 200 OK
+    res.json({ surveys });
+    
+  } catch (error) {
+    console.error("Error fetching all Tracer 2 surveys:", error);
+    res.status(500).json({ message: "Failed to fetch all Tracer 2 surveys" });
+  }
+});
+
+
 export default router;

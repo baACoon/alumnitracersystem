@@ -118,7 +118,7 @@ const Page2_Training = ({ data, updateForm }) => {
         { key: "personalInterest", label: "Personal Interest" },
         { key: "scholarship", label: "Scholarship Opportunity" },
         { key: "careerShift", label: "Career Shift or Change in Field" },
-        { key: "others", label: "Others" }
+        { key: "none", label: "None of the above" },
       ].map(({ key, label }) => (
         <label key={key} className={styles.check}>
           <input
