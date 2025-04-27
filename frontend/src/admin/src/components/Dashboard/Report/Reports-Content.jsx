@@ -19,7 +19,7 @@ export default function ReportsTab() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://alumnitracersystem.onrender.com:5050/tempReport/reports")
+        const response = await fetch("http://localhost:5050/tempReport/reports")
         const result = await response.json()
         setRawData(result.reports || [])
         setFetchError("")
@@ -88,7 +88,14 @@ export default function ReportsTab() {
       return;
     }
   
-    const url = `https://alumnitracersystem.onrender.com/tempReport/export/${encodeURIComponent(type)}`;
+    const params = new URLSearchParams();
+  
+    if (selectedBatch) params.append("batch", selectedBatch);
+    if (selectedTracerType === "Tracer 1") params.append("surveyType", "Tracer1");
+    if (selectedTracerType === "Tracer 2") params.append("surveyType", "Tracer2");
+    if (selectedCustomSurvey) params.append("customSurvey", selectedCustomSurvey);
+  
+    const url = `http://localhost:5050/tempReport/export/${encodeURIComponent(type)}?${params.toString()}`;
     const win = window.open(url, "_blank");
   
     if (!win) {
