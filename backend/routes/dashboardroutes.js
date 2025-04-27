@@ -1,6 +1,7 @@
 import express from "express";
 import { SurveySubmission } from "./surveyroutes.js";
 import TracerSurvey2 from "../models/TracerSurvey2.js";
+import { Student } from "../record.js";
 
 const router = express.Router();
 
@@ -54,56 +55,98 @@ router.get("/total-alumni", async (req, res) => {
 
   
   // tracer 1 apis
-  // Comprehensive analytics endpoint for Tracer1 dashboard
 router.get("/tracer1-analytics", async (req, res) => {
   try {
-    // 1. Get total respondents count
-    const respondentCount = await SurveySubmission.countDocuments();
+    const { batch, college, course } = req.query;
 
-    // 2. Get degree distribution
+    const match = {};
+
+    if (college) match["personalInfo.college"] = college;
+    if (course) match["personalInfo.course"] = course;
+
+    // Base pipeline
+    const pipeline = [
+      {
+        $lookup: {
+          from: "students", // collection name students
+          localField: "userId",
+          foreignField: "_id",
+          as: "studentInfo"
+        }
+      },
+      { $unwind: { path: "$studentInfo", preserveNullAndEmptyArrays: true } },
+      { $match: match }
+    ];
+
+    // If batch filter is provided, add it
+    if (batch) {
+      pipeline.push({
+        $match: { "studentInfo.gradyear": Number(batch) }
+      });
+    }
+
+    // 1. Total respondent count
+    const respondentCountAggregation = await SurveySubmission.aggregate([
+      ...pipeline,
+      { $count: "count" }
+    ]);
+    const respondentCount = respondentCountAggregation.length > 0 ? respondentCountAggregation[0].count : 0;
+
+    // 2. Degree distribution
     const degreeData = await SurveySubmission.aggregate([
+      ...pipeline,
       { $group: { _id: "$personalInfo.degree", count: { $sum: 1 } } },
-      { $project: { name: { 
-          $switch: {
-            branches: [
-              { case: { $eq: ["$_id", "bachelors"] }, then: "Bachelor's" },
-              { case: { $eq: ["$_id", "masters"] }, then: "Master's" },
-              { case: { $eq: ["$_id", "doctorate"] }, then: "Doctorate" }
-            ],
-            default: "Other"
-          }
-        }, value: "$count", _id: 0 } 
+      {
+        $project: {
+          name: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$_id", "bachelors"] }, then: "Bachelor's" },
+                { case: { $eq: ["$_id", "masters"] }, then: "Master's" },
+                { case: { $eq: ["$_id", "doctorate"] }, then: "Doctorate" }
+              ],
+              default: "Other"
+            }
+          },
+          value: "$count",
+          _id: 0
+        }
       }
     ]);
 
-    // 3. Get college distribution
+    // 3. College distribution
     const collegeData = await SurveySubmission.aggregate([
+      ...pipeline,
       { $group: { _id: "$personalInfo.college", count: { $sum: 1 } } },
       { $project: { name: "$_id", value: "$count", _id: 0 } },
       { $sort: { value: -1 } }
     ]);
 
-    // 4. Get year started distribution
+    // 4. Year Started distribution
     const yearStartedData = await SurveySubmission.aggregate([
+      ...pipeline,
       { $group: { _id: "$employmentInfo.year_started", count: { $sum: 1 } } },
       { $project: { name: { $toString: "$_id" }, value: "$count", _id: 0 } },
       { $sort: { name: 1 } }
     ]);
 
-    // 5. Get employment status distribution
+    // 5. Employment Status distribution
     const employmentStatusData = await SurveySubmission.aggregate([
+      ...pipeline,
       { $group: { _id: "$employmentInfo.job_status", count: { $sum: 1 } } },
       { $project: { name: "$_id", value: "$count", _id: 0 } }
     ]);
 
-    // 6. Get organization type distribution
+    // 6. Organization Type distribution
     const organizationTypeData = await SurveySubmission.aggregate([
+      ...pipeline,
       { $group: { _id: "$employmentInfo.type_of_organization", count: { $sum: 1 } } },
       { $project: { name: "$_id", value: "$count", _id: 0 } }
     ]);
 
-    // 7. Get work alignment distribution
+    // 7. Work Alignment distribution
     const workAlignmentData = await SurveySubmission.aggregate([
+      ...pipeline,
       { $group: { _id: "$employmentInfo.work_alignment", count: { $sum: 1 } } },
       { $project: { name: "$_id", value: "$count", _id: 0 } }
     ]);
@@ -126,6 +169,43 @@ router.get("/tracer1-analytics", async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to fetch analytics data." });
   }
 });
+
+// ✅ Fetch dynamic batch years for Tracer 1 (based on submitted surveys)
+router.get("/tracer1-batchyears", async (req, res) => {
+  try {
+    const batchYears = await SurveySubmission.aggregate([
+      {
+        $lookup: {
+          from: "students", // 🔵 link to Student collection
+          localField: "userId",
+          foreignField: "_id",
+          as: "studentInfo"
+        }
+      },
+      { $unwind: "$studentInfo" },
+      {
+        $group: {
+          _id: "$studentInfo.gradyear"
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          gradyear: "$_id"
+        }
+      },
+      { $sort: { gradyear: 1 } }
+    ]);
+
+    const gradyears = batchYears.map(b => b.gradyear);
+
+    res.json({ success: true, batchYears: gradyears });
+  } catch (error) {
+    console.error("Error fetching tracer1 batch years:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch batch years." });
+  }
+});
+
 
 // tracer 2 apis
 router.get("/tracer2/analytics", async (req, res) => {

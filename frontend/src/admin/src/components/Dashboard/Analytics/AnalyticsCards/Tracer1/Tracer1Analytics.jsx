@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Bar, BarChart, Cell, Pie, PieChart, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from "recharts";
@@ -6,7 +6,6 @@ import styles from "./Tracer1Analytics.module.css";
 import { ChevronDown } from 'lucide-react';
 import axios from 'axios';
 
-const batchYears = Array.from({ length: 10 }, (_, i) => 2016 + i);
 const colleges = [
   "College of Engineering",
   "College of Science",
@@ -14,6 +13,7 @@ const colleges = [
   "College of Liberal Arts",
   "College of Architecture and Fine Arts"
 ];
+
 const courses = {
   "College of Engineering": [
     "Bachelor of Science in Civil Engineering",
@@ -51,75 +51,79 @@ export default function Tracer1Analytics() {
     organizationTypeData: [],
     workAlignmentData: []
   });
-
+  const [batchYears, setBatchYears] = useState([]);
   const [filters, setFilters] = useState({ batchYear: "", college: "", course: "" });
-  const [activeFilters, setActiveFilters] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
+
+  const fetchBatchYears = async () => {
+    try {
+      const response = await axios.get("http://localhost:5050/dashboard/tracer1-batchyears");
+      setBatchYears(response.data.batchYears || []);
+    } catch (error) {
+      console.error('Error fetching batch years:', error);
+    }
+  };
+
+  const fetchDashboardData = useCallback(async (customFilters = filters) => {
+    try {
+      setLoading(true);
+
+      const params = new URLSearchParams();
+      if (customFilters.batchYear) params.append('batch', customFilters.batchYear);
+      if (customFilters.college) params.append('college', customFilters.college);
+      if (customFilters.course) params.append('course', customFilters.course);
+
+      const url = `http://localhost:5050/dashboard/tracer1-analytics${params.toString() ? `?${params.toString()}` : ''}`;
+      const response = await axios.get(url);
+      const data = response.data.data || {};
+
+      setDashboardData({
+        respondentCount: data.respondentCount || 0,
+        degreeData: data.degreeData || [],
+        collegeData: data.collegeData || [],
+        yearStartedData: data.yearStartedData || [],
+        employmentStatusData: data.employmentStatusData || [],
+        organizationTypeData: data.organizationTypeData || [],
+        workAlignmentData: data.workAlignmentData || []
+      });
+
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching dashboard data:', err);
+      setError(err.message);
+      setLoading(false);
+    }
+  }, [filters]);
+
+  useEffect(() => {
+    fetchBatchYears();
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   const handleFilterChange = (type, value) => {
     setFilters(prev => {
       const newFilters = { ...prev, [type]: value };
-      if (type === "college") newFilters.course = "";
-      const updatedFilters = [];
-      Object.entries(newFilters).forEach(([key, val]) => {
-        if (val) updatedFilters.push({ type: key, value: val });
-      });
-      setActiveFilters(updatedFilters);
+      if (type === "college") {
+        newFilters.course = "";
+      }
       return newFilters;
     });
   };
 
-  const resetFilters = () => {
-    setFilters({ batchYear: "", college: "", course: "" });
-    setActiveFilters([]);
+  const applyFilters = () => {
+    fetchDashboardData(filters);
     setShowFilters(false);
   };
 
-  const removeFilter = (type) => {
-    setFilters(prev => {
-      const newFilters = { ...prev, [type]: "" };
-      if (type === "college") newFilters.course = "";
-      const updatedFilters = [];
-      Object.entries(newFilters).forEach(([key, val]) => {
-        if (val) updatedFilters.push({ type: key, value: val });
-      });
-      setActiveFilters(updatedFilters);
-      return newFilters;
-    });
+  const resetFilters = () => {
+    const reset = { batchYear: "", college: "", course: "" };
+    setFilters(reset);
+    fetchDashboardData(reset);
+    setShowFilters(false);
   };
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        setLoading(true);
-        const params = new URLSearchParams();
-        if (filters.batchYear) params.append('batch', filters.batchYear);
-        if (filters.college) params.append('college', filters.college);
-        if (filters.course) params.append('course', filters.course);
-
-        const url = `http://localhost:5050/dashboard/tracer1-analytics${params.toString() ? `?${params.toString()}` : ''}`;
-        const response = await axios.get(url);
-        const data = response.data.data || {};
-        setDashboardData({
-          respondentCount: data.respondentCount || 0,
-          degreeData: data.degreeData || [],
-          collegeData: data.collegeData || [],
-          yearStartedData: data.yearStartedData || [],
-          employmentStatusData: data.employmentStatusData || [],
-          organizationTypeData: data.organizationTypeData || [],
-          workAlignmentData: data.workAlignmentData || []
-        });
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching dashboard data:', err);
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-    fetchDashboardData();
-  }, [filters]);
-
   const chartColors = ["#4CC3C8", "#FF6B81", "#FFD166", "#FF9F43", "#7E57C2", "#26A69A"];
+
   const CustomTooltip = ({ active, payload, label }) => active && payload?.length ? (
     <div className={styles.customTooltip}>
       <p className={styles.label}>{`${label || payload[0].name}: ${payload[0].value}`}</p>
@@ -128,6 +132,10 @@ export default function Tracer1Analytics() {
 
   if (loading) return <div className={styles.loading}>Loading dashboard data...</div>;
   if (error) return <div className={styles.error}>Error loading data: {error}</div>;
+
+  const renderNoData = () => (
+    <div className={styles.noDataMessage}>No data available for selected filters.</div>
+  );
 
   return (
     <div className={styles.dashboardGrid}>
@@ -160,7 +168,7 @@ export default function Tracer1Analytics() {
               <label className={styles.filterLabel}>Course</label>
               <select value={filters.course} onChange={(e) => handleFilterChange("course", e.target.value)} className={styles.filterSelect} disabled={!filters.college}>
                 <option value="">Select course</option>
-                {filters.college && courses[filters.college] && courses[filters.college].map(course => (
+                {filters.college && courses[filters.college]?.map(course => (
                   <option key={course} value={course}>{course}</option>
                 ))}
               </select>
@@ -168,58 +176,53 @@ export default function Tracer1Analytics() {
 
             <div className={styles.filterActions}>
               <button className={styles.resetButton} onClick={resetFilters}>Reset</button>
-              <button className={styles.applyButton} onClick={() => setShowFilters(false)}>Apply</button>
+              <button className={styles.applyButton} onClick={applyFilters}>Apply</button>
             </div>
           </div>
         )}
       </div>
 
-      {activeFilters.length > 0 && (
-        <div className={styles.activeFiltersBar}>
-          <div className={styles.activeFiltersList}>
-            {activeFilters.map(filter => (
-              <div key={filter.type} className={styles.filterBadgeOutline}>
-                {`${filter.type === "batchYear" ? "Year" : filter.type.charAt(0).toUpperCase() + filter.type.slice(1)}: ${filter.value}`}
-                <button className={styles.removeFilterButton} onClick={() => removeFilter(filter.type)}>×</button>
-              </div>
-            ))}
-            <button className={styles.clearAllButton} onClick={resetFilters}>Clear All</button>
-          </div>
-        </div>
-      )}
-
-
       <div className={styles.topRow}>
         <div className={styles.card}>
           <div className={styles.cardHeader}><h2 className={styles.cardTitle}>TRACER SURVEY FORM RESPONDENTS</h2></div>
-          <div className={styles.cardContent}><span className={styles.counterValue}>{dashboardData.respondentCount}</span></div>
+          <div className={styles.cardContent}>
+            <span className={styles.counterValue}>{dashboardData.respondentCount}</span>
+          </div>
         </div>
 
         <div className={styles.card}>
           <div className={styles.cardHeader}><h2 className={styles.cardTitle}>DEGREE</h2></div>
           <div className={styles.cardContent}>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie data={dashboardData.degreeData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} paddingAngle={2}>
-                  {dashboardData.degreeData.map((entry, index) => <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />)}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
+            {dashboardData.degreeData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie data={dashboardData.degreeData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} paddingAngle={2}>
+                    {dashboardData.degreeData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip content={<CustomTooltip />} />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : renderNoData()}
           </div>
         </div>
 
         <div className={styles.card}>
           <div className={styles.cardHeader}><h2 className={styles.cardTitle}>COLLEGE</h2></div>
           <div className={styles.cardContent}>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie data={dashboardData.collegeData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} paddingAngle={2}>
-                  {dashboardData.collegeData.map((entry, index) => <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />)}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
+            {dashboardData.collegeData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie data={dashboardData.collegeData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} paddingAngle={2}>
+                    {dashboardData.collegeData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip content={<CustomTooltip />} />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : renderNoData()}
           </div>
         </div>
       </div>
@@ -228,28 +231,32 @@ export default function Tracer1Analytics() {
         <div className={styles.card}>
           <div className={styles.cardHeader}><h2 className={styles.cardTitle}>YEAR STARTED</h2></div>
           <div className={styles.cardContent}>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={dashboardData.yearStartedData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="value" fill="#7DD3FC" name="Count" />
-              </BarChart>
-            </ResponsiveContainer>
+            {dashboardData.yearStartedData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={dashboardData.yearStartedData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="value" fill="#7DD3FC" name="Count" />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : renderNoData()}
           </div>
         </div>
 
         <div className={styles.card}>
           <div className={styles.cardHeader}><h2 className={styles.cardTitle}>EMPLOYMENT STATUS</h2></div>
           <div className={styles.cardContent}>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={dashboardData.employmentStatusData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="value" fill="#7DD3FC" name="Count" />
-              </BarChart>
-            </ResponsiveContainer>
+            {dashboardData.employmentStatusData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={dashboardData.employmentStatusData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="value" fill="#7DD3FC" name="Count" />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : renderNoData()}
           </div>
         </div>
       </div>
@@ -258,28 +265,32 @@ export default function Tracer1Analytics() {
         <div className={styles.card}>
           <div className={styles.cardHeader}><h2 className={styles.cardTitle}>TYPE OF ORGANIZATION</h2></div>
           <div className={styles.cardContent}>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={dashboardData.organizationTypeData} margin={{ top: 20, right: 30, left:  0, bottom: 0 }}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="value" fill="#7DD3FC" name="Count" />
-              </BarChart>
-            </ResponsiveContainer>
+            {dashboardData.organizationTypeData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={dashboardData.organizationTypeData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="value" fill="#7DD3FC" name="Count" />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : renderNoData()}
           </div>
         </div>
 
         <div className={styles.card}>
           <div className={styles.cardHeader}><h2 className={styles.cardTitle}>WORK ALIGNMENT IN COURSE</h2></div>
           <div className={styles.cardContent}>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={dashboardData.workAlignmentData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="value" fill="#7DD3FC" name="Count" />
-              </BarChart>
-            </ResponsiveContainer>
+            {dashboardData.workAlignmentData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={dashboardData.workAlignmentData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="value" fill="#7DD3FC" name="Count" />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : renderNoData()}
           </div>
         </div>
       </div>
