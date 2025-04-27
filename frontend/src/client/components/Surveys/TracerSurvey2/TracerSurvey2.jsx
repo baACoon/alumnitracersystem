@@ -42,7 +42,7 @@ function TracerSurvey2({ onBack }) {
       personalInterest: false,
       scholarship: false,
       careerShift: false,
-      others: false
+      none: false,
     },
     job_status: "",
     unemploymentReasons: {
@@ -110,7 +110,7 @@ function TracerSurvey2({ onBack }) {
         (
           formData.motivation.promotion ||
           formData.motivation.professionalDevelopment ||
-          formData.motivation.others
+          formData.motivation.none
         )
       );
     }
@@ -181,7 +181,7 @@ function TracerSurvey2({ onBack }) {
         personalInterest: !!formData.motivation.personalInterest,
         scholarship: !!formData.motivation.scholarship,
         careerShift: !!formData.motivation.careerShift,
-        others: !!formData.motivation.others,
+        none: !!formData.motivation.none,
       },
       job_status: formData.job_status || "unemployed",
       unemploymentReasons: {

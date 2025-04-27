@@ -1,10 +1,11 @@
 // routes/pendingRoutes.js
 import express from 'express';
+import mongoose from 'mongoose';
 import CreatedSurvey from "../models/surveyModels/CreatedSurvey.js";
+import Question from "../models/surveyModels/Questions.js";  
 import Response from "../models/surveyModels/Response.js";
 import TracerSurvey2 from "../models/TracerSurvey2.js";
-import { authenticateToken } from './surveyroutes.js'; // reuse if already existing
-import mongoose from 'mongoose';  // ✅ ADD THIS LINE
+import { authenticateToken } from './surveyroutes.js';
 
 
 const router = express.Router();

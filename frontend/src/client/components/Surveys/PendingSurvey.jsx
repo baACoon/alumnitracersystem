@@ -154,7 +154,7 @@ export const PendingSurvey = () => {
 
   return (
     <div className={styles.surveyContainer}>
-      <h2>AVAILABLE SURVEYS</h2>
+      <h2 className={styles.containerTitle}>AVAILABLE SURVEYS</h2>
       <div className={styles.surveyList}>
         {loading ? (
           <div className="loadingOverlay">
@@ -248,75 +248,63 @@ export const PendingSurvey = () => {
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
-              <h2>{selectedSurvey.title}</h2>
-              <button className={styles.closeModal} onClick={closeModal}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M18 6L6 18"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M6 6L18 18"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+              <div className={styles.modalTitleContainer}>
+                <h2 className={styles.modalTitle}>{selectedSurvey.title}</h2>
+                <span className={styles.modalDate}>{new Date().toLocaleDateString()}</span>
+              </div>
+              <button className={styles.closeButton} onClick={closeModal}>
+                ×
               </button>
             </div>
-            <div className={styles.modalDescription}>
-              <p>{selectedSurvey.description}</p>
-            </div>
-            <form className={styles.surveyForm}>
-              {surveyQuestions.map((question, index) => (
-                <div key={question._id} className={styles.questionBox}>
-                  <p className={styles.questionText}>
-                    {index + 1}. {question.questionText}
-                  </p>
+            <div className={styles.modalBody}>
+              <p className={styles.surveyDescription}>{selectedSurvey.description}</p>
+              <div className={styles.questionsContainer}>
+                {surveyQuestions.map((question, index) => (
+                  <div key={question._id} className={styles.questionItem}>
+                    <p className={styles.questionNumber}>{index + 1}.</p>
+                    <div className={styles.questionContent}>
+                      <p className={styles.questionText}>{question.questionText}</p>
 
-                  {question.questionType === "text" && (
-                    <input
-                      type="text"
-                      className={styles.textInput}
-                      value={responses[question._id] || ""}
-                      onChange={(e) => handleAnswerChange(question._id, e.target.value)}
-                      placeholder="Your answer"
-                    />
-                  )}
+                      {question.questionType === "text" && (
+                        <input
+                          type="text"
+                          className={styles.textInput}
+                          value={responses[question._id] || ""}
+                          onChange={(e) => handleAnswerChange(question._id, e.target.value)}
+                          placeholder="Your answer"
+                        />
+                      )}
 
-                  {question.questionType === "multiple-choice" && (
-                    <div className={styles.optionsContainer}>
-                      {question.options.map((option, idx) => (
-                        <label key={idx} className={styles.radioLabel}>
-                          <input
-                            type="radio"
-                            className={styles.radioInput}
-                            name={`q-${question._id}`}
-                            value={option}
-                            checked={responses[question._id] === option}
-                            onChange={() => handleAnswerChange(question._id, option)}
-                          />
-                          <span className={styles.radioCustom}></span>
-                          <span className={styles.radioText}>{option}</span>
-                        </label>
-                      ))}
+                      {question.questionType === "multiple-choice" && (
+                        <div className={styles.optionsGrid}>
+                          {question.options.map((option, idx) => (
+                            <label key={idx} className={styles.optionLabel}>
+                              <input
+                                type="radio"
+                                name={`q-${question._id}`}
+                                value={option}
+                                checked={responses[question._id] === option}
+                                onChange={() => handleAnswerChange(question._id, option)}
+                                className={styles.optionInput}
+                              />
+                              <span className={styles.optionText}>{option}</span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              ))}
-              <div className={styles.formActions}>
-                <button type="button" onClick={closeModal} className={styles.cancelBtn}>
-                  Cancel
-                </button>
-                <button type="button" onClick={handleSubmitSurvey} className={styles.submitBtn}>
-                  Submit Survey
-                </button>
+                  </div>
+                ))}
               </div>
-            </form>
+            </div>
+            <div className={styles.modalFooter}>
+              <button type="button" onClick={closeModal} className={styles.cancelButton}>
+                Cancel
+              </button>
+              <button type="button" onClick={handleSubmitSurvey} className={styles.submitButton}>
+                Submit
+              </button>
+            </div>
           </div>
         </div>
       )}
