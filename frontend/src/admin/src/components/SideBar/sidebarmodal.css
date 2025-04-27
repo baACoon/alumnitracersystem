@@ -27,7 +27,7 @@
   }
   
   .selected {
-    background-color: #580808;
+    background-color: #8F263A;
     padding: 5px;
     margin-bottom: 3px;
     border-radius: 5px;
@@ -75,7 +75,7 @@
     border-radius: 5px;
     padding: 5px;
     transition: 300ms;
-    background-color: #8F263A;
+    background-color: #580808;
     width: 150px;
     font-size: 15px;
   }
