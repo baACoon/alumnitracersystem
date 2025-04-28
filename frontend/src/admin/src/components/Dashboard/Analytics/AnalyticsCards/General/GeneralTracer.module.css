@@ -253,8 +253,8 @@ align-items: center;
 
 .filterPopover {
 position: absolute;
-right: 0;
-top: 100%;
+right: 36px;
+top: 47%;
 width: 280px;
 background-color: white;
 border-radius: 6px;
@@ -297,6 +297,7 @@ border-radius: 4px;
 font-size: 14px;
 color: #333;
 }
+
 
 .filterActions {
 display: flex;

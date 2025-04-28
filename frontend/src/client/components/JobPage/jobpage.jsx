@@ -10,9 +10,9 @@ function JobPage() {
   return (
     <div>
       <Header />
-      {!loading && <JobPageMainPage />}
-      {!loading && <Footer />}
-  </div>
+      <JobPageMainPage />
+      <Footer />
+    </div>
   );
 }
 
