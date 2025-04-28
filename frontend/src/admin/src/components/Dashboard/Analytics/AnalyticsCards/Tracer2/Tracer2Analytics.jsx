@@ -107,9 +107,23 @@ export default function Tracer2Analytics() {
     fetchAnalytics();
   }, [fetchAnalytics]);
 
+  const [activeFilters, setActiveFilters] = useState([])
+
   const handleFilterChange = (type, value) => {
-    setFilters((prev) => ({ ...prev, [type]: value }));
-  };
+    setFilters(prev => {
+      const updated = { ...prev, [type]: value }
+
+      if (type === "batchYear") {
+        updated.college = ""
+        updated.course = ""
+      } else if (type === "college") {
+        updated.course = ""
+      }
+
+      setActiveFilters(Object.entries(updated).filter(([_, val]) => val).map(([t, v]) => ({ type: t, value: v })))
+      return updated
+    })
+  }
 
   const applyFilters = () => {
     fetchAnalytics(filters);
@@ -207,6 +221,39 @@ export default function Tracer2Analytics() {
           </div>
         )}
       </div>
+      {/* Active Filters Display */}
+            {activeFilters.length > 0 && (
+              <div className={styles.activeFiltersBar}>
+                <div className={styles.activeFiltersList}>
+                  {activeFilters.map((filter) => (
+                    <div 
+                      key={filter.type} 
+                      className={styles.filterBadgeOutline}
+                      title={
+                        filter.type === "batchYear" ? `Year: ${filter.value}` :
+                        filter.type === "college" ? `College: ${filter.value}` :
+                        `Course: ${filter.value}`
+                      }
+                    >
+                      {filter.type === "batchYear" && `Year: ${filter.value}`}
+                      {filter.type === "college" && `College: ${filter.value}`}
+                      {filter.type === "course" && `Course: ${filter.value}`}
+                      <button className={styles.removeFilterButton} onClick={() => removeFilter(filter.type)}>
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  {activeFilters.length > 0 && (
+                    <button
+                      className={styles.clearAllButton}
+                      onClick={resetFilters}
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
       {/* ROW 0 - Total Responses */}
       <div className={styles.row0}>
         {/* Respondents Counter */}

@@ -394,7 +394,6 @@ router.get("/tracer/comparison", async (req, res) => {
     const tracer1Query = { surveyType: "Tracer1" };
     const tracer2Query = { version: 2 };
 
-    // Apply College and Course filters correctly
     if (college) tracer1Query["employmentInfo.college"] = college;
     if (course) tracer1Query["employmentInfo.course"] = course;
     if (college) tracer2Query["education.college"] = college;
@@ -408,10 +407,8 @@ router.get("/tracer/comparison", async (req, res) => {
       tracer1Map.set(doc.userId._id.toString(), doc);
     });
 
-    // Only users who have both Tracer1 and Tracer2 responses
     const usersWithBoth = tracer2Submissions.filter((doc) => tracer1Map.has(doc.userId._id.toString()));
 
-    // Apply Batch Year filter AFTER populating userId
     const filteredUsersWithBoth = batch
       ? usersWithBoth.filter((doc) => doc.userId.gradyear === Number(batch))
       : usersWithBoth;
@@ -428,7 +425,7 @@ router.get("/tracer/comparison", async (req, res) => {
 
     let job_level = {
       tracer1: {},
-      tracer2: {}
+      tracer2: {},
     };
     
     let jobLevelCount1 = 0;
@@ -455,14 +452,12 @@ router.get("/tracer/comparison", async (req, res) => {
       curriculumAlignment.tracer1[align1] = (curriculumAlignment.tracer1[align1] || 0) + 1;
       curriculumAlignment.tracer2[align2] = (curriculumAlignment.tracer2[align2] || 0) + 1;
 
-      // Tracer 1 job level (ignore NotApplicable)
       const level1 = tracer1Doc.employmentInfo?.job_level;
       if (level1 && level1 !== "NotApplicable") {
         job_level.tracer1[level1] = (job_level.tracer1[level1] || 0) + 1;
         jobLevelCount1++;
       }
 
-      // Tracer 2 job level
       const level2 = tracer2Doc.jobDetails?.job_level;
       if (level2) {
         job_level.tracer2[level2] = (job_level.tracer2[level2] || 0) + 1;
@@ -487,46 +482,61 @@ router.get("/tracer/comparison", async (req, res) => {
       return percent;
     };
 
-     // Now collect available filters from the database
-     const batchYearsSet = new Set();
-     const collegeSet = new Set();
-     const courseSet = new Set();
- 
-     tracer2Submissions.forEach((doc) => {
-       if (doc.userId?.gradyear) batchYearsSet.add(doc.userId.gradyear);
-       if (doc.education && Array.isArray(doc.education)) {
-         doc.education.forEach((edu) => {
-           edu.college?.forEach((c) => collegeSet.add(c));
-           edu.course?.forEach((c) => courseSet.add(c));
-         });
-       }
-     });
- 
-     res.json({
-       employmentRate: {
-         tracer1: toPercent(employmentRate.tracer1),
-         tracer2: toPercent(employmentRate.tracer2),
-       },
-       curriculumAlignment: {
-         tracer1: toPercent(curriculumAlignment.tracer1),
-         tracer2: toPercent(curriculumAlignment.tracer2),
-       },
-       job_level: {
-         tracer1: toPercentJob(job_level.tracer1, jobLevelCount1),
-         tracer2: toPercentJob(job_level.tracer2, jobLevelCount2),
-       },
-       availableFilters: {
-         batchYears: Array.from(batchYearsSet).sort((a, b) => b - a),
-         colleges: Array.from(collegeSet),
-         courses: Array.from(courseSet),
-       },
-     });
- 
-   } catch (err) {
-     console.error("/tracer/comparison error", err);
-     res.status(500).json({ error: "Failed to generate comparison." });
-   }
- });
- 
+    // 🔥 Build dynamic mapping
+    const batchYearToColleges = {};
+    const collegeToCourses = {};
+
+    tracer2Submissions.forEach((doc) => {
+      const year = doc.userId?.gradyear;
+      if (!year) return;
+
+      if (doc.education && Array.isArray(doc.education)) {
+        doc.education.forEach((edu) => {
+          if (edu.college) {
+            if (!batchYearToColleges[year]) batchYearToColleges[year] = new Set();
+            batchYearToColleges[year].add(edu.college);
+
+            if (!collegeToCourses[edu.college]) collegeToCourses[edu.college] = new Set();
+            if (edu.course) {
+              collegeToCourses[edu.college].add(edu.course);
+            }
+          }
+        });
+      }
+    });
+
+    // Convert Sets to Arrays
+    for (let year in batchYearToColleges) {
+      batchYearToColleges[year] = Array.from(batchYearToColleges[year]);
+    }
+    for (let college in collegeToCourses) {
+      collegeToCourses[college] = Array.from(collegeToCourses[college]);
+    }
+
+    res.json({
+      employmentRate: {
+        tracer1: toPercent(employmentRate.tracer1),
+        tracer2: toPercent(employmentRate.tracer2),
+      },
+      curriculumAlignment: {
+        tracer1: toPercent(curriculumAlignment.tracer1),
+        tracer2: toPercent(curriculumAlignment.tracer2),
+      },
+      job_level: {
+        tracer1: toPercentJob(job_level.tracer1, jobLevelCount1),
+        tracer2: toPercentJob(job_level.tracer2, jobLevelCount2),
+      },
+      filters: {
+        batchYearToColleges,
+        collegeToCourses,
+      },
+    });
+
+  } catch (err) {
+    console.error("/tracer/comparison error", err);
+    res.status(500).json({ error: "Failed to generate comparison." });
+  }
+});
+
 
   export default router;
