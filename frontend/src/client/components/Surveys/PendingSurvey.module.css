@@ -1,13 +1,11 @@
 .surveyContainer {
-
   margin: 20px auto;
- 
 }
 
-.surveyContainer h2 {
+.containerTitle {
   font-size: 18px;
   margin-bottom: 20px;
-  color: #580808;
+  color: #c31d3c;
   font-weight: 900;
 }
 
@@ -26,7 +24,7 @@
 }
 
 .surveyCard:hover {
-  background: #580808;
+  background: #c31d3c;
   color: white;
 }
 
@@ -40,16 +38,16 @@
   color: white;
 }
 
-.surveyDate{
+.surveyDate {
   font-size: 14px;
   color: #757575;
 }
 
-.surveyCard:hover .surveyDate{
+.surveyCard:hover .surveyDate {
   color: white;
-}   
+}
 
-
+/* Modal Styles - Updated to match completed survey */
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -65,51 +63,201 @@
 
 .modalContent {
   background: white;
-  padding: 2rem;
   border-radius: 10px;
-  max-height: 90vh;
-  overflow-y: auto;
   width: 90%;
-  max-width: 600px;
-  position: relative;
+  max-width: 700px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
 }
 
-.closeModal {
-  position: absolute;
-  top: 10px;
-  right: 15px;
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 15px 20px;
+  background-color: #c31d3c;
+  color: white;
+}
+
+.modalTitleContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+}
+
+.modalDate {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 4px;
+}
+
+.closeButton {
   background: none;
   border: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.submitBtn {
-  margin-top: 1rem;
-  background-color: #0088cc;
   color: white;
-  padding: 10px 20px;
-  border: none;
+  font-size: 24px;
   cursor: pointer;
-  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
 }
 
+.closeButton:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.modalBody {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.surveyDescription {
+  margin-bottom: 25px;
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.questionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.questionItem {
+  display: flex;
+  gap: 15px;
+}
+
+.questionNumber {
+  font-weight: bold;
+  color: #c31d3c;
+  font-size: 1.1rem;
+  margin: 0;
+  min-width: 25px;
+}
+
+.questionContent {
+  flex: 1;
+}
+
+.questionText {
+  margin: 0 0 15px 0;
+  font-weight: 500;
+  color: #333;
+}
+
+.textInput {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.textInput:focus {
+  border-color: #c31d3c;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(195, 29, 60, 0.1);
+}
+
+.optionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.optionLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+  border: 1px solid #eee;
+}
+
+.optionLabel:hover {
+  background-color: #f9f9f9;
+}
+
+.optionInput {
+  margin-right: 10px;
+  accent-color: #c31d3c;
+}
+
+.optionText {
+  font-size: 0.95rem;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+  background-color: #f9f9f9;
+}
+
+.cancelButton {
+  padding: 8px 20px;
+  background-color: #f0f0f0;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.cancelButton:hover {
+  background-color: #e0e0e0;
+}
+
+.submitButton {
+  padding: 8px 20px;
+  background-color: #c31d3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.submitButton:hover {
+  background-color: #a51832;
+}
 
 .grayText {
   color: #999999;
 }
 
-
-.disabledCard{
+.disabledCard {
   background-color: #f0f0f0;
   cursor: not-allowed;
   transition: background-color 0.2s ease;
 }
 
-.disabledCard:hover{
+.disabledCard:hover {
   background-color: #4a4a4a;
 }
-
 
 /* Loader Styling */
 .loaderContainer {
@@ -130,7 +278,7 @@
 }
 
 .pl__ringA {
-  stroke: #5D0E1D;
+  stroke: #5d0e1d;
   animation-name: ringA;
 }
 
@@ -145,35 +293,92 @@
 }
 
 .pl__ringD {
-  stroke: #5D0E1D;
+  stroke: #5d0e1d;
   animation-name: ringD;
 }
 
 /* Animations */
 @keyframes ringA {
-  0% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -330; }
-  12% { stroke-dasharray: 60 600; stroke-width: 30; stroke-dashoffset: -335; }
-  32% { stroke-dasharray: 60 600; stroke-width: 30; stroke-dashoffset: -595; }
-  40%, 54% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -660; }
-  100% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -990; }
+  0% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
+  12% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -335;
+  }
+  32% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -595;
+  }
+  40%,
+  54% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -660;
+  }
+  100% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -990;
+  }
 }
 
 @keyframes ringB {
-  0% { stroke-dasharray: 0 220; stroke-width: 20; stroke-dashoffset: -110; }
-  20% { stroke-dasharray: 20 200; stroke-width: 30; stroke-dashoffset: -115; }
-  100% { stroke-dasharray: 0 220; stroke-width: 20; stroke-dashoffset: -330; }
+  0% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -110;
+  }
+  20% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -115;
+  }
+  100% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
 }
 
 @keyframes ringC {
-  0% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: 0; }
-  28% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -175; }
-  100% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: -440; }
+  0% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
+  28% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
+  100% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
 }
 
 @keyframes ringD {
-  0% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: 0; }
-  36% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -175; }
-  100% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: -440; }
+  0% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
+  36% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
+  100% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
 }
 
 /* Loading Overlay */

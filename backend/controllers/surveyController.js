@@ -143,18 +143,29 @@ export const updateSurvey = async (req, res) => {
 
 export const getActiveSurveys = async (req, res) => {
   try {
+    const userId = req.user?.id; // Make sure user is authenticated
+
     const activeSurveys = await CreatedSurvey.find({ status: "active" });
 
-    if (!activeSurveys) {
-      console.log("No surveys returned");
+    if (!userId) {
+      // If no user (maybe public view?), return all active surveys
+      return res.status(200).json({ surveys: activeSurveys });
     }
 
-    res.status(200).json({ surveys: activeSurveys });
+    const userResponses = await Response.find({ userId }).select('surveyId');
+    const completedSurveyIds = userResponses.map(r => r.surveyId.toString());
+
+    // Filter out surveys the user already answered
+    const availableSurveys = activeSurveys.filter(survey => !completedSurveyIds.includes(survey._id.toString()));
+
+    res.status(200).json({ surveys: availableSurveys });
+
   } catch (error) {
     console.error("ERROR in /api/newSurveys/active", error);
     res.status(500).json({ error: "Error retrieving survey", details: error.message });
   }
 };
+
 
 
 export const getCompletedSurveysByUser = async (req, res) => {

@@ -142,7 +142,10 @@ export default function Login() {
 
         {message && <p>{message}</p>}
 
+        {/* (removed)
         <button className={styles.registerButton} onClick={() => navigate('/register')}>REGISTER</button>
+        */}
+
       </div>
 
       {showForgotModal && (

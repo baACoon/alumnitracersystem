@@ -57,25 +57,6 @@ export const SurveyTable = ({ onView }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* Add TracerSurvey2 row as the first row */}
-                  <tr className={styles.row}>
-                    <td className={styles.cell}> - </td>
-                    <td
-                      className={`${styles.cell} ${styles.clickable}`}
-                      onClick={() => setViewTracerSurvey(true)} // Click to view TracerSurvey2
-                    >
-                      Tracer Survey 2
-                    </td>
-                    <td className={styles.cell}>-</td>
-                    <td className={styles.actionCell}>
-                      <button
-                        className={styles.viewButton}
-                        onClick={() => setViewTracerSurvey(true)} // Click to view TracerSurvey2
-                      >
-                        View
-                      </button>
-                    </td>
-                  </tr>
 
                   {/* Map through the active surveys and render them */}
                   {surveys.map((survey, index) => (
