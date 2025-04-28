@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode'; // ✅ Correct import based on new jwt-decode
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children }) => {
   }
 
   try {
-    const decoded = jwt_decode(token);
+    const decoded = jwtDecode(token); // ✅ Correct usage
     const currentTime = Date.now() / 1000; // seconds
 
     if (decoded.exp < currentTime) {
