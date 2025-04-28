@@ -10,8 +10,8 @@ function Profile() {
   return (
     <div>
       <Header />
-      <ProfilePage />
-      <Footer />
+      {!loading && <ProfilePage />}
+      {!loading && <Footer />}
     </div>
   );
 }
