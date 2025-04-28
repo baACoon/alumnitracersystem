@@ -20,10 +20,10 @@
   padding: 15px;
   border-radius: 8px;
   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
-  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
-  opacity: 0;
   transform: translateY(20px);
   animation: fadeInUp 0.6s ease forwards;
+  animation-delay: 0s; /* Default, babaguhin sa nth-child */
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
 
 .surveyCard:hover {
@@ -34,6 +34,41 @@
 .surveyCard:hover h3,
 .surveyCard:hover p {
   color: white;
+}
+
+/* Animate per order using nth-child */
+.surveyList .surveyCard:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.surveyList .surveyCard:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.surveyList .surveyCard:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.surveyList .surveyCard:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.surveyList .surveyCard:nth-child(5) {
+  animation-delay: 0.8s;
+}
+
+/* (dagdagan mo lang kung madami kang surveys) */
+
+/* Animation Keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .surveyTitle {
@@ -55,17 +90,6 @@
   color: white;
 }
 
-/* Animate on entry */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 /* Modal Styles - Updated to match completed survey */
 .modalOverlay {
