@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token'); // JWT token from login
+  const [isAuth, setIsAuth] = useState(null);
 
-  if (!token) {
-    return <Navigate to="/Frontpage" replace />; // Redirect to Frontpage if not logged in
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuth(!!token); // true if token exists
+  }, []);
+
+  if (isAuth === null) {
+    return null; // or show a loading spinner if you want
   }
 
-  return children;
+  return isAuth ? children : <Navigate to="/Frontpage" replace />;
 };
 
 export default ProtectedRoute;
