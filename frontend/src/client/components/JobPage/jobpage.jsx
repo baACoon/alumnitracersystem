@@ -8,9 +8,11 @@ import Footer from '../FooterClient/Footer';
 
 function JobPage() {
   return (
-    <div>
+    <div className="page-wrapper">
       <Header />
-      <JobPageMainPage />
+      <div className="page-body">
+        <JobPageMainPage />
+      </div>
       <Footer />
     </div>
   );
@@ -24,8 +26,9 @@ function JobPageMainPage() {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setLoading(false);
-      setTimeout(() => setShowContent(true), 100); // delay before showing
+      setTimeout(() => setShowContent(true), 100);
     }, 2000);
+
     return () => clearTimeout(timeout);
   }, []);
 
@@ -33,7 +36,7 @@ function JobPageMainPage() {
   const goToList = () => navigate('/JobPageList');
 
   return (
-    <>
+    <div className="JobPageWrapper">
       {loading ? (
         <div className="loadingOverlay">
           <div className="loaderContainer">
@@ -43,11 +46,11 @@ function JobPageMainPage() {
               <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className="pl__ring pl__ringC"></circle>
               <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className="pl__ring pl__ringD"></circle>
             </svg>
-            <p>Loading...</p>
+            <p>Loading Opportunities...</p>
           </div>
         </div>
       ) : (
-        <div className={`JobPageContainer fadeInUp`}>
+        <div className="JobPageContainer fadeInUp">
           {showContent && (
             <>
               <div onClick={goToGive} className="JobPageBox animatedBox">
@@ -62,7 +65,7 @@ function JobPageMainPage() {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }
 
