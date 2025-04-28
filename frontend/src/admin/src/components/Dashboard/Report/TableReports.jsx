@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "./TableReports.module.css";
-import SurveyDetailsModal from "../Reports/SurveyDetailsModal"; // We'll create this next!
+import SurveyDetailsModal from "../Report/SurveyDetailsModal"; // We'll create this next!
 
 export default function ReportsTable({ data, selectedTracerType }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
