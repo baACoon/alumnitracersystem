@@ -1,7 +1,5 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import axios from "axios"
+import { useEffect, useState, useCallback } from "react";
+import axios from "axios";
 import {
   Bar,
   BarChart,
@@ -22,191 +20,133 @@ import {
   Treemap,
   AreaChart,
   Area,
-} from "recharts"
-import styles from "./Tracer2Analytics.module.css"
+} from "recharts";
+import styles from "./Tracer2Analytics.module.css";
 
-// Color palette for charts
-const COLORS = ["#4CC3C8", "#FF6B81", "#FFD166", "#FF9F43", "#6C5CE7", "#C31D3C"]
+const COLORS = ["#4CC3C8", "#FF6B81", "#FFD166", "#FF9F43", "#6C5CE7", "#C31D3C"];
 
 export default function Tracer2Analytics() {
-  const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [batchYears, setBatchYears] = useState([]);
+  const [filters, setFilters] = useState({ batchYear: "" });
+  const [showFilters, setShowFilters] = useState(false);
+
+  const fetchBatchYears = async () => {
+    try {
+      const response = await axios.get("https://alumnitracersystem.onrender.com/dashboard/tracer2-batchyears");
+      setBatchYears(response.data.batchYears || []);
+    } catch (error) {
+      console.error("Error fetching batch years for Tracer 2:", error);
+    }
+  };
+
+  const fetchAnalytics = useCallback(async (customFilters = filters) => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      if (customFilters.batchYear) params.append("batch", customFilters.batchYear);
+
+      const url = `https://alumnitracersystem.onrender.com/dashboard/tracer2/analytics${params.toString() ? `?${params.toString()}` : ""}`;
+      const res = await axios.get(url);
+      setData(res.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Failed to fetch analytics:", err);
+      setError("Failed to load analytics data. Please try again later.");
+      setLoading(false);
+    }
+  }, [filters]);
 
   useEffect(() => {
-    const fetchAnalytics = async () => {
-      try {
-        setLoading(true)
-        const res = await axios.get("https://alumnitracersystem.onrender.com/dashboard/tracer2/analytics")
-        setData(res.data)
-        setLoading(false)
-      } catch (err) {
-        console.error("Failed to fetch analytics:", err)
-        setError("Failed to load analytics data. Please try again later.")
-        setLoading(false)
+    fetchBatchYears();
+    fetchAnalytics();
+  }, [fetchAnalytics]);
 
-        // For development/preview purposes, set mock data
-        // setData({
-        //   totalRespondents: 350,
-        //   advancedDegreeHolders: {
-        //     doctorate: 15,
-        //     masters: 35,
-        //   },
-        //   job_status: {
-        //     Employed: 280,
-        //     Unemployed: 70,
-        //     "Self-employed": 45,
-        //     "Part-time": 30,
-        //     "Further Studies": 25,
-        //   },
-        //   jobData: {
-        //     position: {
-        //       "Entry Level": 45,
-        //       Junior: 30,
-        //       "Mid-level": 15,
-        //       Senior: 8,
-        //       Management: 2,
-        //     },
-        //     coreCompetencies: {
-        //       "Technical Skills": 80,
-        //       Communication: 75,
-        //       "Problem Solving": 85,
-        //       Teamwork: 90,
-        //       Leadership: 65,
-        //       Adaptability: 70,
-        //     },
-        //     lineOfBusiness: {
-        //       Education: 30,
-        //       "IT & Technology": 25,
-        //       Healthcare: 20,
-        //       Finance: 15,
-        //       Manufacturing: 10,
-        //     },
-        //     placeOfWork: {
-        //       "Local (Within City)": 40,
-        //       "Within Province": 25,
-        //       "Within Country": 20,
-        //       International: 15,
-        //     },
-        //     firstJobSearch: {
-        //       "Job Portal": 35,
-        //       Referral: 30,
-        //       "Campus Recruitment": 20,
-        //       "Social Media": 10,
-        //       Internship: 5,
-        //     },
-        //     firstJobDuration: {
-        //       "Less than 6 months": 15,
-        //       "6-12 months": 25,
-        //       "1-2 years": 35,
-        //       "2-3 years": 18,
-        //       "3+ years": 7,
-        //     },
-        //     jobLandingTime: {
-        //       "Before Graduation": 10,
-        //       "Within 1 month": 25,
-        //       "1-3 months": 35,
-        //       "3-6 months": 20,
-        //       "6+ months": 10,
-        //     },
-        //     work_alignment: {
-        //       "Strongly Aligned": 40,
-        //       "Moderately Aligned": 35,
-        //       "Slightly Aligned": 15,
-        //       "Not Aligned": 10,
-        //     },
-        //   },
-        //   reasons: {
-        //     "Career Advancement": { undergraduate: 45, graduate: 60 },
-        //     "Personal Interest": { undergraduate: 30, graduate: 25 },
-        //     "Required by Employer": { undergraduate: 20, graduate: 35 },
-        //     "Family Influence": { undergraduate: 5, graduate: 10 },
-        //   },
-        // })
-      }
-    }
-    fetchAnalytics()
-  }, [])
+  const handleFilterChange = (type, value) => {
+    setFilters((prev) => ({ ...prev, [type]: value }));
+  };
 
-  // Helper function to format data for charts
-  const formatBarData = (obj) => {
-    if (!obj) return []
-    return Object.entries(obj).map(([name, value]) => ({ name, value }))
-  }
+  const applyFilters = () => {
+    fetchAnalytics(filters);
+    setShowFilters(false);
+  };
 
-  const formatReasonsData = (obj) => {
-    if (!obj) return []
-    return Object.entries(obj).map(([name, value]) => ({
-      name,
-      undergraduate: value.undergraduate || 0,
-      graduate: value.graduate || 0,
-    }))
-  }
+  const resetFilters = () => {
+    const reset = { batchYear: "" };
+    setFilters(reset);
+    fetchAnalytics(reset);
+    setShowFilters(false);
+  };
 
-  const formatRadarData = (obj) =>
-    Object.entries(obj).map(([key, val]) => ({
-      skill: key,
-      value: val,
-    }));
-  
+  const formatBarData = (obj) => (obj ? Object.entries(obj).map(([name, value]) => ({ name, value })) : []);
 
-  // Helper function to add colors to data
-  const addColors = (data) => {
-    return data.map((item, index) => ({
-      ...item,
-      color: COLORS[index % COLORS.length],
-    }))
-  }
+  const formatReasonsData = (obj) => (obj ? Object.entries(obj).map(([name, value]) => ({ name, undergraduate: value.undergraduate || 0, graduate: value.graduate || 0 })) : []);
 
-  // Custom tooltip component for charts
+  const formatRadarData = (obj) => (obj ? Object.entries(obj).map(([key, val]) => ({ skill: key, value: val })) : []);
+
+  const addColors = (data) => data.map((item, index) => ({ ...item, color: COLORS[index % COLORS.length] }));
+
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
         <div className={styles.customTooltip}>
           <p className={styles.label}>{`${label || payload[0].name}: ${payload[0].value}`}</p>
         </div>
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   if (loading) {
-    return (
-      <div className={styles.loadingContainer}>
-        <div className={styles.loadingSpinner}></div>
-        <p>Loading analytics data...</p>
-      </div>
-    )
+    return <div className={styles.loadingContainer}><div className={styles.loadingSpinner}></div><p>Loading analytics data...</p></div>;
   }
 
   if (error && !data) {
-    return (
-      <div className={styles.errorContainer}>
-        <p className={styles.errorMessage}>{error}</p>
-        <button className={styles.retryButton} onClick={() => window.location.reload()}>
-          Retry
-        </button>
-      </div>
-    )
+    return <div className={styles.errorContainer}><p className={styles.errorMessage}>{error}</p><button className={styles.retryButton} onClick={() => window.location.reload()}>Retry</button></div>;
   }
 
-  if (!data) return null
+  if (!data) return null;
 
-  // Calculate employed and unemployed counts
   const employedCount = data.totalEmployed || 0;
-  const unemployedCount = data.job_status?.Unemployed || 0
+  const unemployedCount = data.job_status?.Unemployed || 0;
 
-  // Format data for advanced degree holders
   const degreeHolderData = [
     { name: "Doctorate", value: data.advancedDegreeHolders?.doctorate || 0, color: COLORS[0] },
     { name: "Masters", value: data.advancedDegreeHolders?.masters || 0, color: COLORS[1] },
-  ]
+  ];
 
-  // Format data for core competencies radar chart
-  const coreCompetenciesData = formatRadarData(data.jobData?.coreCompetencies || {})
+  const coreCompetenciesData = formatRadarData(data.jobData?.coreCompetencies || {});
 
   return (
     <div className={styles.dashboardGrid}>
+
+      {/* FILTER CONTROLS */}
+      <div className={styles.dashboardControls}>
+        <button className={styles.filterButton} onClick={() => setShowFilters(!showFilters)}>Filters</button>
+        {showFilters && (
+          <div className={styles.filterPopover}>
+            <h4 className={styles.filterTitle}>Filter Data</h4>
+            <div className={styles.filterDivider}></div>
+
+            <div className={styles.filterGroup}>
+              <label className={styles.filterLabel}>Batch Year</label>
+              <select value={filters.batchYear} onChange={(e) => handleFilterChange("batchYear", e.target.value)} className={styles.filterSelect}>
+                <option value="">Select batch year</option>
+                {batchYears.map((year) => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.filterActions}>
+              <button className={styles.resetButton} onClick={resetFilters}>Reset</button>
+              <button className={styles.applyButton} onClick={applyFilters}>Apply</button>
+            </div>
+          </div>
+        )}
+      </div>
       {/* ROW 0 - Total Responses */}
       <div className={styles.row0}>
         {/* Respondents Counter */}
