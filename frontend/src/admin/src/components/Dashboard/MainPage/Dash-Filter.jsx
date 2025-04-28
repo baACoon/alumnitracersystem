@@ -3,7 +3,7 @@ import styles from "./Dash-Filter.module.css";
 import SidebarLayout from "../../SideBar/SideBarLayout";
 import Analytics from "../Analytics/Admin-Analytics";
 import Reports from "../Report/Admin-Reports";
-import NewsArticles from "../News/NewsArticles"
+import NewsArticles from "../NewsArticles"
 
 export function DashFilter() {
   const [activeTab, setActiveTab] = useState("analytics");
