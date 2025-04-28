@@ -206,25 +206,110 @@ router.get("/tracer1-batchyears", async (req, res) => {
   }
 });
 
+// ✅ Fetch batch years for Tracer 2
+router.get("/tracer2-batchyears", async (req, res) => {
+  try {
+    const batchYears = await TracerSurvey2.aggregate([
+      { $match: { version: 2 } },
+      {
+        $lookup: {
+          from: "students",
+          localField: "userId",
+          foreignField: "_id",
+          as: "studentInfo"
+        }
+      },
+      { $unwind: "$studentInfo" },
+      {
+        $group: {
+          _id: "$studentInfo.gradyear"
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          gradyear: "$_id"
+        }
+      },
+      { $sort: { gradyear: 1 } }
+    ]);
 
-// tracer 2 apis
+    const gradyears = batchYears.map(b => b.gradyear);
+
+    res.json({ success: true, batchYears: gradyears });
+  } catch (error) {
+    console.error("Error fetching tracer2 batch years:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch tracer2 batch years." });
+  }
+});
+
+// ✅ Fetch colleges and courses for Tracer 2
+router.get("/tracer2-colleges", async (req, res) => {
+  try {
+    const colleges = await TracerSurvey2.distinct("college", { version: 2 });
+
+    const coursesData = await TracerSurvey2.aggregate([
+      { $match: { version: 2 } },
+      {
+        $group: {
+          _id: "$college",
+          courses: { $addToSet: "$course" }
+        }
+      }
+    ]);
+
+    const courseMap = {};
+    coursesData.forEach(item => {
+      if (item._id) courseMap[item._id] = item.courses;
+    });
+
+    res.json({ success: true, colleges, courses: courseMap });
+  } catch (error) {
+    console.error("Error fetching colleges/courses for Tracer 2:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch colleges/courses." });
+  }
+});
+
+// ✅ Fetch analytics with batch-college-course filtering
 router.get("/tracer2/analytics", async (req, res) => {
   try {
-    const submissions = await TracerSurvey2.find({ version: 2 });
+    const { batch, college, course } = req.query;
 
-    // 1. Total Respondents
+    const match = { version: 2 };
+
+    if (college) match["education.college"] = college;
+    if (course) match["education.course"] = course;
+    
+
+    const pipeline = [
+      { $match: match },
+      {
+        $lookup: {
+          from: "students",
+          localField: "userId",
+          foreignField: "_id",
+          as: "studentInfo"
+        }
+      },
+      { $unwind: { path: "$studentInfo", preserveNullAndEmptyArrays: true } },
+    ];
+
+    if (batch) {
+      pipeline.push({
+        $match: { "studentInfo.gradyear": Number(batch) }
+      });
+    }
+
+    const submissions = await TracerSurvey2.aggregate(pipeline);
+
+    // Analytics computations
     const totalRespondents = submissions.length;
-
     const totalEmployed = submissions.filter(entry => {
       const status = (entry.job_status || "").toLowerCase().trim();
       return status && status !== "unemployed";
     }).length;
-    
-    
 
-    // 2. Advanced Degree Holders (Masteral / Doctorate)
     const advancedDegreeHolders = { masters: 0, doctorate: 0 };
-
     submissions.forEach(entry => {
       (entry.education || []).forEach(edu => {
         (edu.degreeType || []).forEach(type => {
@@ -235,8 +320,6 @@ router.get("/tracer2/analytics", async (req, res) => {
       });
     });
 
-
-    // 3. Reasons for Taking Course
     const reasons = {};
     submissions.forEach(entry => {
       for (const [key, obj] of Object.entries(entry.reasons || {})) {
@@ -246,16 +329,14 @@ router.get("/tracer2/analytics", async (req, res) => {
       }
     });
 
-    // 4. Employment Status
     const job_status = {};
     submissions.forEach(entry => {
       const raw = (entry.job_status || "").trim().toLowerCase();
-      const normalized = raw || "Unemployed";
+      const normalized = raw || "unemployed";
       const label = normalized.charAt(0).toUpperCase() + normalized.slice(1);
       job_status[label] = (job_status[label] || 0) + 1;
     });
 
-    // 5–11. Job Details (if employed)
     const jobData = {
       lineOfBusiness: {},
       placeOfWork: {},
@@ -269,8 +350,7 @@ router.get("/tracer2/analytics", async (req, res) => {
 
     submissions.forEach(entry => {
       const job = entry.jobDetails || {};
-
-      if (entry.job_status !== "unemployed") {
+      if ((entry.job_status || "").toLowerCase() !== "unemployed") {
         const count = (field, value) => {
           if (value) jobData[field][value] = (jobData[field][value] || 0) + 1;
         };
@@ -282,12 +362,10 @@ router.get("/tracer2/analytics", async (req, res) => {
         count("position", job.position);
         count("work_alignment", job.work_alignment);
 
-        // First Job Search (multi-checkbox)
         Object.entries(job.firstJobSearch || {}).forEach(([key, val]) => {
           if (val) jobData.firstJobSearch[key] = (jobData.firstJobSearch[key] || 0) + 1;
         });
 
-        // Core Competencies (multi-checkbox)
         Object.entries(job.competencies || {}).forEach(([key, val]) => {
           if (val) jobData.coreCompetencies[key] = (jobData.coreCompetencies[key] || 0) + 1;
         });
@@ -302,22 +380,41 @@ router.get("/tracer2/analytics", async (req, res) => {
       job_status,
       jobData
     });
+
   } catch (err) {
     console.error("Error generating tracer2 analytics:", err);
     res.status(500).json({ error: "Failed to generate analytics." });
   }
 });
+
 router.get("/tracer/comparison", async (req, res) => {
   try {
-    const tracer1Submissions = await SurveySubmission.find({ surveyType: "Tracer1" });
-    const tracer2Submissions = await TracerSurvey2.find({ version: 2 });
+    const { batch, college, course } = req.query;
+
+    const tracer1Query = { surveyType: "Tracer1" };
+    const tracer2Query = { version: 2 };
+
+    // Apply College and Course filters correctly
+    if (college) tracer1Query["employmentInfo.college"] = college;
+    if (course) tracer1Query["employmentInfo.course"] = course;
+    if (college) tracer2Query["education.college"] = college;
+    if (course) tracer2Query["education.course"] = course;
+
+    const tracer1Submissions = await SurveySubmission.find(tracer1Query).populate('userId');
+    const tracer2Submissions = await TracerSurvey2.find(tracer2Query).populate('userId');
 
     const tracer1Map = new Map();
     tracer1Submissions.forEach((doc) => {
-      tracer1Map.set(doc.userId.toString(), doc);
+      tracer1Map.set(doc.userId._id.toString(), doc);
     });
 
-    const usersWithBoth = tracer2Submissions.filter((doc) => tracer1Map.has(doc.userId.toString()));
+    // Only users who have both Tracer1 and Tracer2 responses
+    const usersWithBoth = tracer2Submissions.filter((doc) => tracer1Map.has(doc.userId._id.toString()));
+
+    // Apply Batch Year filter AFTER populating userId
+    const filteredUsersWithBoth = batch
+      ? usersWithBoth.filter((doc) => doc.userId.gradyear === Number(batch))
+      : usersWithBoth;
 
     let employmentRate = {
       tracer1: { Employed: 0, Unemployed: 0 },
@@ -337,8 +434,8 @@ router.get("/tracer/comparison", async (req, res) => {
     let jobLevelCount1 = 0;
     let jobLevelCount2 = 0;
 
-    usersWithBoth.forEach((tracer2Doc) => {
-      const userId = tracer2Doc.userId.toString();
+    filteredUsersWithBoth.forEach((tracer2Doc) => {
+      const userId = tracer2Doc.userId._id.toString();
       const tracer1Doc = tracer1Map.get(userId);
 
       const employedTypes = ["Permanent", "Contractual/ProjectBased", "Temporary", "Self-employed"];
@@ -358,19 +455,19 @@ router.get("/tracer/comparison", async (req, res) => {
       curriculumAlignment.tracer1[align1] = (curriculumAlignment.tracer1[align1] || 0) + 1;
       curriculumAlignment.tracer2[align2] = (curriculumAlignment.tracer2[align2] || 0) + 1;
 
-       // Tracer 1 job level (ignore NotApplicable)
+      // Tracer 1 job level (ignore NotApplicable)
       const level1 = tracer1Doc.employmentInfo?.job_level;
       if (level1 && level1 !== "NotApplicable") {
         job_level.tracer1[level1] = (job_level.tracer1[level1] || 0) + 1;
         jobLevelCount1++;
       }
 
-      // Tracer 2 job level (only if available)
+      // Tracer 2 job level
       const level2 = tracer2Doc.jobDetails?.job_level;
       if (level2) {
         job_level.tracer2[level2] = (job_level.tracer2[level2] || 0) + 1;
         jobLevelCount2++;
-  }
+      }
     });
 
     const toPercent = (obj) => {
@@ -390,25 +487,46 @@ router.get("/tracer/comparison", async (req, res) => {
       return percent;
     };
 
-    res.json({
-      employmentRate: {
-        tracer1: toPercent(employmentRate.tracer1),
-        tracer2: toPercent(employmentRate.tracer2),
-      },
-      curriculumAlignment: {
-        tracer1: toPercent(curriculumAlignment.tracer1),
-        tracer2: toPercent(curriculumAlignment.tracer2),
-      },
-      job_level: {
-        tracer1: toPercent(job_level.tracer1, jobLevelCount1),
-        tracer2: toPercent(job_level.tracer2, jobLevelCount2),
-      },
-      
-    });
-  } catch (err) {
-    console.error("/tracer/comparison error", err);
-    res.status(500).json({ error: "Failed to generate comparison." });
-  }
-});
-  
+     // Now collect available filters from the database
+     const batchYearsSet = new Set();
+     const collegeSet = new Set();
+     const courseSet = new Set();
+ 
+     tracer2Submissions.forEach((doc) => {
+       if (doc.userId?.gradyear) batchYearsSet.add(doc.userId.gradyear);
+       if (doc.education && Array.isArray(doc.education)) {
+         doc.education.forEach((edu) => {
+           edu.college?.forEach((c) => collegeSet.add(c));
+           edu.course?.forEach((c) => courseSet.add(c));
+         });
+       }
+     });
+ 
+     res.json({
+       employmentRate: {
+         tracer1: toPercent(employmentRate.tracer1),
+         tracer2: toPercent(employmentRate.tracer2),
+       },
+       curriculumAlignment: {
+         tracer1: toPercent(curriculumAlignment.tracer1),
+         tracer2: toPercent(curriculumAlignment.tracer2),
+       },
+       job_level: {
+         tracer1: toPercentJob(job_level.tracer1, jobLevelCount1),
+         tracer2: toPercentJob(job_level.tracer2, jobLevelCount2),
+       },
+       availableFilters: {
+         batchYears: Array.from(batchYearsSet).sort((a, b) => b - a),
+         colleges: Array.from(collegeSet),
+         courses: Array.from(courseSet),
+       },
+     });
+ 
+   } catch (err) {
+     console.error("/tracer/comparison error", err);
+     res.status(500).json({ error: "Failed to generate comparison." });
+   }
+ });
+ 
+
   export default router;
