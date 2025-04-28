@@ -22,7 +22,7 @@
   }
   
   .createButton {
-    background-color: #c31d3c;
+    background-color: #580808;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -95,7 +95,7 @@
   }
   
   .activeTab {
-    background-color: #c31d3c;
+    background-color: #580808;
     color: #fff;
   }
   
