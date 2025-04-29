@@ -1,441 +1,327 @@
 .container {
-    max-width: 900px;
-    padding: 10px;
-    font-family: "Montserrat", sans-serif;
-    color: #333;
+  max-width: 900px;
+  padding: 10px;
+  font-family: "Montserrat", sans-serif;
+  color: #333;
+}
+
+.container h1{
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.formGroup label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.formInput,
+.formTextarea,
+.formFile {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease;
+}
+
+.formInput:focus,
+.formTextarea:focus,
+.formFile:focus {
+  border-color: #c31d3c;
+  outline: none;
+}
+
+.formTextarea {
+  resize: vertical; /* Allow vertical resizing only */
+  height: 100px;
+}
+
+.submitButton {
+  background-color: #580808;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submitButton:hover {
+  background-color: #580808;
+}
+
+.message {
+  font-size: 1rem;
+  color: rgb(255, 255, 255);
+  background-color: rgb(59, 167, 59);
+  padding: 10px;
+  text-align: center;
+  margin-top: 15px;
+}  
+
+.createButton {
+  background-color: #580808;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.articlesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.articleBox {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.articleBox:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+.articleBox h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.articleBox p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0; /* Remove gap to ensure buttons touch each other */
+  margin-top: 20px;
+  width: 100%; /* Ensure the row occupies the full width */
+}
+
+.editButton,
+.deleteButton {
+  width: 48%; /* Each button takes up half of the row */
+  padding: 10px 0; /* Adjust padding for vertical space */
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px; /* Border radius for rounded buttons */
+  cursor: pointer;
+  text-align: center;
+}
+
+.editButton {
+  background-color: #e2e2e2;
+  color: #000;
+  transition: background-color 0.3s ease;
+}
+
+.editButton:hover {
+  background-color: #8a8a8a;
+  color: white;
+}
+
+.deleteButton {
+  background-color: #580808;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.deleteButton:hover {
+  background-color: #6d1a0b;
+}
+
+  @media (max-width: 768px) {
+  .modalActions {
+    flex-direction: column; 
+    align-items: stretch;
+    gap: 10px;
   }
 
-  .container h1{
-    font-weight: 500;
-    font-size: 1.5rem;
-  }
-  
-  .formContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 15px;
-    margin-top: 20px;
-  }
-  
-  .formGroup {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
-  }
-  
-  .formGroup label {
-    font-size: 1rem;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .formInput,
-  .formTextarea,
-  .formFile {
+  .editButton,
+  .deleteButton {
     width: 100%;
+    font-size: 0.9rem;
+    padding: 12px; 
+  }
+}
+
+
+@media (max-width: 480px) {
+  .editButton,
+  .deleteButton {
+    font-size: 0.8rem;
     padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    transition: border-color 0.3s ease;
   }
-  
-  .formInput:focus,
-  .formTextarea:focus,
-  .formFile:focus {
-    border-color: #c31d3c;
-    outline: none;
-  }
-  
-  .formTextarea {
-    resize: vertical; /* Allow vertical resizing only */
-    height: 100px;
-  }
-  
-  .submitButton {
-    background-color: #c31d3c;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .submitButton:hover {
-    background-color: #8f263a;
-  }
-  
-/*  .message {
-    font-size: 1rem;
-    color: rgb(255, 255, 255);
-    background-color: rgb(59, 167, 59);
-    padding: 10px;
-    text-align: center;
-    margin-top: 15px;
-  } */ 
-   
-  /* SuccessModal.module.css */
-.successModalOverlay {
+}  
+
+.modalContent {
+  max-height: 90%;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+
+.articleImage {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);  /* Semi-transparent background */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999; /* Ensure modal is on top */
+  z-index: 1000;
 }
 
-.successModalContent {
-  background-color: white;
+.modalContent {
+  background: white;
+  padding: 20px;
   border-radius: 10px;
-  padding: 30px;
+  width: 80%;
+  max-width: 500px;
+  max-height: 90%; /* Limit height to 90% of viewport */
+  overflow-y: auto; /* Enable scrolling for overflowing content */
   text-align: center;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow */
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.successModalHeader .successCheckmark {
-  font-size: 3rem;
-  color: #026800;
-}
-
-.successModalBody h2 {
-  font-size: 1.5rem;
-  color: #333;
-  margin: 10px 0;
-}
-
-.successModalBody p {
-  font-size: 1rem;
-  color: #666;
-}
-
-.successOkButton {
-  background-color: #c31d3c;
-  color: white;
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  font-size: 1.5rem;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
 }
 
-.successOkButton:hover {
-  background-color: #8f263a;
+.fullArticleImage {
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}  
+
+.fullArticleImage {
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 15px;
 }
-
-.successOkButton:focus {
-  outline: none;
-}
-
-/*LOADER */
-
-.bg{
-  position: absolute; 
-  top: 0; 
-  left: 0; 
-  right: 0; 
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Transparent background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10; 
-  flex-direction: column;
-}
-.spinner {
-  width: 56px;
-  height: 56px;
-  display: grid;
-  color: #c31d3c;
-  background: radial-gradient(farthest-side, currentColor calc(100% - 7px),#0000 calc(100% - 6px) 0);
-  -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 15px),#000 calc(100% - 13px));
-  border-radius: 50%;
-  animation: spinner-sm4bhi 2s infinite linear;
-  box-shadow: 0 0 8px 4px rgba(255, 255, 255, 0.6); 
- }
-
- .loadname{
-  color: white;
-  font-size: 13px;
-  margin-top: 10px ;
- }
-
- 
- .spinner::before,
- .spinner::after {
-  content: "";
-  grid-area: 1/1;
-  background: linear-gradient(currentColor 0 0) center,
-           linear-gradient(currentColor 0 0) center;
-  background-size: 100% 11px,11px 100%;
-  background-repeat: no-repeat;
- }
- 
- .spinner::after {
-  transform: rotate(45deg);
- }
- 
- @keyframes spinner-sm4bhi {
-  100% {
-   transform: rotate(1turn);
-  }
- }
-  
-  
-  .createButton {
-    background-color: #c31d3c;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 20px;
-  }
-  
+/* Small Screens (mobile) */
+@media (max-width: 768px) {
   .articlesGrid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr); /* Switch to 2 columns */
   }
-  
+
   .articleBox {
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 10px; /* Reduce padding for smaller screens */
   }
-  
-  .articleBox:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+
+  .formContainer,
+  .formGroup {
+    width: 100%; /* Ensure full width for form elements */
   }
-  
-  .articleBox h3 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    color: #333;
+
+  .formInput,
+  .formTextarea,
+  .formFile {
+    font-size: 0.9rem; /* Adjust font size for smaller screens */
+    padding: 8px; /* Reduce padding */
   }
-  
-  .articleBox p {
+
+  .submitButton,
+  .createButton {
+    width: 100%; /* Buttons take full width */
     font-size: 0.9rem;
-    color: #555;
   }
-  
-  .modalActions {
-    display: flex;
-    justify-content: space-between;
-    gap: 0; /* Remove gap to ensure buttons touch each other */
-    margin-top: 20px;
-    width: 100%; /* Ensure the row occupies the full width */
+}
+
+/* Extra Small Screens (narrow mobile) */
+@media (max-width: 480px) {
+  .articlesGrid {
+    grid-template-columns: 1fr; /* Switch to 1 column */
   }
-  
+
+  .modalContent {
+    width: 90%; /* Expand modal to occupy more screen space */
+    max-width: 350px; /* Limit maximum width for very small screens */
+  }
+
+  .closeButton {
+    font-size: 1.2rem; /* Reduce close button size */
+  }
+
   .editButton,
   .deleteButton {
-    width: 48%; /* Each button takes up half of the row */
-    padding: 10px 0; /* Adjust padding for vertical space */
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px; /* Border radius for rounded buttons */
-    cursor: pointer;
-    text-align: center;
-  }
-  
-  .editButton {
-    background-color: #e2e2e2;
-    color: #000;
-    transition: background-color 0.3s ease;
-  }
-  
-  .editButton:hover {
-    background-color: #8a8a8a;
-    color: white;
-  }
-  
-  .deleteButton {
-    background-color: #e43a19;
-    color: #fff;
-    transition: background-color 0.3s ease;
-  }
-  
-  .deleteButton:hover {
-    background-color: #6d1a0b;
+    width: 100%; /* Stack buttons vertically */
+    margin: 10px 0; /* Add space between buttons */
   }
 
-    @media (max-width: 768px) {
-    .modalActions {
-      flex-direction: column; 
-      align-items: stretch;
-      gap: 10px;
-    }
-  
-    .editButton,
-    .deleteButton {
-      width: 100%;
-      font-size: 0.9rem;
-      padding: 12px; 
-    }
-  }
-  
- 
-  @media (max-width: 480px) {
-    .editButton,
-    .deleteButton {
-      font-size: 0.8rem;
-      padding: 10px;
-    }
-  }  
-  
-  .modalContent {
-    max-height: 90%;
-    overflow-y: auto;
-    padding: 20px;
-  }
-  
-  
   .articleImage {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 5px;
+    height: 120px; /* Reduce image height */
   }
-  
-  .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+}
+
+/* Medium Screens (tablets) */
+@media (max-width: 1024px) {
+  .articlesGrid {
+    grid-template-columns: repeat(2, 1fr); /* Switch to 2 columns */
   }
-  
+
   .modalContent {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 500px;
-    max-height: 90%; /* Limit height to 90% of viewport */
-    overflow-y: auto; /* Enable scrolling for overflowing content */
-    text-align: center;
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 400px; /* Limit modal width on medium screens */
   }
-  
-  .closeButton {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-  
-  .fullArticleImage {
-    width: 100%;
-    border-radius: 5px;
-    margin-bottom: 15px;
-  }  
-  
-  .fullArticleImage {
-    width: 100%;
-    border-radius: 5px;
-    margin-bottom: 15px;
-  }
-  /* Small Screens (mobile) */
-@media (max-width: 768px) {
-    .articlesGrid {
-      grid-template-columns: repeat(2, 1fr); /* Switch to 2 columns */
-    }
-  
-    .articleBox {
-      padding: 10px; /* Reduce padding for smaller screens */
-    }
-  
-    .formContainer,
-    .formGroup {
-      width: 100%; /* Ensure full width for form elements */
-    }
-  
-    .formInput,
-    .formTextarea,
-    .formFile {
-      font-size: 0.9rem; /* Adjust font size for smaller screens */
-      padding: 8px; /* Reduce padding */
-    }
-  
-    .submitButton,
-    .createButton {
-      width: 100%; /* Buttons take full width */
-      font-size: 0.9rem;
-    }
-  }
-  
-  /* Extra Small Screens (narrow mobile) */
-  @media (max-width: 480px) {
-    .articlesGrid {
-      grid-template-columns: 1fr; /* Switch to 1 column */
-    }
-  
-    .modalContent {
-      width: 90%; /* Expand modal to occupy more screen space */
-      max-width: 350px; /* Limit maximum width for very small screens */
-    }
-  
-    .closeButton {
-      font-size: 1.2rem; /* Reduce close button size */
-    }
-  
-    .editButton,
-    .deleteButton {
-      width: 100%; /* Stack buttons vertically */
-      margin: 10px 0; /* Add space between buttons */
-    }
-  
-    .articleImage {
-      height: 120px; /* Reduce image height */
-    }
-  }
-  
-  /* Medium Screens (tablets) */
-  @media (max-width: 1024px) {
-    .articlesGrid {
-      grid-template-columns: repeat(2, 1fr); /* Switch to 2 columns */
-    }
-  
-    .modalContent {
-      max-width: 400px; /* Limit modal width on medium screens */
-    }
-  }
-  
-  /* Responsive Typography */
-  .container h1 {
-    font-size: 1.2rem; /* Adjust title size for smaller screens */
-  }
-  
-  .articleBox h3 {
-    font-size: 1rem; /* Adjust font size for article titles */
-  }
-  
-  .articleBox p {
-    font-size: 0.8rem; /* Adjust font size for article summaries */
-  }
+}
+
+/* Responsive Typography */
+.container h1 {
+  font-size: 1.2rem; /* Adjust title size for smaller screens */
+}
+
+.articleBox h3 {
+  font-size: 1rem; /* Adjust font size for article titles */
+}
+
+.articleBox p {
+  font-size: 0.8rem; /* Adjust font size for article summaries */
+}

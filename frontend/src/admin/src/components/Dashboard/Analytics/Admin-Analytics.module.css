@@ -67,7 +67,7 @@
 
 .activeTab {
   color: #ffffff;
-  background-color: #c31d3c;
+  background-color:#580808;
 }
 
 .tab:hover:not(.activeTab) {

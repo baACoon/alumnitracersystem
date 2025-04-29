@@ -54,7 +54,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background-color: #dc2626;
+  background-color: #580808;
   color: white;
   font-size: 0.75rem;
 }
@@ -271,7 +271,7 @@
   padding: 0.25rem 0.625rem;
   border: none;
   border-radius: 0.25rem;
-  background-color: #dc2626;
+  background-color: #580808;
   color: white;
   cursor: pointer;
 }
@@ -468,7 +468,7 @@
   }
   
   .alumniTable th {
-    background-color: #C31D3C;
+    background-color: #580808;
     color: #FFFFFF;
     padding: 1rem;
     font-weight: 600;
@@ -852,7 +852,7 @@
   left: 0;
   width: 100%;
   height: 3px;
-  background-color: #900c3f;
+  background-color: #580808;
 }
 
 .tabButton:hover:not(.activeTab) {
@@ -1471,7 +1471,7 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #C31D3C;
+  background-color: #580808;
 }
 
 /* Profile Content */
@@ -1502,7 +1502,7 @@
 
 .viewProfileBtn {
   padding: 8px 16px;
-  background-color: #C31D3C;
+  background-color: #580808;
   color: white;
   border: none;
   border-radius: 4px;
@@ -1595,7 +1595,7 @@
 
 /* Modern Gradient Header */
 .gradientHeader {
-  background: linear-gradient(to right, #b91c1c, #7f1d1d);
+  background: linear-gradient(to right,#7d0b0b, #580808);
   color: white;
   padding: 1.5rem;
   position: relative;

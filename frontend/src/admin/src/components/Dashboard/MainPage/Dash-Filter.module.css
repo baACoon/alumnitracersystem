@@ -10,7 +10,7 @@
 .databaseTitle {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #c31d3c;
+  color:  #c31d3c;
   margin-bottom: 20px;
 }
 
@@ -73,7 +73,7 @@
 }
 
 .activeTab {
-  background-color: #c31d3c;
+  background-color: #580808;
   color: #fff;
 }
 

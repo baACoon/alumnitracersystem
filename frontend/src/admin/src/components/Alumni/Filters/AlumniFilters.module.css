@@ -68,7 +68,7 @@
 }
 
 .activeTab {
-  background-color: #c31d3c;
+  background-color: #580808;
   color: #fff;
 }
 
@@ -80,7 +80,7 @@
   position: absolute;
   top: -8px;
   right: -8px;
-  background-color: #c31d3c;
+  background-color: #580808;
   color: white;
   width: 20px;
   height: 20px;
@@ -331,7 +331,7 @@
 }
 
 .activeTab {
-  background-color: #c31d3c;
+  background-color: #580808;
   color: #fff;
 }
 
