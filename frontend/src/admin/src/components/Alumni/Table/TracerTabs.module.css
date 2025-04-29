@@ -116,7 +116,7 @@
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: conic-gradient(#f44336 0% 100%, transparent 100% 100%);
+  background: conic-gradient(#580808 0% 100%, transparent 100% 100%);
 }
 
 .donutInner {
@@ -313,7 +313,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background-color: #e53935;
+  background-color: #c31d3c;
   margin-right: 8px;
 }
 
@@ -378,7 +378,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background-color: #d32f2f;
+  background-color:  #580808;
 }
 
 /* Tab Panels */
@@ -792,7 +792,7 @@
   justify-content: center;
   gap: 8px;
   padding: 10px;
-  background-color: #e53935;
+  background-color: #580808;
   color: white;
   border: none;
   border-radius: 4px;

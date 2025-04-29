@@ -25,7 +25,7 @@
   }
   
   .cardHeader {
-    background-color: #c31d3c;
+    background-color: #580808;
     padding: 16px;
     color: white;
   }
@@ -283,7 +283,7 @@
     padding: 0.25rem 0.625rem;
     border: none;
     border-radius: 0.25rem;
-    background-color: #dc2626;
+    background-color: #580808;
     color: white;
     cursor: pointer;
   }
