@@ -108,7 +108,7 @@ export default function GeneralTracer() {
         if (filters.college) queryParams.append('college', filters.college)
         if (filters.course) queryParams.append('course', filters.course)
   
-        const url = `https://alumnitracersystem.onrender.com/dashboard/tracer/comparison${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
+        const url = `http://localhost:5050/dashboard/tracer/comparison${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
         const res = await fetch(url)
         const json = await res.json()
         setData(json)
