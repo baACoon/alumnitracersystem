@@ -92,7 +92,7 @@
 /* Add Option Button */
 .addOptionButton {
   margin-top: 10px;
-  background-color: #c31d3c;
+  background-color: #580808;
   color: #fff;
   padding: 5px 10px;
   border: none;
@@ -119,17 +119,17 @@
 
 /* Add Question Button */
 .addButton {
-  background-color: #c31d3c;
+  background-color: #580808;
   color: #fff;
 }
 
 .addButton:hover {
-  background-color: #8f263a;
+  background-color: #c31d3c;
 }
 
 /* Remove Question Button */
 .removeButton {
-  background-color: #ff4d4d;
+  background-color: #c31d3c;
   color: #fff;
 }
 

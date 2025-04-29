@@ -6,7 +6,7 @@
 }
 
 .header {
-  background-color: #c31d3c;
+  background-color: #580808;
   color: #fff;
   text-align: left;
   font-weight: bold;
@@ -86,7 +86,7 @@
 
 /* Edit Button */
 .editButton {
-  background-color: #007bff;
+  background-color: #024a96;
   color: #fff;
 }
 
@@ -97,7 +97,7 @@
 
 /* View Button */
 .viewButton {
-  background-color: #17a2b8;
+  background-color: #138596;
   color: #fff;
 }
 
