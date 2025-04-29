@@ -82,7 +82,7 @@ export const sendArticleNotification = async (articleTitle, articleContent) => {
 
                 // Email content
                 const mailOptions = {
-                    from: "zoetobypalomo@gmail.com",
+                    from: `"TUPATS Team" <zoetobypalomo@gmail.com>`,
                     to: email,
                     subject: `New Article: ${articleTitle}`,
                     html: `
