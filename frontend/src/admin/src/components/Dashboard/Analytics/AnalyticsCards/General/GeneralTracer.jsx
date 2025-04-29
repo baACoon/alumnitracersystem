@@ -162,13 +162,19 @@ export default function GeneralTracer() {
   }
 
   const generateSummaries = (data) => {
-    if (!data) return {}
-  
-    const employedT1 = data.employmentRate.tracer1.Employed
-    const employedT2 = data.employmentRate.tracer2.Employed
+    if (!data || !data.employmentRate || !data.curriculumAlignment || !data.job_level) {
+      return {
+        employment: { text: "" },
+        alignment: { text: "" },
+        job_level: { text: "" },
+        overall: { text: "" }
+      }
+    }  
+    const employedT1 = data.employmentRate?.tracer1?.Employed || 0
+    const employedT2 = data.employmentRate?.tracer2?.Employed || 0
     const employmentChange = calculateChange(employedT1, employedT2)
   
-    const safeSum = (obj, keys) => keys.reduce((sum, key) => sum + (obj[key] || 0), 0)
+    const safeSum = (obj, keys) => keys.reduce((sum, key) => sum + (obj?.[key] || 0), 0)
   
     const highAlignmentT1 = safeSum(data.curriculumAlignment.tracer1, [
       "Very much aligned",
@@ -374,7 +380,9 @@ export default function GeneralTracer() {
 
       <div className={styles.overallSummary}>
         <h2 className={styles.summaryTitle}>Overall Analysis</h2>
-        <p className={styles.summaryText}>{summaries.overall.text}</p>
+        <p className={styles.summaryText}>
+          {summaries?.overall?.text || "No overall summary available for the selected filters."}
+        </p>
       </div>
 
       {/* Employment Rate Comparison */}

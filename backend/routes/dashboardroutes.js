@@ -394,10 +394,16 @@ router.get("/tracer/comparison", async (req, res) => {
     const tracer1Query = { surveyType: "Tracer1" };
     const tracer2Query = { version: 2 };
 
-    if (college) tracer1Query["employmentInfo.college"] = college;
-    if (course) tracer1Query["employmentInfo.course"] = course;
-    if (college) tracer2Query["education.college"] = college;
-    if (course) tracer2Query["education.course"] = course;
+    if (college) {
+      tracer2Query["education"] = { $elemMatch: { college } };
+    }
+    if (course) {
+      if (!tracer2Query["education"]) tracer2Query["education"] = {};
+      tracer2Query["education"]["$elemMatch"] = {
+        ...tracer2Query["education"]["$elemMatch"],
+        course
+      };
+    }
 
     const tracer1Submissions = await SurveySubmission.find(tracer1Query).populate('userId');
     const tracer2Submissions = await TracerSurvey2.find(tracer2Query).populate('userId');
@@ -407,8 +413,10 @@ router.get("/tracer/comparison", async (req, res) => {
       tracer1Map.set(doc.userId._id.toString(), doc);
     });
 
-    const usersWithBoth = tracer2Submissions.filter((doc) => tracer1Map.has(doc.userId._id.toString()));
-
+    const usersWithBoth = tracer2Submissions.filter((doc) => 
+      doc.userId && doc.userId._id && tracer1Map.has(doc.userId._id.toString())
+    );
+    
     const filteredUsersWithBoth = batch
       ? usersWithBoth.filter((doc) => doc.userId.gradyear === Number(batch))
       : usersWithBoth;
@@ -432,6 +440,7 @@ router.get("/tracer/comparison", async (req, res) => {
     let jobLevelCount2 = 0;
 
     filteredUsersWithBoth.forEach((tracer2Doc) => {
+      if (!tracer2Doc.userId || !tracer2Doc.userId._id) return; // skip invalid entries
       const userId = tracer2Doc.userId._id.toString();
       const tracer1Doc = tracer1Map.get(userId);
 
@@ -512,6 +521,22 @@ router.get("/tracer/comparison", async (req, res) => {
     for (let college in collegeToCourses) {
       collegeToCourses[college] = Array.from(collegeToCourses[college]);
     }
+
+    // Ensure all alignment categories exist even if 0
+    const allAlignmentLabels = [
+      "Very much aligned",
+      "Aligned",
+      "Averagely Aligned",
+      "Unaligned",
+      "Not applicable",
+      "Unknown"
+    ];
+
+    allAlignmentLabels.forEach(label => {
+      if (!curriculumAlignment.tracer1[label]) curriculumAlignment.tracer1[label] = 0;
+      if (!curriculumAlignment.tracer2[label]) curriculumAlignment.tracer2[label] = 0;
+    });
+
 
     res.json({
       employmentRate: {
