@@ -30,24 +30,35 @@ export const CreateEvent = ({ onPost, onBack }) => {
       formData.append("source", source);
       if (fileName) {
         const fileInput = document.getElementById("fileInput");
-        formData.append("image", fileInput.files[0]); // Attach file
+        formData.append("image", fileInput.files[0]);
       }
-
+  
       try {
         setLoading(true);
         const response = await fetch("https://alumnitracersystem.onrender.com/event/create", {
           method: "POST",
-          body: formData, // Send as FormData
+          body: formData,
         });
-
-        const result = await response.json();
-        setLoading(false); // End loader
-
+  
+        let result = {};
+        try {
+          result = await response.json();
+        } catch (err) {
+          result = { error: "Invalid server response." };
+        }
+  
+        setLoading(false);
+  
         if (response.ok) {
           setMessage(result.message || "Event created successfully!");
           setIsMessageModalOpen(true);
-          onPost(result.event); // Trigger callback for posting event
-          resetForm(); // Clear form after success
+          onPost(result.event);
+          resetForm();
+  
+          // OPTIONAL: Auto-close modal after 2.5s
+          setTimeout(() => {
+            setIsMessageModalOpen(false);
+          }, 2500);
         } else {
           setMessage(result.error || "Failed to create the event.");
           setIsMessageModalOpen(true);
@@ -63,6 +74,7 @@ export const CreateEvent = ({ onPost, onBack }) => {
       setIsMessageModalOpen(true);
     }
   };
+  
 
   // Clear form after successful post
   const resetForm = () => {
