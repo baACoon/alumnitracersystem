@@ -212,6 +212,8 @@ function JobListMainPage() {
             <div className="job-status">
               <p><strong>Status:</strong> {selectedJob.status}</p>
               <p><strong>College:</strong> {selectedJob.college || "N/A"}</p>
+              <p><strong>Course:</strong> {selectedJob.course || "N/A"}</p>
+              <p><strong>Location:</strong> {selectedJob.location || "N/A"}</p>
             </div>
           </div>
         </div>
