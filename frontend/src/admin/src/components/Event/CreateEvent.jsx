@@ -11,14 +11,12 @@ export const CreateEvent = ({ onPost, onBack }) => {
   const [source, setSource] = useState("");
   const [loading, setLoading] = useState(false);
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const closeMessageModal = () => {
     setIsMessageModalOpen(false);
   };
 
-
-  // Handles event creation
   const handlePost = async () => {
     if (title && description && date && time && venue) {
       const formData = new FormData();
@@ -32,30 +30,30 @@ export const CreateEvent = ({ onPost, onBack }) => {
         const fileInput = document.getElementById("fileInput");
         formData.append("image", fileInput.files[0]);
       }
-  
+
       try {
         setLoading(true);
         const response = await fetch("https://alumnitracersystem.onrender.com/event/create", {
           method: "POST",
           body: formData,
         });
-  
+
         let result = {};
         try {
           result = await response.json();
         } catch (err) {
           result = { error: "Invalid server response." };
         }
-  
+
         setLoading(false);
-  
+
         if (response.ok) {
           setMessage(result.message || "Event created successfully!");
           setIsMessageModalOpen(true);
           onPost(result.event);
           resetForm();
-  
-          // OPTIONAL: Auto-close modal after 2.5s
+
+          // Auto-close modal after 2.5s
           setTimeout(() => {
             setIsMessageModalOpen(false);
           }, 2500);
@@ -74,9 +72,7 @@ export const CreateEvent = ({ onPost, onBack }) => {
       setIsMessageModalOpen(true);
     }
   };
-  
 
-  // Clear form after successful post
   const resetForm = () => {
     setTitle("");
     setDescription("");
@@ -87,16 +83,14 @@ export const CreateEvent = ({ onPost, onBack }) => {
     setFileName("");
   };
 
-  // Handles file input change
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setFileName(file.name); // Display the file name
+      setFileName(file.name);
     }
   };
 
   return (
-    
     <div className={styles.createEvents}>
       <div className={styles.buttons}>
         <button className={styles.backButton} onClick={onBack}>
@@ -135,14 +129,12 @@ export const CreateEvent = ({ onPost, onBack }) => {
         <div className={styles.inlineFields}>
           <input
             type="date"
-            placeholder="Date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
             className={styles.inputField}
           />
           <input
             type="time"
-            placeholder="Time"
             value={time}
             onChange={(e) => setTime(e.target.value)}
             className={styles.inputField}
@@ -164,35 +156,34 @@ export const CreateEvent = ({ onPost, onBack }) => {
         />
       </div>
 
-            {/* Loader Overlay */}
-            {loading && (
-              <div className={styles.bg}>
-                <div className={styles.spinner}></div>
-                <h3 className={styles.loadname}>Loading...</h3>
-              </div>
-            )}
+      {/* Loader */}
+      {loading && (
+        <div className={styles.bg}>
+          <div className={styles.spinner}></div>
+          <h3 className={styles.loadname}>Loading...</h3>
+        </div>
+      )}
 
-                  {/* Success Modal */}
-                  {isMessageModalOpen && (
-                    <div className={styles.successModalOverlay}>
-                      <div className={styles.successModalContent}>
-                        <div className={styles.successModalHeader}>
-                          <div className={styles.successCheckmark}>✔️</div>
-                        </div>
-                        <div className={styles.successModalBody}>
-                          <h2>Success!</h2>
-                          <p>{message}</p>
-                          <button
-                            className={styles.successOkButton}
-                            onClick={closeMessageModal}
-                          >
-                            OK
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
+      {/* Success Modal */}
+      {isMessageModalOpen && (
+        <div className={styles.successModalOverlay}>
+          <div className={styles.successModalContent}>
+            <div className={styles.successModalHeader}>
+              <div className={styles.successCheckmark}>✔️</div>
+            </div>
+            <div className={styles.successModalBody}>
+              <h2>Success!</h2>
+              <p>{message}</p>
+              <button
+                className={styles.successOkButton}
+                onClick={closeMessageModal}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
