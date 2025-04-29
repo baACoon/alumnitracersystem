@@ -64,7 +64,7 @@ input {
 }
 
 .changepass:hover{
-  background-color: #8f263a;
+  background-color: #7a1a1a;
 }
 
 .modalOverlay {
@@ -131,7 +131,7 @@ input {
 }
 
 .cancelBtn:hover{
-  background-color: #8f263a;
+  background-color: #7a1a1a;
 }
 
 /*loading style  */
