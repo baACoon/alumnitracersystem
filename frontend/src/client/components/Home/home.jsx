@@ -14,9 +14,7 @@ function Home() {
 
     useEffect(() => {
         const session = {
-            show_popup: true,
-            success: 'Welcome to TUPATS!',
-            tup_id: '123456',
+            
         };
 
         if (session.show_popup) {

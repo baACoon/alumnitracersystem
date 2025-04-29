@@ -7,8 +7,10 @@
 
 h2 {
   font-size: 1.5rem;
+  font-weight: bold;
   color: #c31d3c;
   margin-bottom: 10px;
+  text-transform: uppercase;
 }
 
 .personalInfo, .employmentStatus, .completedSurveys{

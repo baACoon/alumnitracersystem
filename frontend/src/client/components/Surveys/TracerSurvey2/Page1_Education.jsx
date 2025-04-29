@@ -62,28 +62,28 @@ const collegeCourses = {
   ]
 };
 
-
 const Page1_Education = ({ data, updateForm }) => {
   const [availableCourses, setAvailableCourses] = useState([]);
 
-   // In your handleEducationChange function:
   const handleEducationChange = (index, field, value) => {
     const updatedEducation = [...data.education];
-    
+
     if (field === "college") {
-      updatedEducation[index].course = [""]; // Reset to empty array
-      setAvailableCourses(collegeCourses[value[0]] || []); // Access first array element
+      updatedEducation[index].course = [""];
+      setAvailableCourses(collegeCourses[value[0]] || []);
     }
-    
+
     updatedEducation[index][field] = Array.isArray(value) ? value : [value];
     updateForm("education", updatedEducation);
   };
 
   const addEducationRow = () => {
-    updateForm("education", [
-      ...data.education, 
-      { degreeType: "", course: "", college: "", yearGraduated: "", institution: "" }
-    ]);
+    if (data.education.length < 5) {
+      updateForm("education", [
+        ...data.education,
+        { degreeType: "", course: "", college: "", yearGraduated: "", institution: "" }
+      ]);
+    }
   };
 
   const removeEducationRow = (index) => {
@@ -99,7 +99,9 @@ const Page1_Education = ({ data, updateForm }) => {
   };
 
   const addExamRow = () => {
-    updateForm("examinations", [...data.examinations, { examName: "", dateTaken: "", rating: "" }]);
+    if (data.examinations.length < 5) {
+      updateForm("examinations", [...data.examinations, { examName: "", dateTaken: "", rating: "" }]);
+    }
   };
 
   const removeExamRow = (index) => {
@@ -123,7 +125,18 @@ const Page1_Education = ({ data, updateForm }) => {
 
       <div className="educationAttainment">
         <label htmlFor="" className={styles.sectionTitle}>Educational Attainment</label>
-        <div className={styles.tableContainer}>
+        {/* Bachelor-only checkbox */}
+        <label className={styles.noneOption}>
+          <input
+            type="checkbox"
+            checked={data.bachelorOnly}
+            onChange={(e) => updateForm("bachelorOnly", e.target.checked)}
+          />
+          I only have a Bachelor Degree.
+        </label>
+
+        {!data.bachelorOnly && ( 
+           <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
               <tr>
@@ -212,9 +225,12 @@ const Page1_Education = ({ data, updateForm }) => {
               ))}
             </tbody>
           </table>
+         <button className={styles.addButton} onClick={addEducationRow} disabled={data.education.length > 5}>+ Add Row</button>
         </div>
+        )}
+
       </div>
-      <button className={styles.addButton} onClick={addEducationRow}>+ Add Row</button>
+     
 
      {/* Professional Examinations Passed Table */}
       <div>
@@ -284,7 +300,7 @@ const Page1_Education = ({ data, updateForm }) => {
                 </tbody>
               </table>
             </div>
-            <button className={styles.addButton} onClick={addExamRow}>+ Add Row</button>
+            <button className={styles.addButton} onClick={addExamRow} disabled={data.examinations.length > 5}>+ Add Row</button>
           </>
         )}
       </div>

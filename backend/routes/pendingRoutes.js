@@ -6,6 +6,7 @@ import Question from "../models/surveyModels/Questions.js";
 import Response from "../models/surveyModels/Response.js";
 import TracerSurvey2 from "../models/TracerSurvey2.js";
 import { authenticateToken } from './surveyroutes.js';
+import { Student } from "../../backend/record.js"; // Assuming you have a Student model
 
 
 const router = express.Router();
@@ -95,5 +96,16 @@ router.get("/completed/:userId", authenticateToken, async (req, res) => {
     }
   });
   
-  
+  // GET graduation year for student
+router.get("/gradyear/:userId", authenticateToken, async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.userId);
+    if (!student) return res.status(404).json({ message: "User not found" });
+    res.json({ gradyear: student.gradyear });
+  } catch (error) {
+    console.error("Error fetching gradyear:", error);
+    res.status(500).json({ message: "Failed to fetch gradyear" });
+  }
+});
+
 export default router;

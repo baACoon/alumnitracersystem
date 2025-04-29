@@ -189,7 +189,7 @@ function ProfilePage() {
         </div>
       </section>
 
-      <section className={styles.employmentStatus}>
+      {/* <section className={styles.employmentStatus}>
         <h2>Employment Status</h2>
         <div className={styles.details}>
           <div className={styles.row}>
@@ -221,16 +221,16 @@ function ProfilePage() {
             <input type="text" value={profileData.employmentInfo?.work_alignment || ''} readOnly />
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section className={styles.completedSurveys}>
+      {/* <section className={styles.completedSurveys}>
         <h2>Completed Surveys</h2>
         {profileData.surveys?.map((survey, index) => (
           <div key={survey._id} className={styles.surveyItem}>
             <p>Date Completed: {formatDate(survey.createdAt)}</p>
           </div>
         ))}
-      </section>
+      </section> */}
 
       <button className={styles.logoutBtn} onClick={handleLogout}>
         Logout

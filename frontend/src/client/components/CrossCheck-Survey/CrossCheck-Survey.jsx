@@ -69,6 +69,7 @@ const colleges = {
 function CrossCheckSurveyForm() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
   const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
   const [formData, setFormData] = useState({
@@ -97,88 +98,95 @@ function CrossCheckSurveyForm() {
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormErrors((prev) => ({ ...prev, [name]: "" }));
+
+    // Auto-set fields if unemployed
+    if (name === "job_status" && value === "Unemployed") {
+      setFormData((prev) => ({
+        ...prev,
+        occupation: "N/A",
+        company_name: "N/A",
+        year_started: "",
+        job_level: "",
+        position: "",
+        type_of_organization: "",
+      }));
+    }
   }, []);
 
   const handleCollegeChange = (e) => {
     const selectedCollege = e.target.value;
-    setFormData((prev) => ({
-      ...prev,
-      college: selectedCollege,
-      course: "", // Reset course when college changes
-    }));
+    setFormData((prev) => ({ ...prev, college: selectedCollege, course: "" }));
+    setFormErrors((prev) => ({ ...prev, college: "", course: "" }));
   };
 
   const handleCourseChange = (e) => {
     const selectedCourse = e.target.value;
-    setFormData((prev) => ({
-      ...prev,
-      course: selectedCourse,
-    }));
+    setFormData((prev) => ({ ...prev, course: selectedCourse }));
+    setFormErrors((prev) => ({ ...prev, course: "" }));
   };
- 
 
   const validateForm = useCallback(() => {
+    const errors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{11}$/;
+    const birthdateLimit = new Date();
+    birthdateLimit.setFullYear(birthdateLimit.getFullYear() - 18);
+
     if (currentPage === 1) {
-      return (
-        formData.first_name.trim() &&
-        formData.last_name.trim() &&
-        formData.email_address.trim() &&
-        formData.contact_no.trim() &&
-        formData.birthdate &&
-        formData.birthplace.trim() &&
-        (formData.sex === "Male" || formData.sex === "Female") &&
-        formData.nationality.trim() &&
-        formData.address.trim() &&
-        formData.degree &&
-        formData.college.trim() &&
-        formData.course.trim()
-      );
+      if (!formData.first_name.trim()) errors.first_name = "First Name is required.";
+      if (!formData.last_name.trim()) errors.last_name = "Last Name is required.";
+      if (!emailRegex.test(formData.email_address)) errors.email_address = "Invalid email address.";
+      if (!phoneRegex.test(formData.contact_no)) errors.contact_no = "Phone must be 11 digits.";
+      if (!formData.birthdate) errors.birthdate = "Birthdate is required.";
+      else if (new Date(formData.birthdate) > birthdateLimit) errors.birthdate = "You must be at least 18 years old.";
+      if (!formData.birthplace.trim()) errors.birthplace = "Birthplace is required.";
+      if (!formData.sex) errors.sex = "Sex is required.";
+      if (!formData.nationality.trim()) errors.nationality = "Nationality is required.";
+      if (!formData.address.trim()) errors.address = "Address is required.";
+      if (!formData.degree) errors.degree = "Degree is required.";
+      if (!formData.college.trim()) errors.college = "College is required.";
+      if (!formData.course.trim()) errors.course = "Course is required.";
     }
+
     if (currentPage === 2) {
-      return (
-        formData.occupation.trim() &&
-        formData.company_name.trim() &&
-        formData.year_started &&
-        formData.job_level &&
-        formData.position.trim() &&
-        formData.job_status &&
-        formData.type_of_organization &&
-        formData.work_alignment
-      );
+      if (!formData.job_status) errors.job_status = "Employment Status is required.";
+      if (formData.job_status !== "Unemployed") {
+        if (!formData.occupation.trim()) errors.occupation = "Occupation is required.";
+        if (!formData.company_name.trim()) errors.company_name = "Company Name is required.";
+        if (!formData.year_started) errors.year_started = "Year Started is required.";
+        else if (parseInt(formData.year_started) > new Date().getFullYear()) errors.year_started = "Invalid Year Started.";
+        if (!formData.job_level) errors.job_level = "Job Level is required.";
+        if (!formData.position.trim()) errors.position = "Position is required.";
+        if (!formData.type_of_organization) errors.type_of_organization = "Type of Organization is required.";
+      }
+      if (!formData.work_alignment) errors.work_alignment = "Work Alignment is required.";
     }
-    return false;
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   }, [currentPage, formData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    console.log("Submitting Form Data:", formData); // Debug log
-  
+
     if (!validateForm()) {
-      setSubmitStatus({ type: "error", message: "Please fill in all required fields" });
-      console.log("Validation Failed"); // Debug log
+      setSubmitStatus({ type: "error", message: "Please fix the errors." });
       return;
     }
-    const userId = localStorage.getItem("userId"); // Retrieve the logged-in user's ID
-      if (!userId) {
-        setSubmitStatus({ type: "error", message: "User not logged in" });
-        return;
-      }
-      console.log("Submitting survey for userId:", userId);
-      
-    const token = localStorage.getItem("token"); // Retrieve the token from localStorage
-      if (!token) {
-        setSubmitStatus({ type: "error", message: "No token provided. Please log in again." });
-        return;
-      }
+
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+
+    if (!userId || !token) {
+      setSubmitStatus({ type: "error", message: "Authentication error. Please login." });
+      return;
+    }
 
     setIsSubmitting(true);
     try {
-      const response = await axios.post('http://localhost:5050/surveys/submit/Tracer1', {// Or Tracer2 if submitting that        userId,
+      const response = await axios.post('http://localhost:5050/surveys/submit/Tracer1', {
         userId,
         personalInfo: {
           first_name: formData.first_name,
@@ -199,52 +207,22 @@ function CrossCheckSurveyForm() {
           occupation: formData.occupation,
           company_name: formData.company_name,
           year_started: formData.year_started,
+          job_status: formData.job_status,
           job_level: formData.job_level,
           position: formData.position,
-          job_status: formData.job_status,
           type_of_organization: formData.type_of_organization,
           work_alignment: formData.work_alignment,
-        },
-      },
-      { headers: { Authorization: `Bearer ${token}` } } 
-    
-    );
-
+        }
+      }, { headers: { Authorization: `Bearer ${token}` } });
 
       if (response.data.success) {
         setSubmitStatus({ type: "success", message: "Survey submitted successfully!" });
-        setTimeout(() => navigate("/Profile"), 2000); // Redirect to homepage after 2 seconds
-        setFormData({
-          first_name: "",
-          middle_name: "",
-          last_name: "",
-          email_address: "",
-          contact_no: "",
-          birthdate: "",
-          birthplace: "",
-          sex: "",
-          nationality: "",
-          address: "",
-          degree: "",
-          college: "",
-          course: "",
-          occupation: "",
-          company_name: "",
-          year_started: "",
-          job_status: "",
-          job_level: "",
-          position: "",
-          type_of_organization: "",
-          work_alignment: "",
-        });
+        setTimeout(() => navigate("/Profile"), 2000);
+        setFormData({});
         setCurrentPage(1);
-        
       }
     } catch (error) {
-      setSubmitStatus({
-        type: "error",
-        message: error.response?.data?.message || "Failed to submit survey. Please try again.",
-      });
+      setSubmitStatus({ type: "error", message: error.response?.data?.message || "Submission failed." });
     } finally {
       setIsSubmitting(false);
     }
@@ -257,12 +235,11 @@ function CrossCheckSurveyForm() {
         <img src={Alumnilogo} alt="Alumni logo" className={styles["logo-2"]} />
       </div>
 
-      <h1 className={styles["survey-title"]}>Tracer Survey Form (2024)</h1>
-
+      <h1 className={styles.surveyTitle}>Tracer Survey Form</h1>
       {submitStatus.message && (
-        <div className={`${styles.alert} ${styles[submitStatus.type]}`}>
+        <p className={submitStatus.type === "error" ? styles.errorMessage : styles.successMessage}>
           {submitStatus.message}
-        </div>
+        </p>
       )}
 
       <form onSubmit={handleSubmit} className={styles["survey-form"]}>
@@ -282,6 +259,7 @@ function CrossCheckSurveyForm() {
                                   required
                                   className={styles["form-input"]}
                               />
+                              {formErrors.first_name && <span className={styles.errorText}>{formErrors.first_name}</span>}
                           </div>
   
                            <div className={styles["form-group"]}>
@@ -307,6 +285,7 @@ function CrossCheckSurveyForm() {
                                       required
                                       className={styles["form-input"]}
                                   />
+                                  {formErrors.last_name && <span className={styles.errorText}>{formErrors.last_name}</span>}
                               </div>
   
                               <div className={styles["form-group"]}>
@@ -320,6 +299,7 @@ function CrossCheckSurveyForm() {
                                       required
                                       className={styles["form-input"]}
                                   />
+                                  {formErrors.email_address && <span className={styles.errorText}>{formErrors.email_address}</span>}
                               </div>
   
                               <div className={styles["form-group"]}>
@@ -333,6 +313,7 @@ function CrossCheckSurveyForm() {
                                       required
                                       className={styles["form-input"]}
                                   />
+                                  {formErrors.contact_no && <span className={styles.errorText}>{formErrors.contact_no}</span>}
                               </div>
   
                               <div className={styles["form-group"]}>
@@ -346,6 +327,7 @@ function CrossCheckSurveyForm() {
                                       required
                                       className={styles["form-input"]}
                                   />
+                                  {formErrors.birthdate && <span className={styles.errorText}>{formErrors.birthdate}</span>}
                               </div>
   
                               <div className={styles["form-group"]}>
@@ -359,6 +341,7 @@ function CrossCheckSurveyForm() {
                                       required
                                       className={styles["form-input"]}
                                   />
+                                  {formErrors.birthplace && <span className={styles.errorText}>{formErrors.birthplace}</span>}
                               </div>
   
                               <div className={styles["form-group"]}>
@@ -386,6 +369,7 @@ function CrossCheckSurveyForm() {
                                     <span>Female</span>
                                   </label>
                                 </div>
+                                {formErrors.sex && <span className={styles.errorText}>{formErrors.sex}</span>}
                               </div>
 
                               <div className={styles["form-group"]}>
@@ -405,6 +389,7 @@ function CrossCheckSurveyForm() {
                                     </option>
                                   ))}
                                 </select>
+                                {formErrors.nationality && <span className={styles.errorText}>{formErrors.nationality}</span>}
                               </div>
 
                               <div className={styles["form-group"]}>
@@ -418,6 +403,7 @@ function CrossCheckSurveyForm() {
                                       required
                                       className={styles["form-input"]}
                                   />
+                                  {formErrors.address && <span className={styles.errorText}>{formErrors.address}</span>}
                               </div>
   
                               <div className={styles["form-group"]}>
@@ -435,6 +421,7 @@ function CrossCheckSurveyForm() {
                                       <option value="masters">Master's Degree</option>
                                       <option value="doctorate">Doctorate Degree</option>
                                   </select>
+                                  {formErrors.degree && <span className={styles.errorText}>{formErrors.degree}</span>}
                               </div>
   
                               <div className={styles["form-group"]}>
@@ -454,6 +441,7 @@ function CrossCheckSurveyForm() {
                                   </option>
                                 ))}
                               </select>
+                              {formErrors.college && <span className={styles.errorText}>{formErrors.college}</span>}
                             </div>
 
                             <div className={styles["form-group"]}>
@@ -475,6 +463,7 @@ function CrossCheckSurveyForm() {
                                     </option>
                                   ))}
                               </select>
+                              {formErrors.course && <span className={styles.errorText}>{formErrors.course}</span>}
                             </div>
                                     </div>
 
@@ -522,8 +511,8 @@ function CrossCheckSurveyForm() {
                                   </select>
                               </div>
 
-                              <p>If "Unemployed", insert N/A</p>
-
+                      {formData.job_status !== "Unemployed" && (
+                        <>
                           <div className={styles["form-group"]}>
                               <label htmlFor="occupation">Occupation: *</label>
                               <input
@@ -535,6 +524,8 @@ function CrossCheckSurveyForm() {
                                   required
                                   className={styles["form-input"]}
                               />
+                              {formErrors.occupation && <span className={styles.errorText}>{formErrors.occupation}</span>}
+
                           </div>
   
                           <div className={styles["form-group"]}>
@@ -548,6 +539,7 @@ function CrossCheckSurveyForm() {
                                       required
                                       className={styles["form-input"]}
                                   />
+                                  {formErrors.company_name && <span className={styles.errorText}>{formErrors.company_name}</span>}
                               </div>
   
                               <div className={styles["form-group"]}>
@@ -563,6 +555,7 @@ function CrossCheckSurveyForm() {
                                       max={new Date().getFullYear()}
                                       className={styles["form-input"]}
                                   />
+                                  {formErrors.year_started && <span className={styles.errorText}>{formErrors.year_started}</span>}
                               </div>
 
                               <div className={styles["form-group"]}>
@@ -594,6 +587,7 @@ function CrossCheckSurveyForm() {
                                       required
                                       className={styles["form-input"]}
                                   />
+                                  {formErrors.positio  && <span className={styles.errorText}>{formErrors.position}</span>}
                               </div>
   
                               
@@ -617,6 +611,10 @@ function CrossCheckSurveyForm() {
 
                                   </select>
                               </div>
+                        </>
+                      )}
+
+                          
                               <div className={styles["form-group"]}>
                                 <label htmlFor="work_alignment">
                                   Work Alignment with Academic Specialization:
