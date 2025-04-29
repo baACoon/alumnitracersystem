@@ -413,7 +413,7 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
 
     {/* Modal Section - untouched */}
     {studentDetails && (
-      <div className={styles.modalOverlay} onClick={() => setStudentDetails(null)}>
+      <div className={styles.modalOverlay} >
         <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
           <button className={styles.closeButton} onClick={() => setStudentDetails(null)}>
             ×
