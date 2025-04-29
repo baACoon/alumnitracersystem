@@ -7,7 +7,7 @@ import {
   faCalendar,
   faUser
 } from '@fortawesome/free-regular-svg-icons';
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
+//import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 
 const Tracer1Tab = ({ studentData }) => {
   // Extract data from studentData - aligning with backend schema names
@@ -16,17 +16,19 @@ const Tracer1Tab = ({ studentData }) => {
   const personalInfo = studentData?.personalInfo || {};
   
   // Format completion date
-  const surveyData = studentData?.surveys?.find(
+  const tracer1Survey = studentData?.surveys?.find(
     s => s.title?.toLowerCase().includes('tracer 1')
-  );
-  const responseInfo = surveyData?.personalInfo || {};
-  const completionDate = surveyData?.createdAt || surveyData?.date;
+  );  
+  const completionDate = tracer1Survey?.createdAt || null;
+  const educationInfo = tracer1Survey?.education?.[0] || {};
+    const responseInfo = tracer1Survey?.personalInfo || {};
   
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   };
+  
 
   // Tab state
   const [activeTab, setActiveTab] = useState('personal');
@@ -38,8 +40,9 @@ const Tracer1Tab = ({ studentData }) => {
           <div className={styles.surveyTitle}>
             <h3>Tracer 1 Survey Response</h3>
             <p className={styles.completionDate}>
-              Completed on {completionDate ? formatDate(completionDate) : 'N/A'}
+            Completed on {completionDate ? formatDate(completionDate) : 'N/A'}
             </p>
+
           </div>
         </div>
         
@@ -87,8 +90,11 @@ const Tracer1Tab = ({ studentData }) => {
                 <td className={styles.fieldValue}>{personalInfo.course || 'N/A'}</td>
               </tr>
               <tr>
-                <td className={styles.fieldLabel}>Year Graduated</td>
-                <td className={styles.fieldValue}>{personalInfo.gradyear || studentData?.yearGraduated || 'N/A'}</td>
+              <td className={styles.fieldLabel}>Year Graduated</td>
+              <td className={styles.fieldValue}>
+                  {educationInfo.yearGraduated || personalInfo.gradyear || 'N/A'}
+                </td>
+
               </tr>
               <tr>
                 <td className={styles.fieldLabel}>Sex</td>

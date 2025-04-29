@@ -882,3 +882,10 @@
   border-radius: 8px;
   font-size: 0.95rem;
 }
+.centerNotice {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  text-align: center;
+}
