@@ -56,7 +56,6 @@ const validateFields = (row) => {
 
 export const uploadCSV = async (req, res) => {
   try {
-    // Double directory check at start
     ensureBatchListDirectoryExists();
 
     if (!req.file) {
@@ -70,70 +69,96 @@ export const uploadCSV = async (req, res) => {
     const validationErrors = [];
 
     fs.createReadStream(filePath)
-    .pipe(csvParser())
-    .on("data", (row) => {
-      if (row["Last Name"] === "Last Name") return;
+      .pipe(csvParser())
+      .on("data", (row) => {
+        if (row["Last Name"] === "Last Name") return;
 
-      const fieldErrors = validateFields(row);
-      if (fieldErrors) {
-        validationErrors.push({ row, errors: fieldErrors });
-        return;
-      }
-
-      results.push({
-        lastName: row["Last Name"].trim(),
-        firstName: row["First Name"].trim(),
-        middleName: row["Middle Initial"]?.trim() || null,
-        contact: row["Contact No."]?.trim() || null,
-        email: row["Email"]?.trim().toLowerCase() || null,
-        college: row["College"]?.trim().toUpperCase() || null,
-        course: row["Course"]?.trim().toUpperCase() || null,
-        gradYear: batchYear,
-        tupId: row["TUP-ID"]?.trim().toUpperCase() || null,
-        importedDate: new Date() // ✅ add this
-      });
-    })
-    .on("end", async () => {
-      try {
-        if (!results.length) {
-          fs.unlinkSync(filePath);
-          return res.status(400).json({ error: "No valid data found", validationErrors });
+        const fieldErrors = validateFields(row);
+        if (fieldErrors) {
+          validationErrors.push({ row, errors: fieldErrors });
+          return;
         }
 
-        let insertedDocs;
-        try {
-          insertedDocs = await Graduate.insertMany(results, { ordered: false });
-        } catch (err) {
-          if (err.writeErrors) {
-            console.warn("Duplicates found and skipped:", err.writeErrors.length);
-          } else throw err;
-        }
-
-        const dbCount = await Graduate.countDocuments({ gradYear: batchYear });
-
-        fs.unlinkSync(filePath);
-        res.json({
-          success: true,
-          stats: {
-            attempted: results.length,
-            inserted: insertedDocs ? insertedDocs.length : 0,
-            skipped: validationErrors.length,
-            totalInDB: dbCount,
-          },
-          validationErrors: validationErrors.slice(0, 5),
+        results.push({
+          lastName: row["Last Name"].trim(),
+          firstName: row["First Name"].trim(),
+          middleName: row["Middle Initial"]?.trim() || "",
+          contact: row["Contact No."]?.trim() || null,
+          email: row["Email"]?.trim().toLowerCase() || "",
+          college: row["College"]?.trim().toUpperCase() || "",
+          course: row["Course"]?.trim().toUpperCase() || "",
+          gradYear: batchYear,
+          importedDate: new Date()
         });
-      } catch (err) {
+      })
+      .on("end", async () => {
+        try {
+          if (!results.length) {
+            fs.unlinkSync(filePath);
+            return res.status(400).json({ error: "No valid data found", validationErrors });
+          }
+
+          // 🔍 Step 1: Fetch all existing entries for that year
+          const existingGrads = await Graduate.find({ gradYear: batchYear });
+
+          // 🔑 Step 2: Create a normalized map of existing entries
+          const existingMap = new Set(
+            existingGrads.map((g) =>
+              [
+                g.firstName.trim().toLowerCase(),
+                g.lastName.trim().toLowerCase(),
+                g.middleName.trim().toLowerCase(),
+                g.email.trim().toLowerCase(),
+                g.college?.trim().toUpperCase() || "",
+                g.course?.trim().toUpperCase() || ""
+              ].join("|")
+            )
+          );
+
+          // ✅ Step 3: Filter out duplicates
+          const filteredResults = results.filter((grad) => {
+            const key = [
+              grad.firstName.trim().toLowerCase(),
+              grad.lastName.trim().toLowerCase(),
+              grad.middleName.trim().toLowerCase(),
+              grad.email.trim().toLowerCase(),
+              grad.college.trim().toUpperCase(),
+              grad.course.trim().toUpperCase()
+            ].join("|");
+
+            return !existingMap.has(key);
+          });
+
+          let insertedDocs = [];
+          if (filteredResults.length > 0) {
+            insertedDocs = await Graduate.insertMany(filteredResults, { ordered: false });
+          }
+
+          const dbCount = await Graduate.countDocuments({ gradYear: batchYear });
+          fs.unlinkSync(filePath);
+
+          res.json({
+            success: true,
+            stats: {
+              attempted: results.length,
+              inserted: insertedDocs.length,
+              skipped: results.length - filteredResults.length,
+              totalInDB: dbCount
+            },
+            validationErrors: validationErrors.slice(0, 5)
+          });
+        } catch (err) {
+          fs.unlinkSync(filePath);
+          res.status(500).json({ error: "Database error", details: err.message });
+        }
+      })
+      .on("error", (error) => {
         fs.unlinkSync(filePath);
-        res.status(500).json({ error: "Database error", details: err.message });
-      }
-    })
-    .on("error", (error) => {
-      fs.unlinkSync(filePath);
-      res.status(500).json({ error: "CSV processing error", details: error.message });
-    });
-} catch (err) {
-  res.status(500).json({ error: "Server error", details: err.message });
-}
+        res.status(500).json({ error: "CSV processing error", details: error.message });
+      });
+  } catch (err) {
+    res.status(500).json({ error: "Server error", details: err.message });
+  }
 };
 
 export const getGraduates = async (req, res) => {
