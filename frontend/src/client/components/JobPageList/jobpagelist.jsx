@@ -143,6 +143,8 @@ function JobListMainPage() {
             <p>Loading...</p>
           </div>
         </div>
+      ) : filteredJobs.length === 0 ? (
+        <p className="no-jobs-message">No job opportunities found for the selected filters.</p>
       ) : (
         filteredJobs.map((job) => (
           <div key={job._id} className="job-card" onClick={() => setSelectedJob(job)}>
@@ -158,53 +160,42 @@ function JobListMainPage() {
         ))
       )}
 
-      {/* Modal */}
       {selectedJob && (
         <div className="eventModal">
           <div className="eventModalContent">
             <span className="closeButton" onClick={() => setSelectedJob(null)}>
               &times;
             </span>
-
-            {/* Date and Title */}
             <p className="job-date">
               {selectedJob.createdAt
                 ? new Date(selectedJob.createdAt).toLocaleDateString("en-US", {
                     month: "long",
                     day: "numeric",
-                    year: "numeric"
+                    year: "numeric",
                   })
                 : "N/A"}
             </p>
             <h2 className="job-title">{selectedJob.title}</h2>
             <h4 className="job-subheader">
-              {selectedJob.company} &nbsp;&nbsp;
-              <span className="job-type">{selectedJob.type}</span>
+              {selectedJob.company} <span className="job-type">{selectedJob.type}</span>
             </h4>
-
-            {/* Job Description */}
             <h4 className="job-description">Job Description</h4>
             <div className="job-section">
               <p>{selectedJob.description || "No description provided."}</p>
             </div>
-
-            {/* Responsibilities and Qualifications (Side-by-Side) */}
             <div className="job-2col-wrapper">
               <div className="job-col-wrapper">
                 <h4 className="job-label">Key Responsibilities</h4>
                 <div className="job-col">
                   <ul>
                     {selectedJob.responsibilities?.length > 0 ? (
-                      selectedJob.responsibilities.map((resp, idx) => (
-                        <li key={idx}>{resp}</li>
-                      ))
+                      selectedJob.responsibilities.map((resp, idx) => <li key={idx}>{resp}</li>)
                     ) : (
                       <li>N/A</li>
                     )}
                   </ul>
                 </div>
               </div>
-
               <div className="job-col-wrapper">
                 <h4 className="job-label">Qualifications</h4>
                 <div className="job-col">
@@ -212,21 +203,12 @@ function JobListMainPage() {
                 </div>
               </div>
             </div>
-
-            {/* More Info */}
             <h4 className="job-label">More Information</h4>
             <div className="job-section">
-              <a
-                href={selectedJob.source}
-                className="job-link"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href={selectedJob.source} className="job-link" target="_blank" rel="noreferrer">
                 {selectedJob.source}
               </a>
             </div>
-
-            {/* Footer */}
             <div className="job-status">
               <p><strong>Status:</strong> {selectedJob.status}</p>
               <p><strong>College:</strong> {selectedJob.college || "N/A"}</p>
@@ -234,7 +216,6 @@ function JobListMainPage() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

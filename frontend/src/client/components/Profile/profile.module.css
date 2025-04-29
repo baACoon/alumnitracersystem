@@ -50,7 +50,7 @@ input {
 }
 
 .logoutBtn:hover {
-  background-color: #8f263a;
+  background-color: #C31D3C;
 }
 
 .changepass {
@@ -64,7 +64,7 @@ input {
 }
 
 .changepass:hover{
-  background-color: #7a1a1a;
+  background-color: #C31D3C;
 }
 
 .modalOverlay {
@@ -131,7 +131,7 @@ input {
 }
 
 .cancelBtn:hover{
-  background-color: #7a1a1a;
+  background-color: #C31D3C;
 }
 
 /*loading style  */
