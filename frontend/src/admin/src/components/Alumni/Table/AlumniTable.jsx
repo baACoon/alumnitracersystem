@@ -195,29 +195,75 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
     newSelected.has(id) ? newSelected.delete(id) : newSelected.add(id);
     setSelectedAlumni(newSelected);
   };
-
   const openStudentDetails = async (userId) => {
     try {
       const token = localStorage.getItem('token');
       console.log('Fetching details for user ID:', userId);
-
-      const [studentRes, statusRes] = await Promise.all([
+  
+      const [studentRes, statusRes, tracer2Res, tracer1ListRes] = await Promise.all([
         axios.get(`http://localhost:5050/api/alumni/user/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
         axios.get(`http://localhost:5050/surveys/user-status/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
+        axios.get(`http://localhost:5050/surveys/tracer2/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }).catch(err => {
+          console.log('No Tracer 2 data available or error fetching:', err);
+          return { data: null };
+        }),
+        axios.get(`http://localhost:5050/surveys/completed/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
       ]);
-
-      console.log('API response data:', studentRes.data);
-
+  
+      const tracer1Meta = tracer1ListRes.data?.surveys?.find(s => s.surveyType === 'Tracer1');
+  
+      const tracer1FullRes = tracer1Meta
+        ? await axios.get(`http://localhost:5050/surveys/view/${tracer1Meta.id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+        : null;
+  
+      const tracer1Survey = tracer1FullRes?.data
+        ? {
+            ...tracer1FullRes.data,
+            title: 'Tracer 1',
+          }
+        : null;
+  
       if (studentRes.data?.data) {
-        setStudentDetails({
-          ...studentRes.data.data,
+        const baseData = studentRes.data.data;
+        const studentData = {
+          ...baseData,
           tracerStatus: statusRes.data.status,
-        });
-        console.log('Student Details:', studentRes.data.data);
+          surveys: [],
+        };
+  
+        // ✅ Push full Tracer 1 survey (with createdAt + education)
+        if (tracer1Survey) {
+          studentData.surveys.push(tracer1Survey);
+  
+          // ✅ Sync yearGraduated into personalInfo.gradyear if missing
+          const tracer1GradYear = tracer1Survey.education?.[0]?.yearGraduated;
+          if (tracer1GradYear) {
+            if (!studentData.personalInfo) studentData.personalInfo = {};
+            studentData.personalInfo.gradyear = tracer1GradYear;
+            console.log('✅ gradyear injected from Tracer 1:', tracer1GradYear);
+          }
+        }
+  
+        // ✅ Add Tracer 2 if exists
+        if (tracer2Res?.data) {
+          studentData.surveys.push({
+            ...tracer2Res.data,
+            title: 'Tracer 2',
+          });
+        }
+  
+        setStudentDetails(studentData);
+        console.log('✅ Combined Student Details with createdAt + gradyear:', studentData);
       } else {
         console.error('Unexpected API response structure:', studentRes.data);
         alert('Failed to fetch student details.');
@@ -233,6 +279,7 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
       }
     }
   };
+  
 
   const filteredAlumni = alumniData.filter((alumni) => {
     const term = searchQuery.toLowerCase();
@@ -252,11 +299,23 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
   console.log('Filtered Alumni:', filteredAlumni);
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
+  
 
   const currentData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const tracer1Survey = studentDetails?.surveys?.find(s => s.title?.toLowerCase().includes('tracer 1'));
+  const gradYear =
+  tracer1Survey?.education?.[0]?.yearGraduated ||
+  studentDetails?.personalInfo?.gradyear ||
+  studentDetails?.gradyear || // ✅ add this line
+  studentDetails?.yearGraduated ||
+  'N/A';
 
 
  return (
@@ -379,7 +438,7 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
                         {studentDetails.personalInfo.course || 'N/A'}
                       </span>
                       <span className={styles.infoBadge}>
-                        Class of {studentDetails.personalInfo.gradyear || 'N/A'}
+                        Class of {gradYear}
                       </span>
                     </div>
                     <div className={styles.contactInfo}>

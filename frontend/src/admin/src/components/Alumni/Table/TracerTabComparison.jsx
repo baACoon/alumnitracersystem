@@ -20,8 +20,8 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
     if (studentData?.surveys) {
       const tracer1Survey = studentData.surveys.find(s => s.title?.toLowerCase().replace(/\s/g, '') === 'tracer1');
       const tracer2Survey = studentData.surveys.find(s => s.title?.toLowerCase().replace(/\s/g, '') === 'tracer2');
-
-      
+      const tracer1CreatedAt = tracer1Survey?.createdAt || null;
+      const tracer2CreatedAt = tracer2Survey?.createdAt || null;
       // Determine completion status and years
       const graduationYear = studentData.personalInfo?.gradyear || 'N/A';
       const tracer2Year = !isNaN(parseInt(graduationYear)) ? 
@@ -31,14 +31,16 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
           tracer1: {
             completed: !!tracer1Survey,
             data: tracer1Survey?.employmentInfo || {},
-            year: graduationYear
+            year: graduationYear,
+            createdAt: tracer1CreatedAt
           },
-        tracer2: {
-          completed: !!tracer2Survey,
-          data: tracer2Survey?.employmentInfo || {},
-          year: tracer2Year
-        }
-      });
+          tracer2: {
+            completed: !!tracer2Survey,
+            data: tracer2Survey?.employmentInfo || {},
+            year: tracer2Year,
+            createdAt: tracer2CreatedAt
+          }
+        });            
       console.log("Surveys inside TracerComparisonTab:", studentData?.surveys);
 
       // Generate comparison data
@@ -49,41 +51,46 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
   // Function to generate comparison data
   const generateComparisonData = (tracer1Survey, tracer2Survey) => {
     const tracer1Data = tracer1Survey?.employmentInfo || {};
-    const tracer2Data = tracer2Survey?.employmentInfo || {};
-    
-    // Define the categories we want to compare
+    const tracer2Data = tracer2Survey
+      ? {
+          job_status: tracer2Survey.job_status,
+          position: tracer2Survey.jobDetails?.position || tracer2Survey.jobDetails?.occupation,
+          type_of_organization: tracer2Survey.jobDetails?.type_of_organization,
+          work_alignment: tracer2Survey.jobDetails?.work_alignment,
+        }
+      : {};
+  
     const categoriesToCompare = [
-      { 
-        label: "Employment Status", 
-        tracer1Field: "job_status", 
-        tracer2Field: "job_status" 
+      {
+        label: "Employment Status",
+        tracer1Field: "job_status",
+        tracer2Field: "job_status"
       },
-      { 
-        label: "Course Alignment", 
-        tracer1Field: "work_alignment", 
-        tracer2Field: "work_alignment" 
+      {
+        label: "Course Alignment",
+        tracer1Field: "work_alignment",
+        tracer2Field: "work_alignment"
       },
-      { 
-        label: "Organization Type", 
-        tracer1Field: "type_of_organization", 
-        tracer2Field: "type_of_organization" 
+      {
+        label: "Organization Type",
+        tracer1Field: "type_of_organization",
+        tracer2Field: "type_of_organization"
       },
-      { 
-        label: "Position", 
-        tracer1Field: "position", 
-        tracer2Field: "position" 
+      {
+        label: "Position",
+        tracer1Field: "position",
+        tracer2Field: "position"
       }
     ];
-    
-    // Create the comparison data array
+  
     const newComparisonData = categoriesToCompare.map(category => ({
       category: category.label,
       tracer1: tracer1Data[category.tracer1Field] || "N/A",
       tracer2: tracer2Survey ? (tracer2Data[category.tracer2Field] || "N/A") : "-"
     }));
-    
+  
     setComparisonData(newComparisonData);
-    
+
     // Generate chart data (for visualization - values could be derived from actual data)
     const chartMetrics = [
       { label: "Employment Rate", tracer1Value: 85, tracer2Value: 92 },
@@ -174,6 +181,16 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
     };
   }, [chartData, chartType]);
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };  
+  
   // Function to change chart type
   const changeChartType = (type) => {
     setChartType(type);
@@ -249,22 +266,24 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
           <thead>
             <tr className={styles.tableHeader}>
               <th>Category</th>
-              <th>
-                <div className={styles.tracerHeader}>
-                  <span className={styles.tracerBadge}>Tracer 1</span>
-                  <span className={styles.tracerYear}>{tracers.tracer1.year}</span>
-                </div>
-              </th>
-              <th>
-                <div className={styles.tracerHeader}>
-                  <span className={tracers.tracer2.completed ? styles.tracerBadge : styles.tracerBadgeInactive}>
-                    Tracer 2
-                  </span>
-                  <span className={styles.tracerYear}>
-                    {tracers.tracer2.completed ? tracers.tracer2.year : "Pending"}
-                  </span>
-                </div>
-              </th>
+                <th>
+                  <div className={styles.tracerHeader}>
+                    <span className={styles.tracerBadge}>Tracer 1</span>
+                    <span className={styles.tracerYear}>
+                      {tracers.tracer1.completed ? formatDate(tracers.tracer1.createdAt) : 'Pending'}
+                    </span>
+                  </div>
+                </th>
+                <th>
+                  <div className={styles.tracerHeader}>
+                    <span className={tracers.tracer2.completed ? styles.tracerBadge : styles.tracerBadgeInactive}>
+                      Tracer 2
+                    </span>
+                    <span className={styles.tracerYear}>
+                      {tracers.tracer2.completed ? formatDate(tracers.tracer2.createdAt) : 'Pending'}
+                    </span>
+                  </div>
+                </th>
             </tr>
           </thead>
           <tbody>
@@ -326,16 +345,7 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
           </div>
         )}
         
-        <div className={styles.chartLegend}>
-          <div className={styles.legendItem}>
-            <span className={styles.legendColor} style={{ backgroundColor: '#4a6da7' }}></span>
-            <span>Tracer 1 ({tracers.tracer1.year})</span>
-          </div>
-          <div className={styles.legendItem}>
-            <span className={styles.legendColor} style={{ backgroundColor: '#8bc34a' }}></span>
-            <span>Tracer 2 ({tracers.tracer2.year})</span>
-          </div>
-        </div>
+        
       </div>
 
       {/* Career Progression (if both tracers are completed) */}
@@ -344,7 +354,7 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
           <h4 className={styles.cardTitle}>Career Progression</h4>
           <div className={styles.progressionTimeline}>
             <div className={styles.timelinePoint}>
-              <div className={styles.timelineYear}>Tracer 1 ({tracers.tracer1.year})</div>
+              <div className={styles.timelineYear}>Tracer 1 </div>
               <div className={styles.timelinePosition}>{tracer1Career.position}</div>
               <div className={styles.timelineCompany}>{tracer1Career.company}</div>
                 {tracer1Career.year_started && (
@@ -353,21 +363,34 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
                   </div>
                 )}
               </div>
-            {tracers.tracer2.completed && (
-              <>
-                <div className={styles.timelineArrow}>→</div>
-                <div className={styles.timelinePoint}>
-                  <div className={styles.timelineYear}>Tracer 2 ({tracers.tracer2.year})</div>
-                  <div className={styles.timelinePosition}>{tracer2Career.position}</div>
-                  <div className={styles.timelineCompany}>{tracer1Career.company}</div>
-                    {tracer1Career.year_started && (
-                      <div className={styles.timelineDuration}>
-                        Started:{tracer1Career.year_started}
+              {tracers.tracer2.completed && (
+                  <>
+                    <div className={styles.timelineArrow}>→</div>
+                    <div className={styles.timelinePoint}>
+                      <div className={styles.timelineYear}>Tracer 2</div>
+                      <div className={styles.timelinePosition}>
+                        {tracers.tracer2.data?.position ||
+                        tracers.tracer2.data?.occupation ||
+                        tracers.tracer2.data?.jobDetails?.position ||
+                        tracers.tracer2.data?.jobDetails?.occupation ||
+                        "N/A"}
                       </div>
-                    )}
-                  </div>
-              </>
-            )}
+                      <div className={styles.timelineCompany}>
+                        {tracers.tracer2.data?.company_name ||
+                        tracers.tracer2.data?.jobDetails?.company_name ||
+                        "N/A"}
+                      </div>
+                      {(
+                        tracers.tracer2.data?.year_started ||
+                        tracers.tracer2.data?.jobDetails?.year_started
+                      ) && (
+                        <div className={styles.timelineDuration}>
+                          Started: {tracers.tracer2.data?.year_started || tracers.tracer2.data?.jobDetails?.year_started}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
           </div>
           
           {!tracers.tracer2.completed && (
