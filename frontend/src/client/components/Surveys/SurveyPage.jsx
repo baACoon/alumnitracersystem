@@ -29,7 +29,7 @@ function SurveyMainPage() {
                     <button
                         role='tab'
                         aria-selected={activeTab === 'pending'}
-                        className={`${styles.pendingButton} ${activeTab === 'pending' ? styles.activeTab : ''}`}
+                        className={`${styles.pendingButton} ${activeTab === 'pending' ? styles.pendingActiveTab : ''}`}
                         onClick={() => setActiveTab('pending')}
                     >
                         Pending Surveys
@@ -37,7 +37,7 @@ function SurveyMainPage() {
                     <button
                         role='tab'
                         aria-selected={activeTab === 'completed'}
-                        className={`${styles.completedButton} ${activeTab === 'completed' ? styles.activeTab : ''}`}
+                        className={`${styles.completedButton} ${activeTab === 'completed' ? styles.completedActiveTab : ''}`}
                         onClick={() => setActiveTab('completed')}
                     >
                         Completed Surveys

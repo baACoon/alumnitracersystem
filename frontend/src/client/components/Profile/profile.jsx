@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import styles from './profile.module.css';
+import styles from './profile.module.css'; // Import module-based styles
 import Header from '../Header/header';
 import Footer from '../FooterClient/Footer';
+import ProfilePic from '../../components/image/ayne.jpg';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
 function Profile() {
   return (
-    <div className="page-wrapper">
+    <div>
       <Header />
-      <div className="page-body">
-        <ProfilePage />
-      </div>
+      <ProfilePage />
       <Footer />
     </div>
   );
@@ -25,7 +24,7 @@ function ProfilePage() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false); // For Change Password modal
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -55,7 +54,7 @@ function ProfilePage() {
         const response = await fetch('https://alumnitracersystem.onrender.com/profile/user-profile', {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         });
@@ -88,11 +87,14 @@ function ProfilePage() {
   };
 
   const handleChangePassword = async () => {
+    console.log('Old Password:', oldPassword);
+    console.log('New Password:', newPassword);
+  
     if (!oldPassword || !newPassword) {
       setPasswordError('All fields are required.');
       return;
     }
-
+  
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('https://alumnitracersystem.onrender.com/profile/change-password', {
@@ -101,13 +103,17 @@ function ProfilePage() {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ oldPassword, newPassword }),
+        body: JSON.stringify({
+          oldPassword,
+          newPassword,
+        }),
       });
-
+  
       const result = await response.json();
-
+      console.log('Server Response:', result); // Debug response
+  
       if (!response.ok) throw new Error(result.message || 'Password change failed');
-
+  
       alert('Password changed successfully!');
       setShowModal(false);
       setOldPassword('');
@@ -119,123 +125,130 @@ function ProfilePage() {
     }
   };
 
-  if (error) return <div>Error: {error}</div>;
+  if (loading) {
+    return (
+      <div className={styles.loadingOverlay}>
+        <div className={styles.loaderContainer}>
+          <svg viewBox="0 0 240 240" height="80" width="80" className={styles.loader}>
+            <circle strokeLinecap="round" strokeDashoffset="-330" strokeDasharray="0 660" strokeWidth="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className={`${styles.pl__ring} ${styles.pl__ringA}`}></circle>
+            <circle strokeLinecap="round" strokeDashoffset="-110" strokeDasharray="0 220" strokeWidth="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className={`${styles.pl__ring} ${styles.pl__ringB}`}></circle>
+            <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className={`${styles.pl__ring} ${styles.pl__ringC}`}></circle>
+            <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className={`${styles.pl__ring} ${styles.pl__ringD}`}></circle>
+          </svg>
+          <p>Loading Profile...</p>
+        </div>
+      </div>
+    );
+  }
+    if (error) return <div>Error: {error}</div>;
 
   return (
     <div className={styles.profileContainer}>
-      {loading ? (
-        <div className={styles.loadingOverlay}>
-          <div className={styles.loaderContainer}>
-            <svg viewBox="0 0 240 240" height="80" width="80" className={styles.loader}>
-              <circle strokeLinecap="round" strokeDashoffset="-330" strokeDasharray="0 660" strokeWidth="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className={`${styles.pl__ring} ${styles.pl__ringA}`}></circle>
-              <circle strokeLinecap="round" strokeDashoffset="-110" strokeDasharray="0 220" strokeWidth="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className={`${styles.pl__ring} ${styles.pl__ringB}`}></circle>
-              <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className={`${styles.pl__ring} ${styles.pl__ringC}`}></circle>
-              <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className={`${styles.pl__ring} ${styles.pl__ringD}`}></circle>
-            </svg>
-            <p>Loading Profile...</p>
+      <section className={styles.personalInfo}>
+        <h2>Personal Information</h2>
+        <div className={styles.profileSection}>
+          <div className={styles.rowGroup}>
+            <div className={styles.row}>
+              <label>College</label>
+              <input type="text" value={profileData.personalInfo?.college || ''} readOnly />
+            </div>
+            <div className={styles.row}>
+              <label>Course</label>
+              <input type="text" value={profileData.personalInfo?.course || ''} readOnly />
+            </div>
+            <div className={styles.row}>
+              <label>Degree</label>
+              <input type="text" value={profileData.personalInfo?.degree || ''} readOnly />
+            </div>
+          </div>
+
+          <div className={styles.row}>
+            <label>Name</label>
+            <input
+              type="text"
+              value={`${profileData.personalInfo?.first_name || ''} ${profileData.personalInfo?.middle_name || ''} ${profileData.personalInfo?.last_name || ''}`}
+              readOnly
+            />
+          </div>
+          <div className={styles.row}>
+            <label>Birthday</label>
+            <input type="text" value={formatDate(profileData.personalInfo?.birthdate) || ''} readOnly />
+          </div>
+          <div className={styles.row}>
+            <label>Email</label>
+            <input type="text" value={profileData.personalInfo?.email_address || ''} readOnly />
+          </div>
+          <div className={styles.row}>
+            <label>Contact Number</label>
+            <input type="text" value={profileData.personalInfo?.contact_no || ''} readOnly />
+          </div>
+          <div className={styles.row}>
+            <label>Address</label>
+            <input type="text" value={profileData.personalInfo?.address || ''} readOnly />
           </div>
         </div>
-      ) : (
-        <>
-          <section className={styles.personalInfo}>
-            <h2>Personal Information</h2>
-            <div className={styles.profileSection}>
-              <div className={styles.rowGroup}>
-                <div className={styles.row}>
-                  <label>College</label>
-                  <input type="text" value={profileData.personalInfo?.college || ''} readOnly />
-                </div>
-                <div className={styles.row}>
-                  <label>Course</label>
-                  <input type="text" value={profileData.personalInfo?.course || ''} readOnly />
-                </div>
-                <div className={styles.row}>
-                  <label>Degree</label>
-                  <input type="text" value={profileData.personalInfo?.degree || ''} readOnly />
-                </div>
-              </div>
+      </section>
 
-              <div className={styles.row}>
-                <label>Name</label>
-                <input
-                  type="text"
-                  value={`${profileData.personalInfo?.first_name || ''} ${profileData.personalInfo?.middle_name || ''} ${profileData.personalInfo?.last_name || ''}`}
-                  readOnly
-                />
-              </div>
-              <div className={styles.row}>
-                <label>Birthday</label>
-                <input type="text" value={formatDate(profileData.personalInfo?.birthdate) || ''} readOnly />
-              </div>
-              <div className={styles.row}>
-                <label>Email</label>
-                <input type="text" value={profileData.personalInfo?.email_address || ''} readOnly />
-              </div>
-              <div className={styles.row}>
-                <label>Contact Number</label>
-                <input type="text" value={profileData.personalInfo?.contact_no || ''} readOnly />
-              </div>
-              <div className={styles.row}>
-                <label>Address</label>
-                <input type="text" value={profileData.personalInfo?.address || ''} readOnly />
-              </div>
-            </div>
-          </section>
+      {/* <section className={styles.employmentStatus}>
+        <h2>Employment Status</h2>
+        <div className={styles.details}>
+          <div className={styles.row}>
+            <label>Occupation</label>
+            <input type="text" value={profileData.employmentInfo?.occupation || ''} readOnly />
+          </div>
+          <div className={styles.row}>
+            <label>Company</label>
+            <input type="text" value={profileData.employmentInfo?.company_name || ''} readOnly />
+          </div>
+          <div className={styles.row}>
+            <label>Position</label>
+            <input type="text" value={profileData.employmentInfo?.position || ''} readOnly />
+          </div>
+          <div className={styles.row}>
+            <label>Job Status</label>
+            <input type="text" value={profileData.employmentInfo?.job_status || ''} readOnly />
+          </div>
+          <div className={styles.row}>
+            <label>Year Started</label>
+            <input type="text" value={profileData.employmentInfo?.year_started || ''} readOnly />
+          </div>
+          <div className={styles.row}>
+            <label>Organization Type</label>
+            <input type="text" value={profileData.employmentInfo?.type_of_organization || ''} readOnly />
+          </div>
+          <div className={styles.row}>
+            <label>Work Alignment</label>
+            <input type="text" value={profileData.employmentInfo?.work_alignment || ''} readOnly />
+          </div>
+        </div>
+      </section> */}
 
-          <section className={styles.employmentStatus}>
-            <h2>Employment Status</h2>
-            <div className={styles.details}>
-              <div className={styles.row}>
-                <label>Occupation</label>
-                <input type="text" value={profileData.employmentInfo?.occupation || ''} readOnly />
-              </div>
-              <div className={styles.row}>
-                <label>Company</label>
-                <input type="text" value={profileData.employmentInfo?.company_name || ''} readOnly />
-              </div>
-              <div className={styles.row}>
-                <label>Position</label>
-                <input type="text" value={profileData.employmentInfo?.position || ''} readOnly />
-              </div>
-              <div className={styles.row}>
-                <label>Job Status</label>
-                <input type="text" value={profileData.employmentInfo?.job_status || ''} readOnly />
-              </div>
-              <div className={styles.row}>
-                <label>Year Started</label>
-                <input type="text" value={profileData.employmentInfo?.year_started || ''} readOnly />
-              </div>
-              <div className={styles.row}>
-                <label>Organization Type</label>
-                <input type="text" value={profileData.employmentInfo?.type_of_organization || ''} readOnly />
-              </div>
-              <div className={styles.row}>
-                <label>Work Alignment</label>
-                <input type="text" value={profileData.employmentInfo?.work_alignment || ''} readOnly />
-              </div>
-            </div>
-          </section>
+      {/* <section className={styles.completedSurveys}>
+        <h2>Completed Surveys</h2>
+        {profileData.surveys?.map((survey, index) => (
+          <div key={survey._id} className={styles.surveyItem}>
+            <p>Date Completed: {formatDate(survey.createdAt)}</p>
+          </div>
+        ))}
+      </section> */}
 
-          <section className={styles.completedSurveys}>
-            <h2>Completed Surveys</h2>
-            {profileData.surveys?.map((survey, index) => (
-              <div key={survey._id} className={styles.surveyItem}>
-                <p>Date Completed: {formatDate(survey.createdAt)}</p>
-              </div>
-            ))}
-          </section>
+      <button className={styles.logoutBtn} onClick={handleLogout}>
+        Logout
+      </button>
+      <button className={styles.changepass} onClick={() => setShowModal(true)}>
+        Change Password
+      </button>
 
-          <button className={styles.logoutBtn} onClick={handleLogout}>Logout</button>
-          <button className={styles.changepass} onClick={() => setShowModal(true)}>Change Password</button>
-
-          {showModal && (
+      
+            {/* Change Password Modal */}
+            {showModal && (
             <div className={styles.modalOverlay}>
               <div className={styles.modal}>
                 <h2>Change Password</h2>
                 {passwordError && <p className={styles.error}>{passwordError}</p>}
                 <div className={styles.inputGroup}>
                   <label>Old Password</label>
-                  <input type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
+                  <input type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)}  />
                 </div>
                 <div className={styles.inputGroup}>
                   <label>New Password</label>
@@ -252,9 +265,7 @@ function ProfilePage() {
               </div>
             </div>
           )}
-        </>
-      )}
-    </div>
+        </div>
   );
 }
 

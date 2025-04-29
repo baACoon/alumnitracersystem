@@ -22,13 +22,23 @@ const TracerSurvey2Schema = new mongoose.Schema(
       type: Date, 
       default: Date.now 
     },
-    education: [{
-      degreeType: [String],   // ✅ renamed from "type" to avoid conflict
-      college: [String],
-      course: [String],
-      yearGraduated: String,
-      institution: String
-    }],
+    bachelorOnly: Boolean,
+    education: {
+      type:  [{
+        degreeType: [String],   // ✅ renamed from "type" to avoid conflict
+        college: [String],
+        course: [String],
+        yearGraduated: String,
+        institution: String
+      }],
+      validate: {
+        validator: function (value) {
+          if (this.bachelorOnly) return value.length === 0;
+          return true;
+        },
+        message: "Education must be empty when 'Bachelor Only' is selected."
+      }
+    },
     noExams: Boolean,
     examinations: {
       type: [{

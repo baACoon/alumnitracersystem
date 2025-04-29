@@ -15,6 +15,7 @@ function TracerSurvey2({ onBack }) {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    bachelorOnly: false,
     education: [{ degreeType: [], college: [], course: [], yearGraduated: "", institution: [] }],
     examinations: [{ examName: [], dateTaken: [], rating: [] }],
     noExams: false,
@@ -90,9 +91,13 @@ function TracerSurvey2({ onBack }) {
   const validateForm = useCallback(() => {
     if (currentPage === 1) {
       return (
-        formData.education[0].college.length > 0 &&
-        formData.education[0].course.length > 0 &&
-        formData.education[0].yearGraduated &&
+        formData.bachelorOnly || formData.education[0].every(
+          edu => 
+            edu.college.length > 0 &&
+            edu.course.length > 0 && 
+            edu.yearGraduated
+        )
+   
         (
           formData.noExams || formData.examinations.every(
             exam => exam.examName && exam.dateTaken && exam.rating
@@ -157,7 +162,7 @@ function TracerSurvey2({ onBack }) {
   
     const payload = {
       userId: localStorage.getItem("userId"),
-      education: formData.education.map(edu => ({
+      education: formData.bachelorOnly ? [] : formData.education.map(edu => ({
         degreeType: Array.isArray(edu.degreeType) ? edu.degreeType : [edu.degreeType || ""],
         college: Array.isArray(edu.college) ? edu.college : [edu.college || ""],
         course: Array.isArray(edu.course) ? edu.course : [edu.course || ""],

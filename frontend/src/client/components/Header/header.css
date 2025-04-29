@@ -1,73 +1,72 @@
 .header-container {
     display: flex;
     flex-direction: column;
-    width: 100%; /* Ensure full width */
-    background-color: rgb(255, 255, 255); /* Background color for header */
+    width: 100%;
+    background-color: rgb(255, 255, 255);
     padding: 0;
-    position: fixed; /* Fixes header at the top */
+    position: fixed;
     top: 0;
     left: 0;
-    height: 105px; /* Fixed height for header */
-    z-index: 1;
-}
-
-.header-logo-banner {
-    display: flex; /* Flexbox for horizontal alignment */
-    align-items: center; /* Vertically align items */
-    padding: 1em; /* Adjust padding for spacing */
-}
-
-.header-logo {
-    margin-bottom: 15px;
-    margin-top: 9px;
-    position: relative; /* Allows positioning of child elements */
-    display: inline-block;
-    margin-left: 2em; /* Spacing between logo and banner */
-}
-
-.header-logo-1 {
-    width: 80px; /* Adjust the width of the TUP logo */
-    height: auto; /* Maintain aspect ratio */
-}
-
-.header-logo-2 {
-    width: 55px; /* Alumni logo is 3/4 the size of the TUP logo */
-    height: auto; /* Maintain aspect ratio */
-    position: absolute; /* Position relative to the TUP logo */
-    bottom: -15px; /* Align to the bottom */
-    left: -15px; /* Align to the left */
-}
-
-.header-container .header-banner {
-    position: absolute;
-    margin-top: 2em;
-    margin-left: 15em;
-
-
-
+    z-index: 1000;
+    /* Remove fixed height to allow responsiveness */
+    height: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Create a flex container for logo and banner */
+  .header-top {
     display: flex;
-    flex-direction: column; /* Stack h1 and h2 vertically */
-    justify-items: center; /* Vertically align content */
-    height: 100px; /* Matches the height of the TUP logo */
-}
+    align-items: center;
+    padding: 0.5rem 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .header-logo {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin: 0.5rem 0;
+    min-width: 80px;
+  }
 
-.header-banner h1 {
-    font-size: 23px;
+  .header-logo a{
+    cursor: pointer;
+  }
+  
+  .header-logo-1 {
+    width: 80px;
+    height: auto;
+  }
+  
+  .header-logo-2 {
+    width: 55px;
+    height: auto;
+    position: absolute;
+    bottom: -15px;
+    left: -15px;
+  }
+  
+  .header-banner {
+    padding-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .header-banner h1 {
+    font-size: clamp(16px, 4vw, 20px);
     font-weight: 700;
-    margin: 0; /* Remove extra margin */
-    line-height: 1.2; /* Adjust line height for better spacing */
-}
-
-.header-banner h2 {
-    font-size: 18px;
-    margin: 0; /* Remove extra margin */
-    font-style: italic; /* Preserve italic style */
-    color: gray; /* Optional: Different color for h2 */
-}
-
-
-
-/* NAVBAR */
+    margin: 0;
+    line-height: 1.2;
+  }
+  
+  .header-banner h2 {
+    font-size: clamp(14px, 3vw, 16px);
+    margin: 0;
+    font-style: italic;
+    color: rgb(255, 255, 255);
+  }
+  /* NAVBAR */
 #navbar {
     background-color: #580808 !important; /* Updated background color */
 }
@@ -113,16 +112,79 @@
     position: relative; /* Changed from absolute to relative */
     padding-right: 1em; /* Adds some spacing on the right */
 }
-
-.d-flex a{
+  
+  .d-flex a {
     color: white;
     cursor: pointer;
-    padding: 10px 20px;
-}
-
-.d-flex a:hover{
-    background-color: #C31D3C;
+    padding: 10px 15px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .d-flex a:hover {
+    background-color: #5d0e1d;
     color: white;
     border-radius: 5px;
-
-}
+  }
+  
+  /* Media Queries for Responsiveness */
+  @media (max-width: 992px) {
+    .header-top {
+      justify-content: center;
+      text-align: center;
+    }
+  
+    .header-banner {
+      padding: 0.5rem 0;
+      text-align: center;
+    }
+  
+    #navbar ul li a,
+    .d-flex a {
+      padding: 8px 10px;
+      font-size: 0.85rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .header-container {
+      position: relative;
+    }
+  
+    .header-logo {
+      margin: 0.5rem auto;
+    }
+  
+    .header-banner h1 {
+      font-size: 18px;
+    }
+  
+    .header-banner h2 {
+      font-size: 14px;
+    }
+  
+    #navbar .navbar-collapse {
+      text-align: center;
+    }
+  
+    #navbar ul {
+      flex-direction: column;
+    }
+  
+    #navbar ul li {
+      margin: 0.25rem 0;
+      width: 100%;
+    }
+  
+    .d-flex {
+      margin-top: 0.5rem;
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .header-top {
+      flex-direction: column;
+    }
+  }
+  

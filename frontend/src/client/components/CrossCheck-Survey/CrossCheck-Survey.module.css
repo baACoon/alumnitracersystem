@@ -188,6 +188,13 @@
   box-shadow: 0 0 5px #c31d3c;
 }
 
+.errorText{
+  color: #c31d3c; /* TUP Highlight */
+  font-size: 0.9rem;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .survey-container {
