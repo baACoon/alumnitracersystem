@@ -25,9 +25,6 @@ const COLORS = {
   tracer2: "#C31D3C",
 }
 
-// Define available batch years, colleges, and courses (similar to AlumniFilters)
-const batchYears = Array.from({ length: 10 }, (_, i) => 2016 + i);
-
 const colleges = [
   "College of Engineering",
   "College of Science",
@@ -61,14 +58,14 @@ const courses = {
   ]
 };
 
-
-
+// Define available batch years, colleges, and courses (similar to AlumniFilters)
+const batchYears = Array.from({ length: 10 }, (_, i) => 2016 + i);
 export default function GeneralTracer() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  
-  // Filter states
+
+  const [availableFilters, setAvailableFilters] = useState({ batchYears: [], colleges: [], courses: [] });
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState({
     batchYear: "",
@@ -76,123 +73,82 @@ export default function GeneralTracer() {
     course: ""
   })
   const [activeFilters, setActiveFilters] = useState([])
-  const [filterApplied, setFilterApplied] = useState(false)
 
-  // Handle filter changes
   const handleFilterChange = (type, value) => {
     setFilters(prev => {
-      const newFilters = { ...prev, [type]: value };
-      if (type === "college") {
-        // Reset course when college changes
-        newFilters.course = "";
+      const updated = { ...prev, [type]: value }
 
-
-
+      if (type === "batchYear") {
+        updated.college = ""
+        updated.course = ""
+      } else if (type === "college") {
+        updated.course = ""
       }
-      
-      // Update active filters immediately
-      const updatedActiveFilters = [];
-      Object.entries(newFilters).forEach(([key, val]) => {
-        if (val) {
-          updatedActiveFilters.push({ type: key, value: val });
-        }
-      });
-      setActiveFilters(updatedActiveFilters);
-      setFilterApplied(true);
-      
-      return newFilters;
-    });
-  };
 
-  // Reset filters
-
-
-
+      setActiveFilters(Object.entries(updated).filter(([_, val]) => val).map(([t, v]) => ({ type: t, value: v })))
+      return updated
+    })
+  }
   const resetFilters = () => {
-    setFilters({
-      batchYear: "",
-      college: "",
-      course: ""
-    });
-    setActiveFilters([]);
-    setFilterApplied(false);
-    setShowFilters(false);
-  };
+    setFilters({ batchYear: "", college: "", course: "" })
+    setActiveFilters([])
+    setShowFilters(false)
+  }
 
-  // Remove specific filter
   const removeFilter = (type) => {
-    setFilters(prev => {
-      const newFilters = { ...prev, [type]: "" };
-      // If college is removed, also remove course
-      if (type === "college") {
-        newFilters.course = "";
-      }
-      
-      // Update active filters immediately
-      const updatedActiveFilters = [];
-      Object.entries(newFilters).forEach(([key, val]) => {
-        if (val) {
-          updatedActiveFilters.push({ type: key, value: val });
-        }
-      });
-      setActiveFilters(updatedActiveFilters);
-      
-      return newFilters;
-    });
-  };
+    handleFilterChange(type, "")
+  }
 
   useEffect(() => {
     const fetchComparisonData = async () => {
       try {
-        setLoading(true);
-        
-        // Construct query parameters
-        const queryParams = new URLSearchParams();
-        if (filters.batchYear) queryParams.append('batch', filters.batchYear);
-        if (filters.college) queryParams.append('college', filters.college);
-        if (filters.course) queryParams.append('course', filters.course);
-
-        // Add query parameters to URL
-        const url = `https://alumnitracersystem.onrender.com/dashboard/tracer/comparison${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-        
-        const res = await fetch(url);
-        const json = await res.json();
-        setData(json);
-
-
-
-
-
-      } catch (err) {
-        console.error("Failed to fetch comparison data:", err);
-        setError("Failed to load comparison data. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
+        setLoading(true)
+        const queryParams = new URLSearchParams()
+        if (filters.batchYear) queryParams.append('batch', filters.batchYear)
+        if (filters.college) queryParams.append('college', filters.college)
+        if (filters.course) queryParams.append('course', filters.course)
   
-    fetchComparisonData();
-  }, [filters]); // Re-fetch when filters change
+        const url = `https://alumnitracersystem.onrender.com/dashboard/tracer/comparison${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
+        const res = await fetch(url)
+        const json = await res.json()
+        setData(json)
+        
+        // Update available filters from the response
+        if (json.filters) {
+          setAvailableFilters({
+            batchYears: Object.keys(json.filters.batchYearToColleges || {}).map(Number).sort((a, b) => b - a),
+            collegeToCourses: json.filters.collegeToCourses || {},
+            batchYearToColleges: json.filters.batchYearToColleges || {}
+          })
+        }
+      } catch (err) {
+        console.error("Failed to fetch comparison data:", err)
+        setError("Failed to load comparison data. Please try again later.")
+      } finally {
+        setLoading(false)
+      }
+    }
+  
+    fetchComparisonData()
+  }, [filters])
 
-  // Format data for comparison charts
-  const formatComparisonData = (dataObj, category) => {
+  const formatComparisonData = (dataObj) => {
     if (!dataObj) return []
-
-    return Object.keys(dataObj.tracer1).map((key) => ({
+    return Object.keys(dataObj.tracer1 || {}).map((key) => ({
       name: key,
-      "Tracer 1": dataObj.tracer1[key],
-      "Tracer 2": dataObj.tracer2[key],
+      "Tracer 1": dataObj.tracer1[key] || 0,
+      "Tracer 2": dataObj.tracer2[key] || 0,
     }))
   }
 
+  if (loading) return <div className={styles.loadingContainer}><div className={styles.loadingSpinner}></div><p>Loading comparison data...</p></div>
+  if (error) return <div className={styles.errorContainer}><p>{error}</p><button onClick={() => window.location.reload()}>Retry</button></div>
+  if (!data) return null
 
-
-
-
-
-
-
-
+  const availableBatchYears = availableFilters.batchYears.sort((a, b) => b - a);
+  const availableColleges = availableFilters.colleges;
+  const availableCourses = availableFilters.courses;
+  
 
   // Calculate change percentages for summary
   const calculateChange = (tracer1Value, tracer2Value) => {
@@ -331,111 +287,55 @@ export default function GeneralTracer() {
         </p>
       </div>
 
-      {/* Filter Section */}
-      <div className={styles.filterSection}>
-        <div className={styles.filterButtonWrapper}>
-          <button
-            className={styles.filterButton}
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <span>Filters</span>
-            <span className={styles.filterIcon}>
-              <ChevronDown size={16} />
-            </span>
-          </button>
-          
-          {showFilters && (
-            <div className={styles.filterPopover}>
-              <h4 className={styles.filterTitle}>Filter Tracer Data</h4>
-              <div className={styles.filterDivider}></div>
+       {/* Filter Section */}
+       <div className={styles.filterSection}>
+        <button className={styles.filterButton} onClick={() => setShowFilters(!showFilters)}>
+          Filters <ChevronDown size={16} />
+        </button>
 
-              <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>Batch Year</label>
-                <select
-                  className={styles.filterSelect}
-                  value={filters.batchYear}
-                  onChange={(e) => handleFilterChange("batchYear", e.target.value)}
-                >
-                  <option value="">Select batch year</option>
-                  {batchYears.map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>College</label>
-                <select
-                  className={styles.filterSelect}
-                  value={filters.college}
-                  onChange={(e) => handleFilterChange("college", e.target.value)}
-                >
-                  <option value="">Select college</option>
-                  {colleges.map((college) => (
-                    <option key={college} value={college}>{college}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>Course</label>
-                <select
-                  className={styles.filterSelect}
-                  value={filters.course}
-                  onChange={(e) => handleFilterChange("course", e.target.value)}
-                  disabled={!filters.college}
-                >
-                  <option value="">Select course</option>
-                  {filters.college && courses[filters.college] &&
-                    courses[filters.college].map((course) => (
-                      <option key={course} value={course}>{course}</option>
-                    ))}
-                </select>
-              </div>
-
-              <div className={styles.filterActions}>
-                <button className={styles.resetButton} onClick={resetFilters}>
-                  Reset Filters
-                </button>
-                <button className={styles.applyButton} onClick={() => setShowFilters(false)}>
-                  Close Filters
-                </button>
-              </div>
-
-
+        {showFilters && (
+          <div className={styles.filterPopover}>
+            <div className={styles.filterGroup}>
+              <label>Batch Year</label>
+              <select value={filters.batchYear} onChange={(e) => handleFilterChange("batchYear", e.target.value) }className={styles.filterSelect}>
+                <option value="">Select batch</option>
+                {availableFilters.batchYears.map(year => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
             </div>
-          )}
-        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            <div className={styles.filterGroup}>
+              <label>College</label>
+              <select 
+                value={filters.college} 
+                onChange={(e) => handleFilterChange("college", e.target.value)} 
+                disabled={!filters.batchYear} className={styles.filterSelect}
+              >
+                <option value="">Select college</option>
+                {filters.batchYear && availableFilters.batchYearToColleges[filters.batchYear]?.map(college => (
+                  <option key={college} value={college}>{college}</option>
+                ))} 
+              </select>
+            </div>
+            <div className={styles.filterGroup}>
+              <label>Course</label>
+              <select 
+                value={filters.course} 
+                onChange={(e) => handleFilterChange("course", e.target.value)} 
+                disabled={!filters.college}
+              >
+                <option value="">Select course</option>
+                {filters.college && availableFilters.collegeToCourses[filters.college]?.map(course => (
+                  <option key={course} value={course}>{course}</option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.filterActions}>
+              <button className={styles.resetButton} onClick={resetFilters}>Reset</button>
+              <button className={styles.resetButton} onClick={() => setShowFilters(false)}>Close</button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Active Filters Display */}
@@ -478,211 +378,148 @@ export default function GeneralTracer() {
       </div>
 
       {/* Employment Rate Comparison */}
-      <div className={styles.comparisonSection}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Employment Rate Comparison</h2>
-        </div>
-        <div className={styles.sectionContent}>
-          <div className={styles.chartContainer}>
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart
-                data={formatComparisonData(data.employmentRate)}
-                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis label={{ value: "Percentage (%)", angle: -90, position: "insideLeft" }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-                <Bar dataKey="Tracer 1" fill={COLORS.tracer1} name="Initial Survey" />
-                <Bar dataKey="Tracer 2" fill={COLORS.tracer2} name="After 2 Years" />
-              </BarChart>
-            </ResponsiveContainer>
+        <div className={styles.comparisonSection}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Employment Rate Comparison</h2>
           </div>
-          <div className={styles.summaryContainer}>
-            <h3 className={styles.insightTitle}>Key Insights</h3>
-            <p className={styles.insightText}>{summaries.employment.text}</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          <div className={styles.sectionContent}>
+            <div className={styles.chartContainer}>
+              {formatComparisonData(data.employmentRate).length === 0 ? (
+                <p className={styles.noData}>No data available for Employment Rate Comparison.</p>
+              ) : (
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart
+                    data={formatComparisonData(data.employmentRate)}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis label={{ value: "Percentage (%)", angle: -90, position: "insideLeft" }} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    <Bar dataKey="Tracer 1" fill={COLORS.tracer1} name="Initial Survey" />
+                    <Bar dataKey="Tracer 2" fill={COLORS.tracer2} name="After 2 Years" />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+            <div className={styles.summaryContainer}>
+              <h3 className={styles.insightTitle}>Key Insights</h3>
+              <p className={styles.insightText}>
+                {summaries?.employment?.text || "No employment data insights available for the selected filters."}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Curriculum Alignment Comparison */}
-      <div className={styles.comparisonSection}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Curriculum Alignment Comparison</h2>
-        </div>
-        <div className={styles.sectionContent}>
-          <div className={styles.chartContainer}>
-            <ResponsiveContainer width="100%" height={400}>
-              <RadarChart outerRadius={150} data={formatComparisonData(data.curriculumAlignment)}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="name" />
-                <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                <Radar
-                  name="Initial Survey"
-                  dataKey="Tracer 1"
-                  stroke={COLORS.tracer1}
-                  fill={COLORS.tracer1}
-                  fillOpacity={0.6}
-                />
-                <Radar
-                  name="After 2 Years"
-                  dataKey="Tracer 2"
-                  stroke={COLORS.tracer2}
-                  fill={COLORS.tracer2}
-                  fillOpacity={0.6}
-                />
-                <Legend />
-                <Tooltip content={<CustomTooltip />} />
-              </RadarChart>
-            </ResponsiveContainer>
+        {/* Curriculum Alignment Comparison */}
+        <div className={styles.comparisonSection}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Curriculum Alignment Comparison</h2>
           </div>
-          <div className={styles.summaryContainer}>
-            <h3 className={styles.insightTitle}>Key Insights</h3>
-            <p className={styles.insightText}>{summaries.alignment.text}</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          <div className={styles.sectionContent}>
+            <div className={styles.chartContainer}>
+              {formatComparisonData(data.curriculumAlignment).length === 0 ? (
+                <p className={styles.noData}>No data available for Curriculum Alignment Comparison.</p>
+              ) : (
+                <ResponsiveContainer width="100%" height={400}>
+                  <RadarChart outerRadius={150} data={formatComparisonData(data.curriculumAlignment)}>
+                    <PolarGrid />
+                    <PolarAngleAxis dataKey="name" />
+                    <PolarRadiusAxis angle={30} domain={[0, 100]} />
+                    <Radar
+                      name="Initial Survey"
+                      dataKey="Tracer 1"
+                      stroke={COLORS.tracer1}
+                      fill={COLORS.tracer1}
+                      fillOpacity={0.6}
+                    />
+                    <Radar
+                      name="After 2 Years"
+                      dataKey="Tracer 2"
+                      stroke={COLORS.tracer2}
+                      fill={COLORS.tracer2}
+                      fillOpacity={0.6}
+                    />
+                    <Legend />
+                    <Tooltip content={<CustomTooltip />} />
+                  </RadarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+            <div className={styles.summaryContainer}>
+              <h3 className={styles.insightTitle}>Key Insights</h3>
+              <p className={styles.insightText}>
+                {summaries?.alignment?.text || "No curriculum alignment insights available for the selected filters."}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Job Level Comparison */}
-      <div className={styles.comparisonSection}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Job Level Progression</h2>
-        </div>
-        <div className={styles.sectionContent}>
-          <div className={styles.chartContainer}>
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart
-                data={formatComparisonData(data.job_level)}
-                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis label={{ value: "Percentage (%)", angle: -90, position: "insideLeft" }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-                <Bar dataKey="Tracer 1" fill={COLORS.tracer1} name="Initial Survey" />
-                <Bar dataKey="Tracer 2" fill={COLORS.tracer2} name="After 2 Years" />
-              </BarChart>
-            </ResponsiveContainer>
+        {/* Job Level Comparison */}
+        <div className={styles.comparisonSection}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Job Level Progression</h2>
           </div>
-          <div className={styles.summaryContainer}>
-            <h3 className={styles.insightTitle}>Key Insights</h3>
-            <p className={styles.insightText}>{summaries.job_level.text}</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          <div className={styles.sectionContent}>
+            <div className={styles.chartContainer}>
+              {formatComparisonData(data.job_level).length === 0 ? (
+                <p className={styles.noData}>No data available for Job Level Comparison.</p>
+              ) : (
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart
+                    data={formatComparisonData(data.job_level)}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis label={{ value: "Percentage (%)", angle: -90, position: "insideLeft" }} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    <Bar dataKey="Tracer 1" fill={COLORS.tracer1} name="Initial Survey" />
+                    <Bar dataKey="Tracer 2" fill={COLORS.tracer2} name="After 2 Years" />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+            <div className={styles.summaryContainer}>
+              <h3 className={styles.insightTitle}>Key Insights</h3>
+              <p className={styles.insightText}>
+                {summaries?.job_level?.text || "No job level progression insights available for the selected filters."}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className={styles.conclusionSection}>
-        <h2 className={styles.conclusionTitle}>Conclusion</h2>
-        <p className={styles.conclusionText}>
-          The 2-year comparison reveals valuable insights about the long-term impact of the curriculum and career
-          progression of graduates. The data suggests that graduates are generally{" "}
-          {data.employmentRate.tracer2.Employed > data.employmentRate.tracer1.Employed
-            ? "improving their employment prospects"
-            : "facing challenges in employment"}{" "}
-          and
-          {data.job_level.tracer2["Mid-level"] + data.job_level.tracer2["Senior/Executive"] >
-          data.job_level.tracer1["Mid-level"] + data.job_level.tracer1["Senior/Executive"]
-            ? " advancing in their careers"
-            : " maintaining similar job levels"}
-          . The curriculum alignment trends indicate that the knowledge and skills acquired during their education
-          {data.curriculumAlignment.tracer2["Very much aligned"] + data.curriculumAlignment.tracer2["Aligned"] >
-          data.curriculumAlignment.tracer1["Very much aligned"] + data.curriculumAlignment.tracer1["Aligned"]
-            ? " remain relevant and valuable as they progress in their careers."
-            : " may need updates to better support long-term career growth."}
-        </p>
-        <p className={styles.recommendationText}>
-          <strong>Recommendations:</strong>{" "}
-          {data.employmentRate.tracer2.Employed > data.employmentRate.tracer1.Employed &&
-          data.curriculumAlignment.tracer2["Very much aligned"] + data.curriculumAlignment.tracer2["Aligned"] >
-            data.curriculumAlignment.tracer1["Very much aligned"] + data.curriculumAlignment.tracer1["Aligned"]
-            ? "Continue with the current curriculum structure while incorporating emerging industry trends to maintain relevance."
-            : "Consider curriculum revisions to better align with industry needs and enhance graduate employability and career advancement opportunities."}
-          {activeFilters.length > 0 && ` These insights are specific to the filtered group of alumni.`}
-        </p>
-      </div>
+        {/* Conclusion */}
+        <div className={styles.conclusionSection}>
+          <h2 className={styles.conclusionTitle}>Conclusion</h2>
+          <p className={styles.conclusionText}>
+            {data.employmentRate?.tracer2?.Employed > data.employmentRate?.tracer1?.Employed
+              ? "Graduates are improving their employment prospects"
+              : "Graduates may be facing employment challenges"}{" "}
+            and{" "}
+            {((data.job_level?.tracer2?.["Mid-level"] || 0) + (data.job_level?.tracer2?.["Senior/Executive"] || 0)) >
+            ((data.job_level?.tracer1?.["Mid-level"] || 0) + (data.job_level?.tracer1?.["Senior/Executive"] || 0))
+              ? "advancing in their careers."
+              : "maintaining similar job levels."}
+            Curriculum trends suggest that the knowledge acquired during education{" "}
+            {((data.curriculumAlignment?.tracer2?.["Very much aligned"] || 0) + (data.curriculumAlignment?.tracer2?.["Aligned"] || 0)) >
+            ((data.curriculumAlignment?.tracer1?.["Very much aligned"] || 0) + (data.curriculumAlignment?.tracer1?.["Aligned"] || 0))
+              ? "remains highly relevant."
+              : "may require curriculum updates for better career growth."}
+          </p>
+
+          <p className={styles.recommendationText}>
+            <strong>Recommendations:</strong>{" "}
+            {((data.employmentRate?.tracer2?.Employed || 0) > (data.employmentRate?.tracer1?.Employed || 0)) &&
+            (((data.curriculumAlignment?.tracer2?.["Very much aligned"] || 0) + (data.curriculumAlignment?.tracer2?.["Aligned"] || 0)) >
+            ((data.curriculumAlignment?.tracer1?.["Very much aligned"] || 0) + (data.curriculumAlignment?.tracer1?.["Aligned"] || 0)))
+              ? "Continue the current curriculum structure while adapting to emerging trends."
+              : "Consider curriculum improvements to better align with evolving industry needs."}
+            {activeFilters.length > 0 && ` These insights are specific to the filtered group of alumni.`}
+          </p>
+        </div>
     </div>
   )
 }

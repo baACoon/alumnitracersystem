@@ -20,11 +20,18 @@ import SurveyForm from '../src/client/components/SurveyForm/SurveyForm';
 import RecoverAccount from './client/components/Register_NewAlumni/recover_account';
 import ProtectedRoute from './client/components/ProtectedRoute';
 
+// ADD THIS
+import SessionChecker from './client/components/SessionChecker'; // create mo rin to, simple lang mamaya
+
 function App() {
   return (
     <div className="App">
       <div className="backgroundWrapper">
         <BrowserRouter>
+
+          {/* INSERT SESSION CHECKER HERE */}
+          <SessionChecker />
+
           <Routes>
 
             {/* Public routes */}
