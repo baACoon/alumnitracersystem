@@ -27,12 +27,22 @@ export const PendingSurvey = () => {
     try {
       const response = await axios.put(`http://localhost:5050/api/newSurveys/${surveyId}/publish`);
       alert("Survey published successfully!");
-      fetchPendingSurveys(); // Re-fetch surveys to show the updated list
+  
+      try {
+        await axios.post("http://localhost:5050/api/notifications/send-survey-email", {
+          title: response.data.title || "New Survey Available",
+        });
+      } catch (err) {
+        console.warn("⚠️ Survey published but email notification failed.");
+      }
+      
+      fetchPendingSurveys(); // Refresh list
     } catch (error) {
       console.error("Error publishing survey:", error);
       alert("Failed to publish survey.");
     }
   };
+  
 
   const handleDelete = async (surveyId) => {
     if (!window.confirm("Are you sure you want to delete this survey?")) return;
