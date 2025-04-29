@@ -22,7 +22,7 @@ function JobListMainPage() {
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [college, setCollege] = useState("");
   const [course, setCourse] = useState("");
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [selectedOpportunity, setSelectedJob] = useState(null);
 
   const coursesByCollege = {
     "College of Engineering": [
@@ -160,62 +160,78 @@ function JobListMainPage() {
         ))
       )}
 
-      {selectedJob && (
-        <div className="eventModal">
-          <div className="eventModalContent">
-            <span className="closeButton" onClick={() => setSelectedJob(null)}>
+      {selectedOpportunity && (
+        <div className="eventModal" onClick={closeModal}>
+          <div className="eventModalContent" onClick={(e) => e.stopPropagation()}>
+            <span className="closeButton" onClick={closeModal}>
               &times;
             </span>
+
             <p className="job-date">
-              {selectedJob.createdAt
-                ? new Date(selectedJob.createdAt).toLocaleDateString("en-US", {
+              {selectedOpportunity.createdAt
+                ? new Date(selectedOpportunity.createdAt).toLocaleDateString("en-US", {
                     month: "long",
                     day: "numeric",
                     year: "numeric",
                   })
                 : "N/A"}
             </p>
-            <h2 className="job-title">{selectedJob.title}</h2>
+
+            <h2 className="job-title">{selectedOpportunity.title || "N/A"}</h2>
             <h4 className="job-subheader">
-              {selectedJob.company} <span className="job-type">{selectedJob.type}</span>
+              {selectedOpportunity.company || "N/A"}{" "}
+              <span className="job-type">{selectedOpportunity.type || "N/A"}</span>
             </h4>
+
             <h4 className="job-description">Job Description</h4>
             <div className="job-section">
-              <p>{selectedJob.description || "No description provided."}</p>
+              <p>{selectedOpportunity.description || "No description provided."}</p>
             </div>
+
             <div className="job-2col-wrapper">
               <div className="job-col-wrapper">
                 <h4 className="job-label">Key Responsibilities</h4>
                 <div className="job-col">
                   <ul>
-                    {selectedJob.responsibilities?.length > 0 ? (
-                      selectedJob.responsibilities.map((resp, idx) => <li key={idx}>{resp}</li>)
+                    {selectedOpportunity.responsibilities?.length > 0 ? (
+                      selectedOpportunity.responsibilities.map((resp, idx) => <li key={idx}>{resp}</li>)
                     ) : (
                       <li>N/A</li>
                     )}
                   </ul>
                 </div>
               </div>
+
               <div className="job-col-wrapper">
                 <h4 className="job-label">Qualifications</h4>
                 <div className="job-col">
-                  <p>{selectedJob.qualifications || "N/A"}</p>
+                  <p>{selectedOpportunity.qualifications || "N/A"}</p>
                 </div>
               </div>
             </div>
+
             <h4 className="job-label">More Information</h4>
             <div className="job-section">
-              <a href={selectedJob.source} className="job-link" target="_blank" rel="noreferrer">
-                {selectedJob.source}
+              <a
+                href={selectedOpportunity.source || "#"}
+                className="job-link"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {selectedOpportunity.source || "N/A"}
               </a>
             </div>
+
             <div className="job-status">
-              <p><strong>Status:</strong> {selectedJob.status}</p>
-              <p><strong>College:</strong> {selectedJob.college || "N/A"}</p>
+              <p><strong>Status:</strong> {selectedOpportunity.status || "N/A"}</p>
+              <p><strong>College:</strong> {selectedOpportunity.college || "N/A"}</p>
+              <p><strong>Course:</strong> {selectedOpportunity.course || "N/A"}</p>
+              <p><strong>Location:</strong> {selectedOpportunity.location || "N/A"}</p>
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }
