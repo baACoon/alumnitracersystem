@@ -7,7 +7,7 @@
 
 h2 {
   font-size: 1.5rem;
-  color: #c31d3c;
+  color: #580808;
   margin-bottom: 10px;
 }
 
@@ -41,7 +41,7 @@ input {
 }
 
 .logoutBtn {
-  background-color: #c31d3c;
+  background-color: #580808;
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -54,7 +54,7 @@ input {
 }
 
 .changepass {
-  background-color: #c31d3c;
+  background-color: #580808;
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -109,7 +109,7 @@ input {
 }
 
 .saveBtn {
-  background: rgba(2, 79, 2, 0.566);
+  background: #116a26;
   color: white;
   padding: 8px 15px;
   border: none;
@@ -117,13 +117,21 @@ input {
   border-radius: 5px;
 }
 
+.saveBtn:hover{ 
+  background-color: #049d28;
+}
+
 .cancelBtn {
-  background: #c31d3c;
+  background: #580808;
   color: white;
   padding: 8px 15px;
   border: none;
   cursor: pointer;
   border-radius: 5px;
+}
+
+.cancelBtn:hover{
+  background-color: #8f263a;
 }
 
 /*loading style  */
