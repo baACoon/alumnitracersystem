@@ -9,6 +9,14 @@ export const CreateEvent = ({ onPost, onBack }) => {
   const [time, setTime] = useState("");
   const [venue, setVenue] = useState("");
   const [source, setSource] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const closeMessageModal = () => {
+    setIsMessageModalOpen(false);
+  };
+
 
   // Handles event creation
   const handlePost = async () => {
@@ -26,26 +34,33 @@ export const CreateEvent = ({ onPost, onBack }) => {
       }
 
       try {
+        setLoading(true);
         const response = await fetch("https://alumnitracersystem.onrender.com/event/create", {
           method: "POST",
           body: formData, // Send as FormData
         });
 
+        const result = await response.json();
+        setLoading(false); // End loader
+
         if (response.ok) {
-          const result = await response.json();
-          alert(result.message);
+          setMessage(result.message || "Event created successfully!");
+          setIsMessageModalOpen(true);
           onPost(result.event); // Trigger callback for posting event
           resetForm(); // Clear form after success
         } else {
-          const errorData = await response.json();
-          alert(`Failed to create the event: ${errorData.error}`);
+          setMessage(result.error || "Failed to create the event.");
+          setIsMessageModalOpen(true);
         }
       } catch (error) {
         console.error("Error creating event:", error);
-        alert("An error occurred while creating the event.");
+        setLoading(false);
+        setMessage("An error occurred while creating the event.");
+        setIsMessageModalOpen(true);
       }
     } else {
-      alert("Please fill out all required fields.");
+      setMessage("Please fill out all required fields.");
+      setIsMessageModalOpen(true);
     }
   };
 
@@ -69,6 +84,7 @@ export const CreateEvent = ({ onPost, onBack }) => {
   };
 
   return (
+    
     <div className={styles.createEvents}>
       <div className={styles.buttons}>
         <button className={styles.backButton} onClick={onBack}>
@@ -135,6 +151,36 @@ export const CreateEvent = ({ onPost, onBack }) => {
           className={styles.inputField}
         />
       </div>
+
+            {/* Loader Overlay */}
+            {loading && (
+              <div className={styles.bg}>
+                <div className={styles.spinner}></div>
+                <h3 className={styles.loadname}>Loading...</h3>
+              </div>
+            )}
+
+                  {/* Success Modal */}
+                  {isMessageModalOpen && (
+                    <div className={styles.successModalOverlay}>
+                      <div className={styles.successModalContent}>
+                        <div className={styles.successModalHeader}>
+                          <div className={styles.successCheckmark}>✔️</div>
+                        </div>
+                        <div className={styles.successModalBody}>
+                          <h2>Success!</h2>
+                          <p>{message}</p>
+                          <button
+                            className={styles.successOkButton}
+                            onClick={closeMessageModal}
+                          >
+                            OK
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
     </div>
   );
 };
