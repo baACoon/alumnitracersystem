@@ -138,7 +138,7 @@ function Slanted() {
       <div className={styles.slantedContainer}>
           <div
               className={styles.slantedBox}
-              onClick={() => navigate('/Survey')}
+              onClick={() => navigate('/SurveyPage')}
           >
               <h2>BE THE REASON WHY TUP IS THE BEST</h2>
               <p>Participate and answer survey and tracer forms.</p>
