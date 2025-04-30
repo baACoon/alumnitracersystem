@@ -14,7 +14,7 @@
 
 .searchInput:focus {
   outline: none;
-  border-color: #2c9f47;
+  border-color: #000000;
   box-shadow: 0 0 0 3px rgba(44, 159, 71, 0.1);
 }
 
@@ -26,7 +26,7 @@
 }
 
 .containerTitle {
-  color: #2c9f47;
+  color: #000000;
   font-size: 18px;
   margin-bottom: 20px;
   font-weight: 900;
@@ -49,7 +49,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-left: 4px solid #2c9f47;
+  border-left: 4px solid #EE992C;
 }
 
 .surveyCard:hover {
@@ -181,7 +181,7 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 15px;
-  background-color: #2c9f47;
+  background: linear-gradient(to right, #EE992C 0%, #CD3C28 100%);
   color: white;
 }
 
@@ -231,7 +231,7 @@
 .sectionTitle {
   font-size: 18px;
   font-weight: 600;
-  color: #2c9f47;
+  color: #000000;
   margin-bottom: 15px;
   padding-bottom: 8px;
   border-bottom: 1px solid #eee;
@@ -286,7 +286,7 @@
   width: 24px;
   height: 24px;
   background-color: #e6f7e6;
-  color: #2c9f47;
+  background: linear-gradient(to right, #EE992C 0%, #CD3C28 100%);
   border-radius: 50%;
   font-size: 14px;
   font-weight: 600;
@@ -338,7 +338,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid #f3f3f3;
-  border-top: 3px solid #2c9f47;
+  border-top: 3px solid #580808;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 15px;
