@@ -1,10 +1,11 @@
-import React, { useState, useCallback} from "react";
+import React, { useState, useCallback, useEffect} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Correct way to import useNavigate
 import styles from "./CrossCheck-Survey.module.css";
 import Tuplogo from "../../components/image/Tuplogo.png";
 import Alumnilogo from "../../components/image/alumniassoc_logo.png";
 import nationalities from "./nationalities"; 
+import { PH_LOCATIONS } from "./philippine-locations";
 
 const colleges = {
   "College of Engineering": [
@@ -72,6 +73,11 @@ function CrossCheckSurveyForm() {
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
   const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
+  
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [provinces, setProvinces] = useState([]);
+  const [cities, setCities] = useState([]);
+
   const [formData, setFormData] = useState({
     first_name: "",
     middle_name: "",
@@ -79,7 +85,12 @@ function CrossCheckSurveyForm() {
     email_address: "",
     contact_no: "",
     birthdate: "",
-    birthplace: "",
+    birthplace: {
+      province: "",
+      city: ""
+    },
+    
+    
     sex: "",
     nationality: "",
     address: "",
@@ -98,6 +109,11 @@ function CrossCheckSurveyForm() {
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
+    if (name === "email_address") {
+      const atComIndex = value.indexOf(".com");
+      if (atComIndex !== -1 && value.length > atComIndex + 4) return;
+    }
+    
     setFormData((prev) => ({ ...prev, [name]: value }));
     setFormErrors((prev) => ({ ...prev, [name]: "" }));
 
@@ -113,6 +129,23 @@ function CrossCheckSurveyForm() {
         type_of_organization: "",
       }));
     }
+    if (name === "birthplace.province") {
+      setSelectedProvince(value);
+      setFormData((prev) => ({
+        ...prev,
+        birthplace: { province: value, city: "" }
+      }));
+      return;
+    }
+    
+    if (name === "birthplace.city") {
+      setFormData((prev) => ({
+        ...prev,
+        birthplace: { ...prev.birthplace, city: value }
+      }));
+      return;
+    }
+    
   }, []);
 
   const handleCollegeChange = (e) => {
@@ -130,18 +163,33 @@ function CrossCheckSurveyForm() {
   const validateForm = useCallback(() => {
     const errors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^[0-9]{11}$/;
+    const phoneRegex = /^(09\d{9}|(\+639)\d{9})$/;
     const birthdateLimit = new Date();
     birthdateLimit.setFullYear(birthdateLimit.getFullYear() - 18);
 
     if (currentPage === 1) {
       if (!formData.first_name.trim()) errors.first_name = "First Name is required.";
+        else if (formData.first_name.length > 50) errors.first_name = "Max 50 characters allowed.";
       if (!formData.last_name.trim()) errors.last_name = "Last Name is required.";
+        else if (formData.last_name.length > 50) errors.last_name = "Max 50 characters allowed.";
+        
       if (!emailRegex.test(formData.email_address)) errors.email_address = "Invalid email address.";
-      if (!phoneRegex.test(formData.contact_no)) errors.contact_no = "Phone must be 11 digits.";
+      if (!phoneRegex.test(formData.contact_no)) {
+        errors.contact_no = "Use format 09xxxxxxxxx or +639xxxxxxxxx.";
+      }
       if (!formData.birthdate) errors.birthdate = "Birthdate is required.";
-      else if (new Date(formData.birthdate) > birthdateLimit) errors.birthdate = "You must be at least 18 years old.";
-      if (!formData.birthplace.trim()) errors.birthplace = "Birthplace is required.";
+        else if (new Date(formData.birthdate) > birthdateLimit) 
+          errors.birthdate = "You must be at least 18 years old.";
+        else if (new Date(formData.birthdate) > new Date()) {
+          errors.birthdate = "Birthdate cannot be in the future.";
+        } else if (new Date(formData.birthdate) > birthdateLimit) {
+          errors.birthdate = "You must be at least 18 years old.";
+        }
+        
+        if (!formData.birthplace?.province || !formData.birthplace?.city) {
+          errors.birthplace = "Please select both province and city.";
+        }
+        
       if (!formData.sex) errors.sex = "Sex is required.";
       if (!formData.nationality.trim()) errors.nationality = "Nationality is required.";
       if (!formData.address.trim()) errors.address = "Address is required.";
@@ -331,18 +379,39 @@ function CrossCheckSurveyForm() {
                               </div>
   
                               <div className={styles["form-group"]}>
-                                  <label htmlFor="birthplace">Birth Place: *</label>
-                                  <input
-                                      type="text"
-                                      id="birthplace"
-                                      name="birthplace"
-                                      value={formData.birthplace}
-                                      onChange={handleChange}
-                                      required
-                                      className={styles["form-input"]}
-                                  />
-                                  {formErrors.birthplace && <span className={styles.errorText}>{formErrors.birthplace}</span>}
+                                <label>Birthplace: Province *</label>
+                                <select
+                                  name="birthplace.province"
+                                  value={formData.birthplace?.province || ""}
+                                  onChange={handleChange}
+                                  required
+                                  className={styles["form-select"]}
+                                >
+                                  <option value="">Select Province</option>
+                                  {Object.keys(PH_LOCATIONS).map((province) => (
+                                    <option key={province} value={province}>{province}</option>
+                                  ))}
+                                </select>
                               </div>
+
+                              <div className={styles["form-group"]}>
+                                <label>City/Municipality *</label>
+                                <select
+                                  name="birthplace.city"
+                                  value={formData.birthplace?.city || ""}
+                                  onChange={handleChange}
+                                  required
+                                  disabled={!formData.birthplace?.province}
+                                  className={styles["form-select"]}
+                                >
+                                  <option value="">Select City</option>
+                                  {(PH_LOCATIONS[formData.birthplace?.province] || []).map((city) => (
+                                    <option key={city} value={city}>{city}</option>
+                                  ))}
+                                </select>
+                                {formErrors.birthplace && <span className={styles.errorText}>{formErrors.birthplace}</span>}
+                              </div>
+
   
                               <div className={styles["form-group"]}>
                                 <label>Sex: *</label>
