@@ -27,8 +27,8 @@ function AddjobFormMainPage() {
     };
 
     const goToSurveyPage = () => {
-        navigate('/SurveyPage')
-    }
+        navigate('/SurveyPage');
+    };
 
     const coursesByCollege = {
         "College of Engineering": [
@@ -74,40 +74,34 @@ function AddjobFormMainPage() {
         course: '',
     });
 
-    const [message, setMessage] = useState('');
-
     useEffect(() => {
         const checkTracer2Completion = async () => {
-          try {
-            const userId = localStorage.getItem('userId');
-            const token = localStorage.getItem('token');
-      
-            if (!userId || !token) {
-              toast.warning("No token or userId found in localStorage");
-              return;
+            try {
+                const userId = localStorage.getItem('userId');
+                const token = localStorage.getItem('token');
+
+                if (!userId || !token) {
+                    toast.warning("No token or userId found in localStorage");
+                    return;
+                }
+
+                const response = await axios.get(
+                    `https://alumnitracersystem.onrender.com/surveys/user-status/${userId}`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+
+                const tracer2Status = response.data.status.tracer2Completed;
+                setTracer2Completed(tracer2Status);
+            } catch (err) {
+                toast.error("Failed to check Tracer 2 status");
+                setTracer2Completed(false);
+            } finally {
+                setLoading(false);
             }
-      
-            // ✅ Correct endpoint, same as AlumniTable
-            const response = await axios.get(
-              `https://alumnitracersystem.onrender.com/surveys/user-status/${userId}`,
-              { headers: { Authorization: `Bearer ${token}` } }
-            );
-      
-            const tracer2Status = response.data.status.tracer2Completed;
-      
-            setTracer2Completed(tracer2Status);
-          } catch (err) {
-            toast.error("Failed to check Tracer 2 status:", err);
-            setTracer2Completed(false);
-          } finally {
-            setLoading(false);
-          }
         };
-      
+
         checkTracer2Completion();
-      }, []);
-      
-      
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -158,164 +152,95 @@ function AddjobFormMainPage() {
                 course: '',
             });
         } catch (error) {
-            toast.error('Error posting the job:', error);
             toast.error('An error occurred. Please try again.');
         }
     };
 
-    if (loading) {
-        return (
-            <div className="loadingOverlay">
-                <div className="loaderContainer">
-                    <svg viewBox="0 0 240 240" height="80" width="80" className="loader">
-                        <circle strokeLinecap="round" strokeDashoffset="-330" strokeDasharray="0 660" strokeWidth="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className="pl__ring pl__ringA"></circle>
-                        <circle strokeLinecap="round" strokeDashoffset="-110" strokeDasharray="0 220" strokeWidth="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className="pl__ring pl__ringB"></circle>
-                        <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className="pl__ring pl__ringC"></circle>
-                        <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className="pl__ring pl__ringD"></circle>
-                    </svg>
-                    <p>Loading...</p>
-                </div>
-            </div>
-        );
-    }
-
-    if (!tracer2Completed) {
-        return (
-            <div className="form-container">
-                <h2>You must complete Tracer Survey 2 before posting a job.</h2>
-                <a className="back-button" onClick={goToSurveyPage}>
-                    Go to Tracer Survey 2
-                </a>
-            </div>
-        );
-    }
-
     return (
         <div className="form-container">
-            <a onClick={goToJobPageGive} className="back-button">
-                Back
-            </a>
-            <h1 className="form-title">POST A JOB OPPORTUNITY</h1>
-            <form className="opportunity-form" onSubmit={handleSubmit}>
-                {/* ... rest of form unchanged ... */}
-
-                <div className="form-group">
-                    <label htmlFor="title">Title:</label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter Job Title"
-                    />
+            {loading ? (
+                <div className={styles.loadingOverlay}>
+                    <div className={styles.loaderContainer}>
+                    <div className={styles.loader}></div>
+                    <p>Loading...</p>
+                    </div>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="company">Company:</label>
-                    <input
-                        type="text"
-                        id="company"
-                        name="company"
-                        value={formData.company}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter company name"
-                    />
+            ) : tracer2Completed === false ? (
+                <div>
+                    <h2>You must complete Tracer Survey 2 before posting a job.</h2>
+                    <a className="back-button" onClick={goToSurveyPage}>
+                        Go to Tracer Survey 2
+                    </a>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="college">College:</label>
-                    <select id="college" name="college" value={formData.college} onChange={handleChange}>
-                        <option value="">Select College</option>
-                        {Object.keys(coursesByCollege).map((collegeName) => (
-                            <option key={collegeName} value={collegeName}>
-                                {collegeName}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="course">Course:</label>
-                    <select id="course" name="course" value={formData.course} onChange={handleChange} disabled={!formData.college}>
-                        <option value="">Select Course</option>
-                        {formData.college &&
-                            coursesByCollege[formData.college].map((courseName) => (
-                                <option key={courseName} value={courseName}>
-                                    {courseName}
-                                </option>
-                            ))}
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="location">Location:</label>
-                    <input
-                        type="text"
-                        id="location"
-                        name="location"
-                        value={formData.location}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter job location"
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="type">Type:</label>
-                    <select id="type" name="type" value={formData.type} onChange={handleChange}>
-                        <option value="full-time">Full Time</option>
-                        <option value="part-time">Part Time</option>
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="description">Job Description:</label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        required
-                        placeholder="Enter job description"
-                    ></textarea>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="responsibilities">Key Responsibilities:</label>
-                    <textarea
-                        id="responsibilities"
-                        name="responsibilities"
-                        value={formData.responsibilities}
-                        onChange={handleChange}
-                        placeholder="Enter key responsibilities"
-                    ></textarea>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="qualifications">Qualification:</label>
-                    <textarea
-                        id="qualifications"
-                        name="qualifications"
-                        value={formData.qualifications}
-                        onChange={handleChange}
-                        placeholder="Enter required qualifications"
-                    ></textarea>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="source">Source:</label>
-                    <input
-                        type="text"
-                        id="source"
-                        name="source"
-                        value={formData.source}
-                        onChange={handleChange}
-                        placeholder="Enter the source or link"
-                    />
-                </div>
-                <button type="submit" className="submit-button">
-                    Submit
-                </button>
-                {message && <p className="form-message">{message}</p>}
-                <p className="form-note">
-                    NOTE: When submitted, an admin will review the request to post the offer. You will get
-                    notified regarding the status of your post.
-                </p>
-            </form>
+            ) : (
+                <>
+                    <a onClick={goToJobPageGive} className="back-button">
+                        Back
+                    </a>
+                    <h1 className="form-title">POST A JOB OPPORTUNITY</h1>
+                    <form className="opportunity-form" onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="title">Title:</label>
+                            <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required placeholder="Enter Job Title" />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="company">Company:</label>
+                            <input type="text" id="company" name="company" value={formData.company} onChange={handleChange} required placeholder="Enter company name" />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="college">College:</label>
+                            <select id="college" name="college" value={formData.college} onChange={handleChange}>
+                                <option value="">Select College</option>
+                                {Object.keys(coursesByCollege).map((collegeName) => (
+                                    <option key={collegeName} value={collegeName}>{collegeName}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="course">Course:</label>
+                            <select id="course" name="course" value={formData.course} onChange={handleChange} disabled={!formData.college}>
+                                <option value="">Select Course</option>
+                                {formData.college &&
+                                    coursesByCollege[formData.college].map((courseName) => (
+                                        <option key={courseName} value={courseName}>{courseName}</option>
+                                    ))}
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="location">Location:</label>
+                            <input type="text" id="location" name="location" value={formData.location} onChange={handleChange} required placeholder="Enter job location" />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="type">Type:</label>
+                            <select id="type" name="type" value={formData.type} onChange={handleChange}>
+                                <option value="full-time">Full Time</option>
+                                <option value="part-time">Part Time</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="description">Job Description:</label>
+                            <textarea id="description" name="description" value={formData.description} onChange={handleChange} required placeholder="Enter job description"></textarea>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="responsibilities">Key Responsibilities:</label>
+                            <textarea id="responsibilities" name="responsibilities" value={formData.responsibilities} onChange={handleChange} placeholder="Enter key responsibilities"></textarea>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="qualifications">Qualification:</label>
+                            <textarea id="qualifications" name="qualifications" value={formData.qualifications} onChange={handleChange} placeholder="Enter required qualifications"></textarea>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="source">Source:</label>
+                            <input type="text" id="source" name="source" value={formData.source} onChange={handleChange} placeholder="Enter the source or link" />
+                        </div>
+                        <button type="submit" className="submit-button">Submit</button>
+                        <p className="form-note">
+                            NOTE: When submitted, an admin will review the request to post the offer. You will get notified regarding the status of your post.
+                        </p>
+                    </form>
+                </>
+            )}
+            <ToastContainer />
         </div>
     );
 }

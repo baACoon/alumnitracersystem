@@ -55,19 +55,14 @@ function EventMainPage() {
 
   return (
     <div className={styles.eventsContainer}>
-      {loading ? (
-        <div className={styles.loadingOverlay}>
-          <div className={styles.loaderContainer}>
-            <svg viewBox="0 0 240 240" height="80" width="80" className="loader">
-              <circle strokeLinecap="round" strokeDashoffset="-330" strokeDasharray="0 660" strokeWidth="20" stroke="#000" fill="none" r="105" cy="120" cx="120" className="pl__ring pl__ringA"></circle>
-              <circle strokeLinecap="round" strokeDashoffset="-110" strokeDasharray="0 220" strokeWidth="20" stroke="#000" fill="none" r="35" cy="120" cx="120" className="pl__ring pl__ringB"></circle>
-              <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="85" className="pl__ring pl__ringC"></circle>
-              <circle strokeLinecap="round" strokeDasharray="0 440" strokeWidth="20" stroke="#000" fill="none" r="70" cy="120" cx="155" className="pl__ring pl__ringD"></circle>
-            </svg>
-            <p>Loading...</p>
+        {loading ? (
+          <div className={styles.loadingOverlay}>
+            <div className={styles.loaderContainer}>
+              <div className={styles.loader}></div>
+              <p>Loading events...</p>
+            </div>
           </div>
-        </div>
-      ) : (
+        ) : (
         <div className={styles.pageEnter}>
           <h4 className={styles.pageTitle}>UPCOMING EVENTS</h4>
           {events.length > 0 ? (
