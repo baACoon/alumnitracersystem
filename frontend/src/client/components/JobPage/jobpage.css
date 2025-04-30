@@ -1,3 +1,11 @@
+.page-body {
+  padding-top: 100px; /* Adjust based on actual header height */
+}
+
+.JobPageWrapper {
+  position: relative;
+}
+
 /* Container styling */
 .JobPageContainer {
     display: flex;
@@ -65,6 +73,7 @@
   align-items: center;
   min-height: 300px;
   width: 100%;
+  margin-top: 100px;
 }
 
 .loaderContainer {
