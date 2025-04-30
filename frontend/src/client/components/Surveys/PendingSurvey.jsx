@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import styles from "./PendingSurvey.module.css"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const PendingSurvey = () => {
   const navigate = useNavigate()
@@ -52,7 +54,7 @@ export const PendingSurvey = () => {
         setActiveSurveys(active)
       } catch (error) {
         console.error("Error fetching active surveys:", error.response?.data || error.message)
-        alert("Failed to load surveys.")
+        toast.error("Failed to load surveys.")
       } finally {
         setLoading(false)
       }
@@ -101,7 +103,7 @@ export const PendingSurvey = () => {
       setResponses({})
     } catch (error) {
       console.error("Error loading survey details:", error)
-      alert("Failed to load survey questions.")
+      toast.error("Failed to load survey questions.")
     }
   }
 
@@ -122,12 +124,12 @@ export const PendingSurvey = () => {
       await fetchSurveys()
       await fetchTracer2Eligibility()
       
-      alert("Survey submitted successfully!")
+      toast.success("Survey submitted successfully!")
       setSelectedSurvey(null)
       setActiveSurveys((prev) => prev.filter((s) => s._id !== selectedSurvey._id))
     } catch (error) {
       console.error("Submission error:", error.response || error.message)
-      alert("Failed to submit survey.")
+      toast.error("Failed to submit survey.")
     }
   }
 

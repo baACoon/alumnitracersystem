@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import './addjobForm.css';
 import Header from '../Header/header';
 import Footer from '../FooterClient/Footer';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function AddJobForm() {
     return (
@@ -43,7 +45,7 @@ function AddjobFormMainPage() {
 
         const token = localStorage.getItem('token');
         if (!token) {
-            alert('You need to log in first');
+           toast.warning ('You need to log in first');
             return;
         }
 

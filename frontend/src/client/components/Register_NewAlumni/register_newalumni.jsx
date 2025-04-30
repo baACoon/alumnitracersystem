@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './register_newalumni.module.css'; // Import module styles
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register_NewAlumni = ({ closeModal }) => {
     const [gradyear, setYear] = useState('');
@@ -24,7 +26,7 @@ const Register_NewAlumni = ({ closeModal }) => {
  
     const verifyGraduate = async () => {
         if (!gradyear || !lastName || !firstName) {
-            alert("Please fill in all fields for verification");
+            toast.warning("Please fill in all fields for verification");
             return;
         }
     
@@ -61,7 +63,7 @@ const Register_NewAlumni = ({ closeModal }) => {
             }
         } catch (error) {
             console.error('Verification error:', error);
-            alert('Verification failed. Please try again.');
+            toast.error('Verification failed. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -95,9 +97,9 @@ const Register_NewAlumni = ({ closeModal }) => {
                 
                 if (response.ok) {
                   setRecoveryStep('code_sent');
-                  alert('A recovery code has been sent to your email.');
+                  toast.success('A recovery code has been sent to your email.');
                 } else {
-                  alert(data.message || 'Failed to send recovery code.');
+                  toast.error(data.message || 'Failed to send recovery code.');
                 }
                 return;
               }
@@ -106,7 +108,7 @@ const Register_NewAlumni = ({ closeModal }) => {
             }
             
             // If we still don't have an email after trying to fetch it
-            alert("This account has no registered email. Contact admin.");
+            toast.info("This account has no registered email. Contact admin.");
             return;
           }
           
@@ -122,13 +124,13 @@ const Register_NewAlumni = ({ closeModal }) => {
           
           if (response.ok) {
             setRecoveryStep('code_sent');
-            alert('A recovery code has been sent to your email.');
+            toast.success('A recovery code has been sent to your email.');
           } else {
-            alert(data.message || 'Failed to send recovery code.');
+            toast.error(data.message || 'Failed to send recovery code.');
           }
         } catch (error) {
           console.error('Error sending recovery code:', error);
-          alert('Recovery failed. Try again.');
+          toast.error('Recovery failed. Try again.');
         } finally {
           setLoading(false);
         }
@@ -177,10 +179,10 @@ const Register_NewAlumni = ({ closeModal }) => {
                 console.log("🆗 Saving token:", data.token);
 
             } else {
-                alert(data.message || 'Invalid code.');
+                toast.error(data.message || 'Invalid code.');
             }
         } catch (error) {
-            alert('Verification failed.');
+            toast.error('Verification failed.');
         }
     };
     
@@ -190,17 +192,17 @@ const Register_NewAlumni = ({ closeModal }) => {
         console.log(" Token used for reset:", token);
       
         if (!token) {
-          alert("Token missing. Please verify the code again.");
+          toast.error("Token missing. Please verify the code again.");
           return;
         }
       
         if (newRecoveredPassword !== confirmRecoveredPassword) {
-          alert("Passwords do not match.");
+          toast.error("Passwords do not match.");
           return;
         }
       
         if (!strongPasswordRegex.test(newRecoveredPassword)) {
-          alert("Password must include uppercase, lowercase, number, special character and be 8+ characters.");
+          toast.warning("Password must include uppercase, lowercase, number, special character and be 8+ characters.");
           return;
         }
       
@@ -213,14 +215,14 @@ const Register_NewAlumni = ({ closeModal }) => {
       
           const data = await response.json();
           if (response.ok) {
-            alert('Password reset successful! Please login.');
+            toast.success('Password reset successful! Please login.');
             closeModal();
             navigate('/');
           } else {
-            alert(data.message || 'Reset failed.');
+            toast.error(data.message || 'Reset failed.');
           }
         } catch (error) {
-          alert('Error resetting password.');
+          toast.error('Error resetting password.');
         }
       };
       
@@ -232,7 +234,7 @@ const Register_NewAlumni = ({ closeModal }) => {
         if (storedID) {
             navigate('/RegisterSurveyForm');
         } else {
-            alert("You must be a verified graduate to take the survey.");
+            toast.warning("You must be a verified graduate to take the survey.");
         }
     };
 
@@ -241,24 +243,24 @@ const Register_NewAlumni = ({ closeModal }) => {
 
         // Only proceed if verification was successful
         if (verificationStatus !== 'verified') {
-            alert("Please verify your graduate status first");
+            toast.warning("Please verify your graduate status first");
             return;
         }
 
         // Validate password match
         if (password !== confirmPassword) {
-            alert("Passwords don't match");
+            toast.error("Passwords don't match");
             return;
         }
 
         // Additional frontend validation
         if (!password || !confirmPassword) {
-            alert("All fields are required");
+            toast.warning("All fields are required");
             return;
         }
         const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
         if (!strongPasswordRegex.test(password)) {
-          alert("Password must include uppercase, lowercase, number, special character and be 8+ characters.");
+          toast.warning("Password must include uppercase, lowercase, number, special character and be 8+ characters.");
           return;
         }
         
@@ -288,14 +290,14 @@ const Register_NewAlumni = ({ closeModal }) => {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('generatedID', data.user.generatedID);
                 setGeneratedID(data.user.generatedID);
-                alert("Registration successful!");
+                toast.success("Registration successful!");
             } else {
-                alert(`Registration failed: ${data.error || 'Unknown error'}`);
+                toast.error(`Registration failed: ${data.error || 'Unknown error'}`);
                 setVerificationStatus(null); // Reset to initial state
             }
         } catch (error) {
             console.error('Error submitting registration:', error);
-            alert('There was an error with the registration request.');
+            toast.error('There was an error with the registration request.');
         } finally {
             setLoading(false);
         }

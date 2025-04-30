@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import './jobpagegive.css';
 import './jobpagemodal.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Header from '../Header/header';
 import Footer from '../FooterClient/Footer';
@@ -31,7 +33,7 @@ function JobGiveMainPage() {
     const token = localStorage.getItem('token');
 
     if (!token) {
-      alert('You need to log in first.');
+      toast.warning('You need to log in first.');
       setLoading(false);
       return;
     }
@@ -49,7 +51,7 @@ function JobGiveMainPage() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Failed to fetch jobs:', errorData);
-        alert(errorData.message || 'Failed to fetch jobs.');
+        toast.error(errorData.message || 'Failed to fetch jobs.');
         return;
       }
 
@@ -58,11 +60,11 @@ function JobGiveMainPage() {
         setJobs(data);
       } else {
         console.error('Unexpected API response format:', data);
-        alert('Failed to fetch jobs: Invalid response format.');
+        toast.error('Failed to fetch jobs: Invalid response format.');
       }
     } catch (error) {
       console.error('Error fetching jobs:', error);
-      alert('An error occurred while fetching jobs.');
+      toast.error('An error occurred while fetching jobs.');
     } finally {
       setLoading(false);
     }
@@ -73,7 +75,7 @@ function JobGiveMainPage() {
     const token = localStorage.getItem('token');
 
     if (!token) {
-      alert('You need to log in first.');
+      toast.warning('You need to log in first.');
       return;
     }
 
@@ -91,15 +93,15 @@ function JobGiveMainPage() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Failed to delete job:', errorData);
-        alert(errorData.message || 'Failed to delete job.');
+        toast.error(errorData.message || 'Failed to delete job.');
         return;
       }
 
-      alert('Job deleted successfully.');
+      toast.success('Job deleted successfully.');
       setJobs((prevJobs) => prevJobs.filter((job) => job._id !== selectedJobId));
     } catch (error) {
       console.error('Error deleting job:', error);
-      alert('An error occurred while deleting the job.');
+      toast.error('An error occurred while deleting the job.');
     } finally {
       setShowDeleteModal(false);
       setSelectedJobId(null);

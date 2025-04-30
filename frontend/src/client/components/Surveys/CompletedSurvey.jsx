@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
 import styles from "./CompletedSurvey.module.css"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const CompletedSurvey = () => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -66,7 +68,7 @@ export const CompletedSurvey = () => {
 
   const handleSurveyClick = async (survey) => {
     if (!survey || !survey.id) {
-      alert("This survey cannot be viewed because it has no ID.")
+      toast.warning("This survey cannot be viewed because it has no ID.")
       return
     }
 
@@ -87,7 +89,7 @@ export const CompletedSurvey = () => {
           headers: { Authorization: `Bearer ${token}` },
         })
       } else {
-        alert("Unsupported survey type.")
+        toast.error("Unsupported survey type.")
         return
       }
 
@@ -98,7 +100,7 @@ export const CompletedSurvey = () => {
       setShowModal(true)
     } catch (error) {
       console.error("Failed to fetch full survey data:", error)
-      alert("Failed to load survey details.")
+      toast.error("Failed to load survey details.")
     }
   }
 

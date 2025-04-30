@@ -5,6 +5,8 @@ import "./jobpagelist.css";
 import Header from "../Header/header";
 import Footer from "../FooterClient/Footer";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function JobPageList() {
   return (
@@ -119,7 +121,7 @@ function JobListMainPage() {
             </div>
             <div
               className="action-icon"
-              onClick={() => alert("Open comment input below.")}
+              onClick={() => toast.warning("Open comment input below.")}
             >
               <FaRegComment /> <span>Comment</span>
             </div>

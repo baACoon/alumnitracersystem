@@ -2,7 +2,8 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
 import {BrowserRouter, Routes, Route} from "react-router-dom"
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 {/* for Client path */}
 import FrontPage from '../src/client/components/Frontpage/frontpage';
@@ -45,6 +46,7 @@ function App() {
             <Route path="/RecoverAccount" element={<RecoverAccount />} />
           </Routes>
         </BrowserRouter>
+      <ToastContainer position="top-center" autoClose={3000} />
       </div>
     </div>
   );
