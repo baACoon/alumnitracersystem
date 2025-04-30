@@ -90,10 +90,10 @@ const Tracer1Tab = ({ studentData }) => {
                 <td className={styles.fieldValue}>{personalInfo.course || 'N/A'}</td>
               </tr>
               <tr>
-              <td className={styles.fieldLabel}>Year Graduated</td>
+              {/*<td className={styles.fieldLabel}>Year Graduated</td>
               <td className={styles.fieldValue}>
                   {educationInfo.yearGraduated || personalInfo.gradyear || 'N/A'}
-                </td>
+                </td>*/}
 
               </tr>
               <tr>

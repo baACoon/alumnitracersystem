@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import styles from "./Create-Opportunity.module.css";
+import {  toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function CreateOpportunity({ onClose }) {
   const [formData, setFormData] = useState({
@@ -61,7 +63,7 @@ export default function CreateOpportunity({ onClose }) {
     try {
         const token = localStorage.getItem("token");
         if (!token) {
-            alert("You need to log in first.");
+            toast.warning("You need to log in first.");
             setLoading(false);
             return;
         }
@@ -93,16 +95,16 @@ export default function CreateOpportunity({ onClose }) {
 
         if (!response.ok) {
             console.error("Failed to create job:", responseData);
-            alert(`Error: ${responseData.error || "Failed to create job."}`);
+            toast.error(`Error: ${responseData.error || "Failed to create job."}`);
             setLoading(false);
             return;
         }
 
-        alert("Opportunity Created Successfully!");
+        toast.success("Opportunity Created Successfully!");
         onClose(); // Close the modal after submission
     } catch (error) {
         console.error("Error creating opportunity:", error);
-        alert("An error occurred while creating the opportunity.");
+        toast.error("An error occurred while creating the opportunity.");
     } finally {
         setLoading(false); // Hide loading state
     }

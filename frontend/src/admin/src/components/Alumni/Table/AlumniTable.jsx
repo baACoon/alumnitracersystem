@@ -8,9 +8,9 @@ import  {jwtDecode} from 'jwt-decode';
 import { TracerComparisonTab } from './TracerTabComparison';
 import { Tracer1Tab } from './TracerTab1';
 import { Tracer2Tab } from './TracerTab2';
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { faUser as farUser } from '@fortawesome/free-regular-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons'; // ✅ valid icon
 
 function Pagination({ currentPage, totalPages, setCurrentPage }) {
   const getPageNumbers = () => {
@@ -70,7 +70,7 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
   const [activeTab, setActiveTab] = useState('Alumni List');
   const [modalTab, setModalTab] = useState('overview');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 9;
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const navigate = useNavigate();
 
@@ -426,7 +426,7 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
               <div className={`${styles.modalHeader} ${styles.gradientHeader}`}>
                 <div className={styles.headerContent}>
                   <div className={styles.profileAvatar}>
-                    <FontAwesomeIcon icon="fa-light fa-user" />
+                  <FontAwesomeIcon icon={faUser} />
                   </div>
                   <div className={styles.profileInfo}>
                     <h3 className={styles.profileName}>
@@ -439,9 +439,9 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
                       <span className={styles.infoBadge}>
                         {studentDetails.personalInfo.course || 'N/A'}
                       </span>
-                      <span className={styles.infoBadge}>
+                      {/*<span className={styles.infoBadge}>
                         Class of {gradYear}
-                      </span>
+                      </span>*/}
                     </div>
                     <div className={styles.contactInfo}>
                       <div className={styles.contactItem}>
