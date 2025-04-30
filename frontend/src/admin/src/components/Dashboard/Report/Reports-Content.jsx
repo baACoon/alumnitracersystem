@@ -3,6 +3,8 @@ import { Download } from "lucide-react"
 import styles from "./Reports-Content.module.css"
 import FilterDropdown from "./FilterReport"
 import ReportsTable from "./TableReports"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ReportsTab() {
   const [selectedBatch, setSelectedBatch] = useState("")
@@ -84,7 +86,7 @@ export default function ReportsTab() {
 
   const exportSurvey = (type) => {
     if (!type) {
-      alert("Please select a survey to export.");
+      toast.warning("Please select a survey to export.");
       return;
     }
   
@@ -99,7 +101,7 @@ export default function ReportsTab() {
     const win = window.open(url, "_blank");
   
     if (!win) {
-      alert("Popup blocked. Please allow popups for this site.");
+      toast.warning("Popup blocked. Please allow popups for this site.");
     }
   };
   
@@ -153,7 +155,7 @@ export default function ReportsTab() {
               } else if (selectedTracerType === "Tracer 2") {
                 exportSurvey("Tracer2")
               } else {
-                alert("Please select a survey type to export.")
+                toast.warning("Please select a survey type to export.")
               }
             }}
             

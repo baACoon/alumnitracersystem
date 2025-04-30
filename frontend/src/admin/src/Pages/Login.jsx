@@ -3,6 +3,7 @@ import Tuplogo from '../components/images/Tuplogo.png';
 import Alumnilogo from '../components/images/alumniassoc_logo.png';
 import styles from './Login.module.css'; 
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -33,13 +34,13 @@ export default function Login() {
       if (response.ok) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('username', formData.username);
-        setMessage('Login successful!');
+        toast.success('Login successful!');
         navigate('/alumni-page');
       } else {
-        setMessage(data.error || 'Login failed.');
+        toast.error(data.error || 'Login failed.');
       }
     } catch (error) {
-      setMessage('An error occurred. Please try again.');
+      toast.error('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import styles from './GraduatesList.module.css';
 import axios from "axios";
 import { Search,X, AlertTriangle, Trash2 } from "lucide-react"; // Import icons if available
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const API_BASE_URL = "https://alumnitracersystem.onrender.com"; // Change this to your actual backend URL
@@ -127,7 +129,7 @@ export function GraduatesList() {
   
   const handleUpload = async () => {
     if (!uploadedFile) {
-      alert("Please select a file.");
+      toast.error("Please select a file.");
       return;
     }
 
@@ -153,7 +155,7 @@ export function GraduatesList() {
       );
 
       console.log("Upload response:", uploadResponse.data);
-      alert(uploadResponse.data.message || "Upload successful");
+      toast.success(uploadResponse.data.message || "Upload successful");
 
       // Refresh graduates data after successful upload
       await fetchGraduates();
@@ -183,7 +185,7 @@ export function GraduatesList() {
       }
       
       setError(errorMessage);
-      alert(`Upload failed: ${errorMessage}`);
+      toast.error(`Upload failed: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -266,10 +268,10 @@ export function GraduatesList() {
         setIsAddingBatch(false);
       } catch (err) {
         console.error("Error saving new batch:", err);
-        alert("Failed to save new batch to database.");
+        toast.error("Failed to save new batch to database.");
       }
     } else {
-      alert('Please enter a valid, unique batch year and title');
+      toast.warning('Please enter a valid, unique batch year and title');
     }
   }
 };
@@ -320,7 +322,7 @@ export function GraduatesList() {
         }
         
         // Show success message based on response
-        alert(res.data.message || `Batch ${batchToDelete} was successfully deleted.`);
+        toast.success(res.data.message || `Batch ${batchToDelete} was successfully deleted.`);
         
       } catch (err) {
         console.error("Error deleting batch:", err);
@@ -336,7 +338,7 @@ export function GraduatesList() {
           errorMessage = err.message;
         }
         
-        alert(`Delete failed: ${errorMessage}`);
+        toast.error(`Delete failed: ${errorMessage}`);
       } finally {
         setShowDeleteModal(false);
         setBatchToDelete(null);
@@ -346,6 +348,8 @@ export function GraduatesList() {
   };
 
   return (
+    <div className={styles.toastContainer}>
+      <ToastContainer position="top-center" autoClose={3000} />
     <div className={styles.container}>
       {!selectedBatch ? (
         <>
@@ -613,6 +617,7 @@ export function GraduatesList() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

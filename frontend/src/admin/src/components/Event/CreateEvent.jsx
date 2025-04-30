@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import styles from "./CreateEvent.module.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import multer from "multer";
+
 
 export const CreateEvent = ({ onPost, onBack }) => {
   const [fileName, setFileName] = useState("");
@@ -9,13 +13,6 @@ export const CreateEvent = ({ onPost, onBack }) => {
   const [time, setTime] = useState("");
   const [venue, setVenue] = useState("");
   const [source, setSource] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const closeMessageModal = () => {
-    setIsMessageModalOpen(false);
-  };
 
   const handlePost = async () => {
     if (title && description && date && time && venue) {
@@ -28,65 +25,47 @@ export const CreateEvent = ({ onPost, onBack }) => {
       formData.append("source", source);
       if (fileName) {
         const fileInput = document.getElementById("fileInput");
-        formData.append("image", fileInput.files[0]);
+        formData.append("image", fileInput.files[0]); // Attach file
       }
-
+  
       try {
-        setLoading(true);
         const response = await fetch("https://alumnitracersystem.onrender.com/event/create", {
           method: "POST",
-          body: formData,
+          body: formData, // Send as FormData
         });
-
-        let result = {};
-        try {
-          result = await response.json();
-        } catch (err) {
-          result = { error: "Invalid server response." };
-        }
-
-        setLoading(false);
-
+  
         if (response.ok) {
-          setMessage(result.message || "Event created successfully!");
-          setIsMessageModalOpen(true);
+          const result = await response.json();
+          toast.success(result.message);
           onPost(result.event);
-          resetForm();
-
-          // Auto-close modal after 2.5s
-          setTimeout(() => {
-            setIsMessageModalOpen(false);
-          }, 2500);
+          setTitle("");
+          setDescription("");
+          setDate("");
+          setTime("");
+          setVenue("");
+          setSource("");
+          setFileName("");
         } else {
-          setMessage(result.error || "Failed to create the event.");
-          setIsMessageModalOpen(true);
+          const errorData = await response.json();
+          toast.error(`Failed to create the event: ${errorData.error}`);
         }
       } catch (error) {
+        if (error instanceof multer.MulterError && error.code === "LIMIT_FILE_SIZE") {
+          return res.status(400).json({ error: "File size exceeds the maximum limit of 25 MB." });
+        }
         console.error("Error creating event:", error);
-        setLoading(false);
-        setMessage("An error occurred while creating the event.");
-        setIsMessageModalOpen(true);
+        toast.error("An error occurred.");
       }
     } else {
-      setMessage("Please fill out all required fields.");
-      setIsMessageModalOpen(true);
+      toast.warning("Please fill out all required fields.");
     }
   };
-
-  const resetForm = () => {
-    setTitle("");
-    setDescription("");
-    setDate("");
-    setTime("");
-    setVenue("");
-    setSource("");
-    setFileName("");
-  };
+  
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setFileName(file.name);
+      setFileName(file.name); // Display the file name
     }
   };
 
@@ -101,7 +80,7 @@ export const CreateEvent = ({ onPost, onBack }) => {
         </button>
       </div>
       <div className={styles.form}>
-        <div className={styles.fileInputContainer}>
+      <div className={styles.fileInputContainer}>
           <label htmlFor="fileInput" className={styles.importImageButton}>
             Import Image
           </label>
@@ -121,7 +100,7 @@ export const CreateEvent = ({ onPost, onBack }) => {
           className={styles.inputField}
         />
         <textarea
-          placeholder="Write Event Description"
+          placeholder="Write Events Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className={styles.textArea}
@@ -129,12 +108,14 @@ export const CreateEvent = ({ onPost, onBack }) => {
         <div className={styles.inlineFields}>
           <input
             type="date"
+            placeholder="Date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
             className={styles.inputField}
           />
           <input
             type="time"
+            placeholder="Time"
             value={time}
             onChange={(e) => setTime(e.target.value)}
             className={styles.inputField}
@@ -155,37 +136,11 @@ export const CreateEvent = ({ onPost, onBack }) => {
           className={styles.inputField}
         />
       </div>
-
-      {/* Loader */}
-      {loading && (
-        <div className={styles.bg}>
-          <div className={styles.spinner}></div>
-          <h3 className={styles.loadname}>Loading...</h3>
-        </div>
-      )}
-
-      {/* Success Modal */}
-      {isMessageModalOpen && (
-        <div className={styles.successModalOverlay}>
-          <div className={styles.successModalContent}>
-            <div className={styles.successModalHeader}>
-              <div className={styles.successCheckmark}>✔️</div>
-            </div>
-            <div className={styles.successModalBody}>
-              <h2>Success!</h2>
-              <p>{message}</p>
-              <button
-                className={styles.successOkButton}
-                onClick={closeMessageModal}
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
+const uri = "mongodb+srv://alumni:alumnipassword@alumni.fcta3.mongodb.net/?retryWrites=true&w=majority&appName=Alumni";
+//mongodb+srv://alumnitracer:pj3Nrrn4k32LKdEq@cluster0.cn3yf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
 
 export default CreateEvent;

@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import Tuplogo from '../components/images/Tuplogo.png';
 import Alumnilogo from '../components/images/alumniassoc_logo.png'
 import styles from './Register.module.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const AdminRegister = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -26,12 +29,12 @@ const AdminRegister = () => {
     const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
   
     if (!strongPasswordRegex.test(formData.password)) {
-      setMessage("Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.");
+      toast.error("Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.");
       return;
     }
   
     if (formData.password !== formData.confirmPassword) {
-      setMessage("Passwords do not match.");
+      toast.error("Passwords do not match.");
       return;
     }
   
@@ -47,21 +50,22 @@ const AdminRegister = () => {
       const data = await response.json();
   
       if (response.ok) {
-        setMessage(data.message);
+        toast.success(data.message || "Registration successful");
         localStorage.setItem('token', data.token);
         navigate("/alumni-page");
       } else {
-        setMessage(data.error || "Registration failed.");
+        toast.error(data.error || "Registration failed.");
       }
     } catch (error) {
       console.error("Error submitting registration:", error);
-      setMessage("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     }
   };
   
 
   return (
     <div>
+      <ToastContainer position="top-center" autoClose={3000} />
       <div className={styles.registerBg}>
       <div className={styles.adminLoginLogo}>
         <img src={Tuplogo} alt="TUP logo" className={styles.logo1} />

@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-//import Dashboard from './components/Dashboard/Dashboard';
 import Dashboard from './components/Dashboard/MainPage/Dashboard';
 import AlumniPage from './components/Alumni/Page/AlumniPage';
 import SurveyContent from './components/AdminSurvey/Content/SurveyContent';
@@ -12,6 +11,9 @@ import Opportunities from './components/Opportunities/Admin-Opportunities';
 import Navbar from './components/Navbar';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
   return (
@@ -35,6 +37,7 @@ function App() {
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
 }
