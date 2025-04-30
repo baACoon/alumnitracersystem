@@ -192,11 +192,9 @@ function AddjobFormMainPage() {
 
     return (
         <div className="form-container">
-            
             <a onClick={goToJobPageGive} className="back-button">
                 Back
             </a>
-            
             <h1 className="form-title">POST A JOB OPPORTUNITY</h1>
             <form className="opportunity-form" onSubmit={handleSubmit}>
                 {/* ... rest of form unchanged ... */}
