@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './recover.module.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const RecoverAccount = () => {
   const [email, setEmail] = useState('');
@@ -12,7 +15,7 @@ const RecoverAccount = () => {
   const navigate = useNavigate();
 
   const requestCode = async () => {
-    if (!email) return alert('Please enter your email.');
+    if (!email) return toast.warning('Please enter your email.');
 
     setLoading(true);
     try {
@@ -24,21 +27,21 @@ const RecoverAccount = () => {
 
       const data = await response.json();
       if (response.ok) {
-        alert('Recovery code sent to your email.');
+        toast.info('Recovery code sent to your email.');
         setStep('code_sent');
       } else {
-        alert(data.message || 'Email not found in graduates list.');
+        toast.error(data.message || 'Email not found in graduates list.');
       }
     } catch (err) {
       console.error('Error:', err);
-      alert('An error occurred while sending the code.');
+      toast.error('An error occurred while sending the code.');
     } finally {
       setLoading(false);
     }
   };
 
   const verifyCode = async () => {
-    if (!code) return alert('Please enter the 6-digit code.');
+    if (!code) return toast.info('Please enter the 6-digit code.');
 
     try {
       const response = await fetch('https://alumnitracersystem.onrender.com/api/recover/verify-code', {
@@ -52,26 +55,26 @@ const RecoverAccount = () => {
         localStorage.setItem('recoveryToken', data.token);
         setStep('verified');
       } else {
-        alert(data.message || 'Invalid or expired code.');
+        toast.warning(data.message || 'Invalid or expired code.');
       }
     } catch (err) {
       console.error('Verification error:', err);
-      alert('An error occurred during verification.');
+      toast.error('An error occurred during verification.');
     }
   };
 
   const resetPassword = async () => {
     if (!newPassword || !confirmPassword) {
-      return alert('Please fill out both password fields.');
+      return toast.warning('Please fill out both password fields.');
     }
     if (newPassword !== confirmPassword) {
-      return alert('Passwords do not match.');
+      return toast.warning('Passwords do not match.');
     }
 
     try {
       const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
         if (!strongPasswordRegex.test(newPassword)) {
-          return alert("Password must include uppercase, lowercase, number, special character and be 8+ characters.");
+          return toast.warning("Password must include uppercase, lowercase, number, special character and be 8+ characters.");
         }
 
       const token = localStorage.getItem('recoveryToken');
@@ -83,15 +86,15 @@ const RecoverAccount = () => {
 
       const data = await response.json();
       if (response.ok) {
-        alert('Password reset successful. You may now log in.');
+        toast.success('Password reset successful. You may now log in.');
         localStorage.removeItem('recoveryToken');
         navigate('/login');
       } else {
-        alert(data.message || 'Password reset failed.');
+        toast.error(data.message || 'Password reset failed.');
       }
     } catch (err) {
       console.error('Reset error:', err);
-      alert('An error occurred while resetting password.');
+      toast.error('An error occurred while resetting password.');
     }
   };
 

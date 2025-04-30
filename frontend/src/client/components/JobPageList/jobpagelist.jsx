@@ -4,6 +4,8 @@ import "./jobpagelist.css";
 import Header from "../Header/header";
 import Footer from "../FooterClient/Footer";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function JobPageList() {
   return (

@@ -4,6 +4,8 @@ import './addjobForm.css';
 import Header from '../Header/header';
 import Footer from '../FooterClient/Footer';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function AddJobForm() {
     return (
@@ -81,7 +83,7 @@ function AddjobFormMainPage() {
             const token = localStorage.getItem('token');
       
             if (!userId || !token) {
-              console.warn("No token or userId found in localStorage");
+              toast.warning("No token or userId found in localStorage");
               return;
             }
       
@@ -95,7 +97,7 @@ function AddjobFormMainPage() {
       
             setTracer2Completed(tracer2Status);
           } catch (err) {
-            console.error("Failed to check Tracer 2 status:", err);
+            toast.error("Failed to check Tracer 2 status:", err);
             setTracer2Completed(false);
           } finally {
             setLoading(false);
@@ -121,7 +123,7 @@ function AddjobFormMainPage() {
 
         const token = localStorage.getItem('token');
         if (!token) {
-            alert('You need to log in first');
+            toast.warning('You need to log in first');
             return;
         }
 
@@ -138,11 +140,11 @@ function AddjobFormMainPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                setMessage(data.message || 'Failed to post the job.');
+                toast.error(data.message || 'Failed to post the job.');
                 return;
             }
 
-            setMessage('Job posted successfully. Pending admin approval.');
+            toast.success('Job posted successfully. Pending admin approval.');
             setFormData({
                 title: '',
                 company: '',
@@ -156,8 +158,8 @@ function AddjobFormMainPage() {
                 course: '',
             });
         } catch (error) {
-            console.error('Error posting the job:', error);
-            setMessage('An error occurred. Please try again.');
+            toast.error('Error posting the job:', error);
+            toast.error('An error occurred. Please try again.');
         }
     };
 

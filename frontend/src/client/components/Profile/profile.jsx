@@ -4,6 +4,8 @@ import Header from '../Header/header';
 import Footer from '../FooterClient/Footer';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Profile() {
   return (
@@ -37,7 +39,7 @@ function ProfilePage() {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          alert("Session expired. Please log in again.");
+          toast.error("Session expired. Please log in again.");
           navigate('/frontpage');
           return;
         }
@@ -46,7 +48,7 @@ function ProfilePage() {
           const decoded = jwtDecode(token);
           if (!decoded.id) throw new Error('Invalid token');
         } catch (err) {
-          alert("Invalid session. Please log in again.");
+          toast.warning("Invalid session. Please log in again.");
           localStorage.removeItem('token');
           navigate('/frontpage');
           return;
@@ -108,7 +110,7 @@ function ProfilePage() {
 
       if (!response.ok) throw new Error(result.message || 'Password change failed');
 
-      alert('Password changed successfully!');
+      toast.success('Password changed successfully!');
       setShowModal(false);
       setOldPassword('');
       setNewPassword('');

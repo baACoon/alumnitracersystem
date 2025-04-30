@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LoginForm.module.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TestLoginForm = ({ closeModal }) => {
   const [alumniID, setAlumniID] = useState('');
@@ -37,18 +39,18 @@ const TestLoginForm = ({ closeModal }) => {
         closeModal();
         navigate("/home");
       } else {
-        alert(`Error: ${data.error || 'Login failed'}`);
+        toast.error(`Error: ${data.error || 'Login failed'}`);
       }
     } catch (error) {
       console.error('Error during login:', error);
-      alert('There was an error with the login request.');
+      toast.error('There was an error with the login request.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleSendResetCode = async () => {
-    if (!resetAlumniID) return alert("Enter Alumni ID");
+    if (!resetAlumniID) return toast.error("Enter Alumni ID");
   
     try {
       const response = await fetch('https://alumnitracersystem.onrender.com/api/recover/send-reset-code', {
@@ -64,7 +66,7 @@ const TestLoginForm = ({ closeModal }) => {
         setShowForgotPassword(false);
         setShowCodeInput(true);
       } else {
-        alert(data.message || 'Failed to send recovery code.');
+        toast.error(data.message || 'Failed to send recovery code.');
       }
     } catch (error) {
       console.error('Error sending recovery code:', error);
@@ -76,7 +78,7 @@ const TestLoginForm = ({ closeModal }) => {
   
 
   const handleVerifyResetCode = async () => {
-    if (!resetCode || !resetEmail) return alert("Code and email required");
+    if (!resetCode || !resetEmail) return toast.warning("Code and email required");
 
     try {
       const response = await fetch('https://alumnitracersystem.onrender.com/api/recover/verify-code', {
@@ -92,16 +94,16 @@ const TestLoginForm = ({ closeModal }) => {
         setShowCodeInput(false);
         setShowResetPassword(true);
       } else {
-        alert(data.message || "Code verification failed");
+        toast.error(data.message || "Code verification failed");
       }
     } catch (err) {
       console.error("Verification error:", err);
-      alert("Server error while verifying code.");
+      toast.error("Server error while verifying code.");
     }
   };
 
   const handleResetPassword = async () => {
-    if (!newPassword) return alert("Enter a new password");
+    if (!newPassword) return toast.warning("Enter a new password");
 
     try {
       const response = await fetch('https://alumnitracersystem.onrender.com/api/recover/reset-password', {
@@ -113,14 +115,14 @@ const TestLoginForm = ({ closeModal }) => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Password reset successful! You can now log in.");
+        toast.success("Password reset successful! You can now log in.");
         setShowResetPassword(false);
       } else {
-        alert(data.message || "Reset failed");
+        toast.error(data.message || "Reset failed");
       }
     } catch (err) {
       console.error("Reset error:", err);
-      alert("Error during password reset");
+      toast.error("Error during password reset");
     }
   };
 
