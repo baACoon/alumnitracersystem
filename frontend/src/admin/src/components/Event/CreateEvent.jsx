@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import styles from "./CreateEvent.module.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import multer from "multer";
+
 
 export const CreateEvent = ({ onPost, onBack }) => {
   const [fileName, setFileName] = useState("");
@@ -32,7 +36,7 @@ export const CreateEvent = ({ onPost, onBack }) => {
   
         if (response.ok) {
           const result = await response.json();
-          alert(result.message);
+          toast.success(result.message);
           onPost(result.event);
           setTitle("");
           setDescription("");
@@ -43,17 +47,17 @@ export const CreateEvent = ({ onPost, onBack }) => {
           setFileName("");
         } else {
           const errorData = await response.json();
-          alert(`Failed to create the event: ${errorData.error}`);
+          toast.error(`Failed to create the event: ${errorData.error}`);
         }
       } catch (error) {
         if (error instanceof multer.MulterError && error.code === "LIMIT_FILE_SIZE") {
           return res.status(400).json({ error: "File size exceeds the maximum limit of 25 MB." });
         }
         console.error("Error creating event:", error);
-        alert("An error occurred.");
+        toast.error("An error occurred.");
       }
     } else {
-      alert("Please fill out all required fields.");
+      toast.warning("Please fill out all required fields.");
     }
   };
   

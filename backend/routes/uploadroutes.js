@@ -99,7 +99,7 @@ router.delete("/graduates/batch/:year", async (req, res) => {
     const batchResult = await Batch.deleteOne({ year: parseInt(year) });
 
     res.json({
-      message: `Deleted batch ${year} and ${gradResult.deletedCount} graduates.`,
+      message: `Deleted batch ${year} with ${gradResult.deletedCount} graduates.`,
       deletedGraduates: gradResult.deletedCount,
       deletedBatch: batchResult.deletedCount
     });

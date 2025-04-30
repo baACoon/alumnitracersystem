@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import Tuplogo from '../components/images/Tuplogo.png';
-import Alumnilogo from '../components/images/alumniassoc_logo.png'
-import styles from './Login.module.css'; 
+import Alumnilogo from '../components/images/alumniassoc_logo.png';
+import styles from './Login.module.css';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function Login() {
   const [formData, setFormData] = useState({ username: "", password: "" });
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -29,17 +29,16 @@ export default function Login() {
       console.log("Login Response:", data); // Debugging: Check API response
 
       if (response.ok) {
-        localStorage.setItem("token", data.token); // Store JWT token
-        localStorage.setItem("username", formData.username); // Store admin's username
-
-        setMessage("Login successful!");
-        navigate("/alumni-page"); // Redirect on success
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("username", formData.username);
+        toast.success("Login successful!");
+        navigate("/alumni-page");
       } else {
-        setMessage(data.error || "Login failed.");
+        toast.error(data.error || "Login failed.");
       }
     } catch (error) {
       console.error("Error during login:", error);
-      setMessage("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     }
   };
 
@@ -50,11 +49,12 @@ export default function Login() {
         <img src={Alumnilogo} alt="Alumni logo" className={styles.logo2} />
       </div>
 
-      {/* Title Section */}
       <div className={styles.adminLoginTitle}>
         <h3 className={styles.adminSystemTitle1}>TUPATS</h3>
-        <h4 className={styles.adminSystemTitle2}>The Technological University of the Philippines Alumni Tracer System</h4>
-        <h5 className={styles.adminSystemTitle3}>ADMIN RECESS</h5>
+        <h4 className={styles.adminSystemTitle2}>
+          The Technological University of the Philippines Alumni Tracer System
+        </h4>
+        <h5 className={styles.adminSystemTitle3}>ADMIN ACCESS</h5>
       </div>
 
       <div className={styles.adminLoginContainer}>
@@ -62,7 +62,7 @@ export default function Login() {
           <label>Username</label>
           <input
             type="text"
-            name='username'
+            name="username"
             placeholder="Enter username"
             value={formData.username}
             onChange={handleChange}
@@ -70,14 +70,14 @@ export default function Login() {
           <label>Password</label>
           <input
             type="password"
-            name='password'
+            name="password"
             placeholder="Enter password"
             value={formData.password}
             onChange={handleChange}
           />
           <button type="submit">LOGIN</button>
         </form>
-        {message && <p>{message}</p>}
+
         <button
           className={styles.registerButton}
           onClick={() => navigate('/register')}

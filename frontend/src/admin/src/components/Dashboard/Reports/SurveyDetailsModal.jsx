@@ -22,6 +22,8 @@ import {
 } from "recharts";
 import styles from "./SurveyDetailsModal.module.css";
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function SurveyDetailsModal({ isOpen, onClose, selectedSurvey }) {
     const [chartData, setChartData] = useState(null);
@@ -42,7 +44,7 @@ export default function SurveyDetailsModal({ isOpen, onClose, selectedSurvey }) 
         const win = window.open(url, "_blank");
 
         if (!win) {
-            alert("Popup blocked. Please allow popups for this site.");
+            toast.warning("Popup blocked. Please allow popups for this site.");
         }
     };
 

@@ -2,6 +2,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import styles from './TracerTabs.module.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Notification = ({ studentData }) => {
   const [notificationSent, setNotificationSent] = useState(false);
@@ -24,7 +27,7 @@ const Notification = ({ studentData }) => {
     const text = templates[messageTemplate];
   
     if (!email) {
-      alert("❌ No email address found for this student. Please verify the student's data.");
+      toast.warning("❌ No email address found for this student. Please verify the student's data.");
       return;
     }
   
@@ -38,11 +41,11 @@ const Notification = ({ studentData }) => {
       if (response.status === 200) {
         setNotificationSent(true);
         setTimeout(() => setNotificationSent(false), 3000);
-        alert("✅ Notification sent successfully!");
+        toast.success("✅ Notification sent successfully!");
       }
     } catch (error) {
       console.error('Error sending notification:', error);
-      alert('❌ Failed to send notification');
+     toast.error('❌ Failed to send notification');
     }
   };
 

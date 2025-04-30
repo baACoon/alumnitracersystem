@@ -8,6 +8,9 @@ import  {jwtDecode} from 'jwt-decode';
 import { TracerComparisonTab } from './TracerTabComparison';
 import { Tracer1Tab } from './TracerTab1';
 import { Tracer2Tab } from './TracerTab2';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { faUser as farUser } from '@fortawesome/free-regular-svg-icons';
 
 function Pagination({ currentPage, totalPages, setCurrentPage }) {
   const getPageNumbers = () => {
@@ -77,7 +80,7 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          alert("Session expired. Please log in again.");
+          toast.error("Session expired. Please log in again.");
           navigate('/login');
           return;
         }
@@ -124,13 +127,13 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
     
           setAlumniData(alumniWithStatus);
         } else {
-          alert('No alumni data available.');
+          toast.warning("No alumni data available.");
           setAlumniData([]);
         }
       } catch (error) {
         console.error('Error fetching alumni data:', error);
         if (error.response?.status === 401) {
-          alert("Authentication error. Please log in again.");
+          toast.error("Authentication error. Please log in again.");
           navigate('/login');
         }
       }
@@ -266,16 +269,15 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
         console.log('✅ Combined Student Details with createdAt + gradyear:', studentData);
       } else {
         console.error('Unexpected API response structure:', studentRes.data);
-        alert('Failed to fetch student details.');
-      }
+        toast.error("Failed to fetch student details.");      }
     } catch (error) {
       console.error('Error fetching student details:', error);
       if (error.response?.status === 404) {
-        alert('Alumnus not found.');
+        toast.error('Alumnus not found.');
       } else if (error.response?.status === 500) {
-        alert('Server error. Please try again later.');
+        toast.error('Server error. Please try again later.');
       } else {
-        alert('An error occurred while fetching student details.');
+        toast.error('An error occurred while fetching student details.');
       }
     }
   };

@@ -11,6 +11,9 @@ import Opportunities from './components/Opportunities/Admin-Opportunities';
 import Navbar from './components/Navbar';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
   return (
@@ -34,6 +37,7 @@ function App() {
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
 }
