@@ -30,7 +30,7 @@
   }
   
   .completedButton {
-    border-color: #2c9f47;
+    border-color: #EE992C;
   }
   
   .pendingButton:hover {
@@ -39,7 +39,7 @@
   }
   
   .completedButton:hover {
-    background-color: #2c9f47;
+    background: linear-gradient(to right, #EE992C 0%, #CD3C28 100%);
     color: white;
   }
   
@@ -49,7 +49,7 @@
   }
   
   .completedActiveTab {
-    background-color: #2c9f47;
+    background: linear-gradient(to right, #EE992C 0%, #CD3C28 100%);
     color: white;
   }
   
