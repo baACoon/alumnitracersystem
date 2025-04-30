@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import styles from "./Create-Opportunity.module.css";
+import {  toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default function CreateOpportunity({ onClose }) {
   const [formData, setFormData] = useState({
@@ -64,7 +67,7 @@ export default function CreateOpportunity({ onClose }) {
 
     // Check if all required fields are filled
     if (!formData.title || !formData.company || !formData.college || !formData.course || !formData.location || !formData.description) {
-        alert("Title, Company, College, Course, Location, and Description are required!");
+        toast.warning("Title, Company, College, Course, Location, and Description are required!");
         setLoading(false);
         return;
     }
@@ -72,7 +75,7 @@ export default function CreateOpportunity({ onClose }) {
     try {
         const token = localStorage.getItem("token");
         if (!token) {
-            alert("You need to log in first.");
+            toast.warning("You need to log in first.");
             setLoading(false);
             return;
         }
@@ -125,16 +128,16 @@ export default function CreateOpportunity({ onClose }) {
 
         if (!response.ok) {
             console.error("Failed to create job:", responseData);
-            alert(`Error: ${responseData.error || "Failed to create job."}`);
+            toast.error(`Error: ${responseData.error || "Failed to create job."}`);
             setLoading(false);
             return;
         }
 
-        alert("Job opportunity posted successfully!");
+        toast.success("Job opportunity posted successfully!");
         onClose(); // Close modal after submission
     } catch (error) {
         console.error("Error creating opportunity:", error);
-        alert("An error occurred while creating the opportunity.");
+        toast.error("An error occurred while creating the opportunity.");
     } finally {
         setLoading(false);
     }

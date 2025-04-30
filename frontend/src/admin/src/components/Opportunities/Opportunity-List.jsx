@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Opportunity-List.module.css";
 import './opplistmodal.css';
+import {  toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default function OpportunityList() {
     const [publishedOpportunities, setPublishedOpportunities] = useState([]);
@@ -12,7 +15,7 @@ export default function OpportunityList() {
         const fetchPublishedOpportunities = async () => {
             const token = localStorage.getItem("token"); // Ensure token is included
             if (!token) {
-                alert("You need to log in first.");
+                toast.warning("You need to log in first.");
                 return;
             }
 
@@ -26,7 +29,7 @@ export default function OpportunityList() {
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error("Failed to fetch published opportunities:", errorData);
-                    alert(errorData.message || "Failed to fetch published opportunities.");
+                    toast.error(errorData.message || "Failed to fetch published opportunities.");
                     return;
                 }
 
@@ -34,7 +37,7 @@ export default function OpportunityList() {
                 setPublishedOpportunities(data); // Set the fetched opportunities
             } catch (error) {
                 console.error("Error fetching published opportunities:", error);
-                alert("An error occurred while fetching published opportunities.");
+                toast.error("An error occurred while fetching published opportunities.");
             } finally {
                 setLoading(false);
             }
