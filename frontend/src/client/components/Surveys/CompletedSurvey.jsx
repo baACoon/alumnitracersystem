@@ -367,9 +367,9 @@ export const CompletedSurvey = () => {
                   : null}
 
             <div style={{ textAlign: "right", marginTop: "20px" }}>
-              <button className={`${styles.button} ${styles.outlineButton}`} onClick={closeModal}>
+              { /* <button className={`${styles.button} ${styles.outlineButton}`} onClick={closeModal}>
                 Close
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
