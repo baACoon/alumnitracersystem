@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Opportunity-Pending.module.css";
 import './opplistmodal.css'
+import {  toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function OpportunityPending() {
   const [pendingOpportunities, setPendingOpportunities] = useState([]);
@@ -8,12 +10,14 @@ export default function OpportunityPending() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [showRejectionForm, setShowRejectionForm] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isPublishing, setIsPublishing] = useState(false);
+
 
   useEffect(() => {
     const fetchPendingOpportunities = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("You need to log in first.");
+        toast.warning("You need to log in first.");
         return;
       }
 
@@ -30,7 +34,7 @@ export default function OpportunityPending() {
         if (!response.ok) {
           const errorData = await response.json();
           console.error("Failed to fetch pending opportunities:", errorData);
-          alert(errorData.message || "Failed to fetch pending opportunities.");
+          toast.error(errorData.message || "Failed to fetch pending opportunities.");
           return;
         }
 
@@ -38,7 +42,7 @@ export default function OpportunityPending() {
         setPendingOpportunities(data);
       } catch (error) {
         console.error("Error fetching pending opportunities:", error);
-        alert("An error occurred while fetching pending opportunities.");
+        toast.error("An error occurred while fetching pending opportunities.");
       } finally {
         setLoading(false);
       }
@@ -49,13 +53,15 @@ export default function OpportunityPending() {
 
   const handlePublishClick = async () => {
     if (!selectedOpportunity) return;
-
+  
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("You need to log in first.");
+      toast.warning("You need to log in first.");
       return;
     }
-
+  
+    setIsPublishing(true); // Start loading
+  
     try {
       const response = await fetch(
         `https://alumnitracersystem.onrender.com/jobs/${selectedOpportunity._id}/approve`,
@@ -66,24 +72,27 @@ export default function OpportunityPending() {
           },
         }
       );
-
+  
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Failed to publish opportunity:", errorText);
-        alert("Failed to publish opportunity.");
+        toast.error("Failed to publish opportunity.");
         return;
       }
-
-      alert("Opportunity published successfully!");
+  
+      toast.success("Opportunity published successfully!");
       setPendingOpportunities((prev) =>
         prev.filter((opportunity) => opportunity._id !== selectedOpportunity._id)
       );
       setSelectedOpportunity(null);
     } catch (error) {
       console.error("Error publishing opportunity:", error);
-      alert("An error occurred while publishing the opportunity.");
+      toast.error("An error occurred while publishing the opportunity.");
+    } finally {
+      setIsPublishing(false); // Stop loading
     }
   };
+  
 
   const handleRejectClick = () => {
     setShowRejectionForm(true);
@@ -94,7 +103,7 @@ export default function OpportunityPending() {
 
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("You need to log in first.");
+      toast.warning("You need to log in first.");
       return;
     }
 
@@ -114,11 +123,11 @@ export default function OpportunityPending() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Failed to reject opportunity:", errorData);
-        alert(errorData.message || "Failed to reject opportunity.");
+        toast.error(errorData.message || "Failed to reject opportunity.");
         return;
       }
 
-      alert(`Opportunity rejected for the following reason: ${rejectionReason}`);
+      toast.error(`Opportunity rejected for the following reason: ${rejectionReason}`);
       setPendingOpportunities((prev) =>
         prev.filter((opportunity) => opportunity._id !== selectedOpportunity._id)
       );
@@ -127,7 +136,7 @@ export default function OpportunityPending() {
       setSelectedOpportunity(null);
     } catch (error) {
       console.error("Error rejecting opportunity:", error);
-      alert("An error occurred while rejecting the opportunity.");
+      toast.error("An error occurred while rejecting the opportunity.");
     }
   };
 
@@ -243,8 +252,8 @@ export default function OpportunityPending() {
                 <button className="rejectButton" onClick={handleRejectClick}>
                   Reject
                 </button>
-                <button className="publishButton" onClick={handlePublishClick}>
-                  Publish
+                <button className="publishButton" onClick={handlePublishClick} disabled={isPublishing}>
+                  {isPublishing ? "Publishing..." : "Publish"}
                 </button>
               </div>
 
