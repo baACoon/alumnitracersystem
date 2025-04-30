@@ -185,38 +185,45 @@ const Register_NewAlumni = ({ closeModal }) => {
     };
     
     const resetRecoveredPassword = async () => {
+        const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
         const token = localStorage.getItem('recoveryToken');
         console.log(" Token used for reset:", token);
-
+      
         if (!token) {
-        alert("Token missing. Please verify the code again.");
-        return;
-}
+          alert("Token missing. Please verify the code again.");
+          return;
+        }
+      
         if (newRecoveredPassword !== confirmRecoveredPassword) {
-            alert("Passwords do not match.");
-            return;
+          alert("Passwords do not match.");
+          return;
         }
-    
+      
+        if (!strongPasswordRegex.test(newRecoveredPassword)) {
+          alert("Password must include uppercase, lowercase, number, special character and be 8+ characters.");
+          return;
+        }
+      
         try {
-            const token = localStorage.getItem('recoveryToken');
-            const response = await fetch('http://localhost:5050/api/recover/reset-password', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token, newPassword: newRecoveredPassword })
-            });
-    
-            const data = await response.json();
-            if (response.ok) {
-                alert('Password reset successful! Please login.');
-                closeModal();
-                navigate('/');
-            } else {
-                alert(data.message || 'Reset failed.');
-            }
+          const response = await fetch('http://localhost:5050/api/recover/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, newPassword: newRecoveredPassword })
+          });
+      
+          const data = await response.json();
+          if (response.ok) {
+            alert('Password reset successful! Please login.');
+            closeModal();
+            navigate('/');
+          } else {
+            alert(data.message || 'Reset failed.');
+          }
         } catch (error) {
-            alert('Error resetting password.');
+          alert('Error resetting password.');
         }
-    };
+      };
+      
     
     
 
@@ -249,7 +256,12 @@ const Register_NewAlumni = ({ closeModal }) => {
             alert("All fields are required");
             return;
         }
-
+        const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        if (!strongPasswordRegex.test(password)) {
+          alert("Password must include uppercase, lowercase, number, special character and be 8+ characters.");
+          return;
+        }
+        
         const formData = {
             gradyear,
             firstName,

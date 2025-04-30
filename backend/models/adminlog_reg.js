@@ -28,6 +28,15 @@ router.post("/adminregister", async (req, res) => {
       console.error("Validation failed: Passwords do not match");
       return res.status(400).json({ error: "Passwords do not match." });
     }
+
+    // Password strength validation
+      const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      if (!strongPasswordRegex.test(password)) {
+        return res.status(400).json({
+          error: "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
+        });
+      }
+
   
     try {
 

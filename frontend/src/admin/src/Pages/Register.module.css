@@ -122,6 +122,28 @@
     .loginButton:hover {
       color: #f84c3f;
     }
+
+    .passwordInputWrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    
+    .passwordInputWrapper input {
+      flex: 1;
+      padding-right: 70px; /* space for the button */
+    }
+    
+    .toggleBtn {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      color: #007bff;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    
   
   /* Responsive Styling */
   @media (max-width: 768px) {
@@ -149,4 +171,6 @@
       font-size: 0.9rem;
   }
   }
+
+
   
