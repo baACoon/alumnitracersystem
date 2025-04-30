@@ -90,21 +90,21 @@ function TracerSurvey2({ onBack }) {
 
   const validateForm = useCallback(() => {
     if (currentPage === 1) {
-      return (
-        formData.bachelorOnly || formData.education[0].every(
-          edu => 
-            edu.college.length > 0 &&
-            edu.course.length > 0 && 
-            edu.yearGraduated
-        )
-   
-        (
-          formData.noExams || formData.examinations.every(
-            exam => exam.examName && exam.dateTaken && exam.rating
-          )
-        )
+      const isEducationValid = formData.bachelorOnly || formData.education.every(
+        edu =>
+          edu.college?.length > 0 &&
+          edu.course?.length > 0 &&
+          edu.yearGraduated &&
+          edu.institution
       );
+  
+      const isExamsValid = formData.noExams || formData.examinations.every(
+        exam => exam.examName && exam.dateTaken && exam.rating
+      );
+  
+      return isEducationValid && isExamsValid;
     }
+  
     if (currentPage === 2) {
       return (
         (
@@ -115,21 +115,35 @@ function TracerSurvey2({ onBack }) {
         (
           formData.motivation.promotion ||
           formData.motivation.professionalDevelopment ||
+          formData.motivation.personalInterest ||
+          formData.motivation.scholarship ||
+          formData.motivation.careerShift ||
           formData.motivation.none
         )
       );
     }
+  
     if (currentPage === 3) {
-      return (
-        formData.job_status &&
-        formData.jobDetails.occupation &&
-        formData.jobDetails.company_name &&
-        formData.jobDetails.year_started &&
-        formData.jobDetails.type_of_organization &&
-        formData.jobDetails.lineOfBusiness &&
-        formData.jobDetails.placeOfWork
-      );
+      if (!formData.job_status) return false;
+    
+      if (formData.job_status === "Unemployed") {
+        const hasReason = Object.values(formData.unemploymentReasons || {}).some(Boolean);
+        return hasReason;
+      }
+      
+    
+      const requiredFields = [
+        "occupation", "company_name", "position", "year_started",
+        "type_of_organization", "lineOfBusiness", "placeOfWork",
+        "firstJob", "jobRelatedToCourse", "firstJobDuration",
+        "jobLandingTime", "job_level", "salaryRange", "work_alignment"
+      ];
+    
+      const allJobDetailsFilled = requiredFields.every(field => formData.jobDetails?.[field]);
+    
+      return allJobDetailsFilled;
     }
+  
     return false;
   }, [currentPage, formData]);
   
@@ -150,15 +164,12 @@ function TracerSurvey2({ onBack }) {
   const handleSubmit = async (e) => {
     e?.preventDefault();
   
-    if (
-      !formData.education.length ||
-      (!formData.trainings.length && !formData.noTrainings)
-    ) {
-      setSubmitStatus({ type: "error", message: "Education and training fields are required." });
+    if (!validateForm()) {
+      setSubmitStatus({ type: "error", message: "Please fill in all required fields." });
       return;
     }
-    
-    
+  
+    setIsSubmitting(true);
   
     const payload = {
       userId: localStorage.getItem("userId"),
@@ -168,7 +179,7 @@ function TracerSurvey2({ onBack }) {
         course: Array.isArray(edu.course) ? edu.course : [edu.course || ""],
         yearGraduated: Array.isArray(edu.yearGraduated) ? edu.yearGraduated[0] : edu.yearGraduated || "",
         institution: Array.isArray(edu.institution) ? edu.institution[0] : edu.institution || ""
-      })),      
+      })),
       examinations: formData.noExams ? [] : formData.examinations.map(exam => ({
         examName: exam.examName || "",
         dateTaken: exam.dateTaken || "",
@@ -180,39 +191,11 @@ function TracerSurvey2({ onBack }) {
         duration: training.duration || "",
         institution: training.institution || ""
       })),
-      motivation: {
-        promotion: !!formData.motivation.promotion,
-        professionalDevelopment: !!formData.motivation.professionalDevelopment,
-        personalInterest: !!formData.motivation.personalInterest,
-        scholarship: !!formData.motivation.scholarship,
-        careerShift: !!formData.motivation.careerShift,
-        none: !!formData.motivation.none,
-      },
+      motivation: formData.motivation,
       job_status: formData.job_status || "unemployed",
-      unemploymentReasons: {
-        furtherStudy: !!formData.unemploymentReasons.furtherStudy,
-        noJobOpportunity: !!formData.unemploymentReasons.noJobOpportunity,
-        familyConcern: !!formData.unemploymentReasons.familyConcern,
-        didNotLook: !!formData.unemploymentReasons.didNotLook,
-        healthRelated: !!formData.unemploymentReasons.healthRelated,
-        lackExperience: !!formData.unemploymentReasons.lackExperience
-      },
-      jobDetails: {
-        ...formData.jobDetails,
-        stayingReasons: formData.jobDetails.stayingReasons || {},
-        acceptingJobReasons: formData.jobDetails.acceptingJobReasons || {},
-        changingJobReasons: formData.jobDetails.changingJobReasons || {},
-        firstJobSearch: formData.jobDetails.firstJobSearch || {},
-        jobLandingTime: formData.jobDetails.jobLandingTime || "",
-        position: formData.jobDetails.position || "",
-        job_level: formData.jobDetails.job_level || "",
-        salaryRange: formData.jobDetails.salaryRange || "",
-        work_alignment: formData.jobDetails.work_alignment || "",
-        competencies: formData.jobDetails.competencies || {}
-      },
+      unemploymentReasons: formData.unemploymentReasons,
+      jobDetails: formData.jobDetails,
     };
-  
-    console.log("Submitting payload:", payload);
   
     try {
       const response = await axios.post(
@@ -241,6 +224,7 @@ function TracerSurvey2({ onBack }) {
     }
   };
   
+  
 
   return (
     <div className={styles.tracer2Container}>
@@ -252,10 +236,25 @@ function TracerSurvey2({ onBack }) {
       <h2 className={styles.title}>TRACE SURVEY FORM </h2>
 
       {submitStatus.message && (
-        <div className={submitStatus.type === "error" ? styles.errorMessage : styles.successMessage}>
-          {submitStatus.message}
-        </div>
-      )}
+      <div
+        className={`${submitStatus.type === "error" ? styles.errorBox : styles.successBox}`}
+        style={{
+          fontSize: "16px",
+          fontWeight: "600",
+          padding: "12px 20px",
+          borderRadius: "8px",
+          margin: "16px auto",
+          width: "90%",
+          textAlign: "center",
+          backgroundColor: submitStatus.type === "error" ? "#ffcccc" : "#d4edda",
+          color: submitStatus.type === "error" ? "#a94442" : "#155724",
+          border: `2px solid ${submitStatus.type === "error" ? "#f5c6cb" : "#c3e6cb"}`,
+        }}
+      >
+        {submitStatus.message}
+      </div>
+    )}
+
 
       {currentPage === 1 && <Page1_Education data={formData} updateForm={handleUpdateForm} />}
       {currentPage === 2 && <Page2_Training data={formData} updateForm={handleUpdateForm} />}

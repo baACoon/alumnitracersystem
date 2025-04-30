@@ -150,6 +150,7 @@ const Page3_Employment = ({ data, updateForm }) => {
           {/* Present Occupation */}
           <h3 className={styles.sectionTitle}>Present Occupation</h3>
           <input
+          
             type="text"
             value={data.jobDetails?.occupation || ""}  // Safely access `occupation`
             onChange={(e) => updateForm("jobDetails", { ...data.jobDetails, occupation: e.target.value })}
