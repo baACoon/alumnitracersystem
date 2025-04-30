@@ -142,8 +142,11 @@ export const PendingSurvey = () => {
       <h2 className={styles.containerTitle}>AVAILABLE SURVEYS</h2>
       <div className={styles.surveyList}>
         {loading ? (
-          <div className="loadingOverlay">
-            <div className="loaderContainer">Loading...</div>
+          <div className={styles.loadingOverlay}>
+            <div className={styles.loaderContainer}>
+              <div className={styles.loader}></div>
+              <p>Loading surveys...</p>
+            </div>
           </div>
         ) : (
           <>
