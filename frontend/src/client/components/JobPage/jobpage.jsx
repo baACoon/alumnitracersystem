@@ -38,9 +38,9 @@ function JobPageMainPage() {
   return (
     <div className="JobPageWrapper">
       {loading ? (
-          <div className={styles.loadingOverlay}>
-          <div className={styles.loaderContainer}>
-            <div className={styles.loader}></div>
+          <div className="loadingOverlay">
+          <div className="loaderContainer">
+            <div className="loader"></div>
             <p>Loading...</p>
           </div>
         </div>
