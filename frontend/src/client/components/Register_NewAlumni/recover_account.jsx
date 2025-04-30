@@ -69,6 +69,11 @@ const RecoverAccount = () => {
     }
 
     try {
+      const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        if (!strongPasswordRegex.test(newPassword)) {
+          return alert("Password must include uppercase, lowercase, number, special character and be 8+ characters.");
+        }
+
       const token = localStorage.getItem('recoveryToken');
       const response = await fetch('https://alumnitracersystem.onrender.com/api/recover/reset-password', {
         method: 'POST',

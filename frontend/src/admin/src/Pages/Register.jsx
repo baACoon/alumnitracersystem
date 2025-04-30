@@ -5,6 +5,9 @@ import Alumnilogo from '../components/images/alumniassoc_logo.png'
 import styles from './Register.module.css';
 
 const AdminRegister = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -18,6 +21,20 @@ const AdminRegister = () => {
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  
+    if (!strongPasswordRegex.test(formData.password)) {
+      setMessage("Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.");
+      return;
+    }
+  
+    if (formData.password !== formData.confirmPassword) {
+      setMessage("Passwords do not match.");
+      return;
+    }
+  
     try {
       const response = await fetch('https://alumnitracersystem.onrender.com/adminlog_reg/adminregister', {
         method: "POST",
@@ -26,21 +43,22 @@ const AdminRegister = () => {
         },
         body: JSON.stringify(formData),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
-        setMessage(data.message); // Show success message
-        localStorage.setItem('token', data.token); // Save token
-        navigate("/alumni-page"); // Redirect
+        setMessage(data.message);
+        localStorage.setItem('token', data.token);
+        navigate("/alumni-page");
       } else {
-        setMessage(data.error || "Registration failed."); // Show error message
+        setMessage(data.error || "Registration failed.");
       }
     } catch (error) {
       console.error("Error submitting registration:", error);
       setMessage("An error occurred. Please try again.");
     }
   };
+  
 
   return (
     <div>
@@ -68,21 +86,41 @@ const AdminRegister = () => {
             onChange={handleChange}
           />
           <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            value={formData.password}
-            onChange={handleChange}
-          />
+          <div className={styles.passwordInputWrapper}>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Enter password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className={styles.toggleBtn}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+
           <label>Confirm Password</label>
-          <input
-            type="password"
-            name='confirmPassword'
-            placeholder="Confirm password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-          />
+          <div className={styles.passwordInputWrapper}>
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmPassword"
+              placeholder="Confirm password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword((prev) => !prev)}
+              className={styles.toggleBtn}
+            >
+              {showConfirmPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+
           <button type="submit">Register</button>
         </form>
         {message && <p>{message}</p>}

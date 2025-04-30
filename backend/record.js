@@ -43,6 +43,14 @@ router.post("/register", async (req, res) => {
       console.log("Error: Passwords do not match");
       return res.status(400).json({ error: "Passwords do not match." });
     }
+    // Strong password enforcement
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    if (!strongPasswordRegex.test(password)) {
+      return res.status(400).json({
+        error: "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
+      });
+    }
+
 
     // Ensure graduation year is a number
     const parsedGradYear = parseInt(gradyear);
@@ -326,6 +334,14 @@ router.post("/login", async (req, res) => {
       console.log(`Error: User not found with ID: ${alumniID}`);
       return res.status(401).json({ error: "Invalid Alumni ID or password." });
     }
+
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      if (!strongPasswordRegex.test(newPassword)) {
+        return res.status(400).json({
+          error: "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
+        });
+      }
+
 
     // Compare provided password with the hashed password in the database
     const isPasswordValid = await bcrypt.compare(password, user.password);
