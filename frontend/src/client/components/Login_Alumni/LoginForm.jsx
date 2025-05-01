@@ -4,9 +4,13 @@ import styles from './LoginForm.module.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
 const TestLoginForm = ({ closeModal }) => {
   const [alumniID, setAlumniID] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // 👁️ toggle
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showCodeInput, setShowCodeInput] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
@@ -51,16 +55,16 @@ const TestLoginForm = ({ closeModal }) => {
 
   const handleSendResetCode = async () => {
     if (!resetAlumniID) return toast.error("Enter Alumni ID");
-  
+
     try {
       const response = await fetch('https://alumnitracersystem.onrender.com/api/recover/send-reset-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ alumniID: resetAlumniID })
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         setResetEmail(data.email);
         setShowForgotPassword(false);
@@ -75,7 +79,6 @@ const TestLoginForm = ({ closeModal }) => {
       setLoading(false);
     }
   };
-  
 
   const handleVerifyResetCode = async () => {
     if (!resetCode || !resetEmail) return toast.warning("Code and email required");
@@ -134,7 +137,6 @@ const TestLoginForm = ({ closeModal }) => {
     const masked = `${start}${'*'.repeat(user.length - 4)}${end}`;
     return `${masked}@${domain}`;
   };
-  
 
   return (
     <div className={styles.modalOverlayLogin}>
@@ -155,16 +157,26 @@ const TestLoginForm = ({ closeModal }) => {
                 className={styles.inputFieldLogin}
                 disabled={loading}
               />
+
               <h5>Enter Password</h5>
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className={styles.inputFieldLogin}
-                disabled={loading}
-              />
+              <div className={styles.passwordWrapper}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className={styles.inputFieldLogin}
+                  disabled={loading}
+                />
+                <span
+                  className={styles.togglePasswordIcon}
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                </span>
+              </div>
+
               <button type="submit" className={styles.submitButtonLogin} disabled={loading}>
                 {loading ? "Logging in..." : "Login"}
               </button>

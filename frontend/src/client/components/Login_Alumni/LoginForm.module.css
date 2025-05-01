@@ -191,6 +191,22 @@
     color: #ddd; 
 }
 
+.passwordWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.togglePasswordIcon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #555;
+  cursor: pointer;
+}
+
+
 .nextbutton{
     padding: 12px;
     background-color: #C12542;
