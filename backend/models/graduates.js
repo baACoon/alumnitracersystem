@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
 
 const graduateSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  college: { type: String, required: true }
-}, { timestamps: true });
+  name: String,
+  email: String,
+  college: String,
+});
 
-const Graduate = mongoose.model("Graduate", graduateSchema);
+
+const Graduate = mongoose.models.Graduate || mongoose.model("Graduate", graduateSchema);
+
 export default Graduate;
