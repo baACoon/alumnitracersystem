@@ -170,37 +170,6 @@
     color: #580808; /* Highlighted text color */
   }
 
-  @keyframes fadeUp {
-    0% {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .fadeUp1,
-  .fadeUp2,
-  .fadeUp3 {
-    opacity: 0;
-    animation: fadeUp 0.8s ease-out forwards;
-  }
-  
-  .fadeUp1 {
-    animation-delay: 0.3s;
-  }
-  
-  .fadeUp2 {
-    animation-delay: 0.6s;
-  }
-  
-  .fadeUp3 {
-    animation-delay: 0.9s;
-  }
-  
-
 
   /* Loader Styling */
 .loaderContainer {
