@@ -57,58 +57,86 @@ function Home() {
 }
 
 function HomePage() {
-
     const [stats, setStats] = useState({
-        totalAlumni: 0,
-        employedAlumni: 0,
-        alignedAlumni: 0,
+      totalAlumni: 0,
+      employedAlumni: 0,
+      alignedAlumni: 0,
     });
-
+  
+    const [employmentDisplay, setEmploymentDisplay] = useState(0);
+    const [alignmentDisplay, setAlignmentDisplay] = useState(0);
+  
     useEffect(() => {
-        const fetchStats = async () => {
-          try {
-            const baseURL = "https://alumnitracersystem.onrender.com/dashboard";
-            const responses = await Promise.all([
-              fetch(`${baseURL}/total-alumni`),
-              fetch(`${baseURL}/employed-alumni`),
-              fetch(`${baseURL}/course-aligned-alumni`),
-            ]);
-    
-            if (!responses.every(res => res.ok)) {
-              throw new Error("One or more requests failed");
-            }
-    
-            const [totalData, employedData, alignedData] = await Promise.all(responses.map(res => res.json()));
-    
-            setStats({
-              totalAlumni: totalData.totalAlumni || 0,
-              employedAlumni: employedData.employedAlumni || 0,
-              alignedAlumni: alignedData.alignedAlumni || 0,
-            });
-          } catch (error) {
-            console.error("Error fetching home page data:", error);
+      const fetchStats = async () => {
+        try {
+          const baseURL = "https://alumnitracersystem.onrender.com/dashboard";
+          const responses = await Promise.all([
+            fetch(`${baseURL}/total-alumni`),
+            fetch(`${baseURL}/employed-alumni`),
+            fetch(`${baseURL}/course-aligned-alumni`),
+          ]);
+  
+          if (!responses.every(res => res.ok)) {
+            throw new Error("One or more requests failed");
           }
-        };
-    
-        fetchStats();
-      }, []);
-
-    const employmentRate = stats.totalAlumni ? Math.round((stats.employedAlumni / stats.totalAlumni) * 100) : 0;
-    const alignmentRate = stats.totalAlumni ? Math.round((stats.alignedAlumni / stats.totalAlumni) * 100) : 0;
-
+  
+          const [totalData, employedData, alignedData] = await Promise.all(
+            responses.map(res => res.json())
+          );
+  
+          const total = totalData.totalAlumni || 0;
+          const employed = employedData.employedAlumni || 0;
+          const aligned = alignedData.alignedAlumni || 0;
+  
+          setStats({ totalAlumni: total, employedAlumni: employed, alignedAlumni: aligned });
+  
+          const employmentRate = total ? Math.round((employed / total) * 100) : 0;
+          const alignmentRate = total ? Math.round((aligned / total) * 100) : 0;
+  
+          animateCount(employmentRate, alignmentRate);
+        } catch (error) {
+          console.error("Error fetching home page data:", error);
+        }
+      };
+  
+      const animateCount = (targetEmp, targetAlign) => {
+        let emp = 0;
+        let align = 0;
+        const duration = 1500;
+        const step = 20;
+        const steps = duration / step;
+        const empStep = targetEmp / steps;
+        const alignStep = targetAlign / steps;
+  
+        const interval = setInterval(() => {
+          emp += empStep;
+          align += alignStep;
+  
+          setEmploymentDisplay(Math.min(emp, targetEmp));
+          setAlignmentDisplay(Math.min(align, targetAlign));
+  
+          if (emp >= targetEmp && align >= targetAlign) {
+            clearInterval(interval);
+          }
+        }, step);
+      };
+  
+      fetchStats();
+    }, []);
+  
     return (
         <div className={styles.homebg}>
-        <div className={styles.homePercentage}>
-            <div className={styles.percent1}>
-            <h1 className={styles.rollEffect}>{employmentRate}%</h1>
-            <h2>Employability Rate of TUP Alumni</h2>
-            </div>
+            <div className={styles.homePercentage}>
+                <div className={styles.percent1}>
+                <h1>{Math.round(employmentDisplay)}%</h1>
+                <h2>Employability Rate of TUP Alumni</h2>
+                </div>
 
-            <div className={styles.percent2}>
-            <h1 className={styles.rollEffect}>{alignmentRate}%</h1>
-            <h2>Aligned with Specialized Course</h2>
+                <div className={styles.percent2}>
+                <h1>{Math.round(alignmentDisplay)}%</h1>
+                <h2>Aligned with Specialized Course</h2>
+                </div>
             </div>
-        </div>
         </div>
 
     );

@@ -69,58 +69,6 @@
     color: #F92C2C;
 }
 
-/* The original value gets hidden temporarily */
-.rollEffect {
-  position: relative;
-  color: transparent; /* hide real number initially */
-}
-
-.rollEffect::before {
-  content: "0";
-  animation: countUpSteps 1.5s steps(10) forwards;
-  position: absolute;
-  top: 0;
-  left: 0;
-  color: inherit;
-  font-weight: inherit;
-  font-size: inherit;
-  z-index: 1;
-}
-
-.rollEffect::after {
-  content: attr(data-final);
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  animation: fadeInReal 0.3s ease-in forwards;
-  animation-delay: 1.5s;
-  color: inherit;
-  font-weight: inherit;
-  font-size: inherit;
-  z-index: 2;
-}
-
-/* Fake number roll animation */
-@keyframes countUpSteps {
-  0%   { content: "0"; }
-  10%  { content: "10"; }
-  20%  { content: "20"; }
-  30%  { content: "30"; }
-  40%  { content: "40"; }
-  50%  { content: "50"; }
-  60%  { content: "60"; }
-  70%  { content: "70"; }
-  80%  { content: "80"; }
-  90%  { content: "90"; }
-  100% { content: "100"; }
-}
-
-@keyframes fadeInReal {
-  to {
-    opacity: 1;
-  }
-}
 
 /* tupats container */
 .tupatsContainer {
