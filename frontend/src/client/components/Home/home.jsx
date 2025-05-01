@@ -98,18 +98,25 @@ function HomePage() {
 
     return (
         <div className={styles.homebg}>
-            <div className={styles.homePercentage}>
-                <div className={styles.percent1}>
-                    <h1>{employmentRate}%</h1>
-                    <h2>Employability Rate of TUP Alumni</h2>
-                </div>
-
-                <div className={styles.percent2}>
-                    <h1>{alignmentRate}%</h1>
-                    <h2>Aligned with Specialized Course</h2>
-                </div>
-            </div>
+        <div className={styles.homePercentage}>
+          <div className={styles.percent1}>
+            <h1>
+              <span className={`${styles.homePercentage} ${styles.fakeCounter}`}></span>
+              <span className={styles.realNumber}>{employmentRate}%</span>
+            </h1>
+            <h2>Employability Rate of TUP Alumni</h2>
+          </div>
+  
+          <div className={styles.percent2}>
+            <h1>
+              <span className={`${styles.homePercentage} ${styles.fakeCounter}`}></span>
+              <span className={styles.realNumber}>{alignmentRate}%</span>
+            </h1>
+            <h2>Aligned with Specialized Course</h2>
+          </div>
         </div>
+      </div>
+  
     );
 }
 

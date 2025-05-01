@@ -69,6 +69,45 @@
     color: #F92C2C;
 }
 
+.fakeCounter::before {
+  content: "0";
+  animation: countUpSteps 1.5s steps(10) forwards;
+  display: inline-block;
+  font-size: inherit;
+  font-weight: bold;
+  color: inherit;
+  position: absolute;
+}
+
+@keyframes countUpSteps {
+  0%   { content: "0"; }
+  10%  { content: "10"; }
+  20%  { content: "20"; }
+  30%  { content: "30"; }
+  40%  { content: "40"; }
+  50%  { content: "50"; }
+  60%  { content: "60"; }
+  70%  { content: "70"; }
+  80%  { content: "80"; }
+  90%  { content: "90"; }
+  100% { content: "100"; }
+}
+
+.realNumber {
+  opacity: 0;
+  animation: showReal 0.2s ease-in forwards;
+  animation-delay: 1.5s;
+  position: relative;
+  display: inline-block;
+}
+
+@keyframes showReal {
+  to {
+    opacity: 1;
+  }
+}
+
+
 /* tupats container */
 .tupatsContainer {
   background-color: #580808;
