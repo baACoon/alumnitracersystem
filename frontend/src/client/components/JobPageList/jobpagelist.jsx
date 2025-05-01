@@ -1,60 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "./jobpagelist.css";
-import Header from "../Header/header";
-import Footer from "../FooterClient/Footer";
-import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-function JobPageList() {
-  return (
-    <div>
-      <Header />
-      <JobListMainPage />
-      <Footer />
-    </div>
-  );
-}
-
 function JobListMainPage() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [college, setCollege] = useState("");
-  const [course, setCourse] = useState("");
   const [selectedJob, setSelectedJob] = useState(null);
 
   const coursesByCollege = {
-    "College of Engineering": [
-      "Bachelor of Science in Civil Engineering",
-      "Bachelor of Science in Electrical Engineering",
-      "Bachelor of Science in Electronics Engineering",
-      "Bachelor of Science in Mechanical Engineering",
-    ],
-    "College of Science": [
-      "Bachelor of Applied Science in Laboratory Technology",
-      "Bachelor of Science in Computer Science",
-      "Bachelor of Science in Environmental Science",
-      "Bachelor of Science in Information System",
-      "Bachelor of Science in Information Technology",
-    ],
-    "College of Industrial Education": [
-      "Bachelor of Science Industrial Education Major in Information and Communication Technology",
-      "Bachelor of Science Industrial Education Major in Home Economics",
-      "Bachelor of Science Industrial Education Major in Industrial Arts",
-    ],
-    "College of Liberal Arts": [
-      "Bachelor of Science in Business Management Major in Industrial Management",
-      "Bachelor of Science in Entrepreneurship",
-      "Bachelor of Science in Hospitality Management",
-    ],
-    "College of Architecture and Fine Arts": [
-      "Bachelor of Science in Architecture",
-      "Bachelor of Fine Arts",
-      "Bachelor of Graphic Technology Major in Architecture Technology",
-    ],
+    "College of Engineering": [],
+    "College of Science": [],
+    "College of Industrial Education": [],
+    "College of Liberal Arts": [],
+    "College of Architecture and Fine Arts": [],
   };
 
   const goToJobPage = () => {
@@ -85,17 +42,12 @@ function JobListMainPage() {
     if (college) {
       updated = updated.filter((job) => job.college === college);
     }
-    if (course) {
-      updated = updated.filter((job) => job.course === course);
-    }
     setFilteredJobs(updated);
-  }, [college, course, jobs]);
+  }, [college, jobs]);
 
   return (
     <div className="listcontainer">
-      <a onClick={goToJobPage} className="back-button">
-        Back
-      </a>
+      <a onClick={goToJobPage} className="back-button">Back</a>
       <h1 className="list-title">JOB OPPORTUNITIES FEED</h1>
 
       <div className="filter-controls">
@@ -104,10 +56,7 @@ function JobListMainPage() {
           <select
             id="college"
             value={college}
-            onChange={(e) => {
-              setCollege(e.target.value);
-              setCourse("");
-            }}
+            onChange={(e) => setCollege(e.target.value)}
           >
             <option value="">All Colleges</option>
             {Object.keys(coursesByCollege).map((collegeName) => (
@@ -115,33 +64,17 @@ function JobListMainPage() {
             ))}
           </select>
         </div>
-
-        <div className="filter-group">
-          <label htmlFor="course">Course:</label>
-          <select
-            id="course"
-            value={course}
-            onChange={(e) => setCourse(e.target.value)}
-            disabled={!college}
-          >
-            <option value="">All Courses</option>
-            {college &&
-              coursesByCollege[college].map((courseName) => (
-                <option key={courseName} value={courseName}>{courseName}</option>
-              ))}
-          </select>
-        </div>
       </div>
 
       {loading ? (
-          <div className="loadingOverlay">
+        <div className="loadingOverlay">
           <div className="loaderContainer">
             <div className="loader"></div>
             <p>Loading...</p>
           </div>
         </div>
       ) : filteredJobs.length === 0 ? (
-        <p className="no-jobs-message">No job opportunities found for the selected filters.</p>
+        <p className="no-jobs-message">No job opportunities found for the selected college.</p>
       ) : (
         filteredJobs.map((job) => (
           <div key={job._id} className="job-card" onClick={() => setSelectedJob(job)}>
@@ -157,12 +90,11 @@ function JobListMainPage() {
         ))
       )}
 
+      {/* Modal remains unchanged */}
       {selectedJob && (
         <div className="eventModal">
           <div className="eventModalContent">
-            <span className="closeButton" onClick={() => setSelectedJob(null)}>
-              &times;
-            </span>
+            <span className="closeButton" onClick={() => setSelectedJob(null)}>&times;</span>
             <p className="job-date">
               {selectedJob.createdAt
                 ? new Date(selectedJob.createdAt).toLocaleDateString("en-US", {
@@ -218,5 +150,3 @@ function JobListMainPage() {
     </div>
   );
 }
-
-export default JobPageList;
