@@ -1,3 +1,21 @@
+/* Make the page take full height */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Let this area grow and fill space between header and footer */
+.content-wrapper {
+  flex: 1;
+}
+
+/* Optional: Ensure the footer is always at the bottom */
+.footer-client {
+  margin-top: auto;
+}
+
+
 /* Container styling */
 .givecontainer {
     padding: 200px 20px 100px; /* Account for the fixed header */

@@ -12,13 +12,16 @@ import Footer from '../FooterClient/Footer';
 
 function JobPageGive() {
   return (
-    <div>
+    <div className="page-wrapper"> 
       <Header />
-      <JobGiveMainPage />
+      <div className="content-wrapper"> 
+        <JobGiveMainPage />
+      </div>
       <Footer />
     </div>
   );
 }
+
 
 function JobGiveMainPage() {
   const navigate = useNavigate();
