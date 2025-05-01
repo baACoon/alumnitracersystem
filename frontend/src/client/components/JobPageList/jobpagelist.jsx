@@ -1,3 +1,22 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./jobpagelist.css";
+import Header from "../Header/header";
+import Footer from "../FooterClient/Footer";
+import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+function JobPageList() {
+  return (
+    <div>
+      <Header />
+      <JobListMainPage />
+      <Footer />
+    </div>
+  );
+}
+
 function JobListMainPage() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
@@ -150,3 +169,5 @@ function JobListMainPage() {
     </div>
   );
 }
+
+export default JobPageList;
