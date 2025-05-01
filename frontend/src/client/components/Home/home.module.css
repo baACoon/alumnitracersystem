@@ -206,6 +206,44 @@
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.8);
 }
+
+/* ========== NEW ANIMATIONS ========== */
+
+@keyframes fadeScaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animateFadeScale {
+  animation: fadeScaleIn 1s ease-out forwards;
+}
+
+.animateSlideUp {
+  animation: slideUp 1s ease-out forwards;
+}
+
+.animateSlideUpDelayed {
+  animation: slideUp 1s ease-out forwards;
+  animation-delay: 0.4s;
+}
+
   
 /* Responsive adjustments */
 @media (max-width: 1200px) {
@@ -289,6 +327,8 @@
     width: 100%;
   }
 }
+
+
 
 /* Popup styles - keeping these intact */
 .popBackground {
