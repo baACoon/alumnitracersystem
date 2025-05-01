@@ -100,18 +100,12 @@ function HomePage() {
         <div className={styles.homebg}>
         <div className={styles.homePercentage}>
             <div className={styles.percent1}>
-            <h1 className={styles.homePercentage}>
-                <span className={styles.fakeCounter}></span>
-                <span className={styles.realNumber}>{employmentRate}%</span>
-            </h1>
+            <h1 className={styles.rollEffect}>{employmentRate}%</h1>
             <h2>Employability Rate of TUP Alumni</h2>
             </div>
 
             <div className={styles.percent2}>
-            <h1 className={styles.homePercentage}>
-                <span className={styles.fakeCounter}></span>
-                <span className={styles.realNumber}>{alignmentRate}%</span>
-            </h1>
+            <h1 className={styles.rollEffect}>{alignmentRate}%</h1>
             <h2>Aligned with Specialized Course</h2>
             </div>
         </div>

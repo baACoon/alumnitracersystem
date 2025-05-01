@@ -69,30 +69,39 @@
     color: #F92C2C;
 }
 
-/* Fake count roll animation */
-.fakeCounter::before {
-  content: "0";
-  animation: countUpSteps 1.5s steps(10) forwards;
-  display: inline-block;
-  font-size: inherit;
-  font-weight: bold;
-  color: inherit;
+/* The original value gets hidden temporarily */
+.rollEffect {
   position: relative;
-  z-index: 1;
+  color: transparent; /* hide real number initially */
 }
 
-/* Real number appears after fake count finishes */
-.realNumber {
-  opacity: 0;
-  animation: showReal 0.3s ease-in forwards;
-  animation-delay: 1.5s;
+.rollEffect::before {
+  content: "0";
+  animation: countUpSteps 1.5s steps(10) forwards;
   position: absolute;
   top: 0;
   left: 0;
+  color: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  z-index: 1;
+}
+
+.rollEffect::after {
+  content: attr(data-final);
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  animation: fadeInReal 0.3s ease-in forwards;
+  animation-delay: 1.5s;
+  color: inherit;
+  font-weight: inherit;
+  font-size: inherit;
   z-index: 2;
 }
 
-/* Fake count frames */
+/* Fake number roll animation */
 @keyframes countUpSteps {
   0%   { content: "0"; }
   10%  { content: "10"; }
@@ -107,7 +116,7 @@
   100% { content: "100"; }
 }
 
-@keyframes showReal {
+@keyframes fadeInReal {
   to {
     opacity: 1;
   }
