@@ -37,9 +37,8 @@ export const PendingSurvey = () => {
     if (!latestSurvey) return 2 // First version
     return latestSurvey.version + 1
   }
-
-  useEffect(() => {
-    const fetchSurveys = async () => {
+  
+  const fetchSurveys = async () => {
       try {
         const token = localStorage.getItem("token")
         const response = await axios.get(`https://alumnitracersystem.onrender.com/pending/dynamic/${userId}`, {
@@ -88,6 +87,8 @@ export const PendingSurvey = () => {
       }
     }
 
+  useEffect(() => {
+    
     fetchSurveys()
     fetchTracer2Eligibility()
   }, [userId])
@@ -116,7 +117,7 @@ export const PendingSurvey = () => {
       const token = localStorage.getItem("token")
       const formattedResponses = Object.entries(responses).map(([questionId, response]) => ({ questionId, response }))
       const payload = { userId, answers: formattedResponses }
-      await axios.post(`https://alumnitracersystem.onrender.com/api/newSurveys/${selectedSurvey._id}/response`, payload, {
+      await axios.post(`https://alumnitracersystem.onrender.com/newSurveys/${selectedSurvey._id}/response`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       })
       
@@ -142,11 +143,8 @@ export const PendingSurvey = () => {
       <h2 className={styles.containerTitle}>AVAILABLE SURVEYS</h2>
       <div className={styles.surveyList}>
         {loading ? (
-          <div className={styles.loadingOverlay}>
-            <div className={styles.loaderContainer}>
-              <div className={styles.loader}></div>
-              <p>Loading surveys...</p>
-            </div>
+          <div className="loadingOverlay">
+            <div className="loaderContainer">Loading...</div>
           </div>
         ) : (
           <>
