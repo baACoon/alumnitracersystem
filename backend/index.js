@@ -58,31 +58,39 @@ app.use('/api/recover', recoverRoutes);
 
 app.post('/submit', async (req, res) => {
   try {
-    const { name, email, college } = req.body;
-    
-    if (!name || !email || !college) {
-      return res.status(400).send("Missing required fields: name, email, or college.");
+    console.log("Incoming request body:", req.body);
+
+    // Extract fields (support both combined 'name' and split fields)
+    const { name, firstName, lastName, middleName, gradYear, email, college } = req.body;
+
+    // If 'name' is provided but split fields aren't, parse it
+    const resolvedFirstName = firstName || (name ? name.split(' ')[0] : null);
+    const resolvedLastName = lastName || (name ? name.split(' ').pop() : null);
+    const resolvedMiddleName = middleName || (name && name.split(' ').length > 2 ? name.split(' ')[1] : '');
+
+    // Validate required fields
+    if (!resolvedFirstName || !resolvedLastName || !email || !college) {
+      return res.status(400).send("Missing required fields: firstName/lastName, email, or college.");
     }
 
+    // Create document
     const newGraduate = new Graduate({
-      name,
+      firstName: resolvedFirstName,
+      lastName: resolvedLastName,
+      middleName: resolvedMiddleName,
+      gradYear: gradYear || new Date().getFullYear().toString(), // Default to current year
       email,
       college,
-      // Optional fields with defaults
-      gradYear: req.body.gradYear || "2023",
-      firstName: req.body.firstName || name.split(' ')[0],
-      lastName: req.body.lastName || name.split(' ').pop() || "",
-      middleName: req.body.middleName || ""
+      name: name || `${resolvedFirstName} ${resolvedLastName}` // Backward compatibility
     });
 
     await newGraduate.save();
     res.status(200).send("Data inserted successfully");
   } catch (err) {
     console.error("Error:", err);
-    res.status(500).send(err.message);
+    res.status(500).send(err.message); // Send actual error message
   }
 });
-
 connectToDatabase()
   .then(() => {
     app.listen(PORT, () => {
