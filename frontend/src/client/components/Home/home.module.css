@@ -49,6 +49,20 @@
 .homePercentage .percent1 h1 {
     color: #F92C2C;
 }
+@keyframes fadeInAnim {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation: fadeInAnim 1.2s ease-in-out forwards;
+  opacity: 0;
+}
+
 
 /* tupats container */
 .tupatsContainer {
