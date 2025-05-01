@@ -71,7 +71,7 @@
 
 
 /* tupats container */
-.tupats{
+.tupats p{
   opacity: 0;
   animation: fadeInUp 1s ease-out forwards;
   animation-delay: 0.3s;
