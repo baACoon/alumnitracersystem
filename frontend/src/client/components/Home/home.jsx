@@ -161,44 +161,45 @@ function Tupats() {
 }
 
 function Slanted() {
-  const navigate = useNavigate();
-
-  return (
+    const navigate = useNavigate();
+  
+    return (
       <div className={styles.slantedContainer}>
-          <div
-              className={styles.slantedBox}
-              onClick={() => navigate('/SurveyPage')}
-          >
-              <h2>BE THE REASON WHY TUP IS THE BEST</h2>
-              <p>Participate and answer survey and tracer forms.</p>
-          </div>
-
-          <div
-              className={styles.slantedBox}
-              onClick={() => navigate('/Events')}
-          >
-              <h2>ENJOY UNIVERSITY EVENTS</h2>
-              <h2>AS AN ALUMNI</h2>
-              <p>
-                  Even after graduating, alumni are still included and invited to
-                  participate in university events.
-              </p>
-          </div>
-
-          <div
-              className={styles.slantedBox}
-              onClick={() => navigate('/JobPage')}
-          >
-              <h2>GIVE OR GET</h2>
-              <h2>THE OPPORTUNITY</h2>
-              <p>
-                  See the opportunities given by the community or be the opportunity
-                  itself.
-              </p>
-          </div>
+        <div
+          className={`${styles.slantedBox} ${styles.bounceIn1}`}
+          onClick={() => navigate('/SurveyPage')}
+        >
+          <h2>BE THE REASON WHY TUP IS THE BEST</h2>
+          <p>Participate and answer survey and tracer forms.</p>
+        </div>
+  
+        <div
+          className={`${styles.slantedBox} ${styles.bounceIn2}`}
+          onClick={() => navigate('/Events')}
+        >
+          <h2>ENJOY UNIVERSITY EVENTS</h2>
+          <h2>AS AN ALUMNI</h2>
+          <p>
+            Even after graduating, alumni are still included and invited to
+            participate in university events.
+          </p>
+        </div>
+  
+        <div
+          className={`${styles.slantedBox} ${styles.bounceIn3}`}
+          onClick={() => navigate('/JobPage')}
+        >
+          <h2>GIVE OR GET</h2>
+          <h2>THE OPPORTUNITY</h2>
+          <p>
+            See the opportunities given by the community or be the opportunity
+            itself.
+          </p>
+        </div>
       </div>
-  );
-}
+    );
+  }
+  
 
 
 
