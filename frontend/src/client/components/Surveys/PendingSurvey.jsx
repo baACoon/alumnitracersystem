@@ -39,25 +39,48 @@ export const PendingSurvey = () => {
   }
   
   const fetchSurveys = async () => {
-      try {
-        const token = localStorage.getItem("token")
-        const response = await axios.get(`https://alumnitracersystem.onrender.com/pending/dynamic/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        let active = []
-        if (Array.isArray(response.data)) {
-          active = response.data.filter((s) => s.status === "active")
-        } else if (Array.isArray(response.data.surveys)) {
-          active = response.data.surveys.filter((s) => s.status === "active")
-        }
-        setActiveSurveys(active)
-      } catch (error) {
-        console.error("Error fetching active surveys:", error.response?.data || error.message)
-        toast.error("Failed to load surveys.")
-      } finally {
-        setLoading(false)
+    try {
+      const token = localStorage.getItem("token");
+  
+      // Fetch both dynamic surveys and tracer1 if pending
+      const dynamicRes = await axios.get(`https://alumnitracersystem.onrender.com/pending/dynamic/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      const tracer1Res = await axios.get(`https://alumnitracersystem.onrender.com/surveys/pending/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      let active = [];
+  
+      if (Array.isArray(dynamicRes.data)) {
+        active = dynamicRes.data.filter((s) => s.status === "active");
+      } else if (Array.isArray(dynamicRes.data.surveys)) {
+        active = dynamicRes.data.surveys.filter((s) => s.status === "active");
       }
+  
+      // If Tracer1 is pending, push it manually
+      const pendingList = tracer1Res.data?.surveys || [];
+      const tracer1Pending = pendingList.find((s) => s.id === "Tracer1");
+  
+      if (tracer1Pending) {
+        active.unshift({
+          _id: "tracer1_static_card",
+          title: "Tracer Survey 1",
+          description: "Initial alumni tracer survey. Required for first-time users.",
+          type: "static"
+        });
+      }
+  
+      setActiveSurveys(active);
+    } catch (error) {
+      console.error("Error fetching surveys:", error.response?.data || error.message);
+      toast.error("Failed to load surveys.");
+    } finally {
+      setLoading(false);
     }
+  };
+  
 
     const fetchTracer2Eligibility = async () => {
       try {
@@ -117,7 +140,7 @@ export const PendingSurvey = () => {
       const token = localStorage.getItem("token")
       const formattedResponses = Object.entries(responses).map(([questionId, response]) => ({ questionId, response }))
       const payload = { userId, answers: formattedResponses }
-      await axios.post(`https://alumnitracersystem.onrender.com/newSurveys/${selectedSurvey._id}/response`, payload, {
+      await axios.post(`https://alumnitracersystem.onrender.com/api/newSurveys/${selectedSurvey._id}/response`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       })
       
@@ -140,12 +163,16 @@ export const PendingSurvey = () => {
 
   return (
     <div className={styles.surveyContainer}>
+      
       <h2 className={styles.containerTitle}>AVAILABLE SURVEYS</h2>
       <div className={styles.surveyList}>
         {loading ? (
           <div className="loadingOverlay">
-            <div className="loaderContainer">Loading...</div>
+          <div className="loaderContainer">
+            <div className="loader"></div>
+            <p>Loading...</p>
           </div>
+        </div>
         ) : (
           <>
             {tracer2ReleaseDate ? (
@@ -170,7 +197,15 @@ export const PendingSurvey = () => {
 
             {activeSurveys.length > 0 ? (
               activeSurveys.map((survey) => (
-                <div key={survey._id} className={styles.surveyCard} onClick={() => openSurveyModal(survey)}>
+                <div
+                  key={survey._id}
+                  className={styles.surveyCard}
+                  onClick={() =>
+                    survey.type === "static"
+                      ? navigate("/RegisterSurveyForm") // Tracer 1 form route
+                      : openSurveyModal(survey)
+                  }
+                >
                   <h3 className={styles.surveyTitle}>{survey.title}</h3>
                   <p className={styles.surveyDescription}>{survey.description}</p>
                 </div>
