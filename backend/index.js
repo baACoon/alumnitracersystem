@@ -21,6 +21,8 @@ import uploadRoutes from './routes/uploadroutes.js';
 // import reminderRoutes from "./routes/reminderroutes.js";
 import notificationRoutes from "./routes/notificationroutes.js";
 import recoverRoutes from './routes/recoverRoutes.js';
+import Graduate from './models/graduate.js';
+
 const PORT = process.env.PORT || 5050;
 const app = express(); 
 
@@ -56,19 +58,26 @@ app.use('/api/recover', recoverRoutes);
 
 app.post('/submit', async (req, res) => {
   try {
-    await client.connect();
-    const db = client.db('alumni');
-    const collection = db.collection('graduates');
+    const { name, email, college } = req.body;
 
-    const result = await collection.insertOne(req.body);
-    res.status(200).send('Data inserted: ' + result.insertedId);
+    // Basic validation
+    if (!name || !email || !college) {
+      return res.status(400).send("Missing required fields: name, email, or college.");
+    }
+
+    // Create a new graduate document
+    const newGraduate = new Graduate({ name, email, college });
+
+    // Save to MongoDB
+    await newGraduate.save();
+
+    res.status(200).send("Data inserted successfully");
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Error inserting data');
-  } finally {
-    await client.close();
+    console.error("Error inserting data:", err);
+    res.status(500).send("Error inserting data");
   }
 });
+
 connectToDatabase()
   .then(() => {
     app.listen(PORT, () => {
