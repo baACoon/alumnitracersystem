@@ -117,7 +117,7 @@ export const PendingSurvey = () => {
       const token = localStorage.getItem("token")
       const formattedResponses = Object.entries(responses).map(([questionId, response]) => ({ questionId, response }))
       const payload = { userId, answers: formattedResponses }
-      await axios.post(`https://alumnitracersystem.onrender.com/newSurveys/${selectedSurvey._id}/response`, payload, {
+      await axios.post(`https://alumnitracersystem.onrender.com/api/newSurveys/${selectedSurvey._id}/response`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       })
       
