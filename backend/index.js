@@ -58,22 +58,26 @@ app.use('/api/recover', recoverRoutes);
 
 app.post('/submit', async (req, res) => {
   try {
+    console.log("Incoming request body:", req.body); // Debug what's received
+    
     const { name, email, college } = req.body;
+    console.log("Extracted values:", { name, email, college }); // Debug extracted values
 
     // Basic validation
     if (!name || !email || !college) {
-      return res.status(400).send("Missing required fields: name, email, or college.");
+      return res.status(400).send("Missing required fields");
     }
 
-    // Create a new graduate document
+    console.log("Creating new Graduate document...");
     const newGraduate = new Graduate({ name, email, college });
 
-    // Save to MongoDB
+    console.log("Attempting to save...");
     await newGraduate.save();
+    console.log("Save successful!");
 
     res.status(200).send("Data inserted successfully");
   } catch (err) {
-    console.error("Error inserting data:", err);
+    console.error("Full error details:", err); // Log complete error
     res.status(500).send("Error inserting data");
   }
 });
