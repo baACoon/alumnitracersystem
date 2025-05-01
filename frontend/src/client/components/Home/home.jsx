@@ -98,7 +98,7 @@ function HomePage() {
 
     return (
         <div className={styles.homebg}>
-            <div className={`${styles.homePercentage} ${styles.animateFadeScale}`}>
+            <div className={styles.homePercentage}>
                 <div className={styles.percent1}>
                     <h1>{employmentRate}%</h1>
                     <h2>Employability Rate of TUP Alumni</h2>
@@ -116,7 +116,7 @@ function HomePage() {
 function Tupats() {
     return (
         <div className={styles.tupats}>
-            <div className={`${styles.tupatsContainer} ${styles.animateSlideUp}`}>
+            <div className={styles.tupatsContainer}>
                 <h1>TUPATS</h1>
                 <p>
                     The Technological University of the Philippines - Alumni Tracer
@@ -137,7 +137,7 @@ function Slanted() {
   return (
       <div className={styles.slantedContainer}>
           <div
-              className={`${styles.slantedBox} ${styles.animateSlideUpDelayed}`}
+              className={styles.slantedBox}
               onClick={() => navigate('/SurveyPage')}
           >
               <h2>BE THE REASON WHY TUP IS THE BEST</h2>
@@ -145,7 +145,7 @@ function Slanted() {
           </div>
 
           <div
-              className={`${styles.slantedBox} ${styles.animateSlideUpDelayed}`}
+              className={styles.slantedBox}
               onClick={() => navigate('/Events')}
           >
               <h2>ENJOY UNIVERSITY EVENTS</h2>
@@ -157,7 +157,7 @@ function Slanted() {
           </div>
 
           <div
-              className={`${styles.slantedBox} ${styles.animateSlideUpDelayed}`}
+              className={styles.slantedBox}
               onClick={() => navigate('/JobPage')}
           >
               <h2>GIVE OR GET</h2>

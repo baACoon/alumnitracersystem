@@ -99,11 +99,42 @@
     transform: skew(-5deg);
     text-align: center;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease opacity 0.4s ease;
     box-shadow: -9px 9px 7px #929090, 9px -9px 0px #580808;
     margin-bottom: 20px;
+    transform-style: preserve-3d;
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+    animation: fadeUp3D 0.8s ease forwards;
+    
+  }
+
+  .slantedBox:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  .slantedBox:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+  .slantedBox:nth-child(3) {
+    animation-delay: 0.5s;
   }
   
+  
+/* Animation keyframes */
+@keyframes fadeUp3D {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Optional: Fade-in stats area */
+.homePercentage {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInStats 1s ease forwards;
+  animation-delay: 0.5s;
+}
   /* Restore skew for content inside */
   .slantedBox h2,
   .slantedBox p {
@@ -207,42 +238,6 @@
   background: rgba(255, 255, 255, 0.8);
 }
 
-/* ========== NEW ANIMATIONS ========== */
-
-@keyframes fadeScaleIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes slideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(60px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animateFadeScale {
-  animation: fadeScaleIn 1s ease-out forwards;
-}
-
-.animateSlideUp {
-  animation: slideUp 1s ease-out forwards;
-}
-
-.animateSlideUpDelayed {
-  animation: slideUp 1s ease-out forwards;
-  animation-delay: 0.4s;
-}
 
   
 /* Responsive adjustments */
