@@ -265,7 +265,7 @@ function CrossCheckSurveyForm() {
 
       if (response.data.success) {
         setSubmitStatus({ type: "success", message: "Survey submitted successfully!" });
-        setTimeout(() => navigate("/Profile"), 2000);
+        setTimeout(() => navigate("/Home"), 2000);
         setFormData({});
         setCurrentPage(1);
       }
