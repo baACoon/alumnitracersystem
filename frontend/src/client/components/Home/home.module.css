@@ -21,17 +21,10 @@
   margin-bottom: 5rem; /* Add bottom margin instead of top margin */
   flex-wrap: wrap; /* Allow wrapping on smaller screens */
   opacity: 0;
-  transform: translateY(50px);
-  animation: fadeSlideUp 1.2s ease-out forwards;
+  animation: fadeIn 1.2s ease-out forwards;
   animation-delay: 0.3s;
 }
 
-@keyframes fadeSlideUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 .homePercentage .percent1,
 .homePercentage .percent2 {
@@ -39,8 +32,7 @@
   flex: 1;
   min-width: 250px;
   opacity: 0;
-  transform: translateY(30px);
-  animation: fadeInUp 1s ease-out forwards;
+  animation: fadeIn 1s ease-out forwards;
 }
 
 .percent1 {
@@ -51,10 +43,9 @@
   animation-delay: 1s;
 }
 
-@keyframes fadeInUp {
+@keyframes fadeIn {
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
