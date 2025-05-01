@@ -163,12 +163,16 @@ export const PendingSurvey = () => {
 
   return (
     <div className={styles.surveyContainer}>
+      
       <h2 className={styles.containerTitle}>AVAILABLE SURVEYS</h2>
       <div className={styles.surveyList}>
         {loading ? (
           <div className="loadingOverlay">
-            <div className="loaderContainer">Loading...</div>
+          <div className="loaderContainer">
+            <div className="loader"></div>
+            <p>Loading...</p>
           </div>
+        </div>
         ) : (
           <>
             {tracer2ReleaseDate ? (
