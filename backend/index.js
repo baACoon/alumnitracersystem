@@ -53,6 +53,22 @@ app.use("/api", uploadRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use('/api/recover', recoverRoutes);
 // Connect to MongoDB Atlas before starting the server
+
+app.post('/submit', async (req, res) => {
+  try {
+    await client.connect();
+    const db = client.db('alumni');
+    const collection = db.collection('graduates');
+
+    const result = await collection.insertOne(req.body);
+    res.status(200).send('Data inserted: ' + result.insertedId);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error inserting data');
+  } finally {
+    await client.close();
+  }
+});
 connectToDatabase()
   .then(() => {
     app.listen(PORT, () => {
