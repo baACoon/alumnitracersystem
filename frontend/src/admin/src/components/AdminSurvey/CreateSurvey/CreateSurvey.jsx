@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import styles from "./CreateSurvey.module.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const CreateSurvey = ({ onBack }) => {
   const [title, setTitle] = useState("");
@@ -35,7 +37,7 @@ export const CreateSurvey = ({ onBack }) => {
 
   const handleSubmit = async () => {
     if (!title || questions.length === 0) {
-      alert("Title and at least one question are required.");
+      ("Title and at least one question are required.");
       return;
     }
   
@@ -47,14 +49,14 @@ export const CreateSurvey = ({ onBack }) => {
         status: "draft", // Ensure survey is created with status "draft"
       });
   
-      alert("Survey created successfully!");
+      toast.success("Survey created successfully!");
       setTitle("");
       setDescription("");
       setQuestions([]);
       onBack(); // Navigate back to the pending survey list
     } catch (error) {
       console.error("Error creating survey:", error);
-      alert("Failed to create survey.");
+      toast.error("Failed to create survey.");
     }
   };
 

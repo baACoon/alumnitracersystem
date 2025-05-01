@@ -13,21 +13,21 @@ const TestFrontPage = () => {
   
   useEffect(() => {
     // Ensure animations apply after component is mounted
+    const loadingPageRef = useRef(null);
+
     setTimeout(() => {
-      // Animation to fade out the loading screen
-      gsap.to(".loadingPage", {
+      gsap.to(loadingPageRef.current, {
         opacity: 0,
         duration: 1.5,
-        delay: 3.5, // Loading screen lasts for 3.5 seconds
+        delay: 3.5,
         onComplete: () => {
           setLoading(false);
-          const loadingEl = document.querySelector(".loadingPage");
-          if (loadingEl) {
-            loadingEl.style.display = "none";
+          if (loadingPageRef.current) {
+            loadingPageRef.current.style.display = "none";
           }
-        },        
+        },
       });
-  
+    
       // Animation for "TUPATS" letters (Angry Bounce Effect)
       gsap.to(".letter", {
         opacity: 1,

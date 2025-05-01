@@ -3,6 +3,8 @@ import axios from "axios";
 import styles from "./PendingSurvey.module.css";
 import { EditSurvey } from "./EditSurvey"; // Import EditSurvey component
 import { ViewSurvey } from "./ViewSurvey"; // Import ViewSurvey component
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const PendingSurvey = () => {
   const [pendingSurveys, setPendingSurveys] = useState([]);
@@ -26,7 +28,7 @@ export const PendingSurvey = () => {
   const handlePublish = async (surveyId) => {
     try {
       const response = await axios.put(`http://localhost:5050/api/newSurveys/${surveyId}/publish`);
-      alert("Survey published successfully!");
+      toast.success("Survey published successfully!");
   
       try {
         await axios.post("http://localhost:5050/api/notifications/send-survey-email", {
@@ -39,7 +41,7 @@ export const PendingSurvey = () => {
       fetchPendingSurveys(); // Refresh list
     } catch (error) {
       console.error("Error publishing survey:", error);
-      alert("Failed to publish survey.");
+      toast.error("Failed to publish survey.");
     }
   };
   
@@ -52,7 +54,7 @@ export const PendingSurvey = () => {
       setPendingSurveys(pendingSurveys.filter((survey) => survey._id !== surveyId)); // Remove from the list
     } catch (error) {
       console.error("Error deleting survey:", error);
-      alert("Failed to delete survey.");
+      toast.error("Failed to delete survey.");
     }
   };
 

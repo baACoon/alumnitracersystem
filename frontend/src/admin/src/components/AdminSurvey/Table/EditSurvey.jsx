@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "../CreateSurvey/CreateSurvey.module.css"; // Reusing styles from CreateSurvey
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const EditSurvey = ({ surveyId, onBack }) => {
   const [title, setTitle] = useState("");
@@ -54,7 +56,7 @@ export const EditSurvey = ({ surveyId, onBack }) => {
   // Submit the edited survey
   const handleSubmit = async () => {
     if (!title || questions.length === 0) {
-      alert("Title and at least one question are required.");
+      toast.warning("Title and at least one question are required.");
       return;
     }
   
@@ -65,11 +67,11 @@ export const EditSurvey = ({ surveyId, onBack }) => {
         questions,
       });
   
-      alert("Survey updated successfully!");
+      toast.success("Survey updated successfully!");
       onBack(); // Navigate back to the previous page
     } catch (error) {
       console.error("Error updating survey:", error);
-      alert("Failed to update survey.");
+      toast.error("Failed to update survey.");
     }
   };
   

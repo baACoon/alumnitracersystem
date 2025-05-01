@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./SurveyTable.module.css";
 import { TracerSurvey2 } from "../TracerSurvey2/TracerSurvey2"; // Import TracerSurvey2 Component
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const SurveyTable = ({ onView }) => {
   const [surveys, setSurveys] = useState([]);
@@ -33,7 +35,7 @@ export const SurveyTable = ({ onView }) => {
       setSurveys(surveys.filter((survey) => survey._id !== surveyId)); // Remove from the list
     } catch (error) {
       console.error("Error deleting survey:", error);
-      alert("Failed to delete survey.");
+      toast.error("Failed to delete survey.");
     }
   };
 
