@@ -69,6 +69,7 @@
     color: #F92C2C;
 }
 
+/* Fake count roll animation */
 .fakeCounter::before {
   content: "0";
   animation: countUpSteps 1.5s steps(10) forwards;
@@ -76,9 +77,22 @@
   font-size: inherit;
   font-weight: bold;
   color: inherit;
-  position: absolute;
+  position: relative;
+  z-index: 1;
 }
 
+/* Real number appears after fake count finishes */
+.realNumber {
+  opacity: 0;
+  animation: showReal 0.3s ease-in forwards;
+  animation-delay: 1.5s;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+/* Fake count frames */
 @keyframes countUpSteps {
   0%   { content: "0"; }
   10%  { content: "10"; }
@@ -93,20 +107,11 @@
   100% { content: "100"; }
 }
 
-.realNumber {
-  opacity: 0;
-  animation: showReal 0.2s ease-in forwards;
-  animation-delay: 1.5s;
-  position: relative;
-  display: inline-block;
-}
-
 @keyframes showReal {
   to {
     opacity: 1;
   }
 }
-
 
 /* tupats container */
 .tupatsContainer {
