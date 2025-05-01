@@ -21,7 +21,7 @@ import uploadRoutes from './routes/uploadroutes.js';
 // import reminderRoutes from "./routes/reminderroutes.js";
 import notificationRoutes from "./routes/notificationroutes.js";
 import recoverRoutes from './routes/recoverRoutes.js';
-import Graduate from './models/graduates.js';
+import Graduate from './models/graduateModels.js';
 
 const PORT = process.env.PORT || 5050;
 const app = express(); 
@@ -58,27 +58,28 @@ app.use('/api/recover', recoverRoutes);
 
 app.post('/submit', async (req, res) => {
   try {
-    console.log("Incoming request body:", req.body); // Debug what's received
-    
     const { name, email, college } = req.body;
-    console.log("Extracted values:", { name, email, college }); // Debug extracted values
-
-    // Basic validation
+    
     if (!name || !email || !college) {
-      return res.status(400).send("Missing required fields");
+      return res.status(400).send("Missing required fields: name, email, or college.");
     }
 
-    console.log("Creating new Graduate document...");
-    const newGraduate = new Graduate({ name, email, college });
+    const newGraduate = new Graduate({
+      name,
+      email,
+      college,
+      // Optional fields with defaults
+      gradYear: req.body.gradYear || "2023",
+      firstName: req.body.firstName || name.split(' ')[0],
+      lastName: req.body.lastName || name.split(' ').pop() || "",
+      middleName: req.body.middleName || ""
+    });
 
-    console.log("Attempting to save...");
     await newGraduate.save();
-    console.log("Save successful!");
-
     res.status(200).send("Data inserted successfully");
   } catch (err) {
-    console.error("Full error details:", err); // Log complete error
-    res.status(500).send("Error inserting data");
+    console.error("Error:", err);
+    res.status(500).send(err.message);
   }
 });
 
