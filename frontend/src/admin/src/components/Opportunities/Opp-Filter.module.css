@@ -103,6 +103,77 @@
   background-color: #ddd;
 }
 
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #333;
+}
+
+.trashList {
+  margin-top: 15px;
+}
+
+.trashedItem {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  background-color: #f9f9f9;
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.05);
+}
+
+.trashedItem p {
+  margin: 4px 0;
+}
+
+.trashedItem button {
+  background-color: #7a1e1e;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.trashedItem button:hover {
+  background-color: #5e1717;
+}
+
+
 /* Responsive Design */
 
 /* Medium screens (tablets) */
