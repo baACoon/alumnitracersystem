@@ -1,6 +1,6 @@
 /* Sidebar Container */
 .sidebar {
-  background-color: #C31D3C;
+  background-color: #580808;
   width: 250px;
   height: 100vh;
   position: fixed;
@@ -62,6 +62,16 @@
   border-radius: 5px;
 }
 
+
+
+.navWithIcon {
+  font-size: 1.1rem;
+}
+
+.icon {
+  margin-right: 10px; 
+}
+
 /* Sub-Tabs Container */
 .subTabs {
   padding-left: 20px; /* Indent sub-tabs */
@@ -109,7 +119,7 @@
 
 /* Sidebar Container */
 .sidebar {
-  background-color: #c31d3c;
+  background-color: #580808;
   width: 250px;
   height: 100vh;
   position: fixed;
@@ -131,6 +141,8 @@
 .sidebar.open {
   transform: translateX(0); /* Show sidebar when toggled */
 }
+
+
 
 @media (min-width: 768px) {
   .sidebar {
