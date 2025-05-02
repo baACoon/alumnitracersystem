@@ -63,16 +63,17 @@ router.post("/create", uploadImageEvents.single("image"), async (req, res) => {
   }
 });
 
-// GET: Fetch all events
+// GET: Fetch only non-deleted events
 router.get("/list", async (req, res) => {
   try {
-    const events = await Event.find({}); // Ensure this returns valid data
+    const events = await Event.find({ isDeleted: { $ne: true } }); // exclude soft-deleted
     res.status(200).json(events);
   } catch (error) {
     console.error("Error fetching events:", error);
     res.status(500).json({ error: "Failed to fetch events." });
   }
 });
+
 
 
 // TRASH: Soft delete (move to trash instead of hard delete)
