@@ -18,11 +18,6 @@ const Register_NewAlumni = ({ closeModal }) => {
     const [recoveryCode, setRecoveryCode] = useState('');
     const [newRecoveredPassword, setNewRecoveredPassword] = useState('');
     const [confirmRecoveredPassword, setConfirmRecoveredPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [showRecoveredPassword, setShowRecoveredPassword] = useState(false);
-    const [showConfirmRecoveredPassword, setShowConfirmRecoveredPassword] = useState(false);
-
 
 
      // Three possible states: null (initial), 'verified', 'not_found', 'existing_account'
@@ -407,41 +402,23 @@ const Register_NewAlumni = ({ closeModal }) => {
                             </div>
                         )}
 
-                                {/* Recovery password section */}
-                                {recoveryStep === 'verified' && (
+                        {recoveryStep === 'verified' && (
                             <div>
                                 <p>Enter your new password:</p>
-
-                                <div className={styles.passwordWrapper}>
-                                    <input
-                                        type={showRecoveredPassword ? "text" : "password"}
-                                        placeholder="New Password"
-                                        value={newRecoveredPassword}
-                                        onChange={(e) => setNewRecoveredPassword(e.target.value)}
-                                        className={styles.inputFieldNewAlumni}
-                                    />
-                                    <FontAwesomeIcon 
-                                        icon={showRecoveredPassword ? faEyeSlash : faEye} 
-                                        onClick={() => setShowRecoveredPassword(!showRecoveredPassword)} 
-                                        className={styles.eyeToggle}
-                                    />
-                                </div>
-
-                                <div className={styles.passwordWrapper}>
-                                    <input
-                                        type={showConfirmRecoveredPassword ? "text" : "password"}
-                                        placeholder="Confirm New Password"
-                                        value={confirmRecoveredPassword}
-                                        onChange={(e) => setConfirmRecoveredPassword(e.target.value)}
-                                        className={styles.inputFieldNewAlumni}
-                                    />
-                                    <FontAwesomeIcon 
-                                        icon={showConfirmRecoveredPassword ? faEyeSlash : faEye} 
-                                        onClick={() => setShowConfirmRecoveredPassword(!showConfirmRecoveredPassword)} 
-                                        className={styles.eyeToggle}
-                                    />
-                                </div>
-
+                                <input
+                                    type="password"
+                                    placeholder="New Password"
+                                    value={newRecoveredPassword}
+                                    onChange={(e) => setNewRecoveredPassword(e.target.value)}
+                                    className={styles.inputFieldNewAlumni}
+                                />
+                                <input
+                                    type="password"
+                                    placeholder="Confirm New Password"
+                                    value={confirmRecoveredPassword}
+                                    onChange={(e) => setConfirmRecoveredPassword(e.target.value)}
+                                    className={styles.inputFieldNewAlumni}
+                                />
                                 <button onClick={resetRecoveredPassword} className={styles.primaryButton}>
                                     Reset Password
                                 </button>
@@ -456,40 +433,22 @@ const Register_NewAlumni = ({ closeModal }) => {
                     <form onSubmit={handleSubmit} className={styles.verificationResult}>
                         <h3>Complete Registration</h3>
                         <p className={styles.verifyName}><strong>Verified: {firstName} {lastName} ({gradyear})</strong></p>
-                        
-                        {/* Password input with eye toggle */}
-                        <div className={styles.passwordWrapper}>
-                            <input 
-                                type={showPassword ? "text" : "password"} 
-                                placeholder="Password" 
-                                value={password} 
-                                onChange={(e) => setPassword(e.target.value)} 
-                                required 
-                                className={styles.inputFieldNewAlumni} 
-                            />
-                            <FontAwesomeIcon 
-                                icon={showPassword ? faEyeSlash : faEye} 
-                                onClick={() => setShowPassword(!showPassword)} 
-                                className={styles.eyeToggle} 
-                            />
-                        </div>
-
-                        <div className={styles.passwordWrapper}>
-                            <input 
-                                type={showConfirmPassword ? "text" : "password"} 
-                                placeholder="Confirm Password" 
-                                value={confirmPassword} 
-                                onChange={(e) => setConfirmPassword(e.target.value)} 
-                                required 
-                                className={styles.inputFieldNewAlumni} 
-                            />
-                            <FontAwesomeIcon 
-                                icon={showConfirmPassword ? faEyeSlash : faEye} 
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)} 
-                                className={styles.eyeToggle} 
-                            />
-                        </div>
-
+                        <input 
+                            type="password" 
+                            placeholder="Password" 
+                            value={password} 
+                            onChange={(e) => setPassword(e.target.value)} 
+                            required 
+                            className={styles.inputFieldNewAlumni} 
+                        />
+                        <input 
+                            type="password" 
+                            placeholder="Confirm Password" 
+                            value={confirmPassword} 
+                            onChange={(e) => setConfirmPassword(e.target.value)} 
+                            required 
+                            className={styles.inputFieldNewAlumni} 
+                        />
                         <button 
                             type="submit" 
                             className={styles.primaryButton}
