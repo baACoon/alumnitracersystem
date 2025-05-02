@@ -10,6 +10,12 @@ function Header() {
   const location = useLocation()
   const isActive = (path) => location.pathname === path
 
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/frontpage');
+  };
+
   return (
     <div className="header-container">
       {/* Logo and Banner Section */}
@@ -74,11 +80,26 @@ function Header() {
               </li>
             </ul>
 
-            <div className="d-flex">
-              <a onClick={() => navigate("/Profile")} className={`nav-link ${isActive("/Profile") ? "active" : ""}`}>
+            <div className="dropdown">
+              <button
+                className={`btn btn-danger dropdown-toggle ${isActive("/Profile") ? "active" : ""}`}
+                type="button"
+                id="profileDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                onClick={() => navigate("/Profile")}
+              >
                 PROFILE
-              </a>
+              </button>
+              <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                <li>
+                  <a className="dropdown-item" onClick={handleLogout}>
+                    Logout
+                  </a>
+                </li>
+              </ul>
             </div>
+
           </div>
         </div>
       </nav>
