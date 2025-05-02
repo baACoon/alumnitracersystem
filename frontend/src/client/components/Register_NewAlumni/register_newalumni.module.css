@@ -314,6 +314,21 @@ display: block;
   animation: fadeOutSlideDown 0.3s ease-out forwards;
 }
 
+.passwordWrapper {
+  position: relative;
+}
+
+.eyeToggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  color: #555;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+
 /* Loader Styling */
 .loaderContainer {
   display: flex;
@@ -364,6 +379,8 @@ display: block;
   cursor: pointer;
   transition: background-color 0.3s;
 }
+
+
 
 /* Animations */
 @keyframes ringA {
