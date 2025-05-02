@@ -6,7 +6,9 @@ import OpportunityPending from "./Opportunity-Pending";
 import CreateOpportunity from "./Create-Opportunity";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+
 
 
 export function OpportunityFilters() {
@@ -159,12 +161,12 @@ export function OpportunityFilters() {
         <div className={styles.header}>
           <h2 className={styles.databaseTitle}>OPPORTUNITY DATABASE</h2>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <i
-              className="fas fa-trash-alt"
+          <FontAwesomeIcon
+              icon={faTrash}
               title="View Rejected Jobs"
               onClick={() => setShowTrashModal(true)}
               style={{ cursor: "pointer", fontSize: "20px", color: "#7a1e1e" }}
-            ></i>
+            />
             <button className={styles.createButton} onClick={handleCreateClick}>
               + Create Opportunity
             </button>
