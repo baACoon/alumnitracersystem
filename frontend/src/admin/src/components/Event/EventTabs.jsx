@@ -3,10 +3,17 @@ import ListOfEvents from "./ListofEvents";
 import CreateEvent from "./CreateEvent";
 import styles from "./Events.module.css";
 import SideBarLayout from "../SideBar/SideBarLayout";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export const EvenTabs = () => {
   const [activeTab, setActiveTab] = useState("list");
   const [events, setEvents] = useState([]);
+  const [showTrashModal, setShowTrashModal] = useState(false);
+  const [trashedEvents, setTrashedEvents] = useState([]);
 
   // Function to add an event
     useEffect(() => {
@@ -20,10 +27,41 @@ export const EvenTabs = () => {
           const data = await response.json();
           setEvents(data);
         } else {
-          console.error("Failed to fetch events.");
+          toast.error("Failed to fetch events.");
         }
       } catch (error) {
         console.error("Error fetching events:", error);
+      }
+    };
+
+    const fetchTrashedEvents = async () => {
+      try {
+        const response = await fetch("https://alumnitracersystem.onrender.com/event/trash");
+        if (response.ok) {
+          const data = await response.json();
+          setTrashedEvents(data);
+        } else {
+          toast.error("Failed to fetch trashed events.");
+        }
+      } catch (error) {
+        console.error("Error fetching trashed events:", error);
+      }
+    };
+
+
+    const handleRestoreEvent = async (id) => {
+      try {
+        const response = await fetch(`https://alumnitracersystem.onrender.com/event/restore/${id}`, {
+          method: "POST"
+        });
+        if (response.ok) {
+          setTrashedEvents((prev) => prev.filter((e) => e._id !== id));
+          fetchEvents();
+        } else {
+          toast.error("Failed to restore event.");
+        }
+      } catch (error) {
+        console.error("Error restoring event:", error);
       }
     };
   
@@ -37,22 +75,30 @@ export const EvenTabs = () => {
         <h1 className={styles.eventTitle}> EVENT MANAGEMENT</h1>
         <div className={styles.tabControls}>
           <button
-            className={`${styles.tabButton} ${
-              activeTab === "list" ? styles.active : ""
-            }`}
+            className={`${styles.tabButton} ${activeTab === "list" ? styles.active : ""}`}
             onClick={() => setActiveTab("list")}
           >
             List of Events
           </button>
-          <button
-            className={`${styles.tabButton} ${
-              activeTab === "create" ? styles.active : ""
-            }`}
-            onClick={() => setActiveTab("create")}
-          >
-            Create
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "auto" }}>
+            <button
+              className={`${styles.tabButton} ${activeTab === "create" ? styles.active : ""}`}
+              onClick={() => setActiveTab("create")}
+            >
+              + Create Event
+            </button>
+            <FontAwesomeIcon
+              icon={faTrash}
+              title="View Deleted Events"
+              onClick={() => {
+                setShowTrashModal(true);
+                fetchTrashedEvents();
+              }}
+              style={{ cursor: "pointer", fontSize: "20px", color: "#7a1e1e" }}
+            />
+          </div>
         </div>
+
         <div className={styles.tabContent}>
           {activeTab === "list" && <ListOfEvents events={events} />}
           {activeTab === "create" && (
@@ -65,6 +111,29 @@ export const EvenTabs = () => {
             />
           )}
         </div>
+
+        {showTrashModal && (
+          <div className={styles.modalOverlay} onClick={() => setShowTrashModal(false)}>
+            <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+              <span className={styles.closeButton} onClick={() => setShowTrashModal(false)}>&times;</span>
+              <h3>Deleted Events (Recoverable)</h3>
+              {trashedEvents.length === 0 ? (
+                <p>No deleted events found.</p>
+              ) : (
+                <div className={styles.trashList}>
+                  {trashedEvents.map((event) => (
+                    <div key={event._id} className={styles.trashedItem}>
+                      <p><strong>{event.title}</strong></p>
+                      <p>{event.description}</p>
+                      <p><em>Date:</em> {event.date} <em>Time:</em> {event.time}</p>
+                      <button onClick={() => handleRestoreEvent(event._id)}>Restore</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </SideBarLayout>
   );

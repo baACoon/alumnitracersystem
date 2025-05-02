@@ -90,4 +90,54 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
+// TRASH: Soft delete (move to trash instead of hard delete)
+router.post("/soft-delete/:id", async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ error: "Event not found." });
+
+    event.isDeleted = true;
+    event.deletedAt = new Date();
+    await event.save();
+
+    res.status(200).json({ message: "Event moved to trash." });
+  } catch (error) {
+    console.error("Soft delete error:", error);
+    res.status(500).json({ error: "Failed to soft delete event." });
+  }
+});
+
+// TRASH: Get all events in trash (within 7 days)
+router.get("/trash", async (req, res) => {
+  try {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const trashedEvents = await Event.find({
+      isDeleted: true,
+      deletedAt: { $gte: sevenDaysAgo }
+    });
+    res.status(200).json(trashedEvents);
+  } catch (error) {
+    console.error("Fetch trashed events error:", error);
+    res.status(500).json({ error: "Failed to fetch trashed events." });
+  }
+});
+
+// TRASH: Restore event from trash
+router.post("/restore/:id", async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event || !event.isDeleted) return res.status(404).json({ error: "Event not found in trash." });
+
+    event.isDeleted = false;
+    event.deletedAt = null;
+    await event.save();
+
+    res.status(200).json({ message: "Event restored successfully." });
+  } catch (error) {
+    console.error("Restore event error:", error);
+    res.status(500).json({ error: "Failed to restore event." });
+  }
+});
+
+
 export default router;

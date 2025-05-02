@@ -6,9 +6,12 @@ const eventSchema = new mongoose.Schema({
   date: { type: String, required: true },
   time: { type: String, required: true },
   venue: { type: String, required: true },
-  source: { type: String, required: false },
-  image: { type: String, required: false }, // Cloudinary image URL
+  source: { type: String },
+  image: { type: String },
+  isDeleted: { type: Boolean, default: false },
+  deletedAt: { type: Date, default: null }
 });
+
 
 const Event = mongoose.model('Event', eventSchema);
 
