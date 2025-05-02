@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./ListofEvents.module.css";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const ListOfEvents = ({ events }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -16,7 +18,7 @@ export const ListOfEvents = ({ events }) => {
         const data = await response.json();
         setEventList(data);
       } else {
-        console.error("Failed to fetch events.");
+        toast.error("Failed to fetch events.");
       }
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -28,26 +30,20 @@ export const ListOfEvents = ({ events }) => {
   };
 
   const handleDeleteEvent = async (eventId) => {
-    if (!eventId) {
-      console.error("Invalid event ID.");
-      return;
-    }
-  
     try {
-      const response = await fetch(`https://alumnitracersystem.onrender.com/event/delete/${eventId}`, {
-        method: "DELETE",
+      const response = await fetch(`https://alumnitracersystem.onrender.com/event/soft-delete/${eventId}`, {
+        method: "POST",
       });
   
       if (response.ok) {
-        setEventList(eventList.filter((event) => event._id !== eventId)); // Use `_id` here
-        console.log(`Event with ID ${eventId} deleted successfully.`);
+        setEventList(eventList.filter((event) => event._id !== eventId));
       } else {
-        console.error("Failed to delete event.");
+        toast.error("Failed to move event to trash.");
       }
     } catch (error) {
-      console.error("Error deleting event:", error);
+      console.error("Error soft deleting event:", error);
     }
-  };  
+  };
 
   const closeModal = () => {
     setSelectedEvent(null);

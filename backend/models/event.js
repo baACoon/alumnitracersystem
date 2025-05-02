@@ -74,21 +74,6 @@ router.get("/list", async (req, res) => {
   }
 });
 
-// Delete an event by ID
-router.delete("/delete/:id", async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const deletedEvent = await Event.findByIdAndDelete(id); // Ensure this query is correct
-    if (!deletedEvent) {
-      return res.status(404).json({ error: "Event not found." });
-    }
-    res.status(200).json({ message: "Event deleted successfully." });
-  } catch (error) {
-    console.error("Error deleting event:", error);
-    res.status(500).json({ error: "Failed to delete event." });
-  }
-});
 
 // TRASH: Soft delete (move to trash instead of hard delete)
 router.post("/soft-delete/:id", async (req, res) => {

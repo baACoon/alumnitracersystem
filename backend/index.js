@@ -8,6 +8,8 @@ import TracerSurvey2Routes from './routes/tracerSurvey2Routes.js'; // Import Tra
 import dynamicSurveyRoutes from './routes/dynamicSurveyRoutes.js'
 import adminlogreg from './models/adminlog_reg.js';
 import eventRoutes from './models/event.js'
+import cron from "node-cron"
+import Event from "./models/Eventmodal.js";
 //import userProfile from './models/profile.js'
 import dotenv from 'dotenv';
 import articleRoutes from './routes/artcileroutes.js';
@@ -96,7 +98,24 @@ connectToDatabase()
     app.listen(PORT, () => {
       console.log(`Server listening on Port ${PORT}`);
     });
+
+    // ✅ Auto-purge every midnight
+    cron.schedule("0 0 * * *", async () => {
+      const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      try {
+        const result = await Event.deleteMany({
+          isDeleted: true,
+          deletedAt: { $lt: cutoff }
+        });
+        console.log(`🧹 Auto-purged ${result.deletedCount} old events from trash.`);
+      } catch (err) {
+        console.error("Failed to purge events:", err);
+      }
+    });
   })
   .catch((error) => {
-    console.error("Failed to connect to MongoDB Atlas. Server not started:", error);
+    console.error("Failed to connect to MongoDB Atlas:", error);
   });
+
+
+  

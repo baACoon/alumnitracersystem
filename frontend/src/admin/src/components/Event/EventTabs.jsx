@@ -5,7 +5,7 @@ import styles from "./Events.module.css";
 import SideBarLayout from "../SideBar/SideBarLayout";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -64,6 +64,14 @@ export const EvenTabs = () => {
         console.error("Error restoring event:", error);
       }
     };
+
+    const calculateDaysLeft = (deletedAt) => {
+      const deletedDate = new Date(deletedAt);
+      const expireDate = new Date(deletedDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+      const diffMs = expireDate - Date.now();
+      const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+      return diffDays > 0 ? `${diffDays} day(s) left` : "Expired";
+    };
   
     const addEvent = (event) => {
       setEvents([...events, event]);
@@ -71,22 +79,23 @@ export const EvenTabs = () => {
 
   return (
     <SideBarLayout>
-      <div className={styles.eventTabsContainer}>
-        <h1 className={styles.eventTitle}> EVENT MANAGEMENT</h1>
+        <div className={styles.eventTabsContainer}>
         <div className={styles.tabControls}>
-          <button
-            className={`${styles.tabButton} ${activeTab === "list" ? styles.active : ""}`}
-            onClick={() => setActiveTab("list")}
-          >
-            List of Events
-          </button>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "auto" }}>
-            <button
-              className={`${styles.tabButton} ${activeTab === "create" ? styles.active : ""}`}
-              onClick={() => setActiveTab("create")}
-            >
-              + Create Event
-            </button>
+          <div style={{ display: "flex", justifyContent: "space-between", width: "100%", alignItems: "center" }}>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                className={`${styles.tabButton} ${activeTab === "list" ? styles.active : ""}`}
+                onClick={() => setActiveTab("list")}
+              >
+                List of Events
+              </button>
+              <button
+                className={`${styles.tabButton} ${activeTab === "create" ? styles.active : ""}`}
+                onClick={() => setActiveTab("create")}
+              >
+                + Create Event
+              </button>
+            </div>
             <FontAwesomeIcon
               icon={faTrash}
               title="View Deleted Events"
@@ -98,6 +107,7 @@ export const EvenTabs = () => {
             />
           </div>
         </div>
+
 
         <div className={styles.tabContent}>
           {activeTab === "list" && <ListOfEvents events={events} />}
@@ -126,6 +136,7 @@ export const EvenTabs = () => {
                       <p><strong>{event.title}</strong></p>
                       <p>{event.description}</p>
                       <p><em>Date:</em> {event.date} <em>Time:</em> {event.time}</p>
+                      <p style={{ fontStyle: "italic", color: "#a33" }}>{calculateDaysLeft(event.deletedAt)}</p>
                       <button onClick={() => handleRestoreEvent(event._id)}>Restore</button>
                     </div>
                   ))}
