@@ -10,20 +10,15 @@ function Header() {
   const location = useLocation()
   const isActive = (path) => location.pathname === path
 
-  const handleLogout = () => {
-    localStorage.clear()
-    navigate('/frontpage')
-  }
-
   return (
     <div className="header-container">
       {/* Logo and Banner Section */}
       <div className="header-top">
         <div className="header-logo">
           <a onClick={() => navigate("/Home")}>
-            <img src={Tuplogo || "/placeholder.svg"} alt="TUP Logo" className="header-logo-1" />
-            <img src={Alumnilogo || "/placeholder.svg"} alt="Alumni Logo" className="header-logo-2" />
-          </a>
+          <img src={Tuplogo || "/placeholder.svg"} alt="TUP Logo" className="header-logo-1" />
+          <img src={Alumnilogo || "/placeholder.svg"} alt="Alumni Logo" className="header-logo-2" />
+        </a>
         </div>
 
         <div className="header-banner">
@@ -48,7 +43,6 @@ function Header() {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
@@ -69,50 +63,22 @@ function Header() {
                 </a>
               </li>
               <li className="nav-item">
-                <a
-                  onClick={() => navigate("/Events")}
-                  className={`nav-link ${isActive("/Events") ? "active" : ""}`}
-                >
+                <a onClick={() => navigate("/Events")} className={`nav-link ${isActive("/Events") ? "active" : ""}`}>
                   EVENTS
                 </a>
               </li>
               <li className="nav-item">
-                <a
-                  onClick={() => navigate("/JobPage")}
-                  className={`nav-link ${isActive("/JobPage") ? "active" : ""}`}
-                >
+                <a onClick={() => navigate("/JobPage")} className={`nav-link ${isActive("/JobPage") ? "active" : ""}`}>
                   OPPORTUNITIES
                 </a>
               </li>
             </ul>
 
-            <ul className="navbar-nav">
-              <li className="nav-item dropdown">
-                <a
-                  className={`nav-link dropdown-toggle ${isActive("/Profile") ? "active" : ""}`}
-                  href="#"
-                  id="profileDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  PROFILE
-                </a>
-                <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                  <li>
-                    <a className="dropdown-item" onClick={() => navigate("/Profile")}>
-                      Go to Profile
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" onClick={handleLogout}>
-                      Logout
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-
+            <div className="d-flex">
+              <a onClick={() => navigate("/Profile")} className={`nav-link ${isActive("/Profile") ? "active" : ""}`}>
+                PROFILE
+              </a>
+            </div>
           </div>
         </div>
       </nav>
