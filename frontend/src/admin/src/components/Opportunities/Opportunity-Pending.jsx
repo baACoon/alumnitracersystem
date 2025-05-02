@@ -127,7 +127,7 @@ export default function OpportunityPending() {
         return;
       }
 
-      toast.error(`Opportunity rejected for the following reason: ${rejectionReason}`);
+      toast.success(`Opportunity rejected for the following reason: ${rejectionReason}`);
       setPendingOpportunities((prev) =>
         prev.filter((opportunity) => opportunity._id !== selectedOpportunity._id)
       );
