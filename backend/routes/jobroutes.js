@@ -102,23 +102,29 @@ router.delete('/:id', protect, async (req, res) => {
 // Deny a job with feedback
 router.post('/:id/deny', protect, async (req, res) => {
     try {
-        const { feedback } = req.body;
-        if (!feedback) return res.status(400).json({ error: 'Feedback is required to deny a job.' });
-
-        const job = await Job.findByIdAndUpdate(
-            req.params.id,
-            { status: 'Denied', feedback, reviewedBy: req.user.id },
-            { new: true }
-        );
-
-        if (!job) return res.status(404).json({ error: 'Job not found.' });
-
-        res.status(200).json({ message: 'Job denied successfully.', job });
+      const { feedback } = req.body;
+      if (!feedback) return res.status(400).json({ error: 'Feedback is required.' });
+  
+      const job = await Job.findByIdAndUpdate(
+        req.params.id,
+        {
+          isDeleted: true,
+          deletedAt: new Date(),
+          feedback,
+          status: "Denied",
+        },
+        { new: true }
+      );
+  
+      if (!job) return res.status(404).json({ error: 'Job not found.' });
+  
+      res.status(200).json({ message: 'Job moved to trash.', job });
     } catch (error) {
-        console.error('Error Denying Job:', error.message);
-        res.status(500).json({ error: 'Failed to deny job.' });
+      console.error('Error Denying Job:', error.message);
+      res.status(500).json({ error: 'Failed to deny job.' });
     }
-});
+  });
+  
 
 // Add comment to job
 router.post('/:id/comments', protect, async (req, res) => {
@@ -196,4 +202,46 @@ router.post('/create', protect, async (req, res) => {
     }
 });
 
+// Get trashed jobs (within 7 days)
+router.get('/trash', protect, async (req, res) => {
+    try {
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const jobs = await Job.find({
+        isDeleted: true,
+        deletedAt: { $gte: sevenDaysAgo },
+        createdBy: req.user.id
+      }).sort({ deletedAt: -1 });
+  
+      res.status(200).json(jobs);
+    } catch (error) {
+      console.error('Error fetching trashed jobs:', error.message);
+      res.status(500).json({ error: 'Failed to fetch trashed jobs.' });
+    }
+  });
+
+  router.post('/:id/restore', protect, async (req, res) => {
+    try {
+      const job = await Job.findOne({
+        _id: req.params.id,
+        createdBy: req.user.id,
+        isDeleted: true,
+      });
+  
+      if (!job) return res.status(404).json({ message: 'Job not found or not in trash.' });
+  
+      const expired = new Date(job.deletedAt).getTime() < Date.now() - 7 * 24 * 60 * 60 * 1000;
+      if (expired) return res.status(410).json({ message: 'Recovery period has expired.' });
+  
+      job.isDeleted = false;
+      job.deletedAt = null;
+      job.status = 'Pending';
+      await job.save();
+  
+      res.status(200).json({ message: 'Job restored successfully.', job });
+    } catch (error) {
+      console.error('Error restoring job:', error.message);
+      res.status(500).json({ error: 'Failed to restore job.' });
+    }
+  });
+  
 export default router;

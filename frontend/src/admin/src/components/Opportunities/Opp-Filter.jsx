@@ -4,6 +4,10 @@ import SidebarLayout from "../SideBar/SideBarLayout";
 import OpportunityList from "./Opportunity-List";
 import OpportunityPending from "./Opportunity-Pending";
 import CreateOpportunity from "./Create-Opportunity";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 export function OpportunityFilters() {
   const [activeTab, setActiveTab] = useState("published");
@@ -11,6 +15,8 @@ export function OpportunityFilters() {
   const [course, setCourse] = useState("");
   const [activeFilter, setActiveFilter] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showTrashModal, setShowTrashModal] = useState(false);
+  const [trashedJobs, setTrashedJobs] = useState([]);
   const [opportunities, setOpportunities] = useState([]);
 
   // ✅ Fetch opportunities from backend
@@ -39,6 +45,42 @@ export function OpportunityFilters() {
 
     fetchOpportunities();
   }, []);
+
+  useEffect(() => {
+    if (showTrashModal) fetchTrashedJobs();
+  }, [showTrashModal]);
+
+  const fetchTrashedJobs = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch("https://alumnitracersystem.onrender.com/jobs/trash", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setTrashedJobs(data);
+    } catch (err) {
+      console.error("Failed to fetch trash:", err);
+    }
+  };
+
+  const handleRestore = async (id) => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`https://alumnitracersystem.onrender.com/jobs/${id}/restore`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const msg = await res.json();
+        toast.error(msg.message || "Restore failed.");
+        return;
+      }
+      toast.success("Restored successfully.");
+      setTrashedJobs((prev) => prev.filter((job) => job._id !== id));
+    } catch (err) {
+      toast.error("Error restoring job.");
+    }
+  };
 
   const coursesByCollege = {
     "College of Engineering": [
@@ -113,17 +155,23 @@ export function OpportunityFilters() {
 
   return (
     <SidebarLayout>
-      <section className={styles.filterSection} aria-label="Opportunity filters">
+<section className={styles.filterSection} aria-label="Opportunity filters">
         <div className={styles.header}>
           <h2 className={styles.databaseTitle}>OPPORTUNITY DATABASE</h2>
-          <button className={styles.createButton} onClick={handleCreateClick}>
-            + Create Opportunity
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <i
+              className="fas fa-trash-alt"
+              title="View Rejected Jobs"
+              onClick={() => setShowTrashModal(true)}
+              style={{ cursor: "pointer", fontSize: "20px", color: "#7a1e1e" }}
+            ></i>
+            <button className={styles.createButton} onClick={handleCreateClick}>
+              + Create Opportunity
+            </button>
+          </div>
         </div>
 
-        {/* ✅ Filter Controls */}
-        <div className={styles.filterControls} role="group" aria-label="Filter controls">
-          {/* College Filter */}
+        <div className={styles.filterControls} role="group">
           <div className={styles.filterButtonContainer}>
             <label htmlFor="college" className={styles.filterLabel}>College:</label>
             <select
@@ -134,14 +182,11 @@ export function OpportunityFilters() {
             >
               <option value="">All Colleges</option>
               {Object.keys(coursesByCollege).map((collegeName) => (
-                <option key={collegeName} value={collegeName}>
-                  {collegeName}
-                </option>
+                <option key={collegeName} value={collegeName}>{collegeName}</option>
               ))}
             </select>
           </div>
 
-          {/* Course Filter */}
           <div className={styles.filterButtonContainer}>
             <label htmlFor="course" className={styles.filterLabel}>Course:</label>
             <select
@@ -152,12 +197,9 @@ export function OpportunityFilters() {
               disabled={!college}
             >
               <option value="">All Courses</option>
-              {college &&
-                coursesByCollege[college].map((courseName) => (
-                  <option key={courseName} value={courseName}>
-                    {courseName}
-                  </option>
-                ))}
+              {college && coursesByCollege[college].map((courseName) => (
+                <option key={courseName} value={courseName}>{courseName}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -188,6 +230,29 @@ export function OpportunityFilters() {
 
         {/* ✅ Create Modal */}
         {showCreateModal && <CreateOpportunity onClose={closeCreateModal} />}
+
+        {showTrashModal && (
+          <div className={styles.modalOverlay} onClick={() => setShowTrashModal(false)}>
+            <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+              <span className={styles.closeButton} onClick={() => setShowTrashModal(false)}>&times;</span>
+              <h3>Rejected Opportunities (Last 7 Days)</h3>
+              {trashedJobs.length === 0 ? (
+                <p>No rejected jobs found.</p>
+              ) : (
+                <div className={styles.trashList}>
+                  {trashedJobs.map((job) => (
+                    <div key={job._id} className={styles.trashedItem}>
+                      <p><strong>{job.title}</strong> at {job.company}</p>
+                      <p><em>Reason:</em> {job.feedback || "N/A"}</p>
+                      <p><em>Deleted:</em> {new Date(job.deletedAt).toLocaleDateString()}</p>
+                      <button onClick={() => handleRestore(job._id)}>Restore</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </section>
     </SidebarLayout>
   );

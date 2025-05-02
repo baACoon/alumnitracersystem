@@ -14,12 +14,16 @@ const JobSchema = new mongoose.Schema({
     location: { type: String, required: true },
     type: { type: String, default: "full-time" },
     description: { type: String, required: true },
-    responsibilities: { type: [String], default: [] },  //  Must be an array
-    qualifications: { type: [String], default: [] },  //  Must be an array
+    responsibilities: { type: [String], default: [] },
+    qualifications: { type: [String], default: [] },
     source: { type: String },
     status: { type: String, enum: ["Pending", "Published", "Denied"], default: "Pending" },
+    feedback: { type: String }, // 👈 Added
+    isDeleted: { type: Boolean, default: false }, // 👈 Added
+    deletedAt: { type: Date }, // 👈 Added
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-}, { timestamps: true });
+  }, { timestamps: true });
+  
 
 const Job = mongoose.model('Job', JobSchema);
 
