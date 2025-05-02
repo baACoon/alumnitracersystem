@@ -13,6 +13,7 @@ export const CreateEvent = ({ onPost, onBack }) => {
   const [time, setTime] = useState("");
   const [venue, setVenue] = useState("");
   const [source, setSource] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handlePost = async () => {
     if (title && description && date && time && venue) {
@@ -29,6 +30,7 @@ export const CreateEvent = ({ onPost, onBack }) => {
       }
   
       try {
+        setLoading(true);
         const response = await fetch("https://alumnitracersystem.onrender.com/event/create", {
           method: "POST",
           body: formData, // Send as FormData
@@ -55,6 +57,8 @@ export const CreateEvent = ({ onPost, onBack }) => {
         }
         console.error("Error creating event:", error);
         toast.error("An error occurred.");
+      }finally{
+        setLoading(false);
       }
     } else {
       toast.warning("Please fill out all required fields.");
@@ -71,6 +75,12 @@ export const CreateEvent = ({ onPost, onBack }) => {
 
   return (
     <div className={styles.createEvents}>
+      {loading && (
+        <div className={styles.bg} style={{ zIndex: 9999 }}>
+          <div className={styles.spinner}></div>
+          <h3 className={styles.loadname}>Loading...</h3>
+        </div>
+      )}
       <div className={styles.buttons}>
         <button className={styles.backButton} onClick={onBack}>
           &lt;&lt; BACK

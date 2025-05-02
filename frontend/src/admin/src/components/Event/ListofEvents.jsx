@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 export const ListOfEvents = ({ events }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventList, setEventList] = useState([]);
+  const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     fetchEvents();
@@ -31,17 +32,22 @@ export const ListOfEvents = ({ events }) => {
 
   const handleDeleteEvent = async (eventId) => {
     try {
+      setLoading(true);
       const response = await fetch(`https://alumnitracersystem.onrender.com/event/soft-delete/${eventId}`, {
         method: "POST",
       });
   
       if (response.ok) {
         setEventList(eventList.filter((event) => event._id !== eventId));
+        toast.success("Event moved to trash successfully.");
       } else {
         toast.error("Failed to move event to trash.");
       }
     } catch (error) {
       console.error("Error soft deleting event:", error);
+      toast.error("Something went wrong.");
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -51,6 +57,12 @@ export const ListOfEvents = ({ events }) => {
 
   return (
     <div className={styles.listOfEvents}>
+          {loading && (
+          <div className={styles.bg}>
+            <div className={styles.spinner}></div>
+            <h3 className={styles.loadname}>Processing...</h3>
+          </div>
+      )}
       <h2 className={styles.title}>List of Events</h2>
       {eventList.length > 0 ? (
         <div className={styles.eventsGrid}>
@@ -77,7 +89,7 @@ export const ListOfEvents = ({ events }) => {
               className={styles.deleteButton}
               onClick={() => handleDeleteEvent(event._id)} // Use `_id` here
             >
-              Delete
+              Trash
             </button>
           </div>
         ))}
