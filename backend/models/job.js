@@ -18,9 +18,9 @@ const JobSchema = new mongoose.Schema({
     qualifications: { type: [String], default: [] },
     source: { type: String },
     status: { type: String, enum: ["Pending", "Published", "Denied"], default: "Pending" },
-    feedback: { type: String }, // 👈 Added
-    isDeleted: { type: Boolean, default: false }, // 👈 Added
-    deletedAt: { type: Date }, // 👈 Added
+    feedback: { type: String }, 
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date }, 
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   }, { timestamps: true });
   

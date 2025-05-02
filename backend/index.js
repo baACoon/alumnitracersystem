@@ -14,6 +14,7 @@ import Event from "./models/Eventmodal.js";
 import dotenv from 'dotenv';
 import articleRoutes from './routes/artcileroutes.js';
 import jobRoutes from './routes/jobroutes.js';
+import Job from './models/job.js';
 import profileRoutes from './routes/profile.js';
 import alumnipage from './routes/alumnipageroutes.js';
 import pendingRoutes from './routes/pendingRoutes.js';
@@ -99,9 +100,9 @@ connectToDatabase()
       console.log(`Server listening on Port ${PORT}`);
     });
 
-    // ✅ Auto-purge every midnight
+    // 🔄 Auto-purge Events every midnight
     cron.schedule("0 0 * * *", async () => {
-      const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
       try {
         const result = await Event.deleteMany({
           isDeleted: true,
@@ -109,13 +110,27 @@ connectToDatabase()
         });
         console.log(`🧹 Auto-purged ${result.deletedCount} old events from trash.`);
       } catch (err) {
-        console.error("Failed to purge events:", err);
+        console.error(" Failed to purge events:", err);
       }
     });
+
+    // 🔄 Auto-purge Jobs every midnight
+    cron.schedule("0 0 * * *", async () => {
+      const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
+      try {
+        const result = await Job.deleteMany({
+          isDeleted: true,
+          deletedAt: { $lt: cutoff }
+        });
+        console.log(`🧹 Auto-purged ${result.deletedCount} old jobs from trash.`);
+      } catch (err) {
+        console.error(" Failed to purge jobs:", err);
+      }
+    });
+
   })
   .catch((error) => {
-    console.error("Failed to connect to MongoDB Atlas:", error);
+    console.error(" Failed to connect to MongoDB Atlas:", error);
   });
-
 
   
