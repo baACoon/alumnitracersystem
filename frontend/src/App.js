@@ -20,7 +20,7 @@ import Contact from '../src/client/components/Contact/contact';
 import Profile from '../src/client/components/Profile/profile';
 import SurveyForm from '../src/client/components/SurveyForm/SurveyForm';
 import RecoverAccount from './client/components/Register_NewAlumni/recover_account';
-
+import DataPrivacyConsent from './client/components/Security/dataprivacy';
 
 function App() {
   return (
@@ -44,6 +44,14 @@ function App() {
             <Route path="/Profile" element={<Profile />} />
             <Route path="/SurveyForm" element={<SurveyForm />} />
             <Route path="/RecoverAccount" element={<RecoverAccount />} />
+            <Route 
+              path="/data-privacy"  
+              element={<DataPrivacyConsent 
+                onComplete={() => navigate('/RegisterSurveyForm')}
+                onDecline={() => navigate(-1)}
+                fullPage={true}
+              />} 
+            />
           </Routes>
         </BrowserRouter>
       <ToastContainer position="top-center" autoClose={3000} />

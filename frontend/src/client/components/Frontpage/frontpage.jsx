@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styles from './frontpage.module.css';// Import module-based styles
 import LoginForm from '../Login_Alumni/LoginForm';  // Login Form Modal
 import Register_NewAlumni from '../Register_NewAlumni/register_newalumni';  // Form for users without Alumni ID
@@ -10,10 +10,11 @@ const TestFrontPage = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegister_NewAlumniModal, setShowRegister_NewAlumniModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const loadingPageRef = useRef(null);
   
   useEffect(() => {
     // Ensure animations apply after component is mounted
-    const loadingPageRef = useRef(null);
+    
 
     setTimeout(() => {
       gsap.to(loadingPageRef.current, {

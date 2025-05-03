@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './register_newalumni.module.css'; // Import module styles
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DataPrivacyConsent from '../Security/dataprivacy';
 
 const Register_NewAlumni = ({ closeModal }) => {
     const [gradyear, setYear] = useState('');
@@ -18,6 +19,8 @@ const Register_NewAlumni = ({ closeModal }) => {
     const [recoveryCode, setRecoveryCode] = useState('');
     const [newRecoveredPassword, setNewRecoveredPassword] = useState('');
     const [confirmRecoveredPassword, setConfirmRecoveredPassword] = useState('');
+    const [showDataPrivacy, setShowDataPrivacy] = useState(false);
+
 
 
      // Three possible states: null (initial), 'verified', 'not_found', 'existing_account'
@@ -229,14 +232,15 @@ const Register_NewAlumni = ({ closeModal }) => {
     
     
 
-    const handleCrossCheckSurveyFormClick = () => {
+      const handleCrossCheckSurveyFormClick = () => {
         const storedID = localStorage.getItem('generatedID');
         if (storedID) {
-            navigate('/RegisterSurveyForm');
+          setShowDataPrivacy(true); // Show the privacy component within modal
         } else {
-            toast.warning("You must be a verified graduate to take the survey.");
+          toast.warning("You must be a verified graduate to take the survey.");
         }
-    };
+      };
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -460,19 +464,30 @@ const Register_NewAlumni = ({ closeModal }) => {
                 )}
 
                 {/* Step 3: Registration success */}
-                {generatedID && (
-                    <div className={styles.uniqueIdModal}>
-                        <h3>Registration Successful!</h3>
-                        <p>Your User ID:</p>
-                        <h4 className={styles.generatedId}><strong>{generatedID}</strong></h4> 
-                        <p>Please save this ID. This serves as your username to login.</p>
-                        <button 
-                            onClick={handleCrossCheckSurveyFormClick} 
-                            className={styles.primaryButton}
-                        >
-                            Go to Survey
-                        </button>
-                    </div>
+                {showDataPrivacy ? (
+                <div className={styles.fullScreenWrapper}>
+                    <DataPrivacyConsent 
+                    onComplete={() => {
+                        setShowDataPrivacy(false);
+                        navigate('/RegisterSurveyForm');
+                    }}
+                    onDecline={() => setShowDataPrivacy(false)}
+                    fullPage={true}
+                    />
+                </div>   
+                ) : generatedID && (
+                <div className={styles.uniqueIdModal}>
+                    <h3>Registration Successful!</h3>
+                    <p>Your User ID:</p>
+                    <h4 className={styles.generatedId}><strong>{generatedID}</strong></h4> 
+                    <p>Please save this ID. This serves as your username to login.</p>
+                    <button 
+                    onClick={handleCrossCheckSurveyFormClick} 
+                    className={styles.primaryButton}
+                    >
+                    Go to Survey
+                    </button>
+                </div>
                 )}
 
                 {/* Loading overlay */}
