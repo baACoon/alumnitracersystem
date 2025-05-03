@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import styles from './register_newalumni.module.css'; // Import module styles
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import DataPrivacyConsent from '../Security/dataprivacy';
 
 const Register_NewAlumni = ({ closeModal }) => {
@@ -19,9 +21,11 @@ const Register_NewAlumni = ({ closeModal }) => {
     const [recoveryCode, setRecoveryCode] = useState('');
     const [newRecoveredPassword, setNewRecoveredPassword] = useState('');
     const [confirmRecoveredPassword, setConfirmRecoveredPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [showRecoveredPassword, setShowRecoveredPassword] = useState(false);
+    const [showConfirmRecoveredPassword, setShowConfirmRecoveredPassword] = useState(false);
     const [showDataPrivacy, setShowDataPrivacy] = useState(false);
-
-
 
      // Three possible states: null (initial), 'verified', 'not_found', 'existing_account'
     const [verificationStatus, setVerificationStatus] = useState(null);
@@ -154,7 +158,7 @@ const Register_NewAlumni = ({ closeModal }) => {
           });
       
           const result = await response.json();
-          console.log("📬 Email response:", result);
+          console.log("Email response:", result);
       
           if (!response.ok || !result.email) {
             throw new Error(result.message || 'No email found');
@@ -162,7 +166,7 @@ const Register_NewAlumni = ({ closeModal }) => {
       
           return result.email;
         } catch (error) {
-          console.error('❌ fetchGraduateEmail error:', error.message);
+          console.error('fetchGraduateEmail error:', error.message);
           return null;
         }
       };
@@ -240,7 +244,6 @@ const Register_NewAlumni = ({ closeModal }) => {
           toast.warning("You must be a verified graduate to take the survey.");
         }
       };
-    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -406,23 +409,41 @@ const Register_NewAlumni = ({ closeModal }) => {
                             </div>
                         )}
 
+                         {/* Recovery password section */}
                         {recoveryStep === 'verified' && (
                             <div>
                                 <p>Enter your new password:</p>
-                                <input
-                                    type="password"
-                                    placeholder="New Password"
-                                    value={newRecoveredPassword}
-                                    onChange={(e) => setNewRecoveredPassword(e.target.value)}
-                                    className={styles.inputFieldNewAlumni}
-                                />
-                                <input
-                                    type="password"
-                                    placeholder="Confirm New Password"
-                                    value={confirmRecoveredPassword}
-                                    onChange={(e) => setConfirmRecoveredPassword(e.target.value)}
-                                    className={styles.inputFieldNewAlumni}
-                                />
+
+                                <div className={styles.passwordWrapper}>
+                                    <input
+                                        type={showRecoveredPassword ? "text" : "password"}
+                                        placeholder="New Password"
+                                        value={newRecoveredPassword}
+                                        onChange={(e) => setNewRecoveredPassword(e.target.value)}
+                                        className={styles.inputFieldNewAlumni}
+                                    />
+                                    <FontAwesomeIcon 
+                                        icon={showRecoveredPassword ? faEyeSlash : faEye} 
+                                        onClick={() => setShowRecoveredPassword(!showRecoveredPassword)} 
+                                        className={styles.eyeToggle}
+                                    />
+                                </div>
+
+                                <div className={styles.passwordWrapper}>
+                                    <input
+                                        type={showConfirmRecoveredPassword ? "text" : "password"}
+                                        placeholder="Confirm New Password"
+                                        value={confirmRecoveredPassword}
+                                        onChange={(e) => setConfirmRecoveredPassword(e.target.value)}
+                                        className={styles.inputFieldNewAlumni}
+                                    />
+                                    <FontAwesomeIcon 
+                                        icon={showConfirmRecoveredPassword ? faEyeSlash : faEye} 
+                                        onClick={() => setShowConfirmRecoveredPassword(!showConfirmRecoveredPassword)} 
+                                        className={styles.eyeToggle}
+                                    />
+                                </div>
+
                                 <button onClick={resetRecoveredPassword} className={styles.primaryButton}>
                                     Reset Password
                                 </button>
@@ -432,27 +453,45 @@ const Register_NewAlumni = ({ closeModal }) => {
                 )}
 
 
-                {/* Step 2c: Verified, show registration form */}
-                {verificationStatus === 'verified' && !generatedID && (
+                 {/* Step 2c: Verified, show registration form */}
+                 {verificationStatus === 'verified' && !generatedID && (
                     <form onSubmit={handleSubmit} className={styles.verificationResult}>
                         <h3>Complete Registration</h3>
                         <p className={styles.verifyName}><strong>Verified: {firstName} {lastName} ({gradyear})</strong></p>
-                        <input 
-                            type="password" 
-                            placeholder="Password" 
-                            value={password} 
-                            onChange={(e) => setPassword(e.target.value)} 
-                            required 
-                            className={styles.inputFieldNewAlumni} 
-                        />
-                        <input 
-                            type="password" 
-                            placeholder="Confirm Password" 
-                            value={confirmPassword} 
-                            onChange={(e) => setConfirmPassword(e.target.value)} 
-                            required 
-                            className={styles.inputFieldNewAlumni} 
-                        />
+                        
+                        {/* Password input with eye toggle */}
+                        <div className={styles.passwordWrapper}>
+                            <input 
+                                type={showPassword ? "text" : "password"} 
+                                placeholder="Password" 
+                                value={password} 
+                                onChange={(e) => setPassword(e.target.value)} 
+                                required 
+                                className={styles.inputFieldNewAlumni} 
+                            />
+                            <FontAwesomeIcon 
+                                icon={showPassword ? faEyeSlash : faEye} 
+                                onClick={() => setShowPassword(!showPassword)} 
+                                className={styles.eyeToggle} 
+                            />
+                        </div>
+
+                        <div className={styles.passwordWrapper}>
+                            <input 
+                                type={showConfirmPassword ? "text" : "password"} 
+                                placeholder="Confirm Password" 
+                                value={confirmPassword} 
+                                onChange={(e) => setConfirmPassword(e.target.value)} 
+                                required 
+                                className={styles.inputFieldNewAlumni} 
+                            />
+                            <FontAwesomeIcon 
+                                icon={showConfirmPassword ? faEyeSlash : faEye} 
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)} 
+                                className={styles.eyeToggle} 
+                            />
+                        </div>
+
                         <button 
                             type="submit" 
                             className={styles.primaryButton}
@@ -463,8 +502,8 @@ const Register_NewAlumni = ({ closeModal }) => {
                     </form>
                 )}
 
-                {/* Step 3: Registration success */}
-                {showDataPrivacy ? (
+                 {/* Step 3: Registration success */}
+                 {showDataPrivacy ? (
                 <div className={styles.fullScreenWrapper}>
                     <DataPrivacyConsent 
                     onComplete={() => {
