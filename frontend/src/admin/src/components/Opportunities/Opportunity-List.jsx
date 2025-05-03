@@ -10,6 +10,9 @@ export default function OpportunityList() {
     const [publishedOpportunities, setPublishedOpportunities] = useState([]);
     const [selectedOpportunity, setSelectedOpportunity] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);  // State to track edit modal
+    const [updatedOpportunity, setUpdatedOpportunity] = useState({}); // To store the updated values
+
 
     // Fetch published opportunities from the backend
     useEffect(() => {
@@ -55,6 +58,64 @@ export default function OpportunityList() {
         setSelectedOpportunity(null);
     };
 
+    const handleEditButtonClick = () => {
+        setUpdatedOpportunity({
+            title: selectedOpportunity.title,
+            company: selectedOpportunity.company,
+            location: selectedOpportunity.location,
+            type: selectedOpportunity.type,
+            description: selectedOpportunity.description,
+            responsibilities: selectedOpportunity.responsibilities,
+            qualifications: selectedOpportunity.qualifications,
+            source: selectedOpportunity.source,
+            college: selectedOpportunity.college,
+            course: selectedOpportunity.course,
+        });
+        setIsEditModalOpen(true);
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setUpdatedOpportunity({
+            ...updatedOpportunity,
+            [name]: value,
+        });
+    };
+
+    const handleSaveEdit = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.warning("You need to log in first.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://alumnitracersystem.onrender.com/jobs/${selectedOpportunity._id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(updatedOpportunity),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update job post');
+            }
+
+            const updatedJob = await response.json();
+            toast.success("Job updated successfully.");
+            setPublishedOpportunities((prev) => 
+                prev.map((job) => job._id === updatedJob._id ? updatedJob : job)
+            );
+            setIsEditModalOpen(false);
+            setSelectedOpportunity(updatedJob);
+        } catch (error) {
+            toast.error(error.message || 'Error updating job post.');
+        }
+    };
+
+
     if (loading) {
         return <p>Loading published opportunities...</p>;
     }
@@ -86,8 +147,8 @@ export default function OpportunityList() {
                 )}
             </div>
 
-            {/* Modal */}
-            {selectedOpportunity && (
+           {/* Modal to display job details */}
+           {selectedOpportunity && !isEditModalOpen && (
                 <div className="eventModal" onClick={closeModal}>
                     <div className="eventModalContent" onClick={(e) => e.stopPropagation()}>
                         <span className="closeButton" onClick={closeModal}>
@@ -114,47 +175,7 @@ export default function OpportunityList() {
                             <p>{selectedOpportunity.description || "No description provided."}</p>
                         </div>
 
-                        <div className="job-2col-wrapper">
-                            <div className="job-col-wrapper">
-                                <h4 className="job-label">Key Responsibilities</h4>
-                                <div className="job-col">
-                                    <ul>
-                                        {selectedOpportunity.responsibilities?.length > 0 ? (
-                                            selectedOpportunity.responsibilities.map((resp, idx) => <li key={idx}>{resp}</li>)
-                                        ) : (
-                                            <li>N/A</li>
-                                        )}
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div className="job-col-wrapper">
-                                <h4 className="job-label">Qualifications</h4>
-                                <div className="job-col">
-                                    <p>{selectedOpportunity.qualifications || "N/A"}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h4 className="job-label">More Information</h4>
-                        <div className="job-section">
-                            <a
-                                href={selectedOpportunity.source || "#"}
-                                className="job-link"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                {selectedOpportunity.source || "N/A"}
-                            </a>
-                        </div>
-
-                        <div className="job-status">
-                            <p><strong>Status:</strong> {selectedOpportunity.status || "N/A"}</p>
-                            <p><strong>College:</strong> {selectedOpportunity.college || "N/A"}</p>
-                            <p><strong>Course:</strong> {selectedOpportunity.course || "N/A"}</p>
-                            <p><strong>Location:</strong> {selectedOpportunity.location || "N/A"}</p>
-                        </div>
-
+                        <button onClick={handleEditButtonClick}>Edit</button>
                         <button
                             className="trashButton"
                             onClick={async () => {
@@ -187,6 +208,41 @@ export default function OpportunityList() {
                         >
                             🗑 Move to Trash
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Job Modal */}
+            {isEditModalOpen && (
+                <div className="eventModal" onClick={closeModal}>
+                    <div className="eventModalContent" onClick={(e) => e.stopPropagation()}>
+                        <span className="closeButton" onClick={() => setIsEditModalOpen(false)}>
+                            &times;
+                        </span>
+
+                        <h2>Edit Job Post</h2>
+                        <input
+                            type="text"
+                            name="title"
+                            value={updatedOpportunity.title || ''}
+                            onChange={handleInputChange}
+                            placeholder="Job Title"
+                        />
+                        <input
+                            type="text"
+                            name="company"
+                            value={updatedOpportunity.company || ''}
+                            onChange={handleInputChange}
+                            placeholder="Company"
+                        />
+                        <textarea
+                            name="description"
+                            value={updatedOpportunity.description || ''}
+                            onChange={handleInputChange}
+                            placeholder="Job Description"
+                        />
+                        {/* Add more fields here like responsibilities, qualifications, etc. */}
+                        <button onClick={handleSaveEdit}>Save Changes</button>
                     </div>
                 </div>
             )}

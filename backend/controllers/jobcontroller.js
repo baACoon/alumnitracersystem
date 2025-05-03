@@ -87,3 +87,36 @@ export const denyJob = async (req, res) => {
         res.status(500).json({ error: 'Failed to deny job.' });
     }
 };
+
+export const updateJob = async (req, res) => {
+    const { jobId } = req.params; // Get the jobId from the URL parameters
+    const { title, company, description, location, responsibilities, qualifications, type, source } = req.body; // Destructure the request body for the job post data
+
+    try {
+        // Find the job post by its ID
+        const jobPost = await Job.findById(jobId);
+
+        // Check if the job post exists
+        if (!jobPost) {
+            return res.status(404).json({ error: 'Job post not found' });
+        }
+
+        // Update the job post with the new data
+        jobPost.title = title || jobPost.title;
+        jobPost.company = company || jobPost.company;
+        jobPost.description = description || jobPost.description;
+        jobPost.location = location || jobPost.location;
+        jobPost.responsibilities = responsibilities || jobPost.responsibilities;
+        jobPost.qualifications = qualifications || jobPost.qualifications;
+        jobPost.type = type || jobPost.type;
+        jobPost.source = source || jobPost.source;
+
+        // Save the updated job post
+        const updatedJobPost = await jobPost.save();
+
+        res.status(200).json({ message: 'Job updated successfully', updatedJobPost }); // Return the updated job post
+    } catch (error) {
+        console.error('Error updating job:', error.message);
+        res.status(500).json({ error: 'Failed to update job.' });
+    }
+};
