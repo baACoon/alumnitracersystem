@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Opportunity-List.module.css";
 import './opplistmodal.css';
-import './trashbtn.css'
+import './trashbtn.css';
+import './editbtn.css';
 import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -147,8 +148,8 @@ export default function OpportunityList() {
                 )}
             </div>
 
-      {/* Modal to display job details */}
-      {selectedOpportunity && !isEditModalOpen && (
+            {/* Modal */}
+            {selectedOpportunity && !isEditModalOpen && (
                 <div className="eventModal" onClick={closeModal}>
                     <div className="eventModalContent" onClick={(e) => e.stopPropagation()}>
                         <span className="closeButton" onClick={closeModal}>
@@ -175,7 +176,48 @@ export default function OpportunityList() {
                             <p>{selectedOpportunity.description || "No description provided."}</p>
                         </div>
 
-                        <button onClick={handleEditButtonClick} className="editButton">Edit</button>
+                        <div className="job-2col-wrapper">
+                            <div className="job-col-wrapper">
+                                <h4 className="job-label">Key Responsibilities</h4>
+                                <div className="job-col">
+                                    <ul>
+                                        {selectedOpportunity.responsibilities?.length > 0 ? (
+                                            selectedOpportunity.responsibilities.map((resp, idx) => <li key={idx}>{resp}</li>)
+                                        ) : (
+                                            <li>N/A</li>
+                                        )}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="job-col-wrapper">
+                                <h4 className="job-label">Qualifications</h4>
+                                <div className="job-col">
+                                    <p>{selectedOpportunity.qualifications || "N/A"}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 className="job-label">More Information</h4>
+                        <div className="job-section">
+                            <a
+                                href={selectedOpportunity.source || "#"}
+                                className="job-link"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                {selectedOpportunity.source || "N/A"}
+                            </a>
+                        </div>
+
+                        <div className="job-status">
+                            <p><strong>Status:</strong> {selectedOpportunity.status || "N/A"}</p>
+                            <p><strong>College:</strong> {selectedOpportunity.college || "N/A"}</p>
+                            <p><strong>Course:</strong> {selectedOpportunity.course || "N/A"}</p>
+                            <p><strong>Location:</strong> {selectedOpportunity.location || "N/A"}</p>
+                        </div>
+                        
+                        <button onClick={handleEditButtonClick}>Edit</button>
                         <button
                             className="trashButton"
                             onClick={async () => {
@@ -212,8 +254,7 @@ export default function OpportunityList() {
                 </div>
             )}
 
-            {/* Edit Job Modal with custom class names for styling */}
-            {isEditModalOpen && (
+                {isEditModalOpen && (
                 <div className="editModalOverlay" onClick={closeModal}>
                     <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
                         <span className="closeEditButton" onClick={() => setIsEditModalOpen(false)}>
