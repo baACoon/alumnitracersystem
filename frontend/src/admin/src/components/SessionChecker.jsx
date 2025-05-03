@@ -3,52 +3,40 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-toastify';
 
-function SessionChecker() {
+function SessionChecker({ onAuthCheckComplete }) {
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkSession = () => {
       const token = localStorage.getItem('token');
-      const loginPage = '/login';
       
       if (!token) {
-        handleSessionEnd();
-        return;
+        onAuthCheckComplete();
+        return navigate('/login');
       }
 
       try {
         const decoded = jwtDecode(token);
         const currentTime = Date.now() / 1000;
 
-        if (decoded.exp && decoded.exp < currentTime) {
-          handleSessionEnd(true);
+        if (decoded.exp < currentTime) {
+          localStorage.removeItem('token');
+          toast.warning('Session expired. Please login again.');
+          onAuthCheckComplete();
+          return navigate('/login');
         }
+
+        onAuthCheckComplete();
       } catch (error) {
-        console.error('Token decoding failed:', error);
-        handleSessionEnd();
+        console.error('Token validation failed:', error);
+        localStorage.removeItem('token');
+        onAuthCheckComplete();
+        navigate('/login');
       }
     };
 
-    const handleSessionEnd = (expired = false) => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('username');
-      
-      if (expired) {
-        toast.warning('Your session has expired. Please log in again.', {
-          toastId: 'session-expired' // Prevent duplicates
-        });
-      }
-      navigate('/login');
-    };
-
-    // Initial check
     checkSession();
-
-    // Set up periodic checking (every 5 minutes)
-    const interval = setInterval(checkSession, 5 * 60 * 1000);
-
-    return () => clearInterval(interval);
-  }, [navigate]);
+  }, [navigate, onAuthCheckComplete]);
 
   return null;
 }

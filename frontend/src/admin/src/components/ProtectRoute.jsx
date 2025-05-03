@@ -1,35 +1,26 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode'; // ✅ Correct import based on new jwt-decode
 
-const ProtectedRoute = ({ children, requiredRoles = [] }) => {
+const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
-  const navigateTarget = '/login'; // Centralized redirect target
 
   if (!token) {
-    localStorage.removeItem('token'); // Clear any invalid token
-    return <Navigate to={navigateTarget} replace />;
+    return <Navigate to="/login" replace />;
   }
 
   try {
-    const decoded = jwtDecode(token);
-    const currentTime = Date.now() / 1000;
+    const decoded = jwtDecode(token); // ✅ Correct usage
+    const currentTime = Date.now() / 1000; // seconds
 
-    // Token expiration check
     if (decoded.exp < currentTime) {
       localStorage.removeItem('token');
-      return <Navigate to={navigateTarget} replace />;
+      return <Navigate to="/login" replace />;
     }
-
-    // Role-based access control
-    if (requiredRoles.length > 0 && !requiredRoles.includes(decoded.role)) {
-      return <Navigate to="/unauthorized" replace />;
-    }
-
   } catch (error) {
-    console.error('Token validation error:', error);
+    console.error('Invalid token format:', error);
     localStorage.removeItem('token');
-    return <Navigate to={navigateTarget} replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
