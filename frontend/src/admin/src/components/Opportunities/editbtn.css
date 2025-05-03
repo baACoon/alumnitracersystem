@@ -16,10 +16,27 @@
 .editModalContent {
     background-color: #fff;
     padding: 20px;
-    width: 50%;
+    width: 40%;
+    max-width: 800px;
+    height: 80%;  /* Set a fixed height for the modal */
+    overflow-y: auto; /* Enable vertical scrolling */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative; /* To position the close button inside the modal */
+}
+
+/* Scrollbar Styling */
+.editModalContent::-webkit-scrollbar {
+    width: 8px;  /* Set the width of the scrollbar */
+}
+
+.editModalContent::-webkit-scrollbar-thumb {
+    background-color: #888; /* Set color for the thumb */
+    border-radius: 10px;
+}
+
+.editModalContent::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Darker thumb when hovering */
 }
 
 /* Close Button for Edit Modal */
@@ -93,4 +110,11 @@
 /* Edit Button Hover */
 .editbtn:hover {
     background-color: #0c541e;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .editModalContent {
+        width: 80%;  /* On smaller screens, increase the width */
+    }
 }
