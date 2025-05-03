@@ -1,0 +1,125 @@
+/* RegisterModal.module.css */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 10000; /* High enough to overlay everything */
+}
+  
+.modalContent {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    z-index: 10001; /* Higher than overlay */
+    color: #333;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+  }
+  
+  .modalHeader {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .modalHeader h3 {
+    color: #580808;
+    margin: 0;
+  }
+  
+  .registerForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .formGroup label {
+    font-weight: 500;
+  }
+  
+  .formGroup input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .passwordInputWrapper {
+    position: relative;
+    display: flex;
+  }
+  
+  .passwordInputWrapper input {
+    flex: 1;
+    padding-right: 2.5rem;
+  }
+  
+  .showPasswordButton {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #580808;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  
+  .buttonGroup {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .registerButton {
+    background-color: #580808;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    flex: 1;
+  }
+  
+  .cancelButton {
+    background-color: #ddd;
+    color: #333;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    flex: 1;
+  }
+  
+  .registerButton:hover {
+    background-color: #8F263A;
+  }
+  
+  .cancelButton:hover {
+    background-color: #ccc;
+  }
