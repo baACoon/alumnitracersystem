@@ -4,7 +4,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import styles from "./Admin-SideBar.module.css";
 import './sidebarmodal.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
 import {
   faGauge,
   faUsers,
