@@ -147,8 +147,8 @@ export default function OpportunityList() {
                 )}
             </div>
 
-           {/* Modal to display job details */}
-           {selectedOpportunity && !isEditModalOpen && (
+      {/* Modal to display job details */}
+      {selectedOpportunity && !isEditModalOpen && (
                 <div className="eventModal" onClick={closeModal}>
                     <div className="eventModalContent" onClick={(e) => e.stopPropagation()}>
                         <span className="closeButton" onClick={closeModal}>
@@ -175,7 +175,7 @@ export default function OpportunityList() {
                             <p>{selectedOpportunity.description || "No description provided."}</p>
                         </div>
 
-                        <button onClick={handleEditButtonClick}>Edit</button>
+                        <button onClick={handleEditButtonClick} className="editButton">Edit</button>
                         <button
                             className="trashButton"
                             onClick={async () => {
@@ -212,11 +212,11 @@ export default function OpportunityList() {
                 </div>
             )}
 
-            {/* Edit Job Modal */}
+            {/* Edit Job Modal with custom class names for styling */}
             {isEditModalOpen && (
-                <div className="eventModal" onClick={closeModal}>
-                    <div className="eventModalContent" onClick={(e) => e.stopPropagation()}>
-                        <span className="closeButton" onClick={() => setIsEditModalOpen(false)}>
+                <div className="editModalOverlay" onClick={closeModal}>
+                    <div className="editModalContent" onClick={(e) => e.stopPropagation()}>
+                        <span className="closeEditButton" onClick={() => setIsEditModalOpen(false)}>
                             &times;
                         </span>
 
@@ -227,6 +227,7 @@ export default function OpportunityList() {
                             value={updatedOpportunity.title || ''}
                             onChange={handleInputChange}
                             placeholder="Job Title"
+                            className="editInput"
                         />
                         <input
                             type="text"
@@ -234,15 +235,17 @@ export default function OpportunityList() {
                             value={updatedOpportunity.company || ''}
                             onChange={handleInputChange}
                             placeholder="Company"
+                            className="editInput"
                         />
                         <textarea
                             name="description"
                             value={updatedOpportunity.description || ''}
                             onChange={handleInputChange}
                             placeholder="Job Description"
+                            className="editTextarea"
                         />
                         {/* Add more fields here like responsibilities, qualifications, etc. */}
-                        <button onClick={handleSaveEdit}>Save Changes</button>
+                        <button onClick={handleSaveEdit} className="saveEditButton">Save Changes</button>
                     </div>
                 </div>
             )}
