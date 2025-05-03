@@ -55,7 +55,7 @@
 
 /* Close Button Hover Effect */
 .closeEditButton:hover {
-    color: red; /* Change color when hovering */
+    color: #580808; /* Change color when hovering */
 }
 
 /* Edit Input Fields */
