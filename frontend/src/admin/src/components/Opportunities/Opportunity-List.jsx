@@ -285,6 +285,20 @@ export default function OpportunityList() {
                             placeholder="Job Description"
                             className="editTextarea"
                         />
+                        <textarea
+                            name="responsibility"
+                            value={updatedOpportunity.responsibilities || ''}
+                            onChange={handleInputChange}
+                            placeholder="Job Description"
+                            className="editTextarea"
+                        />
+                        <textarea
+                            name="qualifications"
+                            value={updatedOpportunity.qualifications || ''}
+                            onChange={handleInputChange}
+                            placeholder="Job Description"
+                            className="editTextarea"
+                        />
                         {/* Add more fields here like responsibilities, qualifications, etc. */}
                         <button onClick={handleSaveEdit} className="saveEditButton">Save Changes</button>
                     </div>
