@@ -31,11 +31,15 @@ export default function Login() {
         body: JSON.stringify(formData)
       });
       const data = await response.json();
+      // In the handleSubmit function of Login.jsx, update the success case:
       if (response.ok) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('username', formData.username);
         toast.success('Login successful!');
-        navigate('/alumni-page');
+        // Add timeout to ensure toast is visible before navigation
+        setTimeout(() => {
+          navigate('/dashboard'); // Changed from '/alumni-page' to '/dashboard'
+        }, 1000);
       } else {
         toast.error(data.error || 'Login failed.');
       }
