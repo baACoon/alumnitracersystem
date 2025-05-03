@@ -243,5 +243,18 @@ router.get('/trash', protect, async (req, res) => {
       res.status(500).json({ error: 'Failed to restore job.' });
     }
   });
+
+  // In jobroutes.js
+router.put('/:id', protect, async (req, res) => {
+    try {
+      const updated = await Job.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      if (!updated) return res.status(404).json({ message: "Job not found." });
+      res.status(200).json(updated);
+    } catch (error) {
+      console.error("Error updating job:", error);
+      res.status(500).json({ message: "Failed to update job." });
+    }
+  });
+  
   
 export default router;
