@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styles from './frontpage.module.css';// Import module-based styles
 import LoginForm from '../Login_Alumni/LoginForm';  // Login Form Modal
 import Register_NewAlumni from '../Register_NewAlumni/register_newalumni';  // Form for users without Alumni ID
@@ -10,21 +10,25 @@ const TestFrontPage = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegister_NewAlumniModal, setShowRegister_NewAlumniModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const loadingPageRef = useRef(null);
   
   useEffect(() => {
     // Ensure animations apply after component is mounted
+    
+
     setTimeout(() => {
-      // Animation to fade out the loading screen
-      gsap.to(".loadingPage", {
+      gsap.to(loadingPageRef.current, {
         opacity: 0,
         duration: 1.5,
-        delay: 3.5, // Loading screen lasts for 3.5 seconds
+        delay: 3.5,
         onComplete: () => {
           setLoading(false);
-          document.querySelector(".loadingPage").style.display = "none"; // Hide it after animation completes
+          if (loadingPageRef.current) {
+            loadingPageRef.current.style.display = "none";
+          }
         },
       });
-  
+    
       // Animation for "TUPATS" letters (Angry Bounce Effect)
       gsap.to(".letter", {
         opacity: 1,
