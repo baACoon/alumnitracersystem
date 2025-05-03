@@ -260,10 +260,7 @@ export default function OpportunityList() {
                         <span className="closeEditButton" onClick={() => setIsEditModalOpen(false)}>
                             &times;
                         </span>
-                        <span className="closeButton" onClick={closeModal}>
-                            &times;
-                        </span>
-
+                        
                         <h2>Edit Job Post</h2>
                         <input
                             type="text"
