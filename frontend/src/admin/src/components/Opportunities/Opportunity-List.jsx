@@ -89,74 +89,106 @@ export default function OpportunityList() {
             {selectedOpportunity && (
                 <div className="eventModal" onClick={closeModal}>
                     <div className="eventModalContent" onClick={(e) => e.stopPropagation()}>
-                    <span className="closeButton" onClick={closeModal}>
-                        &times;
-                    </span>
+                        <span className="closeButton" onClick={closeModal}>
+                            &times;
+                        </span>
 
-                    <p className="job-date">
-                        {selectedOpportunity.createdAt
-                        ? new Date(selectedOpportunity.createdAt).toLocaleDateString("en-US", {
-                            month: "long",
-                            day: "numeric",
-                            year: "numeric",
-                            })
-                        : "N/A"}
-                    </p>
+                        <p className="job-date">
+                            {selectedOpportunity.createdAt
+                                ? new Date(selectedOpportunity.createdAt).toLocaleDateString("en-US", {
+                                    month: "long",
+                                    day: "numeric",
+                                    year: "numeric",
+                                })
+                                : "N/A"}
+                        </p>
 
-                    <h2 className="job-title">{selectedOpportunity.title || "N/A"}</h2>
-                    <h4 className="job-subheader">
-                        {selectedOpportunity.company || "N/A"}{" "}
-                        <span className="job-type">{selectedOpportunity.type || "N/A"}</span>
-                    </h4>
+                        <h2 className="job-title">{selectedOpportunity.title || "N/A"}</h2>
+                        <h4 className="job-subheader">
+                            {selectedOpportunity.company || "N/A"} <span className="job-type">{selectedOpportunity.type || "N/A"}</span>
+                        </h4>
 
-                    <h4 className="job-description">Job Description</h4>
-                    <div className="job-section">
-                        <p>{selectedOpportunity.description || "No description provided."}</p>
-                    </div>
-
-                    <div className="job-2col-wrapper">
-                        <div className="job-col-wrapper">
-                        <h4 className="job-label">Key Responsibilities</h4>
-                        <div className="job-col">
-                            <ul>
-                            {selectedOpportunity.responsibilities?.length > 0 ? (
-                                selectedOpportunity.responsibilities.map((resp, idx) => <li key={idx}>{resp}</li>)
-                            ) : (
-                                <li>N/A</li>
-                            )}
-                            </ul>
-                        </div>
+                        <h4 className="job-description">Job Description</h4>
+                        <div className="job-section">
+                            <p>{selectedOpportunity.description || "No description provided."}</p>
                         </div>
 
-                        <div className="job-col-wrapper">
-                        <h4 className="job-label">Qualifications</h4>
-                        <div className="job-col">
-                            <p>{selectedOpportunity.qualifications || "N/A"}</p>
-                        </div>
-                        </div>
-                    </div>
+                        <div className="job-2col-wrapper">
+                            <div className="job-col-wrapper">
+                                <h4 className="job-label">Key Responsibilities</h4>
+                                <div className="job-col">
+                                    <ul>
+                                        {selectedOpportunity.responsibilities?.length > 0 ? (
+                                            selectedOpportunity.responsibilities.map((resp, idx) => <li key={idx}>{resp}</li>)
+                                        ) : (
+                                            <li>N/A</li>
+                                        )}
+                                    </ul>
+                                </div>
+                            </div>
 
-                    <h4 className="job-label">More Information</h4>
-                    <div className="job-section">
-                        <a
-                        href={selectedOpportunity.source || "#"}
-                        className="job-link"
-                        target="_blank"
-                        rel="noreferrer"
+                            <div className="job-col-wrapper">
+                                <h4 className="job-label">Qualifications</h4>
+                                <div className="job-col">
+                                    <p>{selectedOpportunity.qualifications || "N/A"}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 className="job-label">More Information</h4>
+                        <div className="job-section">
+                            <a
+                                href={selectedOpportunity.source || "#"}
+                                className="job-link"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                {selectedOpportunity.source || "N/A"}
+                            </a>
+                        </div>
+
+                        <div className="job-status">
+                            <p><strong>Status:</strong> {selectedOpportunity.status || "N/A"}</p>
+                            <p><strong>College:</strong> {selectedOpportunity.college || "N/A"}</p>
+                            <p><strong>Course:</strong> {selectedOpportunity.course || "N/A"}</p>
+                            <p><strong>Location:</strong> {selectedOpportunity.location || "N/A"}</p>
+                        </div>
+
+                        <button
+                            className="trashButton"
+                            onClick={async () => {
+                                try {
+                                    const token = localStorage.getItem("token");
+                                    const response = await fetch(`https://alumnitracersystem.onrender.com/jobs/${selectedOpportunity._id}/deny`, {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                            Authorization: `Bearer ${token}`,
+                                        },
+                                        body: JSON.stringify({ feedback: "Moved to trash from OpportunityList modal." }),
+                                    });
+
+                                    if (response.ok) {
+                                        toast.success("Moved to trash successfully.");
+                                        setPublishedOpportunities((prev) =>
+                                            prev.filter((op) => op._id !== selectedOpportunity._id)
+                                        );
+                                        setSelectedOpportunity(null);
+                                    } else {
+                                        const data = await response.json();
+                                        toast.error(data.message || "Failed to move to trash.");
+                                    }
+                                } catch (err) {
+                                    console.error("Error moving to trash:", err);
+                                    toast.error("Server error occurred.");
+                                }
+                            }}
                         >
-                        {selectedOpportunity.source || "N/A"}
-                        </a>
-                    </div>
-
-                    <div className="job-status">
-                        <p><strong>Status:</strong> {selectedOpportunity.status || "N/A"}</p>
-                        <p><strong>College:</strong> {selectedOpportunity.college || "N/A"}</p>
-                        <p><strong>Course:</strong> {selectedOpportunity.course || "N/A"}</p>
-                        <p><strong>Location:</strong> {selectedOpportunity.location || "N/A"}</p>
-                    </div>
+                            🗑 Move to Trash
+                        </button>
                     </div>
                 </div>
-                )}
+            )}
 
         </div>
     );
