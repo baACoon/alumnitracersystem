@@ -408,17 +408,21 @@ router.get("/tracer/comparison", async (req, res) => {
     const tracer1Submissions = await SurveySubmission.find(tracer1Query).populate('userId');
     const tracer2Submissions = await TracerSurvey2.find(tracer2Query).populate('userId');
 
+    // Filter out submissions without valid userId
+    const validTracer1Submissions = tracer1Submissions.filter(doc => doc.userId && doc.userId._id);
+    const validTracer2Submissions = tracer2Submissions.filter(doc => doc.userId && doc.userId._id);
+
     const tracer1Map = new Map();
-    tracer1Submissions.forEach((doc) => {
+    validTracer1Submissions.forEach((doc) => {
       tracer1Map.set(doc.userId._id.toString(), doc);
     });
 
-    const usersWithBoth = tracer2Submissions.filter((doc) => 
+    const usersWithBoth = validTracer2Submissions.filter((doc) => 
       doc.userId && doc.userId._id && tracer1Map.has(doc.userId._id.toString())
     );
     
     const filteredUsersWithBoth = batch
-      ? usersWithBoth.filter((doc) => doc.userId.gradyear === Number(batch))
+      ? usersWithBoth.filter((doc) => doc.userId && doc.userId.gradyear === Number(batch))
       : usersWithBoth;
 
     let employmentRate = {
@@ -443,6 +447,8 @@ router.get("/tracer/comparison", async (req, res) => {
       if (!tracer2Doc.userId || !tracer2Doc.userId._id) return; // skip invalid entries
       const userId = tracer2Doc.userId._id.toString();
       const tracer1Doc = tracer1Map.get(userId);
+
+      if (!tracer1Doc) return; // skip if no matching tracer1 doc
 
       const employedTypes = ["Permanent", "Contractual/ProjectBased", "Temporary", "Self-employed"];
 
