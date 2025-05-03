@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Admin-SideBar";
 import styles from "./SideBarLayout.module.css";
+import RegisterModal from "./RegisterModal"; // Import the modal
 
 export function SidebarLayout({ children }) {
-  const [isOpen, setIsOpen] = useState(window.innerWidth >= 768); // Sidebar visible for larger screens by default
-
+  const [isOpen, setIsOpen] = useState(window.innerWidth >= 768);
+  const [showRegisterModal, setShowRegisterModal] = useState(false); // Add modal state
   const toggleSidebar = () => {
     setIsOpen((prevState) => !prevState);
   };
@@ -27,7 +28,7 @@ export function SidebarLayout({ children }) {
 
   return (
     <div className={styles.layout}>
-      {/* Hamburger button only visible on smaller screens */}
+      {/* Hamburger button */}
       <button
         className={styles.hamburgerButton}
         onClick={toggleSidebar}
@@ -36,11 +37,20 @@ export function SidebarLayout({ children }) {
         ☰
       </button>
 
-      {/* Sidebar */}
-      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+      {/* Sidebar - pass down the modal handler */}
+      <Sidebar 
+        isOpen={isOpen} 
+        toggleSidebar={toggleSidebar}
+        onShowRegisterModal={() => setShowRegisterModal(true)} 
+      />
 
       {/* Main content */}
       <main className={styles.mainContent}>{children}</main>
+
+      {/* Register Modal - now rendered at layout level */}
+      {showRegisterModal && (
+        <RegisterModal onClose={() => setShowRegisterModal(false)} />
+      )}
     </div>
   );
 }
