@@ -12,6 +12,13 @@
     z-index: 9999;
 }
 
+@keyframes zoomBounce {
+    0% { transform: scale(0.7); opacity: 0; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+  
+
 /* Edit Modal Content */
 .editModalContent {
     background-color: #fff;
@@ -22,7 +29,8 @@
     overflow-y: auto; /* Enable vertical scrolling */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: relative; /* To position the close button inside the modal */
+    position: relative;
+    animation: zoomBounce 0.4s ease;
 }
 
 /* Scrollbar Styling */
