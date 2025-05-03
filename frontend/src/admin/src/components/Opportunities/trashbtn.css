@@ -1,0 +1,16 @@
+.trashButton {
+    background-color: #580808;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+  }
+  
+  .trashButton:hover {
+    background-color: #a52a2a;
+  }

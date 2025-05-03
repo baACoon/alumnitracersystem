@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Opportunity-List.module.css";
 import './opplistmodal.css';
+import './trashbtn.css'
 import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
