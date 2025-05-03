@@ -12,19 +12,6 @@ import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { faUser } from '@fortawesome/free-solid-svg-icons'; // ✅ valid icon
 
-// Loader Component
-function Loader() {
-  return (
-    <section className={styles.dotsContainer}>
-      <div className={styles.dot}></div>
-      <div className={styles.dot}></div>
-      <div className={styles.dot}></div>
-      <div className={styles.dot}></div>
-      <div className={styles.dot}></div>
-    </section>
-  );
-}
-
 function Pagination({ currentPage, totalPages, setCurrentPage }) {
   const getPageNumbers = () => {
     const pages = [];
@@ -83,7 +70,6 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
   const [activeTab, setActiveTab] = useState('Alumni List');
   const [modalTab, setModalTab] = useState('overview');
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true); // Add loading state
   const itemsPerPage = 9;
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const navigate = useNavigate();
@@ -150,10 +136,7 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
           toast.error("Authentication error. Please log in again.");
           navigate('/login');
         }
-      } finally {
-        setLoading(false); // End loading regardless of outcome
       }
-
     };
 
     fetchData();
@@ -296,10 +279,9 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
       } else {
         toast.error('An error occurred while fetching student details.');
       }
-    } finally {
-      setLoading(false); // Hide loader after fetch completes
     }
   };
+  
 
   const filteredAlumni = alumniData.filter((alumni) => {
     const term = searchQuery.toLowerCase();
@@ -338,198 +320,186 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
   'N/A';
 
 
-  return (
-    <section className={styles.tableSection}>
-      {activeTab === 'Alumni List' && (
-        <>
-          {loading ? (
-            // Show loader when loading is true
-            <div className={styles.loaderContainer}>
-              <Loader />
-            </div>
-          ) : (
-            // Show table when loading is false
-            <div className={styles.tableWrapper} role="region" aria-label="Alumni table" tabIndex="0">
-              <table className={styles.alumniTable}>
-                <thead>
-                  <tr>
-                    <th scope="col">
+ return (
+  <section className={styles.tableSection}>
+    {activeTab === 'Alumni List' && (
+      <>
+        <div className={styles.tableWrapper} role="region" aria-label="Alumni table" tabIndex="0">
+          <table className={styles.alumniTable}>
+            <thead>
+              <tr>
+                <th scope="col">
+                  <input
+                    type="checkbox"
+                    id="selectAll"
+                    onChange={handleSelectAll}
+                    aria-label="Select all alumni"
+                    checked={selectedAlumni.size > 0 && selectedAlumni.size === currentData.length}
+                  />
+                </th>
+                <th scope="col">TUP-ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Course</th>
+                <th scope="col">Year Graduated</th>
+                <th scope="col">Tracer Status</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentData.length > 0 ? (
+                currentData.map((alumni) => (
+                  <tr key={alumni.userId} onClick={() => openStudentDetails(alumni.userId)}>
+                    <td onClick={(e) => e.stopPropagation()}>
                       <input
                         type="checkbox"
-                        id="selectAll"
-                        onChange={handleSelectAll}
-                        aria-label="Select all alumni"
-                        checked={selectedAlumni.size > 0 && selectedAlumni.size === currentData.length}
+                        id={`select-${alumni.userId}`}
+                        checked={selectedAlumni.has(alumni.userId)}
+                        onChange={() => handleSelectAlumni(alumni.userId)}
+                        onClick={(e) => e.stopPropagation()}
+                        aria-label={`Select ${alumni.userId}`}
                       />
-                    </th>
-                    <th scope="col">TUP-ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Course</th>
-                    <th scope="col">Year Graduated</th>
-                    <th scope="col">Tracer Status</th>
-                    <th scope="col">Actions</th>
+                    </td>
+                    <td>{alumni.generatedID}</td>
+                    <td>{`${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`}</td>
+                    <td>{alumni.personalInfo.email_address}</td>
+                    <td>{alumni.personalInfo.course}</td>
+                    <td>{alumni.personalInfo.gradyear}</td>
+                    <td>
+                      <span className={`${styles.tracerStatus} ${
+                        alumni.tracerStatus?.includes('&') ? styles.tracerStatusMultiple : styles.tracerStatusSingle
+                      }`}>
+                        {alumni.tracerStatus || 'No tracer'}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        className={styles.actionButton}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openStudentDetails(alumni.userId);
+                        }}
+                      >
+                        ›
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {currentData.length > 0 ? (
-                    currentData.map((alumni) => (
-                      <tr key={alumni.userId} onClick={() => openStudentDetails(alumni.userId)}>
-                        <td onClick={(e) => e.stopPropagation()}>
-                          <input
-                            type="checkbox"
-                            id={`select-${alumni.userId}`}
-                            checked={selectedAlumni.has(alumni.userId)}
-                            onChange={() => handleSelectAlumni(alumni.userId)}
-                            onClick={(e) => e.stopPropagation()}
-                            aria-label={`Select ${alumni.userId}`}
-                          />
-                        </td>
-                        <td>{alumni.generatedID}</td>
-                        <td>{`${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`}</td>
-                        <td>{alumni.personalInfo.email_address}</td>
-                        <td>{alumni.personalInfo.course}</td>
-                        <td>{alumni.personalInfo.gradyear}</td>
-                        <td>
-                          <span className={`${styles.tracerStatus} ${
-                            alumni.tracerStatus?.includes('&') ? styles.tracerStatusMultiple : styles.tracerStatusSingle
-                          }`}>
-                            {alumni.tracerStatus || 'No tracer'}
-                          </span>
-                        </td>
-                        <td>
-                          <button
-                            className={styles.actionButton}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openStudentDetails(alumni.userId);
-                            }}
-                          >
-                            ›
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="8" style={{ textAlign: 'center', padding: '1rem', fontStyle: 'italic', color: 'gray' }}>
-                        {searchQuery
-                          ? `Sorry, there is no "${searchQuery}" in the alumni list.`
-                          : batch || college || course
-                          ? 'No alumni match all the selected filters.'
-                          : 'No alumni records found.'}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: 'center', padding: '1rem', fontStyle: 'italic', color: 'gray' }}>
+                    {searchQuery
+                      ? `Sorry, there is no "${searchQuery}" in the alumni list.`
+                      : batch || college || course
+                      ? 'No alumni match all the selected filters.'
+                      : 'No alumni records found.'}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-          {/* Move Pagination OUTSIDE the table */}
-          {!loading && filteredData.length > itemsPerPage && (
-            <div className={styles.paginationWrapper}>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                setCurrentPage={setCurrentPage}
-              />
-            </div>
-          )}
-        </>
-      )}
+        {/* Move Pagination OUTSIDE the table */}
+        {filteredData.length > itemsPerPage && (
+          <div className={styles.paginationWrapper}>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+            />
+          </div>
+        )}
+      </>
+    )}
 
-      {/* Modal Section */}
-      {studentDetails && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.closeButton} onClick={() => setStudentDetails(null)}>
-              ×
-            </button>
+    {/* Modal Section - untouched */}
+    {studentDetails && (
+      <div className={styles.modalOverlay} >
+        <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <button className={styles.closeButton} onClick={() => setStudentDetails(null)}>
+            ×
+          </button>
 
-            {loading ? (
-              // Show loader inside modal when loading student details
-              <div className={styles.modalLoaderContainer}>
-                <Loader />
-              </div>
-            ) : studentDetails.personalInfo ? (
-              <>
-                <div className={`${styles.modalHeader} ${styles.gradientHeader}`}>
-                  <div className={styles.headerContent}>
-                    <div className={styles.profileAvatar}>
-                      <FontAwesomeIcon icon={faUser} />
+          {studentDetails.personalInfo ? (
+            <>
+              <div className={`${styles.modalHeader} ${styles.gradientHeader}`}>
+                <div className={styles.headerContent}>
+                  <div className={styles.profileAvatar}>
+                  <FontAwesomeIcon icon={faUser} />
+                  </div>
+                  <div className={styles.profileInfo}>
+                    <h3 className={styles.profileName}>
+                      {`${studentDetails.personalInfo.first_name} ${studentDetails.personalInfo.last_name}`}
+                    </h3>
+                    <div className={styles.badgeContainer}>
+                      <span className={styles.infoBadge}>
+                        TUP-ID: {studentDetails.generatedID}
+                      </span>
+                      <span className={styles.infoBadge}>
+                        {studentDetails.personalInfo.course || 'N/A'}
+                      </span>
+                      {/*<span className={styles.infoBadge}>
+                        Class of {gradYear}
+                      </span>*/}
                     </div>
-                    <div className={styles.profileInfo}>
-                      <h3 className={styles.profileName}>
-                        {`${studentDetails.personalInfo.first_name} ${studentDetails.personalInfo.last_name}`}
-                      </h3>
-                      <div className={styles.badgeContainer}>
-                        <span className={styles.infoBadge}>
-                          TUP-ID: {studentDetails.generatedID}
-                        </span>
-                        <span className={styles.infoBadge}>
-                          {studentDetails.personalInfo.course || 'N/A'}
-                        </span>
-                        {/*<span className={styles.infoBadge}>
-                          Class of {gradYear}
-                        </span>*/}
+                    <div className={styles.contactInfo}>
+                      <div className={styles.contactItem}>
+                        <i className="fas fa-envelope"></i>
+                        <span>{studentDetails.personalInfo.email_address || 'N/A'}</span>
                       </div>
-                      <div className={styles.contactInfo}>
-                        <div className={styles.contactItem}>
-                          <i className="fas fa-envelope"></i>
-                          <span>{studentDetails.personalInfo.email_address || 'N/A'}</span>
-                        </div>
-                        <div className={styles.contactItem}>
-                          <i className="fas fa-phone"></i>
-                          <span>{studentDetails.personalInfo.contact_no || 'N/A'}</span>
-                        </div>
+                      <div className={styles.contactItem}>
+                        <i className="fas fa-phone"></i>
+                        <span>{studentDetails.personalInfo.contact_no || 'N/A'}</span>
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div className={styles.profileTabs}>
-                  <button
-                    className={`${styles.profileTab} ${modalTab === 'overview' ? styles.activeProfileTab : ''}`}
-                    onClick={() => setModalTab('overview')}
-                  >
-                    Overview
-                  </button>
-                  <button
-                    className={`${styles.profileTab} ${modalTab === 'tracer1' ? styles.activeProfileTab : ''}`}
-                    onClick={() => setModalTab('tracer1')}
-                  >
-                    Tracer 1
-                  </button>
-                  <button
-                    className={`${styles.profileTab} ${modalTab === 'tracer2' ? styles.activeProfileTab : ''}`}
-                    onClick={() => setModalTab('tracer2')}
-                  >
-                    Tracer 2
-                  </button>
-                </div>
+              <div className={styles.profileTabs}>
+                <button
+                  className={`${styles.profileTab} ${modalTab === 'overview' ? styles.activeProfileTab : ''}`}
+                  onClick={() => setModalTab('overview')}
+                >
+                  Overview
+                </button>
+                <button
+                  className={`${styles.profileTab} ${modalTab === 'tracer1' ? styles.activeProfileTab : ''}`}
+                  onClick={() => setModalTab('tracer1')}
+                >
+                  Tracer 1
+                </button>
+                <button
+                  className={`${styles.profileTab} ${modalTab === 'tracer2' ? styles.activeProfileTab : ''}`}
+                  onClick={() => setModalTab('tracer2')}
+                >
+                  Tracer 2
+                </button>
+              </div>
 
-                <div className={styles.profileContent}>
-                  {modalTab === 'overview' && (
-                    <TracerComparisonTab studentData={studentDetails} tracerStatus={studentDetails.tracerStatus} />
-                  )}
-                  {modalTab === 'tracer1' && <Tracer1Tab studentData={studentDetails} />}
-                  {modalTab === 'tracer2' && <Tracer2Tab studentData={studentDetails} />}
-                </div>
+              <div className={styles.profileContent}>
+                {modalTab === 'overview' && (
+                  <TracerComparisonTab studentData={studentDetails} tracerStatus={studentDetails.tracerStatus} />
+                )}
+                {modalTab === 'tracer1' && <Tracer1Tab studentData={studentDetails} />}
+                {modalTab === 'tracer2' && <Tracer2Tab studentData={studentDetails} />}
+              </div>
 
-                <div className={styles.modalFooter}>
-                  <button className={styles.closeModalBtn} onClick={() => setStudentDetails(null)}>
-                    Close
-                  </button>
-                </div>
-              </>
-            ) : (
-              <p>Error loading student details.</p>
-            )}
-          </div>
+              <div className={styles.modalFooter}>
+                <button className={styles.closeModalBtn} onClick={() => setStudentDetails(null)}>
+                  Close
+                </button>
+              </div>
+            </>
+          ) : (
+            <p>Error loading student details.</p>
+          )}
         </div>
-      )}
-    </section>
-  );
+      </div>
+    )}
+  </section>
+);
 }
+
 export default AlumniTable;
