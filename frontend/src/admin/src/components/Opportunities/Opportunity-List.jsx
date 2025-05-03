@@ -217,7 +217,7 @@ export default function OpportunityList() {
                             <p><strong>Location:</strong> {selectedOpportunity.location || "N/A"}</p>
                         </div>
                         
-                        <button onClick={handleEditButtonClick}>Edit</button>
+                        <button className="editbtn" onClick={handleEditButtonClick}>Edit</button>
                         <button
                             className="trashButton"
                             onClick={async () => {
