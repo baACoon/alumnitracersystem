@@ -105,12 +105,20 @@
   }
 }
 
+.paginationContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
 .paginationWrapper {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  margin-top: 20px;
+  padding: 10px;
 }
 
 .paginationButton,
@@ -127,7 +135,16 @@
   transition: background-color 0.3s ease;
 }
 
-.paginationButton:hover,
+.paginationButton {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.paginationButton:hover:not(:disabled),
 .paginationPrev:hover,
 .paginationNext:hover,
 .paginationNumber:hover {
@@ -135,8 +152,17 @@
   color: rgb(255, 255, 255);
 }
 
+.paginationButton:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
 .paginationDisabled {
   background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.paginationButton:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -145,12 +171,28 @@
   color: white;
 }
 
+.paginationActive {
+  background: #580808;
+  color: white;
+  border-color: #580808;
+}
+
 .paginationEllipsis {
   padding: 0 8px;
   font-size: 1rem;
   color: #ffffff;
 }
 
+.paginationEllipsis {
+  padding: 0 8px;
+}
+
+.paginationInfo {
+  text-align: center;
+  color: #666;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
 
 .searchIcon {
   position: absolute;
@@ -1297,7 +1339,7 @@
   
   .barTracer2 {
     height: 0.75rem;
-    background-color: #3b82f6;
+    background-color: #580808;
     border-radius: 9999px;
   }
   
