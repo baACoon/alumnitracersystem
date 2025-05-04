@@ -55,5 +55,39 @@ router.post('/send-survey-email', async (req, res) => {
   }
 });
 
+router.post('/sendMonthlyReminders', async (req, res) => {
+  try {
+    // Step 1: Fetch alumni with valid email addresses
+    const { SurveySubmission } = await import('../routes/surveyroutes.js');
+    const alumni = await SurveySubmission.find(
+      { "personalInfo.email_address": { $exists: true, $ne: null } }, // Ensure email exists and is not null
+      "personalInfo.email_address personalInfo.fullname" // Select necessary fields
+    );
+
+    if (!alumni.length) {
+      console.log("⚠️ No alumni with email addresses found.");
+      return res.status(200).json({ message: 'No recipients available.' });
+    }
+
+    // Step 2: Iterate through alumni and send email notifications
+    for (const alum of alumni) {
+      const email = alum.personalInfo?.email_address;
+      const name = alum.personalInfo?.fullname || "Alumni";
+
+      if (email) {
+        const subject = 'Reminder: You have pending surveys to complete';
+        const message = `Hello ${name},\n\nYou have pending surveys to complete. Please log in to your account to complete them.\n\nThank you!`;
+
+        // Send email notification
+        await sendSingleEmailNotification(subject, message, email);
+      }
+    }
+
+    return res.status(200).json({ message: 'Monthly reminders sent successfully.' });
+  } catch (error) {
+    console.error(' Error sending monthly reminders:', error);
+    return res.status(500).json({ error: 'Failed to send monthly reminders.' });
+  }
+});
 
 export default router;
