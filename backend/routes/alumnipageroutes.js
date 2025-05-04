@@ -23,9 +23,8 @@ const authenticateToken = (req, res, next) => {
 
 router.get('/all', authenticateToken, async (req, res) => {
   try {
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const limit = Math.max(1, parseInt(req.query.limit) || 10);
-
+    const page = parseInt(req.query.page) || null;
+    const limit = parseInt(req.query.limit) || null;
     const college = req.query.college?.trim() || null;
     const course = req.query.course?.trim() || null;
     const batch = req.query.batch ? parseInt(req.query.batch) : null;
@@ -34,9 +33,9 @@ router.get('/all', authenticateToken, async (req, res) => {
     if (batch) query["personalInfo.gradyear"] = batch;
     if (college && college !== "") query["personalInfo.college"] = college;
     if (course && course !== "") query["personalInfo.course"] = course;
-    console.log("Applied filter query:", query);
 
-    const surveys = await SurveySubmission.aggregate([
+    // Remove pagination from aggregation if page/limit not specified
+    let aggregationPipeline = [
       { $match: query },
       {
         $lookup: {
@@ -48,10 +47,17 @@ router.get('/all', authenticateToken, async (req, res) => {
       },
       { $unwind: '$studentInfo' },
       { $sort: { createdAt: -1 } },
-      { $skip: (page - 1) * limit },
-      { $limit: limit },
-    ]);
+    ];
 
+    // Only add pagination if both page and limit are provided
+    if (page && limit) {
+      aggregationPipeline.push(
+        { $skip: (page - 1) * limit },
+        { $limit: limit }
+      );
+    }
+
+    const surveys = await SurveySubmission.aggregate(aggregationPipeline);
     const total = await SurveySubmission.countDocuments(query);
 
     const mappedSurveys = surveys.map((survey) => ({
@@ -74,11 +80,7 @@ router.get('/all', authenticateToken, async (req, res) => {
     res.status(200).json({
       success: true,
       data: mappedSurveys,
-      pagination: {
-        total,
-        page,
-        pages: Math.ceil(total / limit),
-      },
+      total,
     });
   } catch (error) {
     console.error('Error fetching surveys:', error.message);

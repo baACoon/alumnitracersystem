@@ -28,47 +28,87 @@ function Loader() {
 function Pagination({ currentPage, totalPages, setCurrentPage }) {
   const getPageNumbers = () => {
     const pages = [];
-    pages.push(1);
-    const start = Math.max(2, currentPage - 1);
-    const end = Math.min(totalPages - 1, currentPage + 1);
-    if (start > 2) pages.push('...');
-    for (let i = start; i <= end; i++) pages.push(i);
-    if (end < totalPages - 1) pages.push('...');
-    if (totalPages > 1) pages.push(totalPages);
+    const maxVisiblePages = 5; // Show max 5 page numbers at a time
+
+    if (totalPages <= maxVisiblePages) {
+      // Show all pages if total is less than maxVisiblePages
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Always show first page
+      pages.push(1);
+
+      // Calculate start and end of visible pages
+      let start = Math.max(2, currentPage - 1);
+      let end = Math.min(totalPages - 1, currentPage + 1);
+
+      // Adjust if we're near the start
+      if (currentPage <= 3) {
+        start = 2;
+        end = 4;
+      }
+
+      // Adjust if we're near the end
+      if (currentPage >= totalPages - 2) {
+        start = totalPages - 3;
+        end = totalPages - 1;
+      }
+
+      // Add ellipsis if needed
+      if (start > 2) pages.push('...');
+
+      // Add middle pages
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      // Add ellipsis if needed
+      if (end < totalPages - 1) pages.push('...');
+
+      // Always show last page
+      pages.push(totalPages);
+    }
+
     return pages;
   };
 
   return (
-    <div className={styles.paginationWrapper}>
-      <button
-        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-        disabled={currentPage === 1}
-        className={styles.paginationButton}
-      >
-        Previous
-      </button>
+    <div className={styles.paginationContainer}>
+      <div className={styles.paginationWrapper}>
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className={styles.paginationButton}
+        >
+          Previous
+        </button>
 
-      {getPageNumbers().map((page, index) =>
-        page === '...' ? (
-          <span key={index} className={styles.paginationEllipsis}>...</span>
-        ) : (
-          <button
-            key={page}
-            onClick={() => setCurrentPage(page)}
-            className={`${styles.paginationButton} ${currentPage === page ? styles.paginationActive : ''}`}
-          >
-            {page}
-          </button>
-        )
-      )}
+        {getPageNumbers().map((page, index) =>
+          page === '...' ? (
+            <span key={`ellipsis-${index}`} className={styles.paginationEllipsis}>...</span>
+          ) : (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`${styles.paginationButton} ${currentPage === page ? styles.paginationActive : ''}`}
+            >
+              {page}
+            </button>
+          )
+        )}
 
-      <button
-        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-        disabled={currentPage === totalPages}
-        className={styles.paginationButton}
-      >
-        Next
-      </button>
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className={styles.paginationButton}
+        >
+          Next
+        </button>
+      </div>
+      <div className={styles.paginationInfo}>
+        Page {currentPage} of {totalPages}
+      </div>
     </div>
   );
 }
@@ -82,10 +122,13 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
   const [studentDetails, setStudentDetails] = useState(null);
   const [activeTab, setActiveTab] = useState('Alumni List');
   const [modalTab, setModalTab] = useState('overview');
+  const itemsPerPage = 10;
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true); // Add loading state
-  const itemsPerPage = 9;
+  
+  // Calculate total pages based on filtered data length
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
   const navigate = useNavigate();
 
 
@@ -109,14 +152,14 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
 
         // For simplicity, we'll fetch all and filter in the frontend
         // In a production app, you'd want to send these filters to the backend
-        const response = await axios.get('https://alumnitracersystem.onrender.com/api/alumni/all', {
+        const response = await axios.get('http://localhost:5050/api/alumni/all', {
           headers: { 'Authorization': `Bearer ${token}` },
         });
 
         if (response.data?.data) {
           const alumniWithStatus = await Promise.all(response.data.data.map(async (alumni) => {
             try {
-              const statusRes = await axios.get(`https://alumnitracersystem.onrender.com/surveys/user-status/${alumni.userId}`, {
+              const statusRes = await axios.get(`http://localhost:5050/surveys/user-status/${alumni.userId}`, {
                 headers: { Authorization: `Bearer ${token}` },
               });
     
@@ -131,18 +174,18 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
               } else {
                 tracerStatusText = 'No Tracer';
               }
-    
-              return { ...alumni, tracerStatus: tracerStatusText };
+
+              // Pull gradyear directly from the student schema (student object in the response)
+              const gradYear = alumni.student?.gradyear || 'N/A'; // Adjust based on actual field name in your schema
+              return { ...alumni, tracerStatus: tracerStatusText, gradYear };
             } catch (error) {
               console.error(`Failed to fetch status for ${alumni.userId}`, error);
-              return { ...alumni, tracerStatus: 'Unknown' };
+              return { ...alumni, tracerStatus: 'Unknown', gradYear: 'N/A' };
             }
           }));
     
           setAlumniData(alumniWithStatus);
-        } else {
-          toast.warning("No alumni data available.");
-          setAlumniData([]);
+          console.log('Total Alumni Loaded:', alumniWithStatus.length); // Debug log
         }
       } catch (error) {
         console.error('Error fetching alumni data:', error);
@@ -202,7 +245,8 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
     }
     
     setFilteredData(result);
-    setCurrentPage(1); // reset to page 1 when filters/search change
+    // Reset to first page when filters change
+    setCurrentPage(1);
   }, [alumniData, batch, college, course, searchQuery]);
 
   
@@ -221,19 +265,19 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
       console.log('Fetching details for user ID:', userId);
   
       const [studentRes, statusRes, tracer2Res, tracer1ListRes] = await Promise.all([
-        axios.get(`https://alumnitracersystem.onrender.com/api/alumni/user/${userId}`, {
+        axios.get(`http://localhost:5050/api/alumni/user/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get(`https://alumnitracersystem.onrender.com/surveys/user-status/${userId}`, {
+        axios.get(`http://localhost:5050/surveys/user-status/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get(`https://alumnitracersystem.onrender.com/surveys/tracer2/${userId}`, {
+        axios.get(`http://localhost:5050/surveys/tracer2/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         }).catch(err => {
           console.log('No Tracer 2 data available or error fetching:', err);
           return { data: null };
         }),
-        axios.get(`https://alumnitracersystem.onrender.com/surveys/completed/${userId}`, {
+        axios.get(`http://localhost:5050/surveys/completed/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
       ]);
@@ -241,7 +285,7 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
       const tracer1Meta = tracer1ListRes.data?.surveys?.find(s => s.surveyType === 'Tracer1');
   
       const tracer1FullRes = tracer1Meta
-        ? await axios.get(`https://alumnitracersystem.onrender.com/surveys/view/${tracer1Meta.id}`, {
+        ? await axios.get(`http://localhost:5050/surveys/view/${tracer1Meta.id}`, {
             headers: { Authorization: `Bearer ${token}` },
           })
         : null;
@@ -301,22 +345,71 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
     }
   };
 
-  const filteredAlumni = alumniData.filter((alumni) => {
-    const term = searchQuery.toLowerCase();
-    const fields = [
-      alumni.personalInfo.first_name?.toLowerCase() || '',
-      alumni.personalInfo.last_name?.toLowerCase() || '',
-      alumni.personalInfo.gradyear?.toString().toLowerCase() || '',
-      alumni.personalInfo.course?.toLowerCase() || '',
-      alumni.generatedID?.toLowerCase() || '',
-      alumni.personalInfo.email_address?.toLowerCase() || ''
-    ];
-  
-    return fields.some(field => field.includes(term));
-  });
-  
+  // Remove this redundant filtering function
+  // const filteredAlumni = alumniData.filter((alumni) => {
+  //   // ... remove this entire block
+  // });
 
-  console.log('Filtered Alumni:', filteredAlumni);
+  // Keep only the useEffect filter
+  useEffect(() => {
+    let result = [...alumniData];
+    
+    // Apply batch filter
+    if (batch) {
+      result = result.filter(alumni => 
+        alumni.personalInfo.gradyear?.toString() === batch.toString()
+      );
+    }
+    
+    // Apply college filter
+    if (college) {
+      result = result.filter(alumni => 
+        alumni.personalInfo.college?.toUpperCase() === college.toUpperCase()
+      );
+    }
+    
+    // Apply course filter
+    if (course) {
+      result = result.filter(alumni => 
+        alumni.personalInfo.course?.toUpperCase() === course.toUpperCase()
+      );
+    }
+    
+    // Apply search query
+    if (searchQuery) {
+      const term = searchQuery.toLowerCase();
+      result = result.filter(alumni => {
+        const fields = [
+          alumni.personalInfo.first_name?.toLowerCase() || '',
+          alumni.personalInfo.last_name?.toLowerCase() || '',
+          alumni.personalInfo.gradyear?.toString().toLowerCase() || '',
+          alumni.personalInfo.course?.toLowerCase() || '',
+          alumni.generatedID?.toLowerCase() || '',
+          alumni.personalInfo.email_address?.toLowerCase() || ''
+        ];
+        
+        return fields.some(field => field.includes(term));
+      });
+    }
+    
+    setFilteredData(result);
+    // Reset to first page when filters change
+    setCurrentPage(1);
+  }, [alumniData, batch, college, course, searchQuery]);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentData = filteredData.slice(startIndex, endIndex);
+
+  // Add these debug logs
+  console.log('Debug Info:', {
+    totalAlumni: alumniData.length,
+    filteredCount: filteredData.length,
+    currentPage,
+    startIndex,
+    endIndex,
+    displayedItems: currentData.length
+  });
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
@@ -326,9 +419,17 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
       day: 'numeric'
     });
   };
-  
 
-  const currentData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  // Add this console.log to debug pagination
+  console.log('Pagination Debug:', {
+    totalItems: filteredData.length,
+    currentPage,
+    itemsPerPage,
+    startIndex,
+    endIndex,
+    currentDataLength: currentData.length
+  });
+
   const tracer1Survey = studentDetails?.surveys?.find(s => s.title?.toLowerCase().includes('tracer 1'));
   const gradYear =
   tracer1Survey?.education?.[0]?.yearGraduated ||
@@ -353,15 +454,6 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
               <table className={styles.alumniTable}>
                 <thead>
                   <tr>
-                    <th scope="col">
-                      <input
-                        type="checkbox"
-                        id="selectAll"
-                        onChange={handleSelectAll}
-                        aria-label="Select all alumni"
-                        checked={selectedAlumni.size > 0 && selectedAlumni.size === currentData.length}
-                      />
-                    </th>
                     <th scope="col">TUP-ID</th>
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
@@ -375,16 +467,6 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
                   {currentData.length > 0 ? (
                     currentData.map((alumni) => (
                       <tr key={alumni.userId} onClick={() => openStudentDetails(alumni.userId)}>
-                        <td onClick={(e) => e.stopPropagation()}>
-                          <input
-                            type="checkbox"
-                            id={`select-${alumni.userId}`}
-                            checked={selectedAlumni.has(alumni.userId)}
-                            onChange={() => handleSelectAlumni(alumni.userId)}
-                            onClick={(e) => e.stopPropagation()}
-                            aria-label={`Select ${alumni.userId}`}
-                          />
-                        </td>
                         <td>{alumni.generatedID}</td>
                         <td>{`${alumni.personalInfo.first_name} ${alumni.personalInfo.last_name}`}</td>
                         <td>{alumni.personalInfo.email_address}</td>
@@ -426,12 +508,12 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
             </div>
           )}
 
-          {/* Move Pagination OUTSIDE the table */}
-          {!loading && filteredData.length > itemsPerPage && (
+          {/* Update the pagination condition */}
+          {!loading && filteredData.length > 0 && (
             <div className={styles.paginationWrapper}>
               <Pagination
                 currentPage={currentPage}
-                totalPages={totalPages}
+                totalPages={Math.ceil(filteredData.length / itemsPerPage)}
                 setCurrentPage={setCurrentPage}
               />
             </div>
