@@ -57,11 +57,11 @@ router.post('/send-survey-email', async (req, res) => {
 
 router.post('/sendMonthlyReminders', async (req, res) => {
   try {
-    // Step 1: Fetch alumni with valid email addresses
+    // Step 1: Fetch all alumni with valid email addresses
     const { SurveySubmission } = await import('../routes/surveyroutes.js');
     const alumni = await SurveySubmission.find(
-      { "personalInfo.email_address": { $exists: true, $ne: null } }, // Ensure email exists and is not null
-      "personalInfo.email_address personalInfo.fullname" // Select necessary fields
+      { "personalInfo.email_address": { $exists: true, $ne: null } },
+      "personalInfo.email_address personalInfo.fullname"
     );
 
     if (!alumni.length) {
@@ -69,14 +69,30 @@ router.post('/sendMonthlyReminders', async (req, res) => {
       return res.status(200).json({ message: 'No recipients available.' });
     }
 
-    // Step 2: Iterate through alumni and send email notifications
+    // Step 2: Iterate through alumni and check for pending surveys
     for (const alum of alumni) {
       const email = alum.personalInfo?.email_address;
       const name = alum.personalInfo?.fullname || "Alumni";
 
-      if (email) {
+      // Fetch completed surveys for the user
+      const completedSurveys = await SurveySubmission.find(
+        { userId: alum._id },
+        "surveyId"
+      ).lean();
+
+      const completedSurveyIds = completedSurveys.map((s) => s.surveyId.toString());
+
+      // Fetch all active surveys
+      const { CreatedSurvey } = await import('../models/surveyModels/CreatedSurvey.js');
+      const pendingSurveys = await CreatedSurvey.find({
+        status: "active",
+        _id: { $nin: completedSurveyIds }, // Exclude completed surveys
+      });
+
+      if (pendingSurveys.length > 0) {
+        const surveyTitles = pendingSurveys.map((s) => s.title).join(', ');
         const subject = 'Reminder: You have pending surveys to complete';
-        const message = `Hello ${name},\n\nYou have pending surveys to complete. Please log in to your account to complete them.\n\nThank you!`;
+        const message = `Hello ${name},\n\nYou have the following pending surveys: ${surveyTitles}.\nPlease log in to your account to complete them.\n\nThank you!`;
 
         // Send email notification
         await sendSingleEmailNotification(subject, message, email);

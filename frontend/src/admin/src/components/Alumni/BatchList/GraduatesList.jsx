@@ -399,7 +399,7 @@ export function GraduatesList() {
                       type="text"
                       value={newBatchTitle}
                       onChange={(e) => setNewBatchTitle(e.target.value)}
-                      placeholder="e.g. Graduates 2025"
+                      placeholder="e.g. BATCH"
                       className={styles.input}
                     />
                   </div>
