@@ -25,6 +25,7 @@ import uploadRoutes from './routes/uploadroutes.js';
 import notificationRoutes from "./routes/notificationroutes.js";
 import recoverRoutes from './routes/recoverRoutes.js';
 import Graduate from './models/graduateModels.js';
+import './routes/scheduler.js'; 
 
 const PORT = process.env.PORT || 5050;
 const app = express(); 

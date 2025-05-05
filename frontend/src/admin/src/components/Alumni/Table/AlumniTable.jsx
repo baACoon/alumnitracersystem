@@ -152,14 +152,14 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
 
         // For simplicity, we'll fetch all and filter in the frontend
         // In a production app, you'd want to send these filters to the backend
-        const response = await axios.get('http://localhost:5050/api/alumni/all', {
+        const response = await axios.get('https://alumnitracersystem.onrender.com/api/alumni/all', {
           headers: { 'Authorization': `Bearer ${token}` },
         });
 
         if (response.data?.data) {
           const alumniWithStatus = await Promise.all(response.data.data.map(async (alumni) => {
             try {
-              const statusRes = await axios.get(`http://localhost:5050/surveys/user-status/${alumni.userId}`, {
+              const statusRes = await axios.get(`https://alumnitracersystem.onrender.com/surveys/user-status/${alumni.userId}`, {
                 headers: { Authorization: `Bearer ${token}` },
               });
     
@@ -265,19 +265,19 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
       console.log('Fetching details for user ID:', userId);
   
       const [studentRes, statusRes, tracer2Res, tracer1ListRes] = await Promise.all([
-        axios.get(`http://localhost:5050/api/alumni/user/${userId}`, {
+        axios.get(`https://alumnitracersystem.onrender.com/api/alumni/user/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get(`http://localhost:5050/surveys/user-status/${userId}`, {
+        axios.get(`https://alumnitracersystem.onrender.com/surveys/user-status/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get(`http://localhost:5050/surveys/tracer2/${userId}`, {
+        axios.get(`https://alumnitracersystem.onrender.com/surveys/tracer2/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         }).catch(err => {
           console.log('No Tracer 2 data available or error fetching:', err);
           return { data: null };
         }),
-        axios.get(`http://localhost:5050/surveys/completed/${userId}`, {
+        axios.get(`https://alumnitracersystem.onrender.com/surveys/completed/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
       ]);
@@ -285,7 +285,7 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
       const tracer1Meta = tracer1ListRes.data?.surveys?.find(s => s.surveyType === 'Tracer1');
   
       const tracer1FullRes = tracer1Meta
-        ? await axios.get(`http://localhost:5050/surveys/view/${tracer1Meta.id}`, {
+        ? await axios.get(`https://alumnitracersystem.onrender.com/surveys/view/${tracer1Meta.id}`, {
             headers: { Authorization: `Bearer ${token}` },
           })
         : null;
