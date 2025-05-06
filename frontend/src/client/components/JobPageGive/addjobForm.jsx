@@ -21,6 +21,7 @@ function AddjobFormMainPage() {
     const navigate = useNavigate();
     const [tracer2Completed, setTracer2Completed] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [image, setImage] = useState(null);
 
     const goToJobPageGive = () => {
         navigate('/JobPageGive');
@@ -118,6 +119,11 @@ function AddjobFormMainPage() {
         }));
     };
 
+    const handleImageChange = (e) => {
+        setImage(e.target.files[0]);
+    };
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -128,6 +134,14 @@ function AddjobFormMainPage() {
         }
 
         try {
+            const formDataToSend = new FormData();
+            Object.keys(formData).forEach(key => {
+                formDataToSend.append(key, formData[key]);
+            });
+            if (image) {
+                formDataToSend.append('image', image);
+            }
+
             const response = await fetch("https://alumnitracersystem.onrender.com/jobs/jobpost", {
                 method: "POST",
                 headers: {
@@ -157,6 +171,7 @@ function AddjobFormMainPage() {
                 college: '',
                 course: '',
             });
+            setImage(null)
         } catch (error) {
             toast.error('Error posting the job:', error);
             toast.error('An error occurred. Please try again.');
@@ -301,6 +316,10 @@ function AddjobFormMainPage() {
                         onChange={handleChange}
                         placeholder="Enter the source or link"
                     />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="image">Upload Image (optional):</label>
+                    <input type="file" name="image" accept="image/*" onChange={handleImageChange} />
                 </div>
                 <button type="submit" className="submit-button">
                     Submit

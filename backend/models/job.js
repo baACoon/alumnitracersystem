@@ -13,6 +13,7 @@ const JobSchema = new mongoose.Schema({
     course: { type: String, required: true },
     location: { type: String, required: true },
     type: { type: String, default: "full-time" },
+    image: {type: String, default: null},
     description: { type: String, required: true },
     responsibilities: { type: [String], default: [] },
     qualifications: { type: [String], default: [] },

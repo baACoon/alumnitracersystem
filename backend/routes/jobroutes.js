@@ -3,40 +3,64 @@ import express from 'express';
 import { protect } from '../middlewares/authmiddleware.js';
 import Job from '../models/job.js';
 import { sendJobNotification } from '../emailservice.js'; 
+import multer from 'multer';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import cloudinary from '../config/cloudinary.js'; // same as article route
+
 
 const router = express.Router();
 
-// Post job by alumni
-router.post('/jobpost', protect, async (req, res) => {
-    try {
-        const { title, company, location, type, description, responsibilities, qualifications, source, college, course } = req.body;
-
-        if (!college || !course) {
-            return res.status(400).json({ message: "College and Course are required fields." });
-        }
-
-        const job = new Job({
-            title,
-            company,
-            location,
-            type,
-            description,
-            responsibilities,
-            qualifications,
-            source,
-            college,
-            course,
-            createdBy: req.user.id,
-            status: 'Pending',
-        });
-
-        await job.save();
-        res.status(201).json({ message: 'Job posted successfully. Pending admin approval.' });
-    } catch (error) {
-        console.error('Error posting job:', error);
-        res.status(500).json({ message: 'Failed to post the job.' });
+const JobImageStorage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: 'jobs', // Folder name in Cloudinary
+      allowed_formats: ['jpg', 'jpeg', 'png'],
+      transformation: [{ width: 600, height: 600, crop: 'limit' }]
     }
-});
+  });
+  
+  const uploadJobImage = multer({ storage: JobImageStorage });
+  
+
+// Post job by alumni
+router.post('/jobpost', protect, uploadJobImage.single('image'), async (req, res) => {
+    try {
+      const {
+        title, company, location, type,
+        description, responsibilities,
+        qualifications, source, college, course
+      } = req.body;
+  
+      if (!college || !course) {
+        return res.status(400).json({ message: "College and Course are required fields." });
+      }
+  
+      const imageUrl = req.file ? req.file.path : null;
+  
+      const job = new Job({
+        title,
+        company,
+        location,
+        type,
+        description,
+        responsibilities,
+        qualifications,
+        source,
+        college,
+        course,
+        createdBy: req.user.id,
+        status: 'Pending',
+        image: imageUrl  // Make sure your Job model has `image`
+      });
+  
+      await job.save();
+      res.status(201).json({ message: 'Job posted successfully. Pending admin approval.' });
+    } catch (error) {
+      console.error('Error posting job:', error);
+      res.status(500).json({ message: 'Failed to post the job.' });
+    }
+  });
+  
 
 // Fetch jobs for logged-in user only
 router.get('/jobpost', protect, async (req, res) => {
