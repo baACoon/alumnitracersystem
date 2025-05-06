@@ -131,6 +131,15 @@ function JobListMainPage() {
             <div className="job-section">
               <p>{selectedJob.description || "No description provided."}</p>
             </div>
+
+            <div className="job-image-container">
+              <img
+                src={selectedJob.image}
+                alt="Job Posting"
+                className="job-image"
+              />
+            </div>
+            
             <div className="job-2col-wrapper">
               <div className="job-col-wrapper">
                 <h4 className="job-label">Key Responsibilities</h4>
