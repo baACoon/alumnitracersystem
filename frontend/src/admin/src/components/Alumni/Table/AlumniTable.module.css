@@ -1854,11 +1854,11 @@
 .unemployedStatus {
   background-color: #ffebee;
   color: #d32f2f;
-  border: 1px solid #ffcdd2;
+  border-radius: 1rem;
 }
 
 .employedStatus {
   background-color: #e8f5e9;
   color: #2e7d32;
-  border: 1px solid #c8e6c9;
+  border-radius: 1rem;
 }
