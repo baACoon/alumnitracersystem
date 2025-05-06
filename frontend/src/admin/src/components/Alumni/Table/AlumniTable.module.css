@@ -1844,3 +1844,21 @@
   font-size: 0.75rem;
   font-weight: 500;
 }
+
+.employmentStatus {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.unemployedStatus {
+  background-color: #ffebee;
+  color: #d32f2f;
+  border: 1px solid #ffcdd2;
+}
+
+.employedStatus {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}

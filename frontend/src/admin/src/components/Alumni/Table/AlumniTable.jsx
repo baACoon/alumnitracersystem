@@ -178,9 +178,9 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
               // Pull gradyear directly from the student schema (student object in the response)
               const gradYear = alumni.student?.gradyear || 'N/A'; // Adjust based on actual field name in your schema
               const employmentInfo = {
-                job_status: alumni.employmentInfo?.job_status || 
-                            alumni.surveys?.[0]?.employmentInfo?.job_status || 
-                            'Unemployed'
+                job_status: alumni.employmentInfo?.job_status === 'Unemployed' 
+                  ? 'Unemployed' 
+                  : 'Employed'
               };
 
               return { ...alumni, tracerStatus: tracerStatusText, gradYear, employmentInfo };
@@ -488,13 +488,11 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
                         </td>
                         <td>
                           <span className={`${styles.employmentStatus} ${
-                            alumni.employmentInfo?.job_status?.includes('&') 
-                              ? styles.tracerStatusMultiple 
-                              : alumni.employmentInfo?.job_status === 'Unemployed'
-                                ? styles.unemployedStatus
-                                : styles.tracerStatusSingle
+                            alumni.employmentInfo?.job_status === 'Unemployed' 
+                              ? styles.unemployedStatus 
+                              : styles.employedStatus
                           }`}>
-                            {alumni.employmentInfo?.job_status || 'Unemployed'}
+                            {alumni.employmentInfo?.job_status === 'Unemployed' ? 'Unemployed' : 'Employed'}
                           </span>
                         </td>
                         <td>
