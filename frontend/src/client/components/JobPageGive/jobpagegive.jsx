@@ -181,6 +181,14 @@ function JobGiveMainPage() {
               <p>{selectedJob.description || "No description provided."}</p>
             </div>
 
+            <div className="job-image-container">
+              <img
+                src={selectedJob.image}
+                alt="Job Posting"
+                className="job-image"
+              />
+            </div>
+
             {/* Responsibilities and Qualifications */}
             <div className="job-2col-wrapper">
               <div className="job-col-wrapper">
