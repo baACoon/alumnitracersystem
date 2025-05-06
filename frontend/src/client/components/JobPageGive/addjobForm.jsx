@@ -126,39 +126,40 @@ function AddjobFormMainPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         const token = localStorage.getItem('token');
         if (!token) {
             toast.warning('You need to log in first');
             return;
         }
-
+    
         try {
             const formDataToSend = new FormData();
             Object.keys(formData).forEach(key => {
                 formDataToSend.append(key, formData[key]);
             });
+    
             if (image) {
                 formDataToSend.append('image', image);
             }
-
+    
             const response = await fetch("https://alumnitracersystem.onrender.com/jobs/jobpost", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`  // ✅ DON'T set Content-Type manually
                 },
-                body: JSON.stringify(formData),
+                body: formDataToSend,  // ✅ Send FormData directly
             });
-
+    
             const data = await response.json();
-
+    
             if (!response.ok) {
                 toast.error(data.message || 'Failed to post the job.');
                 return;
             }
-
+    
             toast.success('Job posted successfully. Pending admin approval.');
+    
             setFormData({
                 title: '',
                 company: '',
@@ -171,12 +172,14 @@ function AddjobFormMainPage() {
                 college: '',
                 course: '',
             });
-            setImage(null)
+    
+            setImage(null);
         } catch (error) {
-            toast.error('Error posting the job:', error);
             toast.error('An error occurred. Please try again.');
+            console.error(error);
         }
     };
+    
 
     if (loading) {
         return (
