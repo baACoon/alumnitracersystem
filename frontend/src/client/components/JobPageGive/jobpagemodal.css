@@ -116,6 +116,7 @@
 }
 
 .job-image {
+  margin-top: 2em;
   max-width: 130%;
   max-height: 300px;
   object-fit: contain;

@@ -348,9 +348,11 @@
 
 
 .job-image {
-  max-width: 100%;
+  margin-top: 20px;
+  width: 100%;
+  height: auto;
   max-height: 300px;
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 8px;
   margin-bottom: 1rem;
 }
