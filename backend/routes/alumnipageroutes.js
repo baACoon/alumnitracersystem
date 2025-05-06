@@ -75,6 +75,7 @@ router.get('/all', authenticateToken, async (req, res) => {
       employmentInfo: survey.employmentInfo || {},
       gradyear: survey.studentInfo.gradyear,
       submittedAt: survey.createdAt,
+      job_status: survey.employmentInfo?.job_status,
     }));
 
     res.status(200).json({
