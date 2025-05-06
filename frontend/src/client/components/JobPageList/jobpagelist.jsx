@@ -81,14 +81,6 @@ function JobListMainPage() {
       <a onClick={goToJobPage} className="back-button">Back</a>
       <h1 className="list-title">JOB OPPORTUNITIES FEED</h1>
 
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search job titles..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
       <div className="filter-controls">
         <div className="filter-group">
           <label htmlFor="college">College:</label>
@@ -103,7 +95,19 @@ function JobListMainPage() {
             ))}
           </select>
         </div>
+
+        <div className="search-group">
+          <label htmlFor="search">Search:</label>
+          <input
+            id="search"
+            type="text"
+            placeholder="Search job titles..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
       </div>
+
 
       {loading ? (
         <div className="loadingOverlay">
