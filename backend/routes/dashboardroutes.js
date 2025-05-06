@@ -569,5 +569,93 @@ router.get("/tracer/comparison", async (req, res) => {
   }
 });
 
+// Updated endpoint to only use Tracer 1 data
+router.get("/tracer/employment-by-batch", async (req, res) => {
+  try {
+    const { yearFrom, yearTo, college, course } = req.query;
+    
+    // Build match query for Tracer 1 only
+    const match = { surveyType: "Tracer1" };
+    if (college) match["personalInfo.college"] = college;
+    if (course) match["personalInfo.course"] = course;
+    
+    const submissions = await SurveySubmission.aggregate([
+      { $match: match },
+      {
+        $lookup: {
+          from: "students",
+          localField: "userId",
+          foreignField: "_id",
+          as: "studentInfo"
+        }
+      },
+      { $unwind: "$studentInfo" }
+    ]);
+    
+    // Group by batch year and calculate employment rate
+    const batchEmployment = {};
+    const employedStatuses = ["Permanent", "Contractual/ProjectBased", "Temporary", "Self-employed"];
+    
+    submissions.forEach(doc => {
+      const batchYear = doc.studentInfo?.gradyear;
+      if (!batchYear) return;
+      
+      const isEmployed = employedStatuses.includes(doc.employmentInfo?.job_status);
+      
+      if (!batchEmployment[batchYear]) {
+        batchEmployment[batchYear] = { employed: 0, total: 0 };
+      }
+      
+      if (isEmployed) batchEmployment[batchYear].employed++;
+      batchEmployment[batchYear].total++;
+    });
+    
+    // Calculate percentages and filter by year range
+    const result = {};
+    for (const [batch, stats] of Object.entries(batchEmployment)) {
+      const batchNum = Number(batch);
+      if ((!yearFrom || batchNum >= Number(yearFrom)) && 
+          (!yearTo || batchNum <= Number(yearTo))) {
+        result[batch] = Math.round((stats.employed / stats.total) * 100);
+      }
+    }
+    
+    // Get available filters
+    const batchYears = await SurveySubmission.aggregate([
+      { $match: { surveyType: "Tracer1" } },
+      {
+        $lookup: {
+          from: "students",
+          localField: "userId",
+          foreignField: "_id",
+          as: "studentInfo"
+        }
+      },
+      { $unwind: "$studentInfo" },
+      { 
+        $group: { 
+          _id: "$studentInfo.gradyear" 
+        } 
+      },
+      { $sort: { _id: 1 } } // Sort years ascending
+    ]);
+
+    // Convert to simple array of years
+    const availableYears = batchYears.map(y => y._id).filter(y => y);
+
+    res.json({
+      employmentByBatch: result,
+      filters: {
+        batchYears: availableYears, // This now contains ALL years from DB
+        college,
+        course
+      }
+    });
+    
+  } catch (err) {
+    console.error("Error in /tracer/employment-by-batch:", err);
+    res.status(500).json({ error: "Failed to fetch employment by batch" });
+  }
+});
 
   export default router;

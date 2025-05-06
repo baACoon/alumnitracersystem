@@ -392,3 +392,18 @@
 .clearAllButton:hover {
   text-decoration: underline;
 }
+.recharts-cartesian-axis-line {
+  stroke: #e0e0e0;
+}
+
+.recharts-line-curve {
+  stroke-linecap: round;
+}
+
+.recharts-tooltip-cursor {
+  fill: rgba(200, 200, 200, 0.2);
+}
+
+.recharts-dot {
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.1));
+}
