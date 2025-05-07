@@ -21,6 +21,8 @@ import Profile from '../src/client/components/Profile/profile';
 import SurveyForm from '../src/client/components/SurveyForm/SurveyForm';
 import RecoverAccount from './client/components/Register_NewAlumni/recover_account';
 import DataPrivacyConsent from './client/components/Security/dataprivacy';
+import UpdateEmployment from './client/components/Surveys/UpdateEmployment';
+
 
 function App() {
   return (
@@ -52,6 +54,7 @@ function App() {
                 fullPage={true}
               />} 
             />
+            <Route path="/UpdateEmployment" element={<UpdateEmployment />} />
           </Routes>
         </BrowserRouter>
       <ToastContainer position="top-center" autoClose={3000} />

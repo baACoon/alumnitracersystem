@@ -124,9 +124,10 @@ function CrossCheckSurveyForm() {
         occupation: "N/A",
         company_name: "N/A",
         year_started: "",
-        job_level: "",
-        position: "",
-        type_of_organization: "",
+        job_level: "NotApplicable",
+        position: "N/A",
+        type_of_organization: "NotApplicable",
+        work_alignment: "NotApplicable" // Add this line
       }));
     }
     if (name === "birthplace.province") {
@@ -201,15 +202,15 @@ function CrossCheckSurveyForm() {
     if (currentPage === 2) {
       if (!formData.job_status) errors.job_status = "Employment Status is required.";
       if (formData.job_status !== "Unemployed") {
-        if (!formData.occupation.trim()) errors.occupation = "Occupation is required.";
-        if (!formData.company_name.trim()) errors.company_name = "Company Name is required.";
+        if (!formData.occupation?.trim()) errors.occupation = "Occupation is required.";
+        if (!formData.company_name?.trim()) errors.company_name = "Company Name is required.";
         if (!formData.year_started) errors.year_started = "Year Started is required.";
         else if (parseInt(formData.year_started) > new Date().getFullYear()) errors.year_started = "Invalid Year Started.";
         if (!formData.job_level) errors.job_level = "Job Level is required.";
-        if (!formData.position.trim()) errors.position = "Position is required.";
+        if (!formData.position?.trim()) errors.position = "Position is required.";
         if (!formData.type_of_organization) errors.type_of_organization = "Type of Organization is required.";
+        if (!formData.work_alignment) errors.work_alignment = "Work Alignment is required.";
       }
-      if (!formData.work_alignment) errors.work_alignment = "Work Alignment is required.";
     }
 
     setFormErrors(errors);
@@ -680,10 +681,6 @@ function CrossCheckSurveyForm() {
 
                                   </select>
                               </div>
-                        </>
-                      )}
-
-                          
                               <div className={styles["form-group"]}>
                                 <label htmlFor="work_alignment">
                                   Work Alignment with Academic Specialization:
@@ -703,6 +700,8 @@ function CrossCheckSurveyForm() {
                                   <option value="Unaligned">Unaligned</option>
                                 </select>
                               </div>
+                        </>
+                      )}
                     </div>
 
               <div className={styles["survey-form-button-container"]}>

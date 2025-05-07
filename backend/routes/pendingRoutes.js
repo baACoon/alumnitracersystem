@@ -108,4 +108,41 @@ router.get("/gradyear/:userId", authenticateToken, async (req, res) => {
   }
 });
 
+// Add this new route to check employment status
+router.get("/tracer1-status/:userId", authenticateToken, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { SurveySubmission } = await import('../routes/surveyroutes.js');
+
+    // Get the user's latest Tracer 1 submission
+    const latestSubmission = await SurveySubmission.findOne({
+      userId: userId,
+      surveyType: 'Tracer1'
+    }).sort({ createdAt: -1 });
+
+    if (!latestSubmission) {
+      return res.json({ 
+        isPending: true,
+        reason: 'no_submission',
+        message: 'Tracer 1 survey not yet submitted' 
+      });
+    }
+
+    // Check employment status
+    const isUnemployed = latestSubmission.employmentInfo?.job_status === 'Unemployed' ||
+                        latestSubmission.job_status === 'Unemployed';
+
+    return res.json({
+      isPending: isUnemployed,
+      reason: isUnemployed ? 'unemployed' : 'employed',
+      submissionId: latestSubmission._id,
+      lastUpdated: latestSubmission.updatedAt
+    });
+
+  } catch (error) {
+    console.error("Error checking Tracer 1 status:", error);
+    res.status(500).json({ message: "Failed to check survey status" });
+  }
+});
+
 export default router;

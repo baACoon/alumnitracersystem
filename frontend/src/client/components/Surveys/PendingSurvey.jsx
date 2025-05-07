@@ -15,6 +15,7 @@ export const PendingSurvey = () => {
   const [tracer2ReleaseDate, setTracer2ReleaseDate] = useState(null)
   const [nextTracerVersion, setNextTracerVersion] = useState(2)
   const [latestTracer, setLatestTracer] = useState(null)
+  const [pendingTracer1, setPendingTracer1] = useState(null);
   const today = new Date()
   const userId = localStorage.getItem("userId")
 
@@ -110,10 +111,65 @@ export const PendingSurvey = () => {
       }
     }
 
+  const checkTracer1Status = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+
+      const response = await axios.get(
+        `http://localhost:5050/pending/tracer1-status/${userId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.data.isPending) {
+        setPendingTracer1({
+          _id: "tracer1_pending",
+          title: "Update Tracer Survey 1",
+          description: response.data.reason === 'unemployed' 
+            ? "Please update your employment status when you find employment"
+            : "Initial alumni tracer survey required",
+          type: "static",
+          status: "pending",
+          lastUpdated: response.data.lastUpdated
+        });
+      } else {
+        setPendingTracer1(null);
+      }
+    } catch (error) {
+      console.error("Error checking Tracer 1 status:", error);
+    }
+  };
+
+  const fetchPendingSurveys = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+      
+      // Use the existing route path
+      const response = await axios.get(
+        `http://localhost:5050/surveys/pending/${userId}`,
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}` 
+          } 
+        }
+      );
+  
+      if (response.data.surveys) {
+        setActiveSurveys(response.data.surveys);
+      }
+      
+    } catch (error) {
+      console.error("Error fetching pending surveys:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    
     fetchSurveys()
     fetchTracer2Eligibility()
+    checkTracer1Status();
   }, [userId])
 
   const openSurveyModal = async (survey) => {
@@ -161,6 +217,26 @@ export const PendingSurvey = () => {
     setSelectedSurvey(null)
   }
 
+  // Add this new function after your existing state declarations
+  const handleEmploymentUpdate = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+
+      // Navigate to employment update form with query params
+      navigate('/UpdateEmployment', { 
+        state: { 
+          surveyId: pendingTracer1._id,
+          lastStatus: pendingTracer1.currentStatus 
+        }
+      });
+
+    } catch (error) {
+      console.error("Error navigating to employment update:", error);
+      toast.error("Failed to load employment update form");
+    }
+  };
+
   return (
     <div className={styles.surveyContainer}>
       <h2 className={styles.containerTitle}>AVAILABLE SURVEYS</h2>
@@ -171,6 +247,25 @@ export const PendingSurvey = () => {
           </div>
         ) : (
           <>
+            {pendingTracer1 && (
+              <div 
+                className={`${styles.surveyCard} ${styles.pendingCard}`}
+                onClick={handleEmploymentUpdate} // Changed from navigate("/RegisterSurveyForm")
+              >
+                <h3 className={styles.surveyTitle}>Update Employment Status</h3>
+                <p className={styles.surveyDescription}>
+                  Please update your current employment information
+                </p>
+                {pendingTracer1.lastUpdated && (
+                  <p className={styles.lastUpdated}>
+                    Last Updated: {new Date(pendingTracer1.lastUpdated).toLocaleDateString()}
+                  </p>
+                )}
+                <div className={styles.statusBadge}>
+                  Update Required
+                </div>
+              </div>
+            )}
             {tracer2ReleaseDate ? (
               isTracer2Open ? (
                 <div

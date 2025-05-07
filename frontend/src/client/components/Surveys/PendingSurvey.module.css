@@ -21,6 +21,7 @@
   border-radius: 8px;
   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
   transition: 0.3s ease-in-out;
+  cursor: pointer;
 }
 
 .surveyCard:hover {
@@ -128,7 +129,7 @@
 
 .surveyDescription {
   margin-bottom: 25px;
-  color: #555;
+  color: #ffffff;
   font-size: 0.95rem;
   line-height: 1.5;
 }
@@ -257,6 +258,27 @@
 
 .disabledCard:hover {
   background-color: #4a4a4a;
+}
+
+.pendingCard {
+  border-left: 4px solid #ff9800;
+  background-color: #fff8e1;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #ff9800;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-top: 8px;
+}
+
+.lastUpdated {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 4px;
 }
 
 /* Loader Styling */

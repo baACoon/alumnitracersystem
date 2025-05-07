@@ -39,33 +39,86 @@ export const authenticateToken = (req, res, next) => {
   });
 };
 
+// Modify the submit route to handle employment status
 router.post("/submit/:surveyType", authenticateToken, async (req, res) => {
   const { surveyType } = req.params;
   const userId = req.body.userId;
 
-  if (!Object.values(surveyTypes).includes(surveyType))
-    return res.status(400).json({ message: "Invalid survey type." });
+  try {
+    if (!Object.values(surveyTypes).includes(surveyType)) {
+      return res.status(400).json({ message: "Invalid survey type." });
+    }
 
-  const userExists = await Student.findById(userId);
-  if (!userExists) return res.status(400).json({ message: "User not found." });
+    const userExists = await Student.findById(userId);
+    if (!userExists) {
+      return res.status(400).json({ message: "User not found." });
+    }
 
-  const submission = new SurveySubmission({ userId, surveyType, ...req.body });
-  await submission.save();
+    // Create the submission
+    const submission = new SurveySubmission({ 
+      userId, 
+      surveyType, 
+      ...req.body,
+      status: req.body.employmentInfo?.job_status === 'Unemployed' ? 'pending' : 'completed'
+    });
+    await submission.save();
 
-  res.status(201).json({ success: true, message: `Survey ${surveyType} submitted successfully` });
+    res.status(201).json({ 
+      success: true, 
+      message: `Survey ${surveyType} submitted successfully`,
+      status: submission.status
+    });
+  } catch (error) {
+    console.error("Survey submission error:", error);
+    res.status(500).json({ message: "Failed to submit survey" });
+  }
 });
 
+// Update the pending route to include survey ID
 router.get("/pending/:userId", authenticateToken, async (req, res) => {
-  const { userId } = req.params;
-  const completedTypes = await SurveySubmission.find({ userId }).distinct('surveyType');
+  try {
+    const { userId } = req.params;
+    console.log('🔍 Checking pending surveys for user:', userId);
+    
+    // Validate userId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ 
+        message: "Invalid user ID format",
+        providedId: userId 
+      });
+    }
 
-  const availableSurveys = [
-    { id: surveyTypes.TRACER1, title: "Tracer Survey 1" },
-    { id: surveyTypes.TRACER2, title: "Tracer Survey 2" },
-  ];
+    const objectId = new mongoose.Types.ObjectId(userId);
 
-  const pendingSurveys = availableSurveys.filter(survey => !completedTypes.includes(survey.id));
-  res.json({ surveys: pendingSurveys });
+    // Get latest Tracer1 submission
+    const latestTracer1 = await SurveySubmission.findOne({ 
+      userId: objectId,
+      surveyType: "Tracer1",
+      'employmentInfo.job_status': 'Unemployed'
+    }).sort({ createdAt: -1 });
+
+    console.log('📋 Found unemployed submission:', !!latestTracer1);
+
+    const pendingSurveys = [];
+    if (latestTracer1) {
+      pendingSurveys.push({
+        id: latestTracer1._id, // Use actual MongoDB ObjectId
+        title: "Update Employment Status",
+        type: "required",
+        status: "Pending Update",
+        lastUpdated: latestTracer1.updatedAt
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      surveys: pendingSurveys
+    });
+
+  } catch (error) {
+    console.error('❌ Error:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.get("/completed/:userId", authenticateToken, async (req, res) => {
@@ -170,5 +223,42 @@ router.get("/tracer2/all/:userId", authenticateToken, async (req, res) => {
   }
 });
 
+// Add this new route for updating employment status
+router.patch("/update-employment/:surveyId", authenticateToken, async (req, res) => {
+  try {
+    const { surveyId } = req.params;
+    const { employmentInfo } = req.body;
+
+    // Find and update the existing survey
+    const updatedSurvey = await SurveySubmission.findByIdAndUpdate(
+      surveyId,
+      {
+        $set: {
+          'employmentInfo': employmentInfo,
+          'status': employmentInfo.job_status === 'Unemployed' ? 'pending' : 'completed',
+          'updatedAt': new Date()
+        }
+      },
+      { new: true }
+    );
+
+    if (!updatedSurvey) {
+      return res.status(404).json({ message: "Survey not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Employment status updated successfully",
+      survey: updatedSurvey
+    });
+
+  } catch (error) {
+    console.error("Employment update error:", error);
+    res.status(500).json({ 
+      message: "Failed to update employment status",
+      error: error.message 
+    });
+  }
+});
 
 export default router;
