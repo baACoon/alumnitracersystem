@@ -1,4 +1,5 @@
 "use client"
+
 import { useState } from "react"
 import { ChevronDown } from "lucide-react"
 import styles from "./FilterReports.module.css"
@@ -23,14 +24,14 @@ export default function FilterDropdown({ label, options, value, onChange, disabl
             <div className={styles.dropdownWrapper}>
                 <button
                     type="button"
-                    className={`${styles.dropdownTrigger} ${disabled ? styles.disabled : ''}`}
+                    className={`${styles.dropdownTrigger} ${disabled ? styles.disabled : ""}`}
                     onClick={toggleDropdown}
                     aria-haspopup="listbox"
                     aria-expanded={isOpen}
                     disabled={disabled}
                 >
                     <span>{value || `Select ${label}`}</span>
-                    <ChevronDown size={16} className={`${isOpen ? styles.iconRotated : ''} ${disabled ? styles.disabledIcon : ''}`} />
+                    <ChevronDown size={16} className={isOpen ? styles.iconRotated : ""} />
                 </button>
 
                 {isOpen && !disabled && (
