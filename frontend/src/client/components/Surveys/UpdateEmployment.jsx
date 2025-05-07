@@ -19,7 +19,8 @@ export const UpdateEmployment = () => {
     job_level: '',
     position: '',
     type_of_organization: '',
-    work_alignment: ''
+    work_alignment: '',
+    gradmonths:''
   });
 
   const handleChange = (e) => {
@@ -37,7 +38,8 @@ export const UpdateEmployment = () => {
         job_level: "NotApplicable",
         position: "N/A",
         type_of_organization: "NotApplicable",
-        work_alignment: "Unaligned"
+        work_alignment: "Unaligned",
+        gradmonths: ""
       }));
     }
   };
@@ -60,6 +62,9 @@ export const UpdateEmployment = () => {
       if (!employmentInfo.job_level) errors.job_level = "Job Level is required";
       if (!employmentInfo.position?.trim()) errors.position = "Position is required";
       if (!employmentInfo.type_of_organization) errors.type_of_organization = "Type of Organization is required";
+      if (!employmentInfo.gradmonths) {
+        errors.gradmonths = "Graduation Month is required";
+      }
     }
 
     if (!employmentInfo.work_alignment) errors.work_alignment = "Work Alignment is required";
@@ -230,6 +235,35 @@ export const UpdateEmployment = () => {
                   <option value="NotApplicable">Not Applicable</option>
                 </select>
                 {formErrors.type_of_organization && <span className={styles.errorText}>{formErrors.type_of_organization}</span>}
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="gradmonths">Month of Graduation: *</label>
+                <select
+                  id="gradmonths"
+                  name="gradmonths"
+                  value={employmentInfo.gradmonths}
+                  onChange={handleChange}
+                  required
+                  className={styles.formSelect}
+                >
+                  <option value="">Select Month</option>
+                  <option value="january">January</option>
+                  <option value="february">February</option>
+                  <option value="march">March</option>
+                  <option value="april">April</option>
+                  <option value="may">May</option>
+                  <option value="june">June</option>
+                  <option value="july">July</option>
+                  <option value="august">August</option>
+                  <option value="september">September</option>
+                  <option value="october">October</option>
+                  <option value="november">November</option>
+                  <option value="december">December</option>
+                </select>
+                {formErrors.gradmonths && (
+                  <span className={styles.errorText}>{formErrors.gradmonths}</span>
+                )}
               </div>
             </>
           )}

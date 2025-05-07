@@ -22,7 +22,22 @@ const surveySchema = new mongoose.Schema(
     },
     date: { type: Date, default: Date.now },
     personalInfo: { type: mongoose.Schema.Types.Mixed, required: true },
-    employmentInfo: { type: mongoose.Schema.Types.Mixed, required: true },
+    employmentInfo: { 
+      type: mongoose.Schema.Types.Mixed, 
+      required: true,
+      validate: {
+        validator: function(info) {
+          if (info.job_status !== 'Unemployed') {
+            return info.gradmonths && 
+                   ['january', 'february', 'march', 'april', 'may', 'june', 
+                    'july', 'august', 'september', 'october', 'november', 'december']
+                   .includes(info.gradmonths.toLowerCase());
+          }
+          return true;
+        },
+        message: 'Graduation month is required and must be a valid month for employed alumni'
+      }
+    },
   },
   { timestamps: true }
 );
@@ -54,6 +69,17 @@ router.post("/submit/:surveyType", authenticateToken, async (req, res) => {
       return res.status(400).json({ message: "User not found." });
     }
 
+    // Validate gradmonths if employed
+    if (req.body.employmentInfo?.job_status !== 'Unemployed') {
+      if (!req.body.employmentInfo?.gradmonths) {
+        return res.status(400).json({ 
+          message: "Graduation month is required for employed alumni" 
+        });
+      }
+
+      req.body.employmentInfo.gradmonths = req.body.employmentInfo.gradmonths.toLowerCase();
+    }
+
     // Create the submission
     const submission = new SurveySubmission({ 
       userId, 
@@ -61,6 +87,7 @@ router.post("/submit/:surveyType", authenticateToken, async (req, res) => {
       ...req.body,
       status: req.body.employmentInfo?.job_status === 'Unemployed' ? 'pending' : 'completed'
     });
+    
     await submission.save();
 
     res.status(201).json({ 
@@ -70,7 +97,10 @@ router.post("/submit/:surveyType", authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error("Survey submission error:", error);
-    res.status(500).json({ message: "Failed to submit survey" });
+    res.status(500).json({ 
+      message: "Failed to submit survey",
+      error: error.message 
+    });
   }
 });
 
@@ -229,17 +259,41 @@ router.patch("/update-employment/:surveyId", authenticateToken, async (req, res)
     const { surveyId } = req.params;
     const { employmentInfo } = req.body;
 
+    // Validate gradmonths if employed
+    if (employmentInfo.job_status !== 'Unemployed') {
+      if (!employmentInfo.gradmonths) {
+        return res.status(400).json({ 
+          message: "Graduation month is required for employed alumni" 
+        });
+      }
+
+      const validMonths = ['january', 'february', 'march', 'april', 'may', 'june', 
+                          'july', 'august', 'september', 'october', 'november', 'december'];
+      
+      if (!validMonths.includes(employmentInfo.gradmonths.toLowerCase())) {
+        return res.status(400).json({ 
+          message: "Invalid graduation month",
+          validMonths
+        });
+      }
+    }
+
     // Find and update the existing survey
     const updatedSurvey = await SurveySubmission.findByIdAndUpdate(
       surveyId,
       {
         $set: {
-          'employmentInfo': employmentInfo,
+          'employmentInfo': {
+            ...employmentInfo,
+            gradmonths: employmentInfo.job_status !== 'Unemployed' 
+              ? employmentInfo.gradmonths.toLowerCase() 
+              : undefined
+          },
           'status': employmentInfo.job_status === 'Unemployed' ? 'pending' : 'completed',
           'updatedAt': new Date()
         }
       },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     if (!updatedSurvey) {

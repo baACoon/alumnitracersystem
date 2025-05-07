@@ -105,6 +105,7 @@ function CrossCheckSurveyForm() {
     position: "",
     type_of_organization: "",
     work_alignment: "",
+    gradmonths: "", // Changed from graduate_months to gradmonths
   });
 
   const handleChange = useCallback((e) => {
@@ -127,7 +128,8 @@ function CrossCheckSurveyForm() {
         job_level: "NotApplicable",
         position: "N/A",
         type_of_organization: "NotApplicable",
-        work_alignment: "NotApplicable" // Add this line
+        work_alignment: "NotApplicable", // Add this line
+        gradmonths: "", // Add this line
       }));
     }
     if (name === "birthplace.province") {
@@ -210,6 +212,7 @@ function CrossCheckSurveyForm() {
         if (!formData.position?.trim()) errors.position = "Position is required.";
         if (!formData.type_of_organization) errors.type_of_organization = "Type of Organization is required.";
         if (!formData.work_alignment) errors.work_alignment = "Work Alignment is required.";
+        if (!formData.gradmonths) errors.gradmonths = "Month of Graduation is required.";
       }
     }
 
@@ -261,6 +264,7 @@ function CrossCheckSurveyForm() {
           position: formData.position,
           type_of_organization: formData.type_of_organization,
           work_alignment: formData.work_alignment,
+          gradmonths: formData.gradmonths.toLowerCase(), // Add this line
         }
       }, { headers: { Authorization: `Bearer ${token}` } });
 
@@ -699,6 +703,36 @@ function CrossCheckSurveyForm() {
                                   <option value="Somehow Aligned">Somehow Aligned</option>
                                   <option value="Unaligned">Unaligned</option>
                                 </select>
+                              </div>
+                              <div className={styles["form-group"]}>
+                                <label htmlFor="gradmonths">
+                                  Month of Graduation: *
+                                </label>
+                                <select
+                                  id="gradmonths"
+                                  name="gradmonths"
+                                  value={formData.gradmonths}
+                                  onChange={handleChange}
+                                  required
+                                  className={styles["form-select"]}
+                                >
+                                  <option value="">Select Month</option>
+                                  <option value="january">January</option>
+                                  <option value="february">February</option>
+                                  <option value="march">March</option>
+                                  <option value="april">April</option>
+                                  <option value="may">May</option>
+                                  <option value="june">June</option>
+                                  <option value="july">July</option>
+                                  <option value="august">August</option>
+                                  <option value="september">September</option>
+                                  <option value="october">October</option>
+                                  <option value="november">November</option>
+                                  <option value="december">December</option>
+                                </select>
+                                {formErrors.gradmonths && (
+                                  <span className={styles.errorText}>{formErrors.gradmonths}</span>
+                                )}
                               </div>
                         </>
                       )}

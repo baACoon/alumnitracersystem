@@ -48,6 +48,22 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
     }
   }, [studentData]);
 
+  useEffect(() => {
+    if (studentData?.surveys) {
+      const tracer2Survey = studentData.surveys.find(s => s.title?.toLowerCase().replace(/\s/g, '') === 'tracer2');
+      
+      setTracers(prev => ({
+        ...prev,
+        tracer2: {
+          completed: !!tracer2Survey,
+          data: tracer2Survey?.employmentInfo || {},  // Direct access to employmentInfo
+          year: tracer2Survey?.year || 'N/A',
+          createdAt: tracer2Survey?.createdAt
+        }
+      }));
+    }
+  }, [studentData]);
+
   // Function to generate comparison data
   const generateComparisonData = (tracer1Survey, tracer2Survey) => {
     const tracer1Data = tracer1Survey?.employmentInfo || {};
@@ -364,33 +380,26 @@ export function TracerComparisonTab({ studentData, tracerStatus }) {
                 )}
               </div>
               {tracers.tracer2.completed && (
-                  <>
-                    <div className={styles.timelineArrow}>→</div>
-                    <div className={styles.timelinePoint}>
-                      <div className={styles.timelineYear}>Tracer 2</div>
-                      <div className={styles.timelinePosition}>
-                        {tracers.tracer2.data?.position ||
-                        tracers.tracer2.data?.occupation ||
-                        tracers.tracer2.data?.jobDetails?.position ||
-                        tracers.tracer2.data?.jobDetails?.occupation ||
-                        "N/A"}
-                      </div>
-                      <div className={styles.timelineCompany}>
-                        {tracers.tracer2.data?.company_name ||
-                        tracers.tracer2.data?.jobDetails?.company_name ||
-                        "N/A"}
-                      </div>
-                      {(
-                        tracers.tracer2.data?.year_started ||
-                        tracers.tracer2.data?.jobDetails?.year_started
-                      ) && (
-                        <div className={styles.timelineDuration}>
-                          Started: {tracers.tracer2.data?.year_started || tracers.tracer2.data?.jobDetails?.year_started}
-                        </div>
-                      )}
+                <>
+                  <div className={styles.timelineArrow}>→</div>
+                  <div className={styles.timelinePoint}>
+                    <div className={styles.timelineYear}>Tracer 2</div>
+                    <div className={styles.timelinePosition}>
+                      {tracers.tracer2.data?.occupation || 
+                       tracers.tracer2.data?.position || 
+                       "N/A"}
                     </div>
-                  </>
-                )}
+                    <div className={styles.timelineCompany}>
+                      {tracers.tracer2.data?.company_name || "N/A"}
+                    </div>
+                    {tracers.tracer2.data?.year_started && (
+                      <div className={styles.timelineDuration}>
+                        Started: {tracers.tracer2.data.year_started}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
           </div>
           
           {!tracers.tracer2.completed && (
