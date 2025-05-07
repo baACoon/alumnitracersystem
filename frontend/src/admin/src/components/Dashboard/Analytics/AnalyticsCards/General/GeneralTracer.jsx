@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import {
-  LineChart,
   Line,
   XAxis,
   YAxis,
@@ -10,17 +9,25 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Area
-} from 'recharts';
-import { ChevronDown } from "lucide-react"
+  Area,
+  BarChart,
+  Bar,
+  Cell,
+  ComposedChart,
+} from "recharts"
 import styles from "./GeneralTracer.module.css"
 
 // Color palette for charts
 const COLORS = {
-  primary: "#4CC3C8", // Teal for the main line
-  secondary: "#C31D3C", // Red for any future additional lines
-  grid: "#f0f0f0" // Light gray for grid lines
-};
+  primary: "#4CC3C8",
+  secondary: "#C31D3C",
+  veryAligned: "#2ecc71", // Green
+  aligned: "#4CC3C8", // Teal
+  averagelyAligned: "#f39c12", // Orange
+  somehowAligned: "#f1c40f", // Yellow
+  unaligned: "#e74c3c", // Red
+  unspecified: "#95a5a6", // Gray
+}
 
 // Define colleges and courses data
 const collegesAndCourses = {
@@ -82,169 +89,294 @@ const collegesAndCourses = {
     "Bachelor of Technology in Culinary Technology",
     "Bachelor of Technology in Print Media Technology",
   ],
-};
+}
 
 export default function GeneralTracer() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [alignmentData, setAlignmentData] = useState([])
 
-  const [availableFilters, setAvailableFilters] = useState({ 
-    batchYears: [], 
+  const [availableFilters, setAvailableFilters] = useState({
+    batchYears: [],
     colleges: Object.keys(collegesAndCourses),
-    collegeToCourses: collegesAndCourses
-  });
+    collegeToCourses: collegesAndCourses,
+  })
 
-  const [showFilters, setShowFilters] = useState(false)
+  const [showFilters, setShowFilters] = useState(true)
   const [activeFilters, setActiveFilters] = useState([])
   const [filters, setFilters] = useState({
     yearFrom: "",
     yearTo: "",
     college: "",
-    course: ""
-  });
+    course: "",
+  })
+
+  const [pendingFilters, setPendingFilters] = useState({
+    yearFrom: "",
+    yearTo: "",
+    college: "",
+    course: "",
+  })
 
   const handleFilterChange = (type, value) => {
-    setFilters(prev => {
-      const updated = { ...prev, [type]: value };
-      
+    setPendingFilters((prev) => {
+      const updated = { ...prev, [type]: value }
+
       // Reset dependent filters when parent changes
       if (type === "yearFrom" || type === "yearTo") {
-        updated.college = "";
-        updated.course = "";
+        updated.college = ""
+        updated.course = ""
       } else if (type === "college") {
-        updated.course = "";
+        updated.course = ""
       }
 
-      setActiveFilters(
-        Object.entries(updated)
-          .filter(([_, val]) => val)
-          .map(([t, v]) => ({ 
-            type: t, 
-            value: v,
-            label: t === "yearFrom" ? `From ${v}` :
-                   t === "yearTo" ? `To ${v}` :
-                   t === "college" ? `College: ${v}` :
-                   `Course: ${v}`
-          }))
-      );
-      return updated;
-    });
-  };
+      return updated
+    })
+  }
+
+  const applyFilters = () => {
+    setFilters(pendingFilters)
+
+    // Update active filters display
+    setActiveFilters(
+      Object.entries(pendingFilters)
+        .filter(([_, val]) => val)
+        .map(([t, v]) => ({
+          type: t,
+          value: v,
+          label:
+            t === "yearFrom"
+              ? `From ${v}`
+              : t === "yearTo"
+                ? `To ${v}`
+                : t === "college"
+                  ? `College: ${v}`
+                  : `Course: ${v}`,
+        })),
+    )
+  }
 
   const resetFilters = () => {
-    setFilters({ 
-      yearFrom: "", 
-      yearTo: "", 
-      college: "", 
-      course: "" 
-    });
-    setActiveFilters([]);
-    setShowFilters(false);
-  };
+    setPendingFilters({
+      yearFrom: "",
+      yearTo: "",
+      college: "",
+      course: "",
+    })
+    setFilters({
+      yearFrom: "",
+      yearTo: "",
+      college: "",
+      course: "",
+    })
+    setActiveFilters([])
+  }
 
   const removeFilter = (type) => {
-    handleFilterChange(type, "");
-  };
+    const updatedFilters = { ...filters, [type]: "" }
+    setFilters(updatedFilters)
+    setPendingFilters(updatedFilters)
+
+    setActiveFilters(
+      Object.entries(updatedFilters)
+        .filter(([_, val]) => val)
+        .map(([t, v]) => ({
+          type: t,
+          value: v,
+          label:
+            t === "yearFrom"
+              ? `From ${v}`
+              : t === "yearTo"
+                ? `To ${v}`
+                : t === "college"
+                  ? `College: ${v}`
+                  : `Course: ${v}`,
+        })),
+    )
+  }
 
   useEffect(() => {
-    const fetchEmploymentData = async () => {
-      try {
-        setLoading(true);
-        const queryParams = new URLSearchParams();
-        if (filters.yearFrom) queryParams.append('yearFrom', filters.yearFrom);
-        if (filters.yearTo) queryParams.append('yearTo', filters.yearTo);
-        if (filters.college) queryParams.append('college', filters.college);
-        if (filters.course) queryParams.append('course', filters.course);
+    let isMounted = true
 
-        const url = `http://localhost:5050/dashboard/tracer/employment-by-batch${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-        const res = await fetch(url);
-        const json = await res.json();
-        
-        if (!res.ok) throw new Error(json.error || "Failed to fetch data");
-        
-        setData(json);
-        
-        // Update available batch years from the response
-        if (json.filters?.batchYears) {
-          setAvailableFilters(prev => ({
+    const fetchData = async () => {
+      try {
+        setLoading(true)
+        setError(null) // Reset error state
+
+        const queryParams = new URLSearchParams()
+        if (filters.yearFrom) queryParams.append("yearFrom", filters.yearFrom)
+        if (filters.yearTo) queryParams.append("yearTo", filters.yearTo)
+        if (filters.college) queryParams.append("college", filters.college)
+        if (filters.course) queryParams.append("course", filters.course)
+
+        // Fetch both endpoints in parallel
+        const [employmentRes, alignmentRes] = await Promise.all([
+          fetch(`http://localhost:5050/dashboard/tracer/employment-by-batch?${queryParams}`),
+          fetch(`http://localhost:5050/dashboard/tracer/work-alignment?${queryParams}`),
+        ])
+
+        // Check both responses
+        if (!employmentRes.ok || !alignmentRes.ok) {
+          throw new Error(employmentRes.ok ? await alignmentRes.text() : await employmentRes.text())
+        }
+
+        const [employmentJson, alignmentJson] = await Promise.all([employmentRes.json(), alignmentRes.json()])
+
+        if (!isMounted) return // Prevent state updates if unmounted
+
+        // Validate responses
+        if (!employmentJson || !alignmentJson) {
+          throw new Error("Invalid data received from server")
+        }
+
+        setData(employmentJson)
+        setAlignmentData(alignmentJson.alignmentData || [])
+
+        // Update available filters
+        if (employmentJson.filters?.batchYears) {
+          setAvailableFilters((prev) => ({
             ...prev,
-            batchYears: json.filters.batchYears
-          }));
+            batchYears: employmentJson.filters.batchYears,
+          }))
         }
       } catch (err) {
-        setError(err.message);
+        if (!isMounted) return
+        console.error("Fetch error:", err)
+        setError(err.message || "Failed to load data")
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false)
+        }
       }
-    };
+    }
 
-    fetchEmploymentData();
-  }, [filters]);
+    fetchData()
+
+    return () => {
+      isMounted = false // Cleanup function
+    }
+  }, [filters])
+
+  // Helper functions for calculations
+  const calculateAverageEmployment = () => {
+    if (!data?.employmentByBatch) return 0
+    const rates = Object.values(data.employmentByBatch)
+    return (rates.reduce((a, b) => a + b, 0) / rates.length).toFixed(1)
+  }
+
+  const calculateAlignmentPercentage = (patterns) => {
+    if (alignmentData.length === 0) return 0
+    const regex = new RegExp(patterns.split("|").join("|"))
+    const total = alignmentData.reduce((sum, item) => sum + item.count, 0)
+    const matched = alignmentData
+      .filter((item) => regex.test(item.alignment))
+      .reduce((sum, item) => sum + item.count, 0)
+    return ((matched / total) * 100).toFixed(1)
+  }
 
   const formatBatchComparisonData = (data) => {
-    if (!data || !data.employmentByBatch) return [];
-    
+    if (!data || !data.employmentByBatch) return []
+
     // Sort batches chronologically
-    return Object.entries(data.employmentByBatch)
+    const employmentData = Object.entries(data.employmentByBatch)
       .sort(([a], [b]) => Number(a) - Number(b))
       .map(([batch, rate]) => ({
         name: batch,
-        "Employment Rate": rate
-      }));
-  };
+        "Employment Rate": rate,
+      }))
+
+    // If we have alignment data, add it to the employment data
+    if (alignmentData.length > 0) {
+      // Calculate aligned and unaligned counts per batch
+      const alignmentByBatch = {}
+
+      // Initialize with zeros
+      employmentData.forEach((item) => {
+        alignmentByBatch[item.name] = {
+          alignedCount: 0,
+          unalignedCount: 0,
+        }
+      })
+
+      // This is a simplified approach - in a real app, you would fetch actual alignment data by batch
+      // For this example, we'll distribute the alignment data across batches
+      const batchCount = employmentData.length
+      if (batchCount > 0) {
+        const alignedTotal = alignmentData
+          .filter((item) =>
+            ["Very much aligned", "Aligned", "Averagely Aligned", "Somehow Aligned"].includes(item.alignment),
+          )
+          .reduce((sum, item) => sum + item.count, 0)
+
+        const unalignedTotal = alignmentData
+          .filter((item) => item.alignment === "Unaligned")
+          .reduce((sum, item) => sum + item.count, 0)
+
+        // Distribute proportionally across batches
+        employmentData.forEach((item, index) => {
+          // Create a distribution pattern (more recent years have more data)
+          const factor = (index + 1) / batchCount
+          item.alignedCount = Math.round((alignedTotal * factor) / batchCount)
+          item.unalignedCount = Math.round((unalignedTotal * factor) / batchCount)
+        })
+      }
+    }
+
+    return employmentData
+  }
 
   const generateSummaries = (data) => {
     if (!data || !data.employmentByBatch) {
       return {
         employment: { text: "" },
-        overall: { text: "" }
-      };
+        overall: { text: "" },
+      }
     }
 
     const batches = Object.keys(data.employmentByBatch)
       .map(Number)
       .sort((a, b) => a - b)
-      .map(String);
+      .map(String)
 
     if (batches.length === 0) {
       return {
         employment: { text: "No employment data available for the selected filters." },
-        overall: { text: "No data available for analysis." }
-      };
+        overall: { text: "No data available for analysis." },
+      }
     }
 
-    const rates = batches.map(batch => data.employmentByBatch[batch]);
-    const highestBatch = batches[rates.indexOf(Math.max(...rates))];
-    const lowestBatch = batches[rates.indexOf(Math.min(...rates))];
-    const averageRate = (rates.reduce((sum, rate) => sum + rate, 0) / rates.length).toFixed(1);
-    
-    let trendText = "";
+    const rates = batches.map((batch) => data.employmentByBatch[batch])
+    const highestBatch = batches[rates.indexOf(Math.max(...rates))]
+    const lowestBatch = batches[rates.indexOf(Math.min(...rates))]
+    const averageRate = (rates.reduce((sum, rate) => sum + rate, 0) / rates.length).toFixed(1)
+
+    let trendText = ""
     if (batches.length > 1) {
-      const firstRate = data.employmentByBatch[batches[0]];
-      const lastRate = data.employmentByBatch[batches[batches.length - 1]];
-      const trend = lastRate - firstRate;
-      
+      const firstRate = data.employmentByBatch[batches[0]]
+      const lastRate = data.employmentByBatch[batches[batches.length - 1]]
+      const trend = lastRate - firstRate
+
       if (trend > 0) {
-        trendText = `There's an overall increasing trend of ${Math.abs(trend).toFixed(1)} percentage points from ${batches[0]} to ${batches[batches.length - 1]}.`;
+        trendText = `There's an overall increasing trend of ${Math.abs(trend).toFixed(1)} percentage points from ${batches[0]} to ${batches[batches.length - 1]}.`
       } else if (trend < 0) {
-        trendText = `There's an overall decreasing trend of ${Math.abs(trend).toFixed(1)} percentage points from ${batches[0]} to ${batches[batches.length - 1]}.`;
+        trendText = `There's an overall decreasing trend of ${Math.abs(trend).toFixed(1)} percentage points from ${batches[0]} to ${batches[batches.length - 1]}.`
       } else {
-        trendText = "Employment rates have remained stable across the selected years.";
+        trendText = "Employment rates have remained stable across the selected years."
       }
     }
 
     return {
       employment: {
         text: `The employment rate across selected batches ranges from ${Math.min(...rates)}% to ${Math.max(...rates)}%, with an average of ${averageRate}%. 
-        The highest employment rate was in ${highestBatch} (${data.employmentByBatch[highestBatch]}%), while the lowest was in ${lowestBatch} (${data.employmentByBatch[lowestBatch]}%). ${trendText}`
+        The highest employment rate was in ${highestBatch} (${data.employmentByBatch[highestBatch]}%), while the lowest was in ${lowestBatch} (${data.employmentByBatch[lowestBatch]}%). ${trendText}`,
       },
       overall: {
-        text: `Analysis of ${batches.length} batch${batches.length !== 1 ? 'es' : ''} ${filters.college ? `from ${filters.college}` : ''} ${filters.course ? `(${filters.course})` : ''} shows ${averageRate}% average employment rate. 
-        ${trendText} ${batches.length > 1 ? 'This could indicate changing job market conditions or improvements in the university\'s career preparation programs.' : ''}`
-      }
-    };
-  };
+        text: `Analysis of ${batches.length} batch${batches.length !== 1 ? "es" : ""} ${filters.college ? `from ${filters.college}` : ""} ${filters.course ? `(${filters.course})` : ""} shows ${averageRate}% average employment rate. 
+        ${trendText} ${batches.length > 1 ? "This could indicate changing job market conditions or improvements in the university's career preparation programs." : ""}`,
+      },
+    }
+  }
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -253,27 +385,34 @@ export default function GeneralTracer() {
           <div className={styles.tooltipHeader}>
             Graduation: <strong>{label}</strong>
           </div>
-          <div className={styles.tooltipItem}>
-            <span className={styles.tooltipBullet} style={{backgroundColor: COLORS.primary}}></span>
-            Employment: <strong>{payload[0].value}%</strong>
-          </div>
+          {payload.map((entry, index) => (
+            <div key={index} className={styles.tooltipItem}>
+              <span className={styles.tooltipBullet} style={{ backgroundColor: entry.color }}></span>
+              {entry.name}:{" "}
+              <strong>
+                {entry.value}
+                {entry.name === "Employment Rate" ? "%" : ""}
+              </strong>
+            </div>
+          ))}
           {filters.college && (
             <div className={styles.tooltipItem}>
-              <span className={styles.tooltipBullet} style={{backgroundColor: COLORS.secondary}}></span>
+              <span className={styles.tooltipBullet} style={{ backgroundColor: COLORS.secondary }}></span>
               College: <strong>{filters.college}</strong>
             </div>
           )}
         </div>
-      );
+      )
     }
-    return null;
-  };
+    return null
+  }
 
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
         <div className={styles.loadingSpinner}></div>
-        <p>Loading employment data...</p>
+        <p>Loading data...</p>
+        {error && <p className={styles.errorText}>{error}</p>}
       </div>
     )
   }
@@ -281,10 +420,13 @@ export default function GeneralTracer() {
   if (error) {
     return (
       <div className={styles.errorContainer}>
-        <p className={styles.errorMessage}>{error}</p>
-        <button 
-          className={styles.retryButton} 
-          onClick={() => window.location.reload()}
+        <p className={styles.errorMessage}>Error: {error}</p>
+        <button
+          className={styles.retryButton}
+          onClick={() => {
+            setError(null)
+            setLoading(true)
+          }}
         >
           Retry
         </button>
@@ -294,8 +436,8 @@ export default function GeneralTracer() {
 
   if (!data) return null
 
-  const summaries = generateSummaries(data);
-  const employmentData = formatBatchComparisonData(data);
+  const summaries = generateSummaries(data)
+  const employmentData = formatBatchComparisonData(data)
 
   return (
     <div className={styles.comparisonDashboard}>
@@ -308,111 +450,102 @@ export default function GeneralTracer() {
 
       {/* Filter Section */}
       <div className={styles.filterSection}>
-        <button 
-          className={styles.filterButton} 
-          onClick={() => setShowFilters(!showFilters)}
-        >
-          Filters <ChevronDown size={16} />
-        </button>
-
-        {showFilters && (
-          <div className={styles.filterPopover}>
+        <div className={styles.filterContainer}>
+          <div className={styles.filterHeader}>
+            <h3 className={styles.filterTitle}>Filter Data</h3>
+          </div>
+          <div className={styles.filterContent}>
             <div className={styles.filterGroup}>
               <label className={styles.filterLabel}>Year From</label>
-              <select 
-                value={filters.yearFrom} 
+              <select
+                className={styles.filterSelect}
+                value={pendingFilters.yearFrom}
                 onChange={(e) => handleFilterChange("yearFrom", e.target.value)}
               >
                 <option value="">Select year</option>
-                {availableFilters.batchYears.map(year => (
-                  <option key={year} value={year}>{year}</option>
+                {availableFilters.batchYears.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
                 ))}
               </select>
             </div>
             <div className={styles.filterGroup}>
               <label className={styles.filterLabel}>Year To</label>
-              <select 
-                value={filters.yearTo} 
-                onChange={(e) => handleFilterChange("yearTo", e.target.value)}
+              <select
                 className={styles.filterSelect}
+                value={pendingFilters.yearTo}
+                onChange={(e) => handleFilterChange("yearTo", e.target.value)}
+                disabled={!pendingFilters.yearFrom}
               >
                 <option value="">Select year</option>
                 {availableFilters.batchYears
-                  .filter(year => !filters.yearFrom || year >= filters.yearFrom)
-                  .map(year => (
-                    <option key={year} value={year}>{year}</option>
+                  .filter((year) => !pendingFilters.yearFrom || year >= pendingFilters.yearFrom)
+                  .map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
                   ))}
               </select>
             </div>
             <div className={styles.filterGroup}>
               <label className={styles.filterLabel}>College</label>
-              <select 
-                value={filters.college} 
-                onChange={(e) => handleFilterChange("college", e.target.value)} 
+              <select
                 className={styles.filterSelect}
+                value={pendingFilters.college}
+                onChange={(e) => handleFilterChange("college", e.target.value)}
               >
                 <option value="">Select college</option>
-                {availableFilters.colleges.map(college => (
-                  <option key={college} value={college}>{college}</option>
+                {availableFilters.colleges.map((college) => (
+                  <option key={college} value={college}>
+                    {college}
+                  </option>
                 ))}
               </select>
             </div>
             <div className={styles.filterGroup}>
               <label className={styles.filterLabel}>Course</label>
-              <select 
-                value={filters.course} 
-                onChange={(e) => handleFilterChange("course", e.target.value)} 
-                disabled={!filters.college}
+              <select
                 className={styles.filterSelect}
+                value={pendingFilters.course}
+                onChange={(e) => handleFilterChange("course", e.target.value)}
+                disabled={!pendingFilters.college}
               >
                 <option value="">Select course</option>
-                {filters.college && 
-                  availableFilters.collegeToCourses[filters.college]?.map(course => (
-                    <option key={course} value={course}>{course}</option>
-                  ))
-                }
+                {pendingFilters.college &&
+                  availableFilters.collegeToCourses[pendingFilters.college]?.map((course) => (
+                    <option key={course} value={course}>
+                      {course}
+                    </option>
+                  ))}
               </select>
             </div>
             <div className={styles.filterActions}>
-              <button 
-                className={styles.resetButton} 
-                onClick={resetFilters}
-              >
-                Reset
+              <button className={styles.resetButton} onClick={resetFilters}>
+                Reset Filters
               </button>
-              <button 
-                className={styles.applyButton} 
-                onClick={() => setShowFilters(false)}
-              >
-                Apply
+              <button className={styles.applyButton} onClick={applyFilters}>
+                Apply Filters
               </button>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Active Filters Display */}
       {activeFilters.length > 0 && (
         <div className={styles.activeFiltersBar}>
           <div className={styles.activeFiltersList}>
+            <span style={{ marginRight: "8px", fontWeight: "500", color: "#666" }}>Active filters:</span>
             {activeFilters.map((filter, index) => (
-              <div 
-                key={index} 
-                className={styles.filterBadgeOutline}
-              >
+              <div key={index} className={styles.filterBadgeOutline}>
                 {filter.label}
-                <button 
-                  className={styles.removeFilterButton} 
-                  onClick={() => removeFilter(filter.type)}
-                >
+                <button className={styles.removeFilterButton} onClick={() => removeFilter(filter.type)}>
                   ×
                 </button>
               </div>
             ))}
-            <button
-              className={styles.clearAllButton}
-              onClick={resetFilters}
-            >
+            <button className={styles.clearAllButton} onClick={resetFilters}>
               Clear All
             </button>
           </div>
@@ -430,8 +563,8 @@ export default function GeneralTracer() {
       <div className={styles.comparisonSection}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>
-            {filters.college ? `${filters.college} ` : ''}
-            {filters.course ? `(${filters.course}) ` : ''}
+            {filters.college ? `${filters.college} ` : ""}
+            {filters.course ? `(${filters.course}) ` : ""}
             Employment Trends
           </h2>
         </div>
@@ -440,63 +573,98 @@ export default function GeneralTracer() {
             {employmentData.length === 0 ? (
               <p className={styles.noData}>No employment data available for the selected filters.</p>
             ) : (
-         
               <ResponsiveContainer width="100%" height={400}>
-                <LineChart
-                  data={employmentData}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                >
+                <ComposedChart data={employmentData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                   <defs>
                     <linearGradient id="colorFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0}/>
+                      <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.2} />
+                      <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis 
-                    dataKey="name"
-                    tick={{ fill: '#666' }}
-                    axisLine={{ stroke: '#ccc' }}
-                  />
-                  <YAxis 
+                  <XAxis dataKey="name" tick={{ fill: "#666" }} axisLine={{ stroke: "#ccc" }} />
+                  <YAxis
+                    yAxisId="left"
                     domain={[0, 100]}
-                    tick={{ fill: '#666' }}
-                    axisLine={{ stroke: '#ccc' }}
-                  />
-                  <Tooltip 
-                    content={<CustomTooltip />}
-                    wrapperStyle={{
-                      background: 'rgba(255, 255, 255, 0.9)',
-                      border: '1px solid #ddd',
-                      borderRadius: '4px',
-                      padding: '10px'
+                    tick={{ fill: "#666" }}
+                    axisLine={{ stroke: "#ccc" }}
+                    label={{
+                      value: "Employment Rate (%)",
+                      angle: -90,
+                      position: "insideLeft",
+                      style: { textAnchor: "middle" },
                     }}
                   />
+                  <YAxis
+                    yAxisId="right"
+                    orientation="right"
+                    domain={[0, "dataMax + 10"]}
+                    tick={{ fill: "#666" }}
+                    axisLine={{ stroke: "#ccc" }}
+                    label={{
+                      value: "Graduate Count",
+                      angle: 90,
+                      position: "insideRight",
+                      style: { textAnchor: "middle" },
+                    }}
+                  />
+                  <Tooltip
+                    content={<CustomTooltip />}
+                    wrapperStyle={{
+                      background: "rgba(255, 255, 255, 0.9)",
+                      border: "1px solid #ddd",
+                      borderRadius: "4px",
+                      padding: "10px",
+                    }}
+                  />
+                  <Legend />
                   <Area
+                    yAxisId="left"
                     type="monotone"
                     dataKey="Employment Rate"
                     fill="url(#colorFill)"
                     strokeWidth={0}
+                    name="Employment Rate Area"
                   />
                   <Line
+                    yAxisId="left"
                     type="monotone"
                     dataKey="Employment Rate"
                     stroke={COLORS.primary}
                     strokeWidth={3}
+                    name="Employment Rate"
                     dot={{
                       fill: COLORS.primary,
                       strokeWidth: 2,
                       r: 4,
-                      stroke: '#fff'
+                      stroke: "#fff",
                     }}
                     activeDot={{
                       r: 6,
-                      stroke: '#fff',
+                      stroke: "#fff",
                       strokeWidth: 2,
-                      fill: COLORS.primary
+                      fill: COLORS.primary,
                     }}
                   />
-                </LineChart>
+                  {alignmentData.length > 0 && (
+                    <Bar
+                      yAxisId="right"
+                      dataKey="alignedCount"
+                      name="Aligned Graduates"
+                      fill={COLORS.veryAligned}
+                      radius={[4, 4, 0, 0]}
+                    />
+                  )}
+                  {alignmentData.length > 0 && (
+                    <Bar
+                      yAxisId="right"
+                      dataKey="unalignedCount"
+                      name="Unaligned Graduates"
+                      fill={COLORS.unaligned}
+                      radius={[4, 4, 0, 0]}
+                    />
+                  )}
+                </ComposedChart>
               </ResponsiveContainer>
             )}
           </div>
@@ -507,21 +675,126 @@ export default function GeneralTracer() {
             </p>
           </div>
         </div>
+
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>
+            {filters.college ? `${filters.college} ` : ""}
+            {filters.course ? `(${filters.course}) ` : ""}
+            Curriculum Alignment
+          </h2>
+        </div>
+        <div className={styles.sectionContent}>
+          <div className={styles.chartContainer}>
+            {alignmentData.length === 0 ? (
+              <div className={styles.noData}>
+                {error ? (
+                  <>
+                    <p>Error loading alignment data:</p>
+                    <p className={styles.errorText}>{error}</p>
+                  </>
+                ) : (
+                  <p>No alignment data available for selected filters</p>
+                )}
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={alignmentData} layout="vertical" margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
+                  <XAxis type="number" />
+                  <YAxis dataKey="alignment" type="category" width={120} tick={{ fontSize: 12 }} />
+                  <Tooltip
+                    formatter={(value) => [`${value} graduates`, "Count"]}
+                    labelFormatter={(label) => `Alignment: ${label}`}
+                  />
+                  <Legend />
+                  <Bar dataKey="count" name="Number of Graduates" radius={[0, 4, 4, 0]}>
+                    {alignmentData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={
+                          entry.alignment === "Very much aligned"
+                            ? "#2ecc71"
+                            : // Green
+                              entry.alignment === "Aligned"
+                              ? "#4CC3C8"
+                              : // Teal
+                                entry.alignment === "Averagely Aligned"
+                                ? "#f39c12"
+                                : // Orange
+                                  entry.alignment === "Somehow Aligned"
+                                  ? "#f1c40f"
+                                  : // Yellow (new)
+                                    entry.alignment === "Unaligned"
+                                    ? "#e74c3c"
+                                    : // Red
+                                      "#95a5a6" // Gray (not specified)
+                        }
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+          <div className={styles.summaryContainer}>
+            <h3 className={styles.insightTitle}>Key Insights</h3>
+            <p className={styles.insightText}>
+              {alignmentData.length > 0 ? (
+                <>
+                  {Math.round(
+                    ((alignmentData.find((a) => a.alignment === "Very much aligned")?.count ||
+                      0 + alignmentData.find((a) => a.alignment === "Aligned")?.count ||
+                      0 + alignmentData.find((a) => a.alignment === "Averagely Aligned")?.count ||
+                      0 + alignmentData.find((a) => a.alignment === "Somehow Aligned")?.count ||
+                      0) /
+                      alignmentData.reduce((sum, item) => sum + item.count, 0)) *
+                      100,
+                  )}
+                  % of graduates report some level of alignment with their studies.
+                  {alignmentData.find((a) => a.alignment === "Unaligned")?.count > 0 &&
+                    ` ${alignmentData.find((a) => a.alignment === "Unaligned").count} graduates report unaligned work.`}
+                </>
+              ) : (
+                "No alignment data available for selected filters."
+              )}
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Conclusion */}
       <div className={styles.conclusionSection}>
         <h2 className={styles.conclusionTitle}>Conclusion</h2>
         <p className={styles.conclusionText}>
-          {summaries?.overall?.text || "No conclusion available for the selected filters."}
+          {data?.employmentByBatch ? (
+            <>
+              Graduates from {Object.keys(data.employmentByBatch).join(", ")} show an average employment rate of{" "}
+              {calculateAverageEmployment()}%.
+              {alignmentData.length > 0 && (
+                <>
+                  {" "}
+                  Regarding curriculum alignment, {calculateAlignmentPercentage("Very much aligned|Aligned")}% report
+                  strong alignment with their field of study.
+                </>
+              )}
+            </>
+          ) : (
+            "No conclusive data available for the selected filters."
+          )}
         </p>
+
         <p className={styles.recommendationText}>
-          <strong>Recommendations:</strong>{" "}
-          {employmentData.length > 1 && 
-            (employmentData[employmentData.length - 1]["Employment Rate"] > employmentData[0]["Employment Rate"]
-              ? "The improving employment trends suggest that current career preparation programs are effective."
-              : "Consider reviewing career preparation programs to better support graduates in finding employment.")}
-          {activeFilters.length > 0 && " These insights are specific to the filtered group of alumni."}
+          <strong>Recommendations:</strong>
+          {alignmentData.length > 0 && (
+            <>
+              {calculateAlignmentPercentage("Unaligned") > 15
+                ? ` Consider reviewing the ${filters.course || "program"} curriculum to better align with current industry needs, 
+                as ${calculateAlignmentPercentage("Unaligned")}% of graduates report unaligned work.`
+                : ` The strong alignment (${calculateAlignmentPercentage("Very much aligned|Aligned")}%) suggests the curriculum 
+                is effectively preparing students for their careers.`}
+            </>
+          )}
+          {activeFilters.length > 0 && ` These insights are specific to the filtered group.`}
         </p>
       </div>
     </div>

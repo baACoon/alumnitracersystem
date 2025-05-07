@@ -658,4 +658,93 @@ router.get("/tracer/employment-by-batch", async (req, res) => {
   }
 });
 
+router.get("/tracer/work-alignment", async (req, res) => {
+  try {
+    const { yearFrom, yearTo, college, course } = req.query;
+    
+    // Build the base match query
+    const match = { surveyType: "Tracer1" };
+    
+    // Add filters if they exist
+    if (college) match["personalInfo.college"] = college;
+    if (course) match["personalInfo.course"] = course;
+    
+    // Year range filter
+    const yearMatch = {};
+    if (yearFrom) yearMatch.$gte = Number(yearFrom);
+    if (yearTo) yearMatch.$lte = Number(yearTo);
+    
+    const aggregationPipeline = [
+      { $match: match },
+      {
+        $lookup: {
+          from: "students",
+          localField: "userId",
+          foreignField: "_id",
+          as: "studentInfo"
+        }
+      },
+      { $unwind: "$studentInfo" }
+    ];
+    
+    // Add year filter if needed
+    if (Object.keys(yearMatch).length > 0) {
+      aggregationPipeline.push({
+        $match: {
+          "studentInfo.gradyear": yearMatch
+        }
+      });
+    }
+    
+    // Continue with the rest of the pipeline
+    aggregationPipeline.push(
+      {
+        $group: {
+          _id: "$employmentInfo.work_alignment",
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          alignment: {
+            $ifNull: ["$_id", "Not specified"]
+          },
+          count: 1,
+          _id: 0
+        }
+      }
+    );
+    
+    const alignmentData = await SurveySubmission.aggregate(aggregationPipeline);
+    
+    // Define all possible alignment categories
+    const allCategories = [
+      "Very much aligned",
+      "Aligned",
+      "Averagely Aligned",
+      "Somehow Aligned",
+      "Unaligned",
+      "Not specified"
+    ];
+    
+    // Fill in missing categories
+    const result = allCategories.map(category => ({
+      alignment: category,
+      count: (alignmentData.find(item => item.alignment === category) || { count: 0 }).count
+    }));
+    
+    res.json({ 
+      success: true,
+      alignmentData: result 
+    });
+    
+  } catch (err) {
+    console.error("Error in /tracer/work-alignment:", err);
+    res.status(500).json({ 
+      success: false,
+      error: err.message,
+      message: "Failed to process work alignment data" 
+    });
+  }
+});
   export default router;
