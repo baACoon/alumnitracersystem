@@ -4,76 +4,59 @@ import { useState } from "react"
 import { ChevronDown } from "lucide-react"
 import styles from "./FilterReports.module.css"
 
-export default function FilterReports() {
-  const tracerOptions = ["Tracer1", "Tracer2"]
-  const customSurveyOptions = ["Custom Survey A", "Custom Survey B"]
+export default function FilterDropdown({ label, options, value, onChange }) {
+    const [isOpen, setIsOpen] = useState(false)
 
-  const [tracerType, setTracerType] = useState("")
-  const [customSurvey, setCustomSurvey] = useState("")
-  const [openDropdown, setOpenDropdown] = useState(null)
+    const handleSelect = (option) => {
+        onChange(option)
+        setIsOpen(false)
+    }
 
-  const handleTracerSelect = (value) => {
-    setTracerType(value)
-    if (value) setCustomSurvey("") // reset custom survey if tracer selected
-    setOpenDropdown(null)
-  }
-
-  const handleCustomSurveySelect = (value) => {
-    setCustomSurvey(value)
-    if (value) setTracerType("") // reset tracer type if custom selected
-    setOpenDropdown(null)
-  }
-
-  const renderDropdown = (label, options, value, onSelect, disabled) => (
+  return (
     <div className={styles.dropdownContainer}>
       <label className={styles.label}>{label}</label>
       <div className={styles.dropdownWrapper}>
         <button
           type="button"
-          className={`${styles.dropdownTrigger} ${disabled ? styles.disabled : ""}`}
-          onClick={() => !disabled && setOpenDropdown(openDropdown === label ? null : label)}
+          className={styles.dropdownTrigger}
+          onClick={() => setIsOpen(!isOpen)}
           aria-haspopup="listbox"
-          aria-expanded={openDropdown === label}
-          disabled={disabled}
+          aria-expanded={isOpen}
         >
           <span>{value || `Select ${label}`}</span>
-          <ChevronDown
-            size={16}
-            className={openDropdown === label ? styles.iconRotated : ""}
-          />
+          <ChevronDown size={16} className={isOpen ? styles.iconRotated : ""} />
         </button>
 
-        {openDropdown === label && !disabled && (
+        {isOpen && (
           <ul className={styles.dropdownMenu} role="listbox">
-            <li
-              className={styles.dropdownItem}
-              role="option"
-              onClick={() => onSelect("")}
-              aria-selected={value === ""}
-            >
-              All {label}s
-            </li>
-            {options.map((option) => (
-              <li
-                key={option}
-                className={`${styles.dropdownItem} ${value === option ? styles.selected : ""}`}
-                role="option"
-                onClick={() => onSelect(option)}
-                aria-selected={value === option}
-              >
-                {option}
-              </li>
-            ))}
+            {options.length > 0 ? (
+              <>
+                <li
+                  className={styles.dropdownItem}
+                  role="option"
+                  onClick={() => handleSelect("")}
+                  aria-selected={value === ""}
+                >
+                  All {label}s
+                </li>
+                {options.map((option) => (
+                  <li
+                    key={option}
+                    className={`${styles.dropdownItem} ${value === option ? styles.selected : ""}`}
+                    role="option"
+                    onClick={() => handleSelect(option)}
+                    aria-selected={value === option}
+                  >
+                    {option}
+                  </li>
+                ))}
+              </>
+            ) : (
+              <li className={styles.dropdownItem}>No options available</li>
+            )}
           </ul>
         )}
       </div>
-    </div>
-  )
-
-  return (
-    <div>
-      {renderDropdown("Tracer Type", tracerOptions, tracerType, handleTracerSelect, !!customSurvey)}
-      {renderDropdown("Custom Survey", customSurveyOptions, customSurvey, handleCustomSurveySelect, !!tracerType)}
     </div>
   )
 }
