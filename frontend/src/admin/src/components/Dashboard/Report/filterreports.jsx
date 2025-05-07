@@ -1,57 +1,43 @@
 "use client"
 import { useState } from "react"
-import FilterDropdown from "./FilterReport"
-import styles from "./FilterReports.module.css"
+import FilterDropdown from "./FilterReport" // Assuming this is the correct path to your FilterDropdown component
 
-export default function ReportsFilter() {
-    // State for all filters
-    const [batch, setBatch] = useState("")
+export default function FilterReportContainer() {
     const [tracerType, setTracerType] = useState("")
     const [customSurvey, setCustomSurvey] = useState("")
 
-    // Sample options
-    const batchOptions = ["2023", "2024", "2025"]
-    const tracerOptions = ["Tracer 1", "Tracer 2", "Tracer 3"]
-    const surveyOptions = ["Alumni Survey", "Employability Survey", "Event Feedback"]
-
-    // Handler for Tracer Type
-    const handleTracerTypeChange = (selected) => {
-        setTracerType(selected)
-        if (selected) setCustomSurvey("") // Clear custom survey when tracer is selected
+    const handleTracerTypeChange = (value) => {
+        setTracerType(value)
+        if (value) {
+            setCustomSurvey("") // Reset custom survey when tracer type is selected
+        }
     }
 
-    // Handler for Custom Survey
-    const handleCustomSurveyChange = (selected) => {
-        setCustomSurvey(selected)
-        if (selected) setTracerType("") // Clear tracer type when survey is selected
+    const handleCustomSurveyChange = (value) => {
+        setCustomSurvey(value)
+        if (value) {
+            setTracerType("") // Reset tracer type when custom survey is selected
+        }
     }
 
     return (
-        <div className={styles.filterContainer}>
-            {/* Batch - Always enabled */}
-            <FilterDropdown
-                label="Batch"
-                options={batchOptions}
-                value={batch}
-                onChange={setBatch}
-            />
-            
-            {/* Tracer Type - Disabled when Custom Survey has value */}
+        <div>
+            {/* Tracer Type Dropdown */}
             <FilterDropdown
                 label="Tracer Type"
-                options={tracerOptions}
+                options={["Tracer 1", "Tracer 2", "Tracer 3"]}
                 value={tracerType}
                 onChange={handleTracerTypeChange}
-                disabled={!!customSurvey}
+                disabled={!!customSurvey} // Disable if custom survey is selected
             />
-            
-            {/* Custom Survey - Disabled when Tracer Type has value */}
+
+            {/* Custom Survey Dropdown */}
             <FilterDropdown
                 label="Custom Survey"
-                options={surveyOptions}
+                options={["Survey 1", "Survey 2", "Survey 3"]}
                 value={customSurvey}
                 onChange={handleCustomSurveyChange}
-                disabled={!!tracerType}
+                disabled={!!tracerType} // Disable if tracer type is selected
             />
         </div>
     )
