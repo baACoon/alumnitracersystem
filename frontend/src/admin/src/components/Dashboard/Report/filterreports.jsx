@@ -1,47 +1,63 @@
 "use client"
 
 import { useState } from "react"
-import FilterDropdown from "./FilterReport" // Adjust the path if necessary
+import { ChevronDown } from "lucide-react"
+import styles from "./FilterReports.module.css"
 
-export default function FilterReportContainer() {
-    const [tracerType, setTracerType] = useState("") // State for Tracer Type
-    const [customSurvey, setCustomSurvey] = useState("") // State for Custom Survey
+export default function FilterDropdown({ label, options, value, onChange, disabled = false }) {
+  const [isOpen, setIsOpen] = useState(false)
 
-    // Handle Tracer Type selection
-    const handleTracerTypeChange = (value) => {
-        setTracerType(value)
-        if (value) {
-            setCustomSurvey("") // Reset Custom Survey when Tracer Type is selected
-        }
-    }
+  const handleSelect = (option) => {
+    if (disabled) return
+    onChange(option)
+    setIsOpen(false)
+  }
 
-    // Handle Custom Survey selection
-    const handleCustomSurveyChange = (value) => {
-        setCustomSurvey(value)
-        if (value) {
-            setTracerType("") // Reset Tracer Type when Custom Survey is selected
-        }
-    }
+  const toggleDropdown = () => {
+    if (disabled) return
+    setIsOpen(!isOpen)
+  }
 
-    return (
-        <div>
-            {/* Tracer Type Dropdown */}
-            <FilterDropdown
-                label="Tracer Type"
-                options={["Tracer 1", "Tracer 2", "Tracer 3"]}
-                value={tracerType}
-                onChange={handleTracerTypeChange}
-                disabled={!!customSurvey} // Disable if Custom Survey is selected
-            />
+  return (
+    <div className={styles.dropdownContainer}>
+      <label className={styles.label}>{label}</label>
+      <div className={styles.dropdownWrapper}>
+        <button
+          type="button"
+          className={`${styles.dropdownTrigger} ${disabled ? styles.disabled : ""}`}
+          onClick={toggleDropdown}
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          disabled={disabled}
+        >
+          <span>{value || `Select ${label}`}</span>
+          <ChevronDown size={16} className={isOpen ? styles.iconRotated : ""} />
+        </button>
 
-            {/* Custom Survey Dropdown */}
-            <FilterDropdown
-                label="Custom Survey"
-                options={["Survey 1", "Survey 2", "Survey 3"]}
-                value={customSurvey}
-                onChange={handleCustomSurveyChange}
-                disabled={!!tracerType} // Disable if Tracer Type is selected
-            />
-        </div>
-    )
+        {isOpen && !disabled && (
+          <ul className={styles.dropdownMenu} role="listbox">
+            <li
+              className={styles.dropdownItem}
+              role="option"
+              onClick={() => handleSelect("")}
+              aria-selected={value === ""}
+            >
+              All {label}s
+            </li>
+            {options.map((option) => (
+              <li
+                key={option}
+                className={`${styles.dropdownItem} ${value === option ? styles.selected : ""}`}
+                role="option"
+                onClick={() => handleSelect(option)}
+                aria-selected={value === option}
+              >
+                {option}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  )
 }
