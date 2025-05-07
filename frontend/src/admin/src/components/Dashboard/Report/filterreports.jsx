@@ -3,20 +3,22 @@ import { useState } from "react"
 import FilterDropdown from "./FilterReport" // Adjust the path if necessary
 
 export default function FilterReportContainer() {
-    const [tracerType, setTracerType] = useState("")
-    const [customSurvey, setCustomSurvey] = useState("")
+    const [tracerType, setTracerType] = useState("") // State for Tracer Type
+    const [customSurvey, setCustomSurvey] = useState("") // State for Custom Survey
 
+    // Handle Tracer Type selection
     const handleTracerTypeChange = (value) => {
         setTracerType(value)
         if (value) {
-            setCustomSurvey("") // Reset custom survey when tracer type is selected
+            setCustomSurvey("") // Reset Custom Survey when Tracer Type is selected
         }
     }
 
+    // Handle Custom Survey selection
     const handleCustomSurveyChange = (value) => {
         setCustomSurvey(value)
         if (value) {
-            setTracerType("") // Reset tracer type when custom survey is selected
+            setTracerType("") // Reset Tracer Type when Custom Survey is selected
         }
     }
 
@@ -28,7 +30,7 @@ export default function FilterReportContainer() {
                 options={["Tracer 1", "Tracer 2", "Tracer 3"]}
                 value={tracerType}
                 onChange={handleTracerTypeChange}
-                disabled={!!customSurvey} // Disable if custom survey is selected
+                disabled={!!customSurvey} // Disable if Custom Survey is selected
             />
 
             {/* Custom Survey Dropdown */}
@@ -37,7 +39,7 @@ export default function FilterReportContainer() {
                 options={["Survey 1", "Survey 2", "Survey 3"]}
                 value={customSurvey}
                 onChange={handleCustomSurveyChange}
-                disabled={!!tracerType} // Disable if tracer type is selected
+                disabled={!!tracerType} // Disable if Tracer Type is selected
             />
         </div>
     )
