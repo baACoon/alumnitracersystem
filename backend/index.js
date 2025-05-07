@@ -22,6 +22,8 @@ import uploadRoutes from './routes/uploadroutes.js';
 import notificationRoutes from "./routes/notificationroutes.js";
 import recoverRoutes from './routes/recoverRoutes.js';
 import './routes/scheduler.js'; // Import the scheduler to initialize the cron job
+import employmentRoutes from './routes/employmentRoutes.js';
+
 
 const PORT = process.env.PORT || 5050;
 const app = express(); 
@@ -54,6 +56,7 @@ app.use("/api", uploadRoutes);
 // app.use("/api/reminders", reminderRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use('/api/recover', recoverRoutes);
+app.use('/api/employment', employmentRoutes);
 // Connect to MongoDB Atlas before starting the server
 connectToDatabase()
   .then(() => {
