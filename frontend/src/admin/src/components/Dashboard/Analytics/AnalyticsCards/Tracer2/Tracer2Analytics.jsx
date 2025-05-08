@@ -23,6 +23,7 @@ import {
 } from "recharts";
 import styles from "./Tracer2Analytics.module.css";
 import { ChevronDown } from 'lucide-react'
+
 const COLORS = ["#4CC3C8", "#FF6B81", "#FFD166", "#FF9F43", "#6C5CE7", "#C31D3C"];
 
 const colleges = [
@@ -57,22 +58,85 @@ const courses = {
     "Bachelor of Fine Arts"
   ]
 };
+
+// Define all questions with their corresponding chart types
+const QUESTIONS = [
+  {
+    id: 'respondents',
+    title: 'TRACER SURVEY FORM RESPONDENTS',
+    type: 'counter'
+  },
+  {
+    id: 'degreeHolders',
+    title: 'DEGREE HOLDERS (MASTERAL & DOCTORATE)',
+    type: 'pie'
+  },
+  {
+    id: 'employmentStatus',
+    title: 'PRESENT EMPLOYMENT STATUS',
+    type: 'pie'
+  },
+  {
+    id: 'jobLevel',
+    title: 'JOB LEVEL',
+    type: 'bar'
+  },
+  {
+    id: 'coreCompetencies',
+    title: 'CORE COMPETENCIES THAT HELPED IN JOB',
+    type: 'radar'
+  },
+  {
+    id: 'lineOfBusiness',
+    title: 'MAJOR LINE OF BUSINESS',
+    type: 'treemap'
+  },
+  {
+    id: 'placeOfWork',
+    title: 'PLACE OF WORK',
+    type: 'pie'
+  },
+  {
+    id: 'firstJobSearch',
+    title: 'HOW DID YOU FIND YOUR FIRST JOB',
+    type: 'pie'
+  },
+  {
+    id: 'firstJobDuration',
+    title: 'HOW LONG DID YOU STAY IN YOUR FIRST JOB',
+    type: 'area'
+  },
+  {
+    id: 'jobLandingTime',
+    title: 'HOW LONG DID IT TAKE TO LAND YOUR FIRST JOB',
+    type: 'bar'
+  },
+  {
+    id: 'reasons',
+    title: 'REASONS FOR PURSUING ADVANCED STUDIES',
+    type: 'bar'
+  },
+  {
+    id: 'workAlignment',
+    title: 'WAS YOUR CURRICULUM ALIGNED TO YOUR JOB?',
+    type: 'pie'
+  }
+];
+
 export default function Tracer2Analytics() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [batchYears, setBatchYears] = useState([]);
-  const [filters, setFilters] = useState({ batchYear: "" });
-  const [showFilters, setShowFilters] = useState(false);
-  const [dashboardData, setDashboardData] = useState({
-    respondentCount: 0,
-    degreeData: [],
-    collegeData: [],
-    yearStartedData: [],
-    employmentStatusData: [],
-    organizationTypeData: [],
-    workAlignmentData: []
+  const [filters, setFilters] = useState({ 
+    batchYear: "",
+    college: "",
+    course: "",
+    question: "" // New filter for specific question
   });
+  const [showFilters, setShowFilters] = useState(false);
+  const [activeFilters, setActiveFilters] = useState([]);
+
   const fetchBatchYears = async () => {
     try {
       const response = await axios.get("http://localhost:5050/dashboard/tracer2-batchyears");
@@ -107,8 +171,6 @@ export default function Tracer2Analytics() {
     fetchAnalytics();
   }, [fetchAnalytics]);
 
-  const [activeFilters, setActiveFilters] = useState([])
-
   const handleFilterChange = (type, value) => {
     setFilters(prev => {
       const updated = { ...prev, [type]: value }
@@ -131,10 +193,23 @@ export default function Tracer2Analytics() {
   };
 
   const resetFilters = () => {
-    const reset = { batchYear: "" };
+    const reset = { batchYear: "", college: "", course: "", question: "" };
     setFilters(reset);
     fetchAnalytics(reset);
     setShowFilters(false);
+    setActiveFilters([]);
+  };
+
+  const removeFilter = (type) => {
+    const updatedFilters = { ...filters, [type]: "" };
+    setFilters(updatedFilters);
+    fetchAnalytics(updatedFilters);
+    
+    setActiveFilters(
+      Object.entries(updatedFilters)
+        .filter(([_, val]) => val)
+        .map(([t, v]) => ({ type: t, value: v }))
+    );
   };
 
   const formatBarData = (obj) => (obj ? Object.entries(obj).map(([name, value]) => ({ name, value })) : []);
@@ -154,6 +229,82 @@ export default function Tracer2Analytics() {
       );
     }
     return null;
+  };
+
+  // Generate insights for each question
+  const generateInsights = (questionId) => {
+    if (!data) return "No data available";
+    
+    switch(questionId) {
+      case 'respondents':
+        return `Total of ${data.totalRespondents || 0} alumni responded to the survey.`;
+        
+      case 'degreeHolders':
+        const masters = data.advancedDegreeHolders?.masters || 0;
+        const doctorate = data.advancedDegreeHolders?.doctorate || 0;
+        const totalDegrees = masters + doctorate;
+        const totalRespondents = data.totalRespondents || 1;
+        const percentage = ((totalDegrees / totalRespondents) * 100).toFixed(1);
+        return `${totalDegrees} alumni (${percentage}%) have pursued advanced degrees (${masters} Masters, ${doctorate} Doctorate).`;
+        
+      case 'employmentStatus':
+        const employedCount = data.totalEmployed || 0;
+        const unemployedCount = data.job_status?.Unemployed || 0;
+        const total = employedCount + unemployedCount;
+        const employedPercentage = total > 0 ? ((employedCount / total) * 100).toFixed(1) : 0;
+        return `${employedPercentage}% of respondents are currently employed (${employedCount} out of ${total}).`;
+        
+      case 'jobLevel':
+        const positions = formatBarData(data.jobData?.position || {});
+        const topPosition = positions.reduce((max, pos) => pos.value > max.value ? pos : max, {value: 0});
+        return `The most common job level is "${topPosition.name}" with ${topPosition.value} respondents.`;
+        
+      case 'coreCompetencies':
+        const competencies = formatRadarData(data.jobData?.coreCompetencies || {});
+        const topCompetency = competencies.reduce((max, comp) => comp.value > max.value ? comp : max, {value: 0});
+        return `"${topCompetency.skill}" is the most frequently cited competency that helped in jobs (${topCompetency.value} mentions).`;
+        
+      case 'lineOfBusiness':
+        const businesses = formatBarData(data.jobData?.lineOfBusiness || {});
+        const topBusiness = businesses.reduce((max, bus) => bus.value > max.value ? bus : max, {value: 0});
+        return `The most common industry is "${topBusiness.name}" with ${topBusiness.value} alumni working in this field.`;
+        
+      case 'placeOfWork':
+        const places = formatBarData(data.jobData?.placeOfWork || {});
+        const topPlace = places.reduce((max, place) => place.value > max.value ? place : max, {value: 0});
+        return `Most alumni work in "${topPlace.name}" (${topPlace.value} respondents).`;
+        
+      case 'firstJobSearch':
+        const methods = formatBarData(data.jobData?.firstJobSearch || {});
+        const topMethod = methods.reduce((max, method) => method.value > max.value ? method : max, {value: 0});
+        return `"${topMethod.name}" was the most common way alumni found their first job (${topMethod.value} respondents).`;
+        
+      case 'firstJobDuration':
+        const durations = formatBarData(data.jobData?.firstJobDuration || {});
+        const topDuration = durations.reduce((max, dur) => dur.value > max.value ? dur : max, {value: 0});
+        return `Most alumni stayed in their first job for "${topDuration.name}" (${topDuration.value} respondents).`;
+        
+      case 'jobLandingTime':
+        const times = formatBarData(data.jobData?.jobLandingTime || {});
+        const topTime = times.reduce((max, time) => time.value > max.value ? time : max, {value: 0});
+        return `Most alumni landed their first job within "${topTime.name}" (${topTime.value} respondents).`;
+        
+      case 'reasons':
+        const reasons = formatReasonsData(data.reasons || {});
+        const topReason = reasons.reduce((max, reason) => 
+          (reason.undergraduate + reason.graduate) > (max.undergraduate + max.graduate) ? reason : max, 
+          {undergraduate: 0, graduate: 0}
+        );
+        return `"${topReason.name}" is the most common reason for pursuing advanced studies (${topReason.undergraduate + topReason.graduate} mentions).`;
+        
+      case 'workAlignment':
+        const alignments = formatBarData(data.jobData?.work_alignment || {});
+        const topAlignment = alignments.reduce((max, align) => align.value > max.value ? align : max, {value: 0});
+        return `Most alumni report their curriculum was "${topAlignment.name}" with their job (${topAlignment.value} respondents).`;
+        
+      default:
+        return "No insights available for this question.";
+    }
   };
 
   if (loading) {
@@ -176,9 +327,13 @@ export default function Tracer2Analytics() {
 
   const coreCompetenciesData = formatRadarData(data.jobData?.coreCompetencies || {});
 
+  // Filter questions if a specific question is selected
+  const visibleQuestions = filters.question 
+    ? QUESTIONS.filter(q => q.id === filters.question)
+    : QUESTIONS;
+
   return (
     <div className={styles.dashboardGrid}>
-
       <div className={styles.dashboardControls}>
         <button className={styles.filterButton} onClick={() => setShowFilters(!showFilters)}>
           Filters <ChevronDown size={14} />
@@ -214,6 +369,16 @@ export default function Tracer2Analytics() {
               </select>
             </div>
 
+            <div className={styles.filterGroup}>
+              <label className={styles.filterLabel}>Question</label>
+              <select value={filters.question} onChange={(e) => handleFilterChange("question", e.target.value)} className={styles.filterSelect}>
+                <option value="">All Questions</option>
+                {QUESTIONS.map(question => (
+                  <option key={question.id} value={question.id}>{question.title}</option>
+                ))}
+              </select>
+            </div>
+
             <div className={styles.filterActions}>
               <button className={styles.resetButton} onClick={resetFilters}>Reset</button>
               <button className={styles.applyButton} onClick={applyFilters}>Apply</button>
@@ -221,323 +386,367 @@ export default function Tracer2Analytics() {
           </div>
         )}
       </div>
+
       {/* Active Filters Display */}
+      {activeFilters.length > 0 && (
+        <div className={styles.activeFiltersBar}>
+          <div className={styles.activeFiltersList}>
+            {activeFilters.map((filter) => (
+              <div 
+                key={filter.type} 
+                className={styles.filterBadgeOutline}
+                title={
+                  filter.type === "batchYear" ? `Year: ${filter.value}` :
+                  filter.type === "college" ? `College: ${filter.value}` :
+                  filter.type === "course" ? `Course: ${filter.value}` :
+                  `Question: ${QUESTIONS.find(q => q.id === filter.value)?.title || filter.value}`
+                }
+              >
+                {filter.type === "batchYear" && `Year: ${filter.value}`}
+                {filter.type === "college" && `College: ${filter.value}`}
+                {filter.type === "course" && `Course: ${filter.value}`}
+                {filter.type === "question" && `Question: ${QUESTIONS.find(q => q.id === filter.value)?.title.substring(0, 20)}...`}
+                <button className={styles.removeFilterButton} onClick={() => removeFilter(filter.type)}>
+                  ×
+                </button>
+              </div>
+            ))}
             {activeFilters.length > 0 && (
-              <div className={styles.activeFiltersBar}>
-                <div className={styles.activeFiltersList}>
-                  {activeFilters.map((filter) => (
-                    <div 
-                      key={filter.type} 
-                      className={styles.filterBadgeOutline}
-                      title={
-                        filter.type === "batchYear" ? `Year: ${filter.value}` :
-                        filter.type === "college" ? `College: ${filter.value}` :
-                        `Course: ${filter.value}`
-                      }
-                    >
-                      {filter.type === "batchYear" && `Year: ${filter.value}`}
-                      {filter.type === "college" && `College: ${filter.value}`}
-                      {filter.type === "course" && `Course: ${filter.value}`}
-                      <button className={styles.removeFilterButton} onClick={() => removeFilter(filter.type)}>
-                        ×
-                      </button>
+              <button
+                className={styles.clearAllButton}
+                onClick={resetFilters}
+              >
+                Clear All
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Dashboard Content */}
+      {visibleQuestions.map(question => {
+        switch(question.id) {
+          case 'respondents':
+            return (
+              <div key={question.id} className={styles.row0}>
+                <div className={`${styles.card} ${styles.respondentsCard}`}>
+                  <div className={styles.cardHeader}>
+                    <h2 className={styles.cardTitle}>{question.title}</h2>
+                  </div>
+                  <div className={styles.cardContent}>
+                    <span className={styles.counterValue}>{data.totalRespondents || 0}</span>
+                    <div className={styles.insightBox}>
+                      <h3 className={styles.insightTitle}>Key Insight</h3>
+                      <p className={styles.insightText}>{generateInsights(question.id)}</p>
                     </div>
-                  ))}
-                  {activeFilters.length > 0 && (
-                    <button
-                      className={styles.clearAllButton}
-                      onClick={resetFilters}
-                    >
-                      Clear All
-                    </button>
-                  )}
+                  </div>
                 </div>
               </div>
-            )}
-      {/* ROW 0 - Total Responses */}
-      <div className={styles.row0}>
-        {/* Respondents Counter */}
-        <div className={`${styles.card} ${styles.respondentsCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>TRACER SURVEY FORM RESPONDENTS</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <span className={styles.counterValue}>{data.totalRespondents || 0}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ROW 1 - Degree Holder, Total Employed, Total Unemployed */}
-      <div className={styles.row1}>
-        {/* Degree Holders Chart */}
-        <div className={`${styles.card} ${styles.educationalAttainmentCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>DEGREE HOLDERS (MASTERAL & DOCTORATE)</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie
-                    data={degreeHolderData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={2}
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {degreeHolderData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-
-        {/* Total Employed Counter */}
-        {/* Total Employed Counter */}
-        <div className={`${styles.card} ${styles.employedCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>TOTAL NUMBER OF EMPLOYED</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <span className={styles.counterValue}>{employedCount}</span>
-          </div>
-        </div>
-
-
-        {/* Total Unemployed Counter */}
-        <div className={`${styles.card} ${styles.unemployedCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>TOTAL NUMBER OF UNEMPLOYED</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <span className={styles.counterValue}>{unemployedCount}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ROW 2 - Employment Status, Job Level, Core Competencies */}
-      <div className={styles.row2}>
-        {/* Employment Status */}
-        <div className={`${styles.card} ${styles.employmentStatusCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>PRESENT EMPLOYMENT STATUS</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={addColors(formatBarData(data.job_status || {}))}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    paddingAngle={2}
-                    label
-                  >
-                    {formatBarData(data.job_status || {}).map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-
-        {/* Job Level Chart */}
-        <div className={`${styles.card} ${styles.jobLevelCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>JOB LEVEL</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={addColors(formatBarData(data.jobData?.position || {}))}
-                  layout="vertical"
-                  margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
-                >
-                  <XAxis type="number" />
-                  <YAxis type="category" dataKey="name" />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="value">
-                    {formatBarData(data.jobData?.position || {}).map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-
-        {/* Core Competencies */}
-        <div className={`${styles.card} ${styles.coreCompetenciesCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>CORE COMPETENCIES THAT HELPED IN JOB</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-            <ResponsiveContainer width="100%" height={300}>
-              <RadarChart data={formatRadarData(data.jobData.coreCompetencies)}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="skill" />
-                <PolarRadiusAxis />
-                <Radar name="Skills" dataKey="value" stroke="#d32f2f" fill="#d32f2f" fillOpacity={0.6} />
-                <Tooltip />
-                <Legend />
-              </RadarChart>
-            </ResponsiveContainer>
-
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ROW 3 - Major Line, Place of work */}
-      <div className={styles.row3}>
-        {/* Line of Business */}
-        <div className={`${styles.card} ${styles.lineOfBusinessCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>MAJOR LINE OF BUSINESS</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
-                <Treemap
-                  data={addColors(formatBarData(data.jobData?.lineOfBusiness || {}))}
-                  dataKey="value"
-                  nameKey="name"
-                  ratio={4 / 3}
-                  stroke="#fff"
-                  content={({ root, depth, x, y, width, height, index, payload, colors, rank, name }) => {
-                    const formattedData = addColors(formatBarData(data.jobData?.lineOfBusiness || {}))
-                    return (
-                      <g>
-                        <rect
-                          x={x}
-                          y={y}
-                          width={width}
-                          height={height}
-                          style={{
-                            fill: formattedData[index % formattedData.length]?.color || COLORS[0],
-                            stroke: "#fff",
-                            strokeWidth: 2 / (depth + 1e-10),
-                            strokeOpacity: 1 / (depth + 1e-10),
-                          }}
-                        />
-                        {width > 30 && height > 30 && (
-                          <text x={x + width / 2} y={y + height / 2 + 7} textAnchor="middle" fill="#fff" fontSize={14}>
-                            {name}
-                          </text>
-                        )}
-                        {width > 30 && height > 30 && (
-                          <text
-                            x={x + width / 2}
-                            y={y + height / 2 - 7}
-                            textAnchor="middle"
-                            fill="#fff"
-                            fontSize={14}
-                            fontWeight="bold"
+            );
+          
+          case 'degreeHolders':
+            return (
+              <div key={question.id} className={styles.row1}>
+                <div className={`${styles.card} ${styles.educationalAttainmentCard}`}>
+                  <div className={styles.cardHeader}>
+                    <h2 className={styles.cardTitle}>{question.title}</h2>
+                  </div>
+                  <div className={styles.cardContent}>
+                    <div className={styles.chartContainer}>
+                      <ResponsiveContainer width="100%" height={200}>
+                        <PieChart>
+                          <Pie
+                            data={degreeHolderData}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={80}
+                            paddingAngle={2}
+                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                           >
-                            {formattedData[index % formattedData.length]?.value || 0}
-                          </text>
-                        )}
-                      </g>
-                    )
-                  }}
-                />
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
+                            {degreeHolderData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip content={<CustomTooltip />} />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className={styles.insightBox}>
+                      <h3 className={styles.insightTitle}>Key Insight</h3>
+                      <p className={styles.insightText}>{generateInsights(question.id)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+            
+          case 'employmentStatus':
+            return (
+              <div key={question.id} className={styles.row2}>
+                <div className={`${styles.card} ${styles.employmentStatusCard}`}>
+                  <div className={styles.cardHeader}>
+                    <h2 className={styles.cardTitle}>{question.title}</h2>
+                  </div>
+                  <div className={styles.cardContent}>
+                    <div className={styles.chartContainer}>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <PieChart>
+                          <Pie
+                            data={addColors(formatBarData(data.job_status || {}))}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={100}
+                            paddingAngle={2}
+                            label
+                          >
+                            {formatBarData(data.job_status || {}).map((_, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip content={<CustomTooltip />} />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className={styles.insightBox}>
+                      <h3 className={styles.insightTitle}>Key Insight</h3>
+                      <p className={styles.insightText}>{generateInsights(question.id)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+            
+          // Add cases for all other questions following the same pattern
+          // Each question should return its card with chart and insights
+          // I'll show a few more examples:
+          
+          case 'jobLevel':
+            return (
+              <div key={question.id} className={styles.row2}>
+                <div className={`${styles.card} ${styles.jobLevelCard}`}>
+                  <div className={styles.cardHeader}>
+                    <h2 className={styles.cardTitle}>{question.title}</h2>
+                  </div>
+                  <div className={styles.cardContent}>
+                    <div className={styles.chartContainer}>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart
+                          data={addColors(formatBarData(data.jobData?.position || {}))}
+                          layout="vertical"
+                          margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
+                        >
+                          <XAxis type="number" />
+                          <YAxis type="category" dataKey="name" />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Bar dataKey="value">
+                            {formatBarData(data.jobData?.position || {}).map((_, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className={styles.insightBox}>
+                      <h3 className={styles.insightTitle}>Key Insight</h3>
+                      <p className={styles.insightText}>{generateInsights(question.id)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          
+          
+          case 'coreCompetencies':
+            return (
+              <div key={question.id} className={styles.row2}>
+                <div className={`${styles.card} ${styles.coreCompetenciesCard}`}>
+                  <div className={styles.cardHeader}>
+                    <h2 className={styles.cardTitle}>{question.title}</h2>
+                  </div>
+                  <div className={styles.cardContent}>
+                    <div className={styles.chartContainer}>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <RadarChart data={formatRadarData(data.jobData.coreCompetencies)}>
+                          <PolarGrid />
+                          <PolarAngleAxis dataKey="skill" />
+                          <PolarRadiusAxis />
+                          <Radar name="Skills" dataKey="value" stroke="#d32f2f" fill="#d32f2f" fillOpacity={0.6} />
+                          <Tooltip />
+                          <Legend />
+                        </RadarChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className={styles.insightBox}>
+                      <h3 className={styles.insightTitle}>Key Insight</h3>
+                      <p className={styles.insightText}>{generateInsights(question.id)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+            
+          case 'lineOfBusiness':
+            return (
+              <div key={question.id} className={styles.row3}>
+                <div className={`${styles.card} ${styles.lineOfBusinessCard}`}>
+                  <div className={styles.cardHeader}>
+                    <h2 className={styles.cardTitle}>{question.title}</h2>
+                  </div>
+                  <div className={styles.cardContent}>
+                    <div className={styles.chartContainer}>
+                      <ResponsiveContainer width="100%" height={300}>
+                                      <Treemap
+                                        data={addColors(formatBarData(data.jobData?.lineOfBusiness || {}))}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        ratio={4 / 3}
+                                        stroke="#fff"
+                                        content={({ root, depth, x, y, width, height, index, payload, colors, rank, name }) => {
+                                          const formattedData = addColors(formatBarData(data.jobData?.lineOfBusiness || {}))
+                                          return (
+                                            <g>
+                                              <rect
+                                                x={x}
+                                                y={y}
+                                                width={width}
+                                                height={height}
+                                                style={{
+                                                  fill: formattedData[index % formattedData.length]?.color || COLORS[0],
+                                                  stroke: "#fff",
+                                                  strokeWidth: 2 / (depth + 1e-10),
+                                                  strokeOpacity: 1 / (depth + 1e-10),
+                                                }}
+                                              />
+                                              {width > 30 && height > 30 && (
+                                                <text x={x + width / 2} y={y + height / 2 + 7} textAnchor="middle" fill="#fff" fontSize={14}>
+                                                  {name}
+                                                </text>
+                                              )}
+                                              {width > 30 && height > 30 && (
+                                                <text
+                                                  x={x + width / 2}
+                                                  y={y + height / 2 - 7}
+                                                  textAnchor="middle"
+                                                  fill="#fff"
+                                                  fontSize={14}
+                                                  fontWeight="bold"
+                                                >
+                                                  {formattedData[index % formattedData.length]?.value || 0}
+                                                </text>
+                                              )}
+                                            </g>
+                                          )
+                                        }}
+                                      />
+                                    </ResponsiveContainer>
+                    </div>
+                    <div className={styles.insightBox}>
+                      <h3 className={styles.insightTitle}>Key Insight</h3>
+                      <p className={styles.insightText}>{generateInsights(question.id)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
 
-        {/* Place of Work */}
-        <div className={`${styles.card} ${styles.placeOfWorkCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>PLACE OF WORK</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={addColors(formatBarData(data.jobData?.placeOfWork || {}))}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    paddingAngle={2}
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {formatBarData(data.jobData?.placeOfWork || {}).map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-      </div>
+          case 'placeOfWork':
+            return(
+              <div key={question.id}>
+                  <div className={`${styles.card} ${styles.placeOfWorkCard}`}>
+                    <div className={styles.cardHeader}>
+                      <h2 className={styles.cardTitle}>{question.title}</h2>
+                    </div>
+                    <div className={styles.cardContent}>
+                      <div className={styles.chartContainer}>
+                       <ResponsiveContainer width="100%" height={300}>
+                                       <PieChart>
+                                         <Pie
+                                           data={addColors(formatBarData(data.jobData?.placeOfWork || {}))}
+                                           dataKey="value"
+                                           nameKey="name"
+                                           cx="50%"
+                                           cy="50%"
+                                           outerRadius={100}
+                                           paddingAngle={2}
+                                           label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                         >
+                                           {formatBarData(data.jobData?.placeOfWork || {}).map((_, index) => (
+                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                           ))}
+                                         </Pie>
+                                         <Tooltip content={<CustomTooltip />} />
+                                         <Legend />
+                                       </PieChart>
+                                     </ResponsiveContainer>
+                      </div>
+                      <div className={styles.insightBox}>
+                        <h3 className={styles.insightTitle}>Key Insight</h3>
+                        <p className={styles.insightText}>{generateInsights(question.id)}</p>
+                      </div>
+                    </div>
 
-      {/* ROW 4 - How did you find your first job, How long did you stay in your first job, How long did it take for you to land your first job */}
-      <div className={styles.row4}>
-        {/* How did you find your first job */}
-        <div className={`${styles.card} ${styles.findFirstJobCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>HOW DID YOU FIND YOUR FIRST JOB</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie
-                    data={addColors(formatBarData(data.jobData?.firstJobSearch || {}))}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={80}
-                    paddingAngle={2}
-                  >
-                    {formatBarData(data.jobData?.firstJobSearch || {}).map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
+                  </div>
+              </div>
+            );
+          
+          case 'firstJobSearch':
+            return(
+              <div key={question.id} className={styles.row4}>
+                  <div className={`${styles.card} ${styles.firstJobSearchCard}`}>
+                    <div className={styles.cardHeader}>
+                      <h2 className={styles.cardTitle}>{question.title}</h2>
+                    </div>
+                    <div className={styles.cardContent}>
+                      <div className={styles.chartContainer}>
+                     <ResponsiveContainer width="100%" height={250}>
+                                     <PieChart>
+                                       <Pie
+                                         data={addColors(formatBarData(data.jobData?.firstJobSearch || {}))}
+                                         dataKey="value"
+                                         nameKey="name"
+                                         cx="50%"
+                                         cy="50%"
+                                         innerRadius={40}
+                                         outerRadius={80}
+                                         paddingAngle={2}
+                                       >
+                                         {formatBarData(data.jobData?.firstJobSearch || {}).map((_, index) => (
+                                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                         ))}
+                                       </Pie>
+                                       <Tooltip content={<CustomTooltip />} />
+                                       <Legend />
+                                     </PieChart>
+                                   </ResponsiveContainer>
+                      </div>
+                      <div className={styles.insightBox}>
+                        <h3 className={styles.insightTitle}>Key Insight</h3>
+                        <p className={styles.insightText}>{generateInsights(question.id)}</p>
+                      </div>
+                    </div>
 
-        {/* First Job Duration */}
-        <div className={`${styles.card} ${styles.firstJobDurationCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>HOW LONG DID YOU STAY IN YOUR FIRST JOB</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={250}>
+                  </div>
+
+              </div>
+            );
+
+          case 'firstJobDuration': 
+          return(
+            <div key={question.id} >
+                <div className={`${styles.card} ${styles.firstJobDurationCard}`}>
+                  <div className={styles.cardHeader}>
+                    <h2 className={styles.cardTitle}>{question.title}</h2>
+                  </div>
+                  <div className={styles.cardContent}>
+                    <div className={styles.chartContainer}>
+                      <ResponsiveContainer width="100%" height={250}>
                 <AreaChart
                   data={addColors(formatBarData(data.jobData?.firstJobDuration || {}))}
                   margin={{ top: 10, right: 30, left: 0, bottom: 40 }}
@@ -555,97 +764,129 @@ export default function Tracer2Analytics() {
                   <Area type="monotone" dataKey="value" stroke="#C31D3C" fillOpacity={1} fill="url(#colorValue)" />
                 </AreaChart>
               </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
+                    </div>
+                    <div className={styles.insightBox}>
+                      <h3 className={styles.insightTitle}>Key Insight</h3>
+                      <p className={styles.insightText}>{generateInsights(question.id)}</p>
+                    </div>
+                  </div>
 
-        {/* Time to Land First Job */}
-        <div className={`${styles.card} ${styles.firstJobLandingTimeCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>HOW LONG DID IT TAKE TO LAND YOUR FIRST JOB</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart
-                  data={addColors(formatBarData(data.jobData?.jobLandingTime || {}))}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" angle={-45} textAnchor="end" height={70} />
-                  <YAxis />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="value">
-                    {formatBarData(data.jobData?.jobLandingTime || {}).map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
+          );
 
-      {/* ROW 5 - Reasons for pursuing advanced studies, Course alignment to work */}
-      <div className={styles.row5}>
-        {/* Reasons for pursuing advanced studies */}
-        <div className={`${styles.card} ${styles.reasonsCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>REASONS FOR PURSUING ADVANCED STUDIES</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={formatReasonsData(data.reasons || {})}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" angle={-45} textAnchor="end" height={70} />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="undergraduate" name="Undergraduate" fill="#4CC3C8" />
-                  <Bar dataKey="graduate" name="Graduate" fill="#FF6B81" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
+          case 'jobLandingTime':
+            return(
+              <div key={question.id} className={styles.row4}>
+                <div className={`${styles.card} ${styles.jobLandingTimeCard}`}>
+                  <div className={styles.cardHeader}>
+                    <h2 className={styles.cardTitle}>{question.title}</h2>
+                  </div>
+                  <div className={styles.cardContent}>
+                    <div className={styles.chartContainer}>
+                      <ResponsiveContainer width="100%" height={250}>
+                                      <BarChart
+                                        data={addColors(formatBarData(data.jobData?.jobLandingTime || {}))}
+                                        margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
+                                      >
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" angle={-45} textAnchor="end" height={70} />
+                                        <YAxis />
+                                        <Tooltip content={<CustomTooltip />} />
+                                        <Bar dataKey="value">
+                                          {formatBarData(data.jobData?.jobLandingTime || {}).map((_, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                          ))}
+                                        </Bar>
+                                      </BarChart>
+                                    </ResponsiveContainer>
+                    </div>
+                    <div className={styles.insightBox}>
+                      <h3 className={styles.insightTitle}>Key Insight</h3>
+                      <p className={styles.insightText}>{generateInsights(question.id)}</p>
+                    </div>
+                  </div>
 
-        {/* Curriculum Alignment to Job */}
-        <div className={`${styles.card} ${styles.curriculumJobAlignmentCard}`}>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>WAS YOUR CURRICULUM ALIGNED TO YOUR JOB?</h2>
-          </div>
-          <div className={styles.cardContent}>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={addColors(formatBarData(data.jobData?.work_alignment || {}))}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={70}
-                    outerRadius={90}
-                    paddingAngle={2}
-                    label
-                  >
-                    {formatBarData(data.jobData?.work_alignment || {}).map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-      </div>
+                </div>
+              </div>
+            );
+          case 'reasons':
+            return(
+              <div key={question.id} className={styles.row5}>
+                <div className={`${styles.card} ${styles.reasonsCard}`}>
+                  <div className={styles.cardHeader}>
+                    <h2 className={styles.cardTitle}>{question.title}</h2>
+                  </div>
+                  <div className={styles.cardContent}>
+                    <div className={styles.chartContainer}>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart
+                          data={formatReasonsData(data.reasons || {})}
+                          margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="name" angle={-45} textAnchor="end" height={70} />
+                          <YAxis />
+                          <Tooltip />
+                          <Legend />
+                          <Bar dataKey="undergraduate" name="Undergraduate" fill="#4CC3C8" />
+                          <Bar dataKey="graduate" name="Graduate" fill="#FF6B81" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className={styles.insightBox}>
+                      <h3 className={styles.insightTitle}>Key Insight</h3>
+                      <p className={styles.insightText}>{generateInsights(question.id)}</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            );
+            
+          case 'workAlignment':
+            return (
+              <div key={question.id} className={styles.row5}>
+                <div className={`${styles.card} ${styles.curriculumJobAlignmentCard}`}>
+                  <div className={styles.cardHeader}>
+                    <h2 className={styles.cardTitle}>{question.title}</h2>
+                  </div>
+                  <div className={styles.cardContent}>
+                    <div className={styles.chartContainer}>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <PieChart>
+                          <Pie
+                            data={addColors(formatBarData(data.jobData?.work_alignment || {}))}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={70}
+                            outerRadius={90}
+                            paddingAngle={2}
+                            label
+                          >
+                            {formatBarData(data.jobData?.work_alignment || {}).map((_, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip content={<CustomTooltip />} />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className={styles.insightBox}>
+                      <h3 className={styles.insightTitle}>Key Insight</h3>
+                      <p className={styles.insightText}>{generateInsights(question.id)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+
+          
+        }
+      })}
     </div>
-  )
+  );
 }
