@@ -127,6 +127,14 @@ function ProfilePage() {
     }
   };
 
+  const handleUpdateEmployment = () => {
+    navigate('/UpdateEmployment', {
+      state: {
+        lastStatus: profileData.employmentInfo?.job_status || ''
+      }
+    });
+  };
+
   if (loading) {
     return (
       <div className={styles.loadingOverlay}>
@@ -239,6 +247,13 @@ function ProfilePage() {
       </button>
       <button className={styles.changepass} onClick={() => setShowModal(true)}>
         Change Password
+      </button>
+
+      <button 
+        className={styles.updateEmploymentBtn}
+        onClick={handleUpdateEmployment}
+      >
+        Update Employment Status
       </button>
 
       

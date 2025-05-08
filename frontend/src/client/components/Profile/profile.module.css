@@ -89,43 +89,64 @@ input {
 }
 
 .inputGroup {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .inputGroup label {
   display: block;
   margin-bottom: 5px;
+  font-weight: 500;
 }
 
-.inputGroup input {
+.inputGroup input,
+.inputGroup select {
   width: 100%;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 14px;
 }
 
 .modalActions {
   display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.saveBtn,
+.cancelBtn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .saveBtn {
-  background: rgba(2, 79, 2, 0.566);
+  background-color: #4CAF50;
   color: white;
-  padding: 8px 15px;
   border: none;
-  cursor: pointer;
-  border-radius: 5px;
 }
 
 .cancelBtn {
-  background: #c31d3c;
+  background-color: #f44336;
   color: white;
-  padding: 8px 15px;
   border: none;
+}
+
+.updateEmploymentBtn {
+  background-color: #c31d3c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
-  border-radius: 5px;
+  font-size: 16px;
+  margin: 20px 20px 0 20px;
+}
+
+.updateEmploymentBtn:hover {
+  background-color: #45a049;
 }
 
 /*loading style  */
