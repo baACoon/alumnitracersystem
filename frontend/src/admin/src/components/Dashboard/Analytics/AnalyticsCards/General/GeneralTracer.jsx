@@ -96,13 +96,13 @@ export default function GeneralTracer() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [alignmentData, setAlignmentData] = useState([])
+  const [jobSearchData, setJobSearchData] = useState([]);
 
   const [availableFilters, setAvailableFilters] = useState({
     batchYears: [],
     colleges: Object.keys(collegesAndCourses),
     collegeToCourses: collegesAndCourses,
   })
-
   const [showFilters, setShowFilters] = useState(true)
   const [activeFilters, setActiveFilters] = useState([])
   const [filters, setFilters] = useState({
@@ -111,7 +111,6 @@ export default function GeneralTracer() {
     college: "",
     course: "",
   })
-
   const [pendingFilters, setPendingFilters] = useState({
     yearFrom: "",
     yearTo: "",
@@ -134,6 +133,17 @@ export default function GeneralTracer() {
       return updated
     })
   }
+
+  const generateDummyJobSearchData = () => {
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({length: 5}, (_, i) => currentYear - i - 1).reverse();
+    
+    return years.map(year => ({
+      batch: year.toString(),
+      averageMonths: Math.floor(Math.random() * 12) + 1, // Random 1-12 months
+      graduates: Math.floor(Math.random() * 50) + 20 // Random 20-70 graduates
+    }));
+  };
 
   const applyFilters = () => {
     setFilters(pendingFilters)
@@ -406,6 +416,22 @@ export default function GeneralTracer() {
     }
     return null
   }
+
+  const CustomJobSearchTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className={styles.customTooltip}>
+          <p className={styles.tooltipHeader}>Batch: {label}</p>
+          {payload.map((item, index) => (
+            <p key={index} style={{ color: item.color }}>
+              {item.name}: <strong>{item.value}</strong>
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
 
   if (loading) {
     return (
@@ -758,6 +784,73 @@ export default function GeneralTracer() {
                 "No alignment data available for selected filters."
               )}
             </p>
+          </div>
+        </div>
+
+        {/* Add this after your existing charts */}
+        <div className={styles.comparisonSection}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Job Search Length Post-Graduation</h2>
+          </div>
+          <div className={styles.sectionContent}>
+            <div className={styles.chartContainer}>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart
+                  data={jobSearchData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    dataKey="batch" 
+                    label={{ value: "Graduation Year", position: "insideBottom", offset: -5 }}
+                  />
+                  <YAxis 
+                    yAxisId="left" 
+                    orientation="left" 
+                    label={{ value: "Average Months", angle: -90, position: "insideLeft" }}
+                    domain={[0, 12]}
+                  />
+                  <YAxis 
+                    yAxisId="right" 
+                    orientation="right" 
+                    label={{ value: "Number of Graduates", angle: 90, position: "insideRight" }}
+                  />
+                  <Tooltip 
+                    content={<CustomJobSearchTooltip />}
+                  />
+                  <Legend />
+                  <Bar 
+                    yAxisId="left"
+                    dataKey="averageMonths" 
+                    name="Average Months to Employment"
+                    fill="#9b59b6"
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar 
+                    yAxisId="right"
+                    dataKey="graduates" 
+                    name="Number of Graduates"
+                    fill="#3498db"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className={styles.summaryContainer}>
+              <h3 className={styles.insightTitle}>Key Insights</h3>
+              <p className={styles.insightText}>
+                {jobSearchData.length > 0 ? (
+                  `On average, graduates find employment within 
+                  ${(jobSearchData.reduce((sum, item) => sum + item.averageMonths, 0) / jobSearchData.length).toFixed(1)} 
+                  months after graduation. Recent batches show ${jobSearchData[jobSearchData.length-1].averageMonths < 
+                  jobSearchData[0].averageMonths ? 'improving' : 'consistent'} job search timelines.`
+                ) : "No job search data available"}
+              </p>
+              <div className={styles.dummyDataNotice}>
+                <span className={styles.noticeIcon}>⚠️</span>
+                Currently displaying sample data
+              </div>
+            </div>
           </div>
         </div>
       </div>
