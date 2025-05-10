@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useEffect} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Correct way to import useNavigate
 import styles from "./CrossCheck-Survey.module.css";
 import Tuplogo from "../../components/image/Tuplogo.png";
 import Alumnilogo from "../../components/image/alumniassoc_logo.png";
-import nationalities from "./nationalities"; 
+import nationalities from "./nationalities";
 import { PH_LOCATIONS } from "./philippine-locations";
 
 const colleges = {
@@ -67,13 +67,14 @@ const colleges = {
     "Bachelor of Technology in Print Media Technology",
   ],
 };
+
 function CrossCheckSurveyForm() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
   const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
-  
+
   const [selectedProvince, setSelectedProvince] = useState("");
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
@@ -89,8 +90,6 @@ function CrossCheckSurveyForm() {
       province: "",
       city: ""
     },
-    
-    
     sex: "",
     nationality: "",
     address: "",
@@ -105,7 +104,7 @@ function CrossCheckSurveyForm() {
     position: "",
     type_of_organization: "",
     work_alignment: "",
-    gradmonths: "", // Changed from graduate_months to gradmonths
+    startedMonth: "", // Changed from gradmonths to startedMonth
   });
 
   const handleChange = useCallback((e) => {
@@ -114,7 +113,7 @@ function CrossCheckSurveyForm() {
       const atComIndex = value.indexOf(".com");
       if (atComIndex !== -1 && value.length > atComIndex + 4) return;
     }
-    
+
     setFormData((prev) => ({ ...prev, [name]: value }));
     setFormErrors((prev) => ({ ...prev, [name]: "" }));
 
@@ -128,8 +127,8 @@ function CrossCheckSurveyForm() {
         job_level: "NotApplicable",
         position: "N/A",
         type_of_organization: "NotApplicable",
-        work_alignment: "NotApplicable", // Add this line
-        gradmonths: "", // Add this line
+        work_alignment: "NotApplicable",
+        startedMonth: "", // Changed from gradmonths to startedMonth
       }));
     }
     if (name === "birthplace.province") {
@@ -140,7 +139,7 @@ function CrossCheckSurveyForm() {
       }));
       return;
     }
-    
+
     if (name === "birthplace.city") {
       setFormData((prev) => ({
         ...prev,
@@ -148,7 +147,6 @@ function CrossCheckSurveyForm() {
       }));
       return;
     }
-    
   }, []);
 
   const handleCollegeChange = (e) => {
@@ -212,7 +210,7 @@ function CrossCheckSurveyForm() {
         if (!formData.position?.trim()) errors.position = "Position is required.";
         if (!formData.type_of_organization) errors.type_of_organization = "Type of Organization is required.";
         if (!formData.work_alignment) errors.work_alignment = "Work Alignment is required.";
-        if (!formData.gradmonths) errors.gradmonths = "Month of Graduation is required.";
+        if (!formData.startedMonth) errors.startedMonth = "Month of Starting is required."; // Updated field name
       }
     }
 
@@ -264,7 +262,7 @@ function CrossCheckSurveyForm() {
           position: formData.position,
           type_of_organization: formData.type_of_organization,
           work_alignment: formData.work_alignment,
-          gradmonths: formData.gradmonths.toLowerCase(), // Add this line
+          startedMonth: formData.startedMonth.toLowerCase(), // Updated field name
         }
       }, { headers: { Authorization: `Bearer ${token}` } });
 
@@ -705,13 +703,11 @@ function CrossCheckSurveyForm() {
                                 </select>
                               </div>
                               <div className={styles["form-group"]}>
-                                <label htmlFor="gradmonths">
-                                  Month of Graduation: *
-                                </label>
+                                <label htmlFor="startedMonth">Month of Starting: *</label> {/* Updated label */}
                                 <select
-                                  id="gradmonths"
-                                  name="gradmonths"
-                                  value={formData.gradmonths}
+                                  id="startedMonth"
+                                  name="startedMonth"
+                                  value={formData.startedMonth}
                                   onChange={handleChange}
                                   required
                                   className={styles["form-select"]}
@@ -730,9 +726,7 @@ function CrossCheckSurveyForm() {
                                   <option value="november">November</option>
                                   <option value="december">December</option>
                                 </select>
-                                {formErrors.gradmonths && (
-                                  <span className={styles.errorText}>{formErrors.gradmonths}</span>
-                                )}
+                                {formErrors.startedMonth && <span className={styles.errorText}>{formErrors.startedMonth}</span>}
                               </div>
                         </>
                       )}

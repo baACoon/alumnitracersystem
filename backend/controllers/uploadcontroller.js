@@ -64,6 +64,7 @@ export const uploadCSV = async (req, res) => {
 
     const filePath = req.file.path;
     const batchYear = Number(req.body.batchYear) || new Date().getFullYear();
+    const gradMonth = req.body.gradMonth || null; // Get gradMonth from the request body
 
     const results = [];
     const validationErrors = [];
@@ -88,6 +89,7 @@ export const uploadCSV = async (req, res) => {
           college: row["College"]?.trim().toUpperCase() || "",
           course: row["Course"]?.trim().toUpperCase() || "",
           gradYear: batchYear,
+          gradMonth: gradMonth, // Add gradMonth to the graduate object
           importedDate: new Date()
         });
       })

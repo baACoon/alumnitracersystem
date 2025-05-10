@@ -7,6 +7,7 @@ import DataPrivacyConsent from '../Security/dataprivacy';
 
 const Register_NewAlumni = ({ closeModal }) => {
     const [gradyear, setYear] = useState('');
+    const [gradMonth, setGradMonth] = useState(''); // Add state for gradMonth
     const [lastName, setLastName] = useState('');
     const [firstName, setFirstName] = useState('');
     const [password, setPassword] = useState('');
@@ -257,19 +258,15 @@ const Register_NewAlumni = ({ closeModal }) => {
             return;
         }
 
-        // Additional frontend validation
-        if (!password || !confirmPassword) {
-            toast.warning("All fields are required");
+        // Validate gradMonth
+        if (!gradMonth) {
+            toast.warning("Please select a graduation month");
             return;
         }
-        const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-        if (!strongPasswordRegex.test(password)) {
-          toast.warning("Password must include uppercase, lowercase, number, special character and be 8+ characters.");
-          return;
-        }
-        
+
         const formData = {
             gradyear,
+            gradMonth, // Include gradMonth in the form data
             firstName,
             lastName,
             password,
@@ -318,6 +315,29 @@ const Register_NewAlumni = ({ closeModal }) => {
                 {/* Step 1: Initial verification form */}
                 {verificationStatus === null && !generatedID && (
                     <div className={styles.verificationForm}>
+                        {/* Dropdown for gradMonth */}
+                        <select
+                            value={gradMonth}
+                            onChange={(e) => setGradMonth(e.target.value)}
+                            required
+                            className={styles.inputFieldNewAlumni}
+                        >
+                            <option value="">Select Graduation Month</option>
+                            <option value="january">January</option>
+                            <option value="february">February</option>
+                            <option value="march">March</option>
+                            <option value="april">April</option>
+                            <option value="may">May</option>
+                            <option value="june">June</option>
+                            <option value="july">July</option>
+                            <option value="august">August</option>
+                            <option value="september">September</option>
+                            <option value="october">October</option>
+                            <option value="november">November</option>
+                            <option value="december">December</option>
+                        </select>
+
+                        {/* Input for gradYear */}
                         <input 
                             type="text" 
                             placeholder="GRADUATION YEAR" 
@@ -325,6 +345,8 @@ const Register_NewAlumni = ({ closeModal }) => {
                             onChange={(e) => setYear(e.target.value)} 
                             className={styles.inputFieldNewAlumni} 
                         />
+
+                        {/* Input for firstName */}
                         <input 
                             type="text" 
                             placeholder="FIRST NAME" 
@@ -332,6 +354,8 @@ const Register_NewAlumni = ({ closeModal }) => {
                             onChange={(e) => setFirstName(e.target.value)} 
                             className={styles.inputFieldNewAlumni} 
                         />
+
+                        {/* Input for lastName */}
                         <input 
                             type="text" 
                             placeholder="LAST NAME" 
@@ -339,11 +363,12 @@ const Register_NewAlumni = ({ closeModal }) => {
                             onChange={(e) => setLastName(e.target.value)} 
                             className={styles.inputFieldNewAlumni} 
                         />
+
                         <button 
                             onClick={verifyGraduate} 
                             className={styles.submitButtonNewAlumni}
                             disabled={loading}
-                            >
+                        >
                             {loading ? (
                                 <span className={styles.spinner}></span>
                             ) : 'Verify'}
@@ -437,6 +462,29 @@ const Register_NewAlumni = ({ closeModal }) => {
                     <form onSubmit={handleSubmit} className={styles.verificationResult}>
                         <h3>Complete Registration</h3>
                         <p className={styles.verifyName}><strong>Verified: {firstName} {lastName} ({gradyear})</strong></p>
+                        
+                        {/* Dropdown for gradMonth */}
+                        <select
+                            value={gradMonth}
+                            onChange={(e) => setGradMonth(e.target.value)}
+                            required
+                            className={styles.inputFieldNewAlumni}
+                        >
+                            <option value="">Select Graduation Month</option>
+                            <option value="january">January</option>
+                            <option value="february">February</option>
+                            <option value="march">March</option>
+                            <option value="april">April</option>
+                            <option value="may">May</option>
+                            <option value="june">June</option>
+                            <option value="july">July</option>
+                            <option value="august">August</option>
+                            <option value="september">September</option>
+                            <option value="october">October</option>
+                            <option value="november">November</option>
+                            <option value="december">December</option>
+                        </select>
+
                         <input 
                             type="password" 
                             placeholder="Password" 
