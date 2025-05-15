@@ -435,7 +435,7 @@ export default function Tracer2Analytics() {
                   </div>
                   <div className={styles.cardContent}>
                     <span className={styles.counterValue}>{data.totalRespondents || 0}</span>
-                    <div className={styles.insightBox}>
+                    <div className={`${styles.insightBox} ${activeFilters.length > 0 ? styles.visible : ''}`}>
                       <h3 className={styles.insightTitle}>Key Insight</h3>
                       <p className={styles.insightText}>{generateInsights(question.id)}</p>
                     </div>
@@ -475,7 +475,7 @@ export default function Tracer2Analytics() {
                         </PieChart>
                       </ResponsiveContainer>
                     </div>
-                    <div className={styles.insightBox}>
+                    <div className={`${styles.insightBox} ${activeFilters.length > 0 ? styles.visible : ''}`}>
                       <h3 className={styles.insightTitle}>Key Insight</h3>
                       <p className={styles.insightText}>{generateInsights(question.id)}</p>
                     </div>
@@ -514,7 +514,7 @@ export default function Tracer2Analytics() {
                         </PieChart>
                       </ResponsiveContainer>
                     </div>
-                    <div className={styles.insightBox}>
+                    <div className={`${styles.insightBox} ${activeFilters.length > 0 ? styles.visible : ''}`}>
                       <h3 className={styles.insightTitle}>Key Insight</h3>
                       <p className={styles.insightText}>{generateInsights(question.id)}</p>
                     </div>
@@ -553,7 +553,7 @@ export default function Tracer2Analytics() {
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
-                    <div className={styles.insightBox}>
+                    <div className={`${styles.insightBox} ${activeFilters.length > 0 ? styles.visible : ''}`}>
                       <h3 className={styles.insightTitle}>Key Insight</h3>
                       <p className={styles.insightText}>{generateInsights(question.id)}</p>
                     </div>
@@ -583,7 +583,7 @@ export default function Tracer2Analytics() {
                         </RadarChart>
                       </ResponsiveContainer>
                     </div>
-                    <div className={styles.insightBox}>
+                    <div className={`${styles.insightBox} ${activeFilters.length > 0 ? styles.visible : ''}`}>
                       <h3 className={styles.insightTitle}>Key Insight</h3>
                       <p className={styles.insightText}>{generateInsights(question.id)}</p>
                     </div>
@@ -647,7 +647,7 @@ export default function Tracer2Analytics() {
                                       />
                                     </ResponsiveContainer>
                     </div>
-                    <div className={styles.insightBox}>
+                    <div className={`${styles.insightBox} ${activeFilters.length > 0 ? styles.visible : ''}`}>
                       <h3 className={styles.insightTitle}>Key Insight</h3>
                       <p className={styles.insightText}>{generateInsights(question.id)}</p>
                     </div>
@@ -686,7 +686,7 @@ export default function Tracer2Analytics() {
                                        </PieChart>
                                      </ResponsiveContainer>
                       </div>
-                      <div className={styles.insightBox}>
+                      <div className={`${styles.insightBox} ${activeFilters.length > 0 ? styles.visible : ''}`}>
                         <h3 className={styles.insightTitle}>Key Insight</h3>
                         <p className={styles.insightText}>{generateInsights(question.id)}</p>
                       </div>
@@ -726,7 +726,7 @@ export default function Tracer2Analytics() {
                                      </PieChart>
                                    </ResponsiveContainer>
                       </div>
-                      <div className={styles.insightBox}>
+                      <div className={`${styles.insightBox} ${activeFilters.length > 0 ? styles.visible : ''}`}>
                         <h3 className={styles.insightTitle}>Key Insight</h3>
                         <p className={styles.insightText}>{generateInsights(question.id)}</p>
                       </div>
@@ -738,88 +738,86 @@ export default function Tracer2Analytics() {
             );
 
           case 'firstJobDuration': 
-          return(
-            <div key={question.id} >
+            return(
+              <div key={question.id}>
                 <div className={`${styles.card} ${styles.firstJobDurationCard}`}>
                   <div className={styles.cardHeader}>
                     <h2 className={styles.cardTitle}>{question.title}</h2>
                   </div>
                   <div className={styles.cardContent}>
                     <div className={styles.chartContainer}>
-                      <ResponsiveContainer width="100%" height={250}>
-                <AreaChart
-                  data={addColors(formatBarData(data.jobData?.firstJobDuration || {}))}
-                  margin={{ top: 10, right: 30, left: 0, bottom: 40 }}
-                >
-                  <defs>
-                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#C31D3C" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#C31D3C" stopOpacity={0.1} />
-                    </linearGradient>
-                  </defs>
-                  <XAxis dataKey="name" angle={-45} textAnchor="end" height={70} />
-                  <YAxis />
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Area type="monotone" dataKey="value" stroke="#C31D3C" fillOpacity={1} fill="url(#colorValue)" />
-                </AreaChart>
-              </ResponsiveContainer>
+                      <ResponsiveContainer width="100%" height={400}>
+                        <AreaChart
+                          data={addColors(formatBarData(data.jobData?.firstJobDuration || {}))}
+                          margin={{ top: 10, right: 30, left: 0, bottom: 40 }}
+                        >
+                          <defs>
+                            <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#C31D3C" stopOpacity={0.8} />
+                              <stop offset="95%" stopColor="#C31D3C" stopOpacity={0.1} />
+                            </linearGradient>
+                          </defs>
+                          <XAxis dataKey="name" angle={-45} textAnchor="end" height={70} />
+                          <YAxis />
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Area type="monotone" dataKey="value" stroke="#C31D3C" fillOpacity={1} fill="url(#colorValue)" />
+                        </AreaChart>
+                      </ResponsiveContainer>
                     </div>
-                    <div className={styles.insightBox}>
+                    <div className={`${styles.insightBox} ${activeFilters.length > 0 ? styles.visible : ''}`}>
                       <h3 className={styles.insightTitle}>Key Insight</h3>
                       <p className={styles.insightText}>{generateInsights(question.id)}</p>
                     </div>
                   </div>
-
                 </div>
-            </div>
-          );
+              </div>
+            );
 
           case 'jobLandingTime':
             return(
-              <div key={question.id} className={styles.row4}>
+              <div key={question.id}>
                 <div className={`${styles.card} ${styles.jobLandingTimeCard}`}>
                   <div className={styles.cardHeader}>
                     <h2 className={styles.cardTitle}>{question.title}</h2>
                   </div>
                   <div className={styles.cardContent}>
                     <div className={styles.chartContainer}>
-                      <ResponsiveContainer width="100%" height={250}>
-                                      <BarChart
-                                        data={addColors(formatBarData(data.jobData?.jobLandingTime || {}))}
-                                        margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
-                                      >
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="name" angle={-45} textAnchor="end" height={70} />
-                                        <YAxis />
-                                        <Tooltip content={<CustomTooltip />} />
-                                        <Bar dataKey="value">
-                                          {formatBarData(data.jobData?.jobLandingTime || {}).map((_, index) => (
-                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                          ))}
-                                        </Bar>
-                                      </BarChart>
-                                    </ResponsiveContainer>
+                      <ResponsiveContainer width="100%" height={400}>
+                        <BarChart
+                          data={addColors(formatBarData(data.jobData?.jobLandingTime || {}))}
+                          margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="name" angle={-45} textAnchor="end" height={70} />
+                          <YAxis />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Bar dataKey="value">
+                            {formatBarData(data.jobData?.jobLandingTime || {}).map((_, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
                     </div>
-                    <div className={styles.insightBox}>
+                    <div className={`${styles.insightBox} ${activeFilters.length > 0 ? styles.visible : ''}`}>
                       <h3 className={styles.insightTitle}>Key Insight</h3>
                       <p className={styles.insightText}>{generateInsights(question.id)}</p>
                     </div>
                   </div>
-
                 </div>
               </div>
             );
           case 'reasons':
             return(
-              <div key={question.id} className={styles.row5}>
+              <div key={question.id}>
                 <div className={`${styles.card} ${styles.reasonsCard}`}>
                   <div className={styles.cardHeader}>
                     <h2 className={styles.cardTitle}>{question.title}</h2>
                   </div>
                   <div className={styles.cardContent}>
                     <div className={styles.chartContainer}>
-                      <ResponsiveContainer width="100%" height={300}>
+                      <ResponsiveContainer width="100%" height={400}>
                         <BarChart
                           data={formatReasonsData(data.reasons || {})}
                           margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
@@ -834,12 +832,11 @@ export default function Tracer2Analytics() {
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
-                    <div className={styles.insightBox}>
+                    <div className={`${styles.insightBox} ${activeFilters.length > 0 ? styles.visible : ''}`}>
                       <h3 className={styles.insightTitle}>Key Insight</h3>
                       <p className={styles.insightText}>{generateInsights(question.id)}</p>
                     </div>
                   </div>
-
                 </div>
               </div>
             );
@@ -875,7 +872,7 @@ export default function Tracer2Analytics() {
                         </PieChart>
                       </ResponsiveContainer>
                     </div>
-                    <div className={styles.insightBox}>
+                    <div className={`${styles.insightBox} ${activeFilters.length > 0 ? styles.visible : ''}`}>
                       <h3 className={styles.insightTitle}>Key Insight</h3>
                       <p className={styles.insightText}>{generateInsights(question.id)}</p>
                     </div>
