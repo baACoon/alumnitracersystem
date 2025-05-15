@@ -225,7 +225,7 @@ export default function GeneralTracer() {
           fetch(`http://localhost:5050/dashboard/tracer/employment-by-batch?${queryParams}`),
           fetch(`http://localhost:5050/dashboard/tracer/work-alignment?${queryParams}`),
           fetch(`http://localhost:5050/dashboard/tracer/job-search-duration?${queryParams}`)
-        ])
+        ]);
 
         // Check all responses
         if (!employmentRes.ok || !alignmentRes.ok || !jobSearchRes.ok) {
@@ -242,9 +242,15 @@ export default function GeneralTracer() {
           employmentRes.json(), 
           alignmentRes.json(),
           jobSearchRes.json()
-        ])
+        ]);
 
         if (!isMounted) return // Prevent state updates if unmounted
+
+        const processedJobSearchData = jobSearchJson.data?.map(item => ({
+          batch: item._id.toString(),
+          averageMonths: item.graduates > 0 ? (item.totalMonths / item.graduates) : 0,
+          graduates: item.graduates
+        })) || [];
 
         // Validate responses
         if (!employmentJson || !alignmentJson || !jobSearchJson) {
@@ -253,7 +259,7 @@ export default function GeneralTracer() {
 
         setData(employmentJson)
         setAlignmentData(alignmentJson.alignmentData || [])
-        setJobSearchData(jobSearchJson.data || [])
+        setJobSearchData(processedJobSearchData)
 
         // Update available filters
         if (employmentJson.filters?.batchYears) {
@@ -827,9 +833,7 @@ export default function GeneralTracer() {
                     orientation="right" 
                     label={{ value: "Number of Graduates", angle: 90, position: "insideRight" }}
                   />
-                  <Tooltip 
-                    content={<CustomJobSearchTooltip />}
-                  />
+                  <Tooltip content={<CustomJobSearchTooltip />} />
                   <Legend />
                   <Bar 
                     yAxisId="left"
@@ -852,15 +856,29 @@ export default function GeneralTracer() {
               <h3 className={styles.insightTitle}>Key Insights</h3>
               <p className={styles.insightText}>
                 {jobSearchData.length > 0 ? (
-                  `On average, graduates find employment within ${(
-                    jobSearchData.reduce((sum, item) => sum + item.averageMonths, 0) / jobSearchData.length
-                  ).toFixed(1)} months after graduation. 
-                  ${jobSearchData.length > 1 ? 
-                    `The ${jobSearchData[jobSearchData.length-1].averageMonths < jobSearchData[0].averageMonths ? 
-                      'most recent batch found jobs faster' : 
-                      'most recent batch took longer to find jobs'
-                    } compared to earlier batches.` : ''}`
-                ) : "No job search data available for the selected filters."}
+                  <>
+                    On average, graduates find employment within{' '}
+                    <strong>
+                      {(
+                        jobSearchData.reduce((sum, item) => sum + item.averageMonths, 0) / 
+                        jobSearchData.length
+                      ).toFixed(1)}
+                    </strong>{' '}
+                    months after graduation.
+                    {jobSearchData.length > 1 && (
+                      <>
+                        {' '}
+                        The{' '}
+                        {jobSearchData[jobSearchData.length - 1].averageMonths < jobSearchData[0].averageMonths
+                          ? 'most recent batch found jobs faster'
+                          : 'most recent batch took longer to find jobs'}
+                        {' '}compared to earlier batches.
+                      </>
+                    )}
+                  </>
+                ) : (
+                  "No job search data available for the selected filters."
+                )}
               </p>
             </div>
           </div>
