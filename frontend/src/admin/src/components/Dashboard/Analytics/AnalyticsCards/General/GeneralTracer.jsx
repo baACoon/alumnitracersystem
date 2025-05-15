@@ -220,28 +220,40 @@ export default function GeneralTracer() {
         if (filters.college) queryParams.append("college", filters.college)
         if (filters.course) queryParams.append("course", filters.course)
 
-        // Fetch both endpoints in parallel
-        const [employmentRes, alignmentRes] = await Promise.all([
+        // Fetch all endpoints in parallel
+        const [employmentRes, alignmentRes, jobSearchRes] = await Promise.all([
           fetch(`http://localhost:5050/dashboard/tracer/employment-by-batch?${queryParams}`),
           fetch(`http://localhost:5050/dashboard/tracer/work-alignment?${queryParams}`),
+          fetch(`http://localhost:5050/dashboard/tracer/job-search-duration?${queryParams}`)
         ])
 
-        // Check both responses
-        if (!employmentRes.ok || !alignmentRes.ok) {
-          throw new Error(employmentRes.ok ? await alignmentRes.text() : await employmentRes.text())
+        // Check all responses
+        if (!employmentRes.ok || !alignmentRes.ok || !jobSearchRes.ok) {
+          throw new Error(
+            employmentRes.ok 
+              ? alignmentRes.ok 
+                ? await jobSearchRes.text() 
+                : await alignmentRes.text()
+              : await employmentRes.text()
+          )
         }
 
-        const [employmentJson, alignmentJson] = await Promise.all([employmentRes.json(), alignmentRes.json()])
+        const [employmentJson, alignmentJson, jobSearchJson] = await Promise.all([
+          employmentRes.json(), 
+          alignmentRes.json(),
+          jobSearchRes.json()
+        ])
 
         if (!isMounted) return // Prevent state updates if unmounted
 
         // Validate responses
-        if (!employmentJson || !alignmentJson) {
+        if (!employmentJson || !alignmentJson || !jobSearchJson) {
           throw new Error("Invalid data received from server")
         }
 
         setData(employmentJson)
         setAlignmentData(alignmentJson.alignmentData || [])
+        setJobSearchData(jobSearchJson.data || [])
 
         // Update available filters
         if (employmentJson.filters?.batchYears) {
@@ -266,7 +278,7 @@ export default function GeneralTracer() {
     return () => {
       isMounted = false // Cleanup function
     }
-  }, [filters])
+}, [filters])
 
   // Helper functions for calculations
   const calculateAverageEmployment = () => {
@@ -808,7 +820,7 @@ export default function GeneralTracer() {
                     yAxisId="left" 
                     orientation="left" 
                     label={{ value: "Average Months", angle: -90, position: "insideLeft" }}
-                    domain={[0, 12]}
+                    domain={[0, 'dataMax + 2']}
                   />
                   <YAxis 
                     yAxisId="right" 
@@ -840,16 +852,16 @@ export default function GeneralTracer() {
               <h3 className={styles.insightTitle}>Key Insights</h3>
               <p className={styles.insightText}>
                 {jobSearchData.length > 0 ? (
-                  `On average, graduates find employment within 
-                  ${(jobSearchData.reduce((sum, item) => sum + item.averageMonths, 0) / jobSearchData.length).toFixed(1)} 
-                  months after graduation. Recent batches show ${jobSearchData[jobSearchData.length-1].averageMonths < 
-                  jobSearchData[0].averageMonths ? 'improving' : 'consistent'} job search timelines.`
-                ) : "No job search data available"}
+                  `On average, graduates find employment within ${(
+                    jobSearchData.reduce((sum, item) => sum + item.averageMonths, 0) / jobSearchData.length
+                  ).toFixed(1)} months after graduation. 
+                  ${jobSearchData.length > 1 ? 
+                    `The ${jobSearchData[jobSearchData.length-1].averageMonths < jobSearchData[0].averageMonths ? 
+                      'most recent batch found jobs faster' : 
+                      'most recent batch took longer to find jobs'
+                    } compared to earlier batches.` : ''}`
+                ) : "No job search data available for the selected filters."}
               </p>
-              <div className={styles.dummyDataNotice}>
-                <span className={styles.noticeIcon}>⚠️</span>
-                Currently displaying sample data
-              </div>
             </div>
           </div>
         </div>

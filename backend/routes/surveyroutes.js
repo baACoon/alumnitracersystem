@@ -28,14 +28,14 @@ const surveySchema = new mongoose.Schema(
       validate: {
         validator: function(info) {
           if (info.job_status !== 'Unemployed') {
-            return info.gradmonths && 
+            return info.startedMonth && 
                    ['january', 'february', 'march', 'april', 'may', 'june', 
                     'july', 'august', 'september', 'october', 'november', 'december']
-                   .includes(info.gradmonths.toLowerCase());
+                   .includes(info.startedMonth.toLowerCase());
           }
           return true;
         },
-        message: 'Graduation month is required and must be a valid month for employed alumni'
+        message: 'Work started month is required and must be a valid month for employed alumni'
       }
     },
   },
@@ -71,13 +71,13 @@ router.post("/submit/:surveyType", authenticateToken, async (req, res) => {
 
     // Validate gradmonths if employed
     if (req.body.employmentInfo?.job_status !== 'Unemployed') {
-      if (!req.body.employmentInfo?.gradmonths) {
+      if (!req.body.employmentInfo?.startedMonth) {
         return res.status(400).json({ 
-          message: "Graduation month is required for employed alumni" 
+          message: "Work started month is required for employed alumni" 
         });
       }
 
-      req.body.employmentInfo.gradmonths = req.body.employmentInfo.gradmonths.toLowerCase();
+      req.body.employmentInfo.startedMonth = req.body.employmentInfo.startedMonth.toLowerCase();
     }
 
     // Create the submission
@@ -261,18 +261,18 @@ router.patch("/update-employment/:surveyId", authenticateToken, async (req, res)
 
     // Validate gradmonths if employed
     if (employmentInfo.job_status !== 'Unemployed') {
-      if (!employmentInfo.gradmonths) {
+      if (!employmentInfo.startedMonth) {
         return res.status(400).json({ 
-          message: "Graduation month is required for employed alumni" 
+          message: "Work started month is required for employed alumni" 
         });
       }
 
       const validMonths = ['january', 'february', 'march', 'april', 'may', 'june', 
                           'july', 'august', 'september', 'october', 'november', 'december'];
       
-      if (!validMonths.includes(employmentInfo.gradmonths.toLowerCase())) {
+      if (!validMonths.includes(employmentInfo.startedMonth.toLowerCase())) {
         return res.status(400).json({ 
-          message: "Invalid graduation month",
+          message: "Invalid work started month",
           validMonths
         });
       }
@@ -285,8 +285,8 @@ router.patch("/update-employment/:surveyId", authenticateToken, async (req, res)
         $set: {
           'employmentInfo': {
             ...employmentInfo,
-            gradmonths: employmentInfo.job_status !== 'Unemployed' 
-              ? employmentInfo.gradmonths.toLowerCase() 
+            startedMonth: employmentInfo.job_status !== 'Unemployed' 
+              ? employmentInfo.startedMonth.toLowerCase() 
               : undefined
           },
           'status': employmentInfo.job_status === 'Unemployed' ? 'pending' : 'completed',

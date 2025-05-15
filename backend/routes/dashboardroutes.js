@@ -747,4 +747,127 @@ router.get("/tracer/work-alignment", async (req, res) => {
     });
   }
 });
+
+// Get job search duration data by batch
+router.get("/tracer/job-search-duration", async (req, res) => {
+  try {
+    const { yearFrom, yearTo, college, course } = req.query;
+    
+    // Build match query for employed alumni only
+    const match = { 
+      surveyType: "Tracer1",
+      "employmentInfo.job_status": { 
+        $nin: ["Unemployed"] 
+      }
+    };
+    
+    if (college) match["personalInfo.college"] = college;
+    if (course) match["personalInfo.course"] = course;
+    
+    const pipeline = [
+      { $match: match },
+      {
+        $lookup: {
+          from: "students",
+          localField: "userId",
+          foreignField: "_id",
+          as: "studentInfo"
+        }
+      },
+      { $unwind: "$studentInfo" },
+      {
+        $match: {
+          "studentInfo.gradyear": { $exists: true },
+          "studentInfo.gradMonth": { $exists: true, $ne: "" },
+          "employmentInfo.startedMonth": { $exists: true, $ne: "" },
+          "employmentInfo.year_started": { $exists: true, $ne: "" }
+        }
+      }
+    ];
+
+    // Add year range filter if provided
+    if (yearFrom || yearTo) {
+      const yearFilter = {};
+      if (yearFrom) yearFilter.$gte = Number(yearFrom);
+      if (yearTo) yearFilter.$lte = Number(yearTo);
+      pipeline.push({
+        $match: { "studentInfo.gradyear": yearFilter }
+      });
+    }
+
+    // Continue with aggregation
+    pipeline.push({
+      $group: {
+        _id: "$studentInfo.gradyear",
+        graduates: { $sum: 1 },
+        totalMonths: {
+          $sum: {
+            $let: {
+              vars: {
+                gradDate: {
+                  $dateFromParts: {
+                    year: "$studentInfo.gradyear",
+                    month: {
+                      $add: [
+                        {
+                          $indexOfArray: [
+                            ["january", "february", "march", "april", "may", "june", 
+                            "july", "august", "september", "october", "november", "december"],
+                            { $toLower: "$studentInfo.gradMonth" }
+                          ]
+                        }, 
+                        1 // Add 1 to make it a 1-based month index
+                      ]
+                    },
+                    day: 1
+                  }
+                },
+                jobDate: {
+                  $dateFromParts: {
+                    year: { $toInt: "$employmentInfo.year_started" },
+                    month: {
+                      $add: [
+                        {
+                          $indexOfArray: [
+                            ["january", "february", "march", "april", "may", "june", 
+                            "july", "august", "september", "october", "november", "december"],
+                            { $toLower: "$employmentInfo.startedMonth" }
+                          ]
+                        },
+                        1 // Add 1 for month index to be 1-based
+                      ]
+                    },
+                    day: 1
+                  }
+                }
+              },
+              in: {
+                $divide: [
+                  { $subtract: ["$$jobDate", "$$gradDate"] },
+                  1000 * 60 * 60 * 24 * 30 // Approximate months
+                ]
+              }
+            }
+          }
+        }
+      }
+    });
+
+
+    const results = await SurveySubmission.aggregate(pipeline);
+
+    res.json({
+      success: true,
+      data: results
+    });
+    
+  } catch (err) {
+    console.error("Error in /tracer/job-search-duration:", err);
+    res.status(500).json({ 
+      success: false,
+      error: "Failed to fetch job search duration data" 
+    });
+  }
+});
+
   export default router;
