@@ -462,29 +462,6 @@ const Register_NewAlumni = ({ closeModal }) => {
                     <form onSubmit={handleSubmit} className={styles.verificationResult}>
                         <h3>Complete Registration</h3>
                         <p className={styles.verifyName}><strong>Verified: {firstName} {lastName} ({gradyear})</strong></p>
-                        
-                        {/* Dropdown for gradMonth */}
-                        <select
-                            value={gradMonth}
-                            onChange={(e) => setGradMonth(e.target.value)}
-                            required
-                            className={styles.inputFieldNewAlumni}
-                        >
-                            <option value="">Select Graduation Month</option>
-                            <option value="january">January</option>
-                            <option value="february">February</option>
-                            <option value="march">March</option>
-                            <option value="april">April</option>
-                            <option value="may">May</option>
-                            <option value="june">June</option>
-                            <option value="july">July</option>
-                            <option value="august">August</option>
-                            <option value="september">September</option>
-                            <option value="october">October</option>
-                            <option value="november">November</option>
-                            <option value="december">December</option>
-                        </select>
-
                         <input 
                             type="password" 
                             placeholder="Password" 
