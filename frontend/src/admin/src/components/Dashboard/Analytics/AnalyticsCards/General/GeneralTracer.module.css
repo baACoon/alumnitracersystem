@@ -70,6 +70,23 @@
   margin-bottom: 12px;
 }
 
+/* Add to your module.css */
+.insightList {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+
+.insightList li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.contextNote {
+  font-style: italic;
+  color: #666;
+  margin-top: 12px;
+}
+
 /* ====================== */
 /* CARDS & SECTIONS */
 /* ====================== */

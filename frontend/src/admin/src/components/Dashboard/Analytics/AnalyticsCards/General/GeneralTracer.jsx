@@ -134,16 +134,6 @@ export default function GeneralTracer() {
     })
   }
 
-  const generateDummyJobSearchData = () => {
-    const currentYear = new Date().getFullYear();
-    const years = Array.from({length: 5}, (_, i) => currentYear - i - 1).reverse();
-    
-    return years.map(year => ({
-      batch: year.toString(),
-      averageMonths: Math.floor(Math.random() * 12) + 1, // Random 1-12 months
-      graduates: Math.floor(Math.random() * 50) + 20 // Random 20-70 graduates
-    }));
-  };
 
   const applyFilters = () => {
     setFilters(pendingFilters)
@@ -246,11 +236,15 @@ export default function GeneralTracer() {
 
         if (!isMounted) return // Prevent state updates if unmounted
 
-        const processedJobSearchData = jobSearchJson.data?.map(item => ({
-          batch: item._id.toString(),
-          averageMonths: item.graduates > 0 ? (item.totalMonths / item.graduates) : 0,
-          graduates: item.graduates
-        })) || [];
+        // In your fetchData processing (for jobSearchData):
+const processedJobSearchData = (jobSearchJson.data || [])
+  .map(item => ({
+    batch: item._id.toString(),
+    averageMonths: item.graduates > 0 
+      ? parseFloat((item.totalMonths / item.graduates).toFixed(1)) 
+      : 0
+  }))
+  .sort((a, b) => Number(a.batch) - Number(b.batch)); // ← Sort by year ascending
 
         // Validate responses
         if (!employmentJson || !alignmentJson || !jobSearchJson) {
@@ -436,20 +430,22 @@ export default function GeneralTracer() {
   }
 
   const CustomJobSearchTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className={styles.customTooltip}>
-          <p className={styles.tooltipHeader}>Batch: {label}</p>
-          {payload.map((item, index) => (
-            <p key={index} style={{ color: item.color }}>
-              {item.name}: <strong>{item.value}</strong>
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
+  if (active && payload && payload.length) {
+    return (
+      <div className={styles.customTooltip}>
+        <p className={styles.tooltipHeader}>Batch: {label}</p>
+        <p style={{ color: payload[0].color }}>
+          {payload[0].name}: <strong>
+            {payload[0].value === 0 
+              ? "Same month" 
+              : payload[0].value.toFixed(1) + " months"}
+          </strong>
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
   if (loading) {
     return (
@@ -653,7 +649,9 @@ export default function GeneralTracer() {
                     }}
                   />
                   <Tooltip
-                    content={<CustomTooltip />}
+                    content={<CustomTooltip 
+                      formatter={(value) => [typeof value === 'number' ? value.toFixed(1) + '%' : value]}
+                    />}
                     wrapperStyle={{
                       background: "rgba(255, 255, 255, 0.9)",
                       border: "1px solid #ddd",
@@ -823,30 +821,15 @@ export default function GeneralTracer() {
                     label={{ value: "Graduation Year", position: "insideBottom", offset: -5 }}
                   />
                   <YAxis 
-                    yAxisId="left" 
-                    orientation="left" 
-                    label={{ value: "Average Months", angle: -90, position: "insideLeft" }}
+                    label={{ value: "Average Months to Employment", angle: -90, position: "insideLeft" }}
                     domain={[0, 'dataMax + 2']}
-                  />
-                  <YAxis 
-                    yAxisId="right" 
-                    orientation="right" 
-                    label={{ value: "Number of Graduates", angle: 90, position: "insideRight" }}
                   />
                   <Tooltip content={<CustomJobSearchTooltip />} />
                   <Legend />
                   <Bar 
-                    yAxisId="left"
                     dataKey="averageMonths" 
                     name="Average Months to Employment"
-                    fill="#9b59b6"
-                    radius={[4, 4, 0, 0]}
-                  />
-                  <Bar 
-                    yAxisId="right"
-                    dataKey="graduates" 
-                    name="Number of Graduates"
-                    fill="#3498db"
+                    fill="#4CC3C8"  // Using your primary color
                     radius={[4, 4, 0, 0]}
                   />
                 </BarChart>
@@ -857,27 +840,53 @@ export default function GeneralTracer() {
               <p className={styles.insightText}>
                 {jobSearchData.length > 0 ? (
                   <>
-                    On average, graduates find employment within{' '}
-                    <strong>
-                      {(
-                        jobSearchData.reduce((sum, item) => sum + item.averageMonths, 0) / 
-                        jobSearchData.length
-                      ).toFixed(1)}
-                    </strong>{' '}
-                    months after graduation.
-                    {jobSearchData.length > 1 && (
-                      <>
-                        {' '}
-                        The{' '}
-                        {jobSearchData[jobSearchData.length - 1].averageMonths < jobSearchData[0].averageMonths
-                          ? 'most recent batch found jobs faster'
-                          : 'most recent batch took longer to find jobs'}
-                        {' '}compared to earlier batches.
-                      </>
+                    <strong>Job Search Duration Analysis:</strong>
+                    <ul className={styles.insightList}>
+                      <li>
+                        Graduates from {jobSearchData[0].batch} to {jobSearchData[jobSearchData.length - 1].batch} found employment in 
+                        <strong> {(
+                          jobSearchData.reduce((sum, item) => sum + item.averageMonths, 0) / 
+                          jobSearchData.length
+                        ).toFixed(1)} months</strong> on average.
+                      </li>
+                      
+                      {jobSearchData.length > 1 && (
+                        <>
+                          <li>
+                            <strong>Trend: </strong>
+                            {jobSearchData[jobSearchData.length - 1].averageMonths < jobSearchData[0].averageMonths ? (
+                              "Recent batches found jobs faster (↓" + 
+                              (jobSearchData[0].averageMonths - jobSearchData[jobSearchData.length - 1].averageMonths).toFixed(1) + 
+                              " month improvement)"
+                            ) : (
+                              "Recent batches took longer (↑" + 
+                              (jobSearchData[jobSearchData.length - 1].averageMonths - jobSearchData[0].averageMonths).toFixed(1) + 
+                              " month increase)"
+                            )}
+                          </li>
+                          <li>
+                            <strong>Best Performance:</strong> {jobSearchData.reduce((min, curr) => 
+                              curr.averageMonths < min.averageMonths ? curr : min
+                            ).batch} batch ({Math.min(...jobSearchData.map(d => d.averageMonths)).toFixed(1)} months)
+                          </li>
+                        </>
+                      )}
+                      
+                      <li>
+                        {jobSearchData.some(d => d.averageMonths === 0) && (
+                          "Some graduates secured jobs <strong>before graduation</strong> (0 month search)"
+                        )}
+                      </li>
+                    </ul>
+                    
+                    {filters.college && (
+                      <p className={styles.contextNote}>
+                        Note: Data reflects {filters.college} {filters.course && `(${filters.course})`} graduates only.
+                      </p>
                     )}
                   </>
                 ) : (
-                  "No job search data available for the selected filters."
+                  "No job search data available for selected filters"
                 )}
               </p>
             </div>
