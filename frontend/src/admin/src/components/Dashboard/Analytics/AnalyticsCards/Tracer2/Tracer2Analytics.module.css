@@ -12,6 +12,12 @@
   grid-column: span 2;
 }
 
+.lineOfBusinessCard,
+.reasonsCard,
+.firstJobDurationCard {
+  grid-column: span 2;
+}
+
 .row0,
 .row1,
 .row2,
@@ -29,7 +35,8 @@
   
   .firstJobDurationCard,
   .jobLandingTimeCard,
-  .reasonsCard {
+  .reasonsCard,
+  .lineOfBusinessCard {
     grid-column: span 1;
   }
 }

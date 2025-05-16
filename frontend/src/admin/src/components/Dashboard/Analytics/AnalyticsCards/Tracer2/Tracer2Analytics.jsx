@@ -602,50 +602,50 @@ export default function Tracer2Analytics() {
                   <div className={styles.cardContent}>
                     <div className={styles.chartContainer}>
                       <ResponsiveContainer width="100%" height={300}>
-                                      <Treemap
-                                        data={addColors(formatBarData(data.jobData?.lineOfBusiness || {}))}
-                                        dataKey="value"
-                                        nameKey="name"
-                                        ratio={4 / 3}
-                                        stroke="#fff"
-                                        content={({ root, depth, x, y, width, height, index, payload, colors, rank, name }) => {
-                                          const formattedData = addColors(formatBarData(data.jobData?.lineOfBusiness || {}))
-                                          return (
-                                            <g>
-                                              <rect
-                                                x={x}
-                                                y={y}
-                                                width={width}
-                                                height={height}
-                                                style={{
-                                                  fill: formattedData[index % formattedData.length]?.color || COLORS[0],
-                                                  stroke: "#fff",
-                                                  strokeWidth: 2 / (depth + 1e-10),
-                                                  strokeOpacity: 1 / (depth + 1e-10),
-                                                }}
-                                              />
-                                              {width > 30 && height > 30 && (
-                                                <text x={x + width / 2} y={y + height / 2 + 7} textAnchor="middle" fill="#fff" fontSize={14}>
-                                                  {name}
-                                                </text>
-                                              )}
-                                              {width > 30 && height > 30 && (
-                                                <text
-                                                  x={x + width / 2}
-                                                  y={y + height / 2 - 7}
-                                                  textAnchor="middle"
-                                                  fill="#fff"
-                                                  fontSize={14}
-                                                  fontWeight="bold"
-                                                >
-                                                  {formattedData[index % formattedData.length]?.value || 0}
-                                                </text>
-                                              )}
-                                            </g>
-                                          )
-                                        }}
-                                      />
-                                    </ResponsiveContainer>
+                        <Treemap
+                          data={addColors(formatBarData(data.jobData?.lineOfBusiness || {}))}
+                          dataKey="value"
+                          nameKey="name"
+                          ratio={4 / 3}
+                          stroke="#fff"
+                          content={({ root, depth, x, y, width, height, index, payload, colors, rank, name }) => {
+                            const formattedData = addColors(formatBarData(data.jobData?.lineOfBusiness || {}))
+                            return (
+                              <g>
+                                <rect
+                                  x={x}
+                                  y={y}
+                                  width={width}
+                                  height={height}
+                                  style={{
+                                    fill: formattedData[index % formattedData.length]?.color || COLORS[0],
+                                    stroke: "#fff",
+                                    strokeWidth: 2 / (depth + 1e-10),
+                                    strokeOpacity: 1 / (depth + 1e-10),
+                                  }}
+                                />
+                                {width > 30 && height > 30 && (
+                                  <text x={x + width / 2} y={y + height / 2 + 7} textAnchor="middle" fill="#fff" fontSize={14}>
+                                    {name}
+                                  </text>
+                                )}
+                                {width > 30 && height > 30 && (
+                                  <text
+                                    x={x + width / 2}
+                                    y={y + height / 2 - 7}
+                                    textAnchor="middle"
+                                    fill="#fff"
+                                    fontSize={14}
+                                    fontWeight="bold"
+                                  >
+                                    {formattedData[index % formattedData.length]?.value || 0}
+                                  </text>
+                                )}
+                              </g>
+                            )
+                          }}
+                        />
+                      </ResponsiveContainer>
                     </div>
                     <div className={`${styles.insightBox} ${activeFilters.length > 0 ? styles.visible : ''}`}>
                       <h3 className={styles.insightTitle}>Key Insight</h3>
@@ -739,14 +739,14 @@ export default function Tracer2Analytics() {
 
           case 'firstJobDuration': 
             return(
-              <div key={question.id}>
+              <div key={question.id} className={styles.row3}>
                 <div className={`${styles.card} ${styles.firstJobDurationCard}`}>
                   <div className={styles.cardHeader}>
                     <h2 className={styles.cardTitle}>{question.title}</h2>
                   </div>
                   <div className={styles.cardContent}>
                     <div className={styles.chartContainer}>
-                      <ResponsiveContainer width="100%" height={400}>
+                      <ResponsiveContainer width="100%" height={300}>
                         <AreaChart
                           data={addColors(formatBarData(data.jobData?.firstJobDuration || {}))}
                           margin={{ top: 10, right: 30, left: 0, bottom: 40 }}
@@ -810,14 +810,14 @@ export default function Tracer2Analytics() {
             );
           case 'reasons':
             return(
-              <div key={question.id}>
+              <div key={question.id} className={styles.row3}>
                 <div className={`${styles.card} ${styles.reasonsCard}`}>
                   <div className={styles.cardHeader}>
                     <h2 className={styles.cardTitle}>{question.title}</h2>
                   </div>
                   <div className={styles.cardContent}>
                     <div className={styles.chartContainer}>
-                      <ResponsiveContainer width="100%" height={400}>
+                      <ResponsiveContainer width="100%" height={300}>
                         <BarChart
                           data={formatReasonsData(data.reasons || {})}
                           margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
