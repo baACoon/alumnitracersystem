@@ -248,7 +248,7 @@ const applyFilters = () => {
                 <div className={styles.filterGroup}>
                     <label className={styles.filterLabel}>Batch Year</label>
                     <select
-                      value={filters.batchYear}
+                      value={filters.batchYears}
                       onChange={(e) => handleFilterChange("batchYear", e.target.value)}
                       className={styles.filterSelect}
                     >
