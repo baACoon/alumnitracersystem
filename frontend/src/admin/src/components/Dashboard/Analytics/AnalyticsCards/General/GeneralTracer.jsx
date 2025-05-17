@@ -444,10 +444,7 @@ const processedJobSearchData = (jobSearchJson.data || [])
   return (
     <div className={styles.comparisonDashboard}>
       <div className={styles.dashboardHeader}>
-        <h1 className={styles.dashboardTitle}>Employment Rate by Batch</h1>
-        <p className={styles.dashboardDescription}>
-          Compare employment rates across different graduation years, colleges, and courses
-        </p>
+        <h1 className={styles.dashboardTitle}>GENERAL SUMMARY</h1>
       </div>
 
       {/* Filter Section */}
@@ -567,7 +564,7 @@ const processedJobSearchData = (jobSearchJson.data || [])
           <h2 className={styles.sectionTitle}>
             {filters.college ? `${filters.college} ` : ""}
             {filters.course ? `(${filters.course}) ` : ""}
-            Employment Trends
+            Employment Rate per Batch
           </h2>
         </div>
         <div className={styles.sectionContent}>
