@@ -87,6 +87,12 @@
   margin-top: 12px;
 }
 
+.filterNote {
+  color: #7f8c8d;
+  font-size: 0.9em;
+  margin-top: 10px;
+}
+
 /* ====================== */
 /* CARDS & SECTIONS */
 /* ====================== */
@@ -180,6 +186,54 @@
   color: #c31d3c;
 }
 
+/* Add to your module.css */
+.alignmentBreakdown {
+  margin: 12px 0;
+  padding-left: 10px;
+}
+
+.alignmentBreakdown ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.alignmentBreakdown li {
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+}
+
+.alignmentLabel {
+  font-weight: 500;
+  min-width: 160px;
+  display: inline-block;
+}
+
+.warningNote {
+  color: #e74c3c;
+  font-size: 0.9em;
+  margin-left: 8px;
+}
+
+.recommendation {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-left: 3px solid #4CC3C8;
+  font-size: 0.95em;
+}
+
+.warningNote {
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+.monitorNote {
+  color: #f39c12;
+}
+
+.successNote {
+  color: #2ecc71;
+}
 /* ====================== */
 /* TOOLTIPS */
 /* ====================== */

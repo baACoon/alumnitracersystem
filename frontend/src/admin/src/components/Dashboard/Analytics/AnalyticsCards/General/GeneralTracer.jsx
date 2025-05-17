@@ -282,10 +282,12 @@ const processedJobSearchData = (jobSearchJson.data || [])
 
   // Helper functions for calculations
   const calculateAverageEmployment = () => {
-    if (!data?.employmentByBatch) return 0
-    const rates = Object.values(data.employmentByBatch)
-    return (rates.reduce((a, b) => a + b, 0) / rates.length).toFixed(1)
-  }
+    if (!data?.employmentByBatch) return 'N/A';
+    
+    const rates = Object.values(data.employmentByBatch);
+    const validRates = rates.filter(rate => !isNaN(rate));
+    return (validRates.reduce((a, b) => a + b, 0) / validRates.length).toFixed(1);
+  };
 
   const calculateAlignmentPercentage = (patterns) => {
     if (alignmentData.length === 0) return 0
@@ -298,55 +300,15 @@ const processedJobSearchData = (jobSearchJson.data || [])
   }
 
   const formatBatchComparisonData = (data) => {
-    if (!data || !data.employmentByBatch) return []
-
-    // Sort batches chronologically
-    const employmentData = Object.entries(data.employmentByBatch)
-      .sort(([a], [b]) => Number(a) - Number(b))
+    if (!data?.employmentByBatch) return [];
+    
+    return Object.entries(data.employmentByBatch)
       .map(([batch, rate]) => ({
         name: batch,
-        "Employment Rate": rate,
+        "Employment Rate": parseFloat(rate.toFixed(1)) // Ensures 1 decimal place
       }))
-
-    // If we have alignment data, add it to the employment data
-    if (alignmentData.length > 0) {
-      // Calculate aligned and unaligned counts per batch
-      const alignmentByBatch = {}
-
-      // Initialize with zeros
-      employmentData.forEach((item) => {
-        alignmentByBatch[item.name] = {
-          alignedCount: 0,
-          unalignedCount: 0,
-        }
-      })
-
-      // This is a simplified approach - in a real app, you would fetch actual alignment data by batch
-      // For this example, we'll distribute the alignment data across batches
-      const batchCount = employmentData.length
-      if (batchCount > 0) {
-        const alignedTotal = alignmentData
-          .filter((item) =>
-            ["Very much aligned", "Aligned", "Averagely Aligned", "Somehow Aligned"].includes(item.alignment),
-          )
-          .reduce((sum, item) => sum + item.count, 0)
-
-        const unalignedTotal = alignmentData
-          .filter((item) => item.alignment === "Unaligned")
-          .reduce((sum, item) => sum + item.count, 0)
-
-        // Distribute proportionally across batches
-        employmentData.forEach((item, index) => {
-          // Create a distribution pattern (more recent years have more data)
-          const factor = (index + 1) / batchCount
-          item.alignedCount = Math.round((alignedTotal * factor) / batchCount)
-          item.unalignedCount = Math.round((unalignedTotal * factor) / batchCount)
-        })
-      }
-    }
-
-    return employmentData
-  }
+      .sort((a, b) => Number(a.name) - Number(b.name));
+  };
 
   const generateSummaries = (data) => {
     if (!data || !data.employmentByBatch) {
@@ -613,109 +575,99 @@ const processedJobSearchData = (jobSearchJson.data || [])
             {employmentData.length === 0 ? (
               <p className={styles.noData}>No employment data available for the selected filters.</p>
             ) : (
-              <ResponsiveContainer width="100%" height={400}>
-                <ComposedChart data={employmentData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                  <defs>
-                    <linearGradient id="colorFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.2} />
-                      <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="name" tick={{ fill: "#666" }} axisLine={{ stroke: "#ccc" }} />
-                  <YAxis
-                    yAxisId="left"
-                    domain={[0, 100]}
-                    tick={{ fill: "#666" }}
-                    axisLine={{ stroke: "#ccc" }}
-                    label={{
-                      value: "Employment Rate (%)",
-                      angle: -90,
-                      position: "insideLeft",
-                      style: { textAnchor: "middle" },
-                    }}
-                  />
-                  <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    domain={[0, "dataMax + 10"]}
-                    tick={{ fill: "#666" }}
-                    axisLine={{ stroke: "#ccc" }}
-                    label={{
-                      value: "Graduate Count",
-                      angle: 90,
-                      position: "insideRight",
-                      style: { textAnchor: "middle" },
-                    }}
-                  />
-                  <Tooltip
-                    content={<CustomTooltip 
-                      formatter={(value) => [typeof value === 'number' ? value.toFixed(1) + '%' : value]}
-                    />}
-                    wrapperStyle={{
-                      background: "rgba(255, 255, 255, 0.9)",
-                      border: "1px solid #ddd",
-                      borderRadius: "4px",
-                      padding: "10px",
-                    }}
-                  />
-                  <Legend />
-                  <Area
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="Employment Rate"
-                    fill="url(#colorFill)"
-                    strokeWidth={0}
-                    name="Employment Rate Area"
-                  />
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="Employment Rate"
-                    stroke={COLORS.primary}
-                    strokeWidth={3}
-                    name="Employment Rate"
-                    dot={{
-                      fill: COLORS.primary,
-                      strokeWidth: 2,
-                      r: 4,
-                      stroke: "#fff",
-                    }}
-                    activeDot={{
-                      r: 6,
-                      stroke: "#fff",
-                      strokeWidth: 2,
-                      fill: COLORS.primary,
-                    }}
-                  />
-                  {alignmentData.length > 0 && (
-                    <Bar
-                      yAxisId="right"
-                      dataKey="alignedCount"
-                      name="Aligned Graduates"
-                      fill={COLORS.veryAligned}
-                      radius={[4, 4, 0, 0]}
-                    />
-                  )}
-                  {alignmentData.length > 0 && (
-                    <Bar
-                      yAxisId="right"
-                      dataKey="unalignedCount"
-                      name="Unaligned Graduates"
-                      fill={COLORS.unaligned}
-                      radius={[4, 4, 0, 0]}
-                    />
-                  )}
-                </ComposedChart>
-              </ResponsiveContainer>
+             <ResponsiveContainer width="100%" height={400}>
+              <ComposedChart 
+                data={employmentData}
+                margin={{ top: 20, right: 30, left: 30, bottom: 20 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis 
+                  dataKey="name" 
+                  label={{ value: "Graduation Year", position: "insideBottom", offset: -5 }}
+                />
+                <YAxis
+                  domain={[0, 100]}
+                  label={{ 
+                    value: "Employment Rate (%)", 
+                    angle: -90, 
+                    position: "insideLeft" 
+                  }}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                <Area
+                  type="monotone"
+                  dataKey="Employment Rate"
+                  fill="url(#colorFill)"
+                  strokeWidth={0}
+                  opacity={0.3}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="Employment Rate"
+                  stroke={COLORS.primary}
+                  strokeWidth={3}
+                  dot={{
+                    fill: COLORS.primary,
+                    strokeWidth: 2,
+                    r: 5
+                  }}
+                  activeDot={{
+                    r: 7,
+                    stroke: "#fff",
+                    strokeWidth: 2
+                  }}
+                />
+              </ComposedChart>
+            </ResponsiveContainer>
             )}
           </div>
           <div className={styles.summaryContainer}>
-            <h3 className={styles.insightTitle}>Key Insights</h3>
-            <p className={styles.insightText}>
-              {summaries?.employment?.text || "No employment data insights available for the selected filters."}
-            </p>
+            <h3 className={styles.insightTitle}>Employment Trend Analysis</h3>
+            {employmentData.length > 0 ? (
+              <div className={styles.insightText}>
+                <p>
+                  <strong>Overall Performance:</strong> The average employment rate across 
+                  {filters.college ? ` ${filters.college}` : ''} 
+                  {filters.course ? ` (${filters.course})` : ''} graduates is 
+                  <strong> {calculateAverageEmployment()}%</strong>.
+                </p>
+                
+                {employmentData.length > 1 && (
+                  <>
+                    <p>
+                      <strong>Trend Direction:</strong> 
+                      {employmentData[employmentData.length - 1]["Employment Rate"] > employmentData[0]["Employment Rate"] ? (
+                        ` ↗ Upward trend (+${(
+                          employmentData[employmentData.length - 1]["Employment Rate"] - 
+                          employmentData[0]["Employment Rate"]
+                        ).toFixed(1)}% change)`
+                      ) : (
+                        ` ↘ Downward trend (${(
+                          employmentData[employmentData.length - 1]["Employment Rate"] - 
+                          employmentData[0]["Employment Rate"]
+                        ).toFixed(1)}% change)`
+                      )}
+                    </p>
+                    <p>
+                      <strong>Peak Performance:</strong> {employmentData.reduce((max, curr) => 
+                        curr["Employment Rate"] > max["Employment Rate"] ? curr : max
+                      ).name} batch ({Math.max(...employmentData.map(d => d["Employment Rate"]))}%)
+                    </p>
+                  </>
+                )}
+                
+                {activeFilters.length > 0 && (
+                  <p className={styles.filterNote}>
+                    <small>Filters applied: {activeFilters.map(f => f.label).join(', ')}</small>
+                  </p>
+                )}
+              </div>
+            ) : (
+              <p className={styles.insightText}>No employment data available for selected filters</p>
+            )}
           </div>
+
         </div>
 
         <div className={styles.sectionHeader}>
@@ -779,27 +731,77 @@ const processedJobSearchData = (jobSearchJson.data || [])
             )}
           </div>
           <div className={styles.summaryContainer}>
-            <h3 className={styles.insightTitle}>Key Insights</h3>
-            <p className={styles.insightText}>
-              {alignmentData.length > 0 ? (
-                <>
-                  {Math.round(
-                    ((alignmentData.find((a) => a.alignment === "Very much aligned")?.count ||
-                      0 + alignmentData.find((a) => a.alignment === "Aligned")?.count ||
-                      0 + alignmentData.find((a) => a.alignment === "Averagely Aligned")?.count ||
-                      0 + alignmentData.find((a) => a.alignment === "Somehow Aligned")?.count ||
-                      0) /
-                      alignmentData.reduce((sum, item) => sum + item.count, 0)) *
-                      100,
+            <h3 className={styles.insightTitle}>Curriculum Alignment Analysis</h3>
+            {alignmentData.length > 0 ? (
+              <div className={styles.insightText}>
+                <p>
+                  <strong>Overall Alignment:</strong>{" "}
+                  {calculateAlignmentPercentage("Unaligned") >= 10 ? (
+                    <span className={styles.warningNote}>
+                      {filters.course
+                        ? `Review strongly recommended for ${filters.course}`
+                        : filters.college
+                          ? `Review recommended for ${filters.college}`
+                          : filters.yearFrom
+                            ? `Review recommended for ${filters.yearFrom}-${filters.yearTo || "present"}`
+                            : `Review recommended`
+                      }
+                    </span>
+                  ) : calculateAlignmentPercentage("Unaligned") >= 5 ? (
+                    <span className={styles.monitorNote}>
+                      {filters.course || filters.college 
+                        ? `Monitor alignment trends`
+                        : `Monitor batch trends`
+                      }
+                    </span>
+                  ) : (
+                    <span className={styles.successNote}>
+                      {filters.course 
+                        ? `${filters.course} alignment is strong`
+                        : filters.college
+                          ? `${filters.college} alignment is healthy`
+                          : `Alignment is within norms`
+                      }
+                    </span>
                   )}
-                  % of graduates report some level of alignment with their studies.
-                  {alignmentData.find((a) => a.alignment === "Unaligned")?.count > 0 &&
-                    ` ${alignmentData.find((a) => a.alignment === "Unaligned").count} graduates report unaligned work.`}
-                </>
-              ) : (
-                "No alignment data available for selected filters."
-              )}
-            </p>
+                </p>
+
+                <div className={styles.alignmentBreakdown}>
+                  <p><strong>Detailed Breakdown:</strong></p>
+                  <ul>
+                    {alignmentData
+                      .sort((a, b) => b.count - a.count)
+                      .map((item) => (
+                        <li key={item.alignment}>
+                          <span 
+                            className={styles.alignmentLabel} 
+                            style={{ 
+                              color: COLORS[item.alignment.replace(/\s+/g, '')] || COLORS.unspecified 
+                            }}
+                          >
+                            {item.alignment}:
+                          </span>{" "}
+                          {((item.count / alignmentData.reduce((sum, i) => sum + i.count, 0)) * 100).toFixed(1)}%
+                          {item.alignment === "Unaligned" && item.count > 0 && (
+                            <span className={styles.warningNote}> (Review recommended)</span>
+                          )}
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+
+                {filters.course && (
+                  <p className={styles.recommendation}>
+                    <strong>Recommendation:</strong>{" "}
+                    {calculateAlignmentPercentage("Unaligned") > 15
+                      ? `Consider reviewing ${filters.course} curriculum for better industry relevance.`
+                      : "Alignment rates are strong—focus on maintaining current standards."}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <p>No alignment data available for selected filters.</p>
+            )}
           </div>
         </div>
 
