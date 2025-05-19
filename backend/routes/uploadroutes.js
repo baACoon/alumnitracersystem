@@ -53,7 +53,31 @@ const uploadMiddleware = (req, res, next) => {
 };
 
 // 📥 Upload CSV
-router.post("/BatchList", uploadMiddleware, uploadCSV);
+router.post("/BatchList", uploadMiddleware, async (req, res) => {
+  try {
+    const { gradMonth } = req.body; // Accept gradMonth from the request body
+
+    // Validate gradMonth
+    const monthNames = [
+      "january", "february", "march", "april", "may", "june",
+      "july", "august", "september", "october", "november", "december"
+    ];
+
+    if (gradMonth && !monthNames.includes(gradMonth.toLowerCase())) {
+      return res.status(400).json({
+        error: "Invalid gradMonth. Valid values are: " + monthNames.join(", ")
+      });
+    }
+
+    // Pass gradMonth to the uploadCSV controller
+    req.body.gradMonth = gradMonth ? gradMonth.toLowerCase() : null;
+
+    uploadCSV(req, res);
+  } catch (error) {
+    console.error("Error in BatchList route:", error);
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
+});
 
 // 📤 Get all graduates (with optional ?year= param)
 router.get("/graduates", getGraduates);

@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useEffect} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Correct way to import useNavigate
 import styles from "./CrossCheck-Survey.module.css";
 import Tuplogo from "../../components/image/Tuplogo.png";
 import Alumnilogo from "../../components/image/alumniassoc_logo.png";
-import nationalities from "./nationalities"; 
+import nationalities from "./nationalities";
 import { PH_LOCATIONS } from "./philippine-locations";
 
 const colleges = {
@@ -67,13 +67,14 @@ const colleges = {
     "Bachelor of Technology in Print Media Technology",
   ],
 };
+
 function CrossCheckSurveyForm() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
   const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
-  
+
   const [selectedProvince, setSelectedProvince] = useState("");
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
@@ -89,8 +90,6 @@ function CrossCheckSurveyForm() {
       province: "",
       city: ""
     },
-    
-    
     sex: "",
     nationality: "",
     address: "",
@@ -105,6 +104,7 @@ function CrossCheckSurveyForm() {
     position: "",
     type_of_organization: "",
     work_alignment: "",
+    startedMonth: "", // Changed from gradmonths to startedMonth
   });
 
   const handleChange = useCallback((e) => {
@@ -113,7 +113,7 @@ function CrossCheckSurveyForm() {
       const atComIndex = value.indexOf(".com");
       if (atComIndex !== -1 && value.length > atComIndex + 4) return;
     }
-    
+
     setFormData((prev) => ({ ...prev, [name]: value }));
     setFormErrors((prev) => ({ ...prev, [name]: "" }));
 
@@ -124,9 +124,11 @@ function CrossCheckSurveyForm() {
         occupation: "N/A",
         company_name: "N/A",
         year_started: "",
-        job_level: "",
-        position: "",
-        type_of_organization: "",
+        job_level: "NotApplicable",
+        position: "N/A",
+        type_of_organization: "NotApplicable",
+        work_alignment: "NotApplicable",
+        startedMonth: "", // Changed from gradmonths to startedMonth
       }));
     }
     if (name === "birthplace.province") {
@@ -137,7 +139,7 @@ function CrossCheckSurveyForm() {
       }));
       return;
     }
-    
+
     if (name === "birthplace.city") {
       setFormData((prev) => ({
         ...prev,
@@ -145,7 +147,6 @@ function CrossCheckSurveyForm() {
       }));
       return;
     }
-    
   }, []);
 
   const handleCollegeChange = (e) => {
@@ -201,15 +202,16 @@ function CrossCheckSurveyForm() {
     if (currentPage === 2) {
       if (!formData.job_status) errors.job_status = "Employment Status is required.";
       if (formData.job_status !== "Unemployed") {
-        if (!formData.occupation.trim()) errors.occupation = "Occupation is required.";
-        if (!formData.company_name.trim()) errors.company_name = "Company Name is required.";
+        if (!formData.occupation?.trim()) errors.occupation = "Occupation is required.";
+        if (!formData.company_name?.trim()) errors.company_name = "Company Name is required.";
         if (!formData.year_started) errors.year_started = "Year Started is required.";
         else if (parseInt(formData.year_started) > new Date().getFullYear()) errors.year_started = "Invalid Year Started.";
         if (!formData.job_level) errors.job_level = "Job Level is required.";
-        if (!formData.position.trim()) errors.position = "Position is required.";
+        if (!formData.position?.trim()) errors.position = "Position is required.";
         if (!formData.type_of_organization) errors.type_of_organization = "Type of Organization is required.";
+        if (!formData.work_alignment) errors.work_alignment = "Work Alignment is required.";
+        if (!formData.startedMonth) errors.startedMonth = "Month of Starting is required."; // Updated field name
       }
-      if (!formData.work_alignment) errors.work_alignment = "Work Alignment is required.";
     }
 
     setFormErrors(errors);
@@ -260,12 +262,13 @@ function CrossCheckSurveyForm() {
           position: formData.position,
           type_of_organization: formData.type_of_organization,
           work_alignment: formData.work_alignment,
+          startedMonth: formData.startedMonth.toLowerCase(), // Updated field name
         }
       }, { headers: { Authorization: `Bearer ${token}` } });
 
       if (response.data.success) {
         setSubmitStatus({ type: "success", message: "Survey submitted successfully!" });
-        setTimeout(() => navigate("/Profile"), 2000);
+        setTimeout(() => navigate("/Home"), 2000);
         setFormData({});
         setCurrentPage(1);
       }
@@ -680,10 +683,6 @@ function CrossCheckSurveyForm() {
 
                                   </select>
                               </div>
-                        </>
-                      )}
-
-                          
                               <div className={styles["form-group"]}>
                                 <label htmlFor="work_alignment">
                                   Work Alignment with Academic Specialization:
@@ -703,6 +702,34 @@ function CrossCheckSurveyForm() {
                                   <option value="Unaligned">Unaligned</option>
                                 </select>
                               </div>
+                              <div className={styles["form-group"]}>
+                                <label htmlFor="startedMonth">Month of Starting: *</label> {/* Updated label */}
+                                <select
+                                  id="startedMonth"
+                                  name="startedMonth"
+                                  value={formData.startedMonth}
+                                  onChange={handleChange}
+                                  required
+                                  className={styles["form-select"]}
+                                >
+                                  <option value="">Select Month</option>
+                                  <option value="january">January</option>
+                                  <option value="february">February</option>
+                                  <option value="march">March</option>
+                                  <option value="april">April</option>
+                                  <option value="may">May</option>
+                                  <option value="june">June</option>
+                                  <option value="july">July</option>
+                                  <option value="august">August</option>
+                                  <option value="september">September</option>
+                                  <option value="october">October</option>
+                                  <option value="november">November</option>
+                                  <option value="december">December</option>
+                                </select>
+                                {formErrors.startedMonth && <span className={styles.errorText}>{formErrors.startedMonth}</span>}
+                              </div>
+                        </>
+                      )}
                     </div>
 
               <div className={styles["survey-form-button-container"]}>

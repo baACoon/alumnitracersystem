@@ -3,12 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import styles from './register_newalumni.module.css'; // Import module styles
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import DataPrivacyConsent from '../Security/dataprivacy';
 
 const Register_NewAlumni = ({ closeModal }) => {
     const [gradyear, setYear] = useState('');
+    const [gradMonth, setGradMonth] = useState(''); // Add state for gradMonth
     const [lastName, setLastName] = useState('');
     const [firstName, setFirstName] = useState('');
     const [password, setPassword] = useState('');
@@ -21,11 +20,9 @@ const Register_NewAlumni = ({ closeModal }) => {
     const [recoveryCode, setRecoveryCode] = useState('');
     const [newRecoveredPassword, setNewRecoveredPassword] = useState('');
     const [confirmRecoveredPassword, setConfirmRecoveredPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [showRecoveredPassword, setShowRecoveredPassword] = useState(false);
-    const [showConfirmRecoveredPassword, setShowConfirmRecoveredPassword] = useState(false);
     const [showDataPrivacy, setShowDataPrivacy] = useState(false);
+
+
 
      // Three possible states: null (initial), 'verified', 'not_found', 'existing_account'
     const [verificationStatus, setVerificationStatus] = useState(null);
@@ -158,7 +155,7 @@ const Register_NewAlumni = ({ closeModal }) => {
           });
       
           const result = await response.json();
-          console.log("Email response:", result);
+          console.log("📬 Email response:", result);
       
           if (!response.ok || !result.email) {
             throw new Error(result.message || 'No email found');
@@ -166,7 +163,7 @@ const Register_NewAlumni = ({ closeModal }) => {
       
           return result.email;
         } catch (error) {
-          console.error('fetchGraduateEmail error:', error.message);
+          console.error('❌ fetchGraduateEmail error:', error.message);
           return null;
         }
       };
@@ -244,6 +241,7 @@ const Register_NewAlumni = ({ closeModal }) => {
           toast.warning("You must be a verified graduate to take the survey.");
         }
       };
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -260,19 +258,15 @@ const Register_NewAlumni = ({ closeModal }) => {
             return;
         }
 
-        // Additional frontend validation
-        if (!password || !confirmPassword) {
-            toast.warning("All fields are required");
+        // Validate gradMonth
+        if (!gradMonth) {
+            toast.warning("Please select a graduation month");
             return;
         }
-        const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-        if (!strongPasswordRegex.test(password)) {
-          toast.warning("Password must include uppercase, lowercase, number, special character and be 8+ characters.");
-          return;
-        }
-        
+
         const formData = {
             gradyear,
+            gradMonth, // Include gradMonth in the form data
             firstName,
             lastName,
             password,
@@ -321,6 +315,29 @@ const Register_NewAlumni = ({ closeModal }) => {
                 {/* Step 1: Initial verification form */}
                 {verificationStatus === null && !generatedID && (
                     <div className={styles.verificationForm}>
+                        {/* Dropdown for gradMonth */}
+                        <select
+                            value={gradMonth}
+                            onChange={(e) => setGradMonth(e.target.value)}
+                            required
+                            className={styles.inputFieldNewAlumni}
+                        >
+                            <option value="">Select Graduation Month</option>
+                            <option value="january">January</option>
+                            <option value="february">February</option>
+                            <option value="march">March</option>
+                            <option value="april">April</option>
+                            <option value="may">May</option>
+                            <option value="june">June</option>
+                            <option value="july">July</option>
+                            <option value="august">August</option>
+                            <option value="september">September</option>
+                            <option value="october">October</option>
+                            <option value="november">November</option>
+                            <option value="december">December</option>
+                        </select>
+
+                        {/* Input for gradYear */}
                         <input 
                             type="text" 
                             placeholder="GRADUATION YEAR" 
@@ -328,6 +345,8 @@ const Register_NewAlumni = ({ closeModal }) => {
                             onChange={(e) => setYear(e.target.value)} 
                             className={styles.inputFieldNewAlumni} 
                         />
+
+                        {/* Input for firstName */}
                         <input 
                             type="text" 
                             placeholder="FIRST NAME" 
@@ -335,6 +354,8 @@ const Register_NewAlumni = ({ closeModal }) => {
                             onChange={(e) => setFirstName(e.target.value)} 
                             className={styles.inputFieldNewAlumni} 
                         />
+
+                        {/* Input for lastName */}
                         <input 
                             type="text" 
                             placeholder="LAST NAME" 
@@ -342,11 +363,12 @@ const Register_NewAlumni = ({ closeModal }) => {
                             onChange={(e) => setLastName(e.target.value)} 
                             className={styles.inputFieldNewAlumni} 
                         />
+
                         <button 
                             onClick={verifyGraduate} 
                             className={styles.submitButtonNewAlumni}
                             disabled={loading}
-                            >
+                        >
                             {loading ? (
                                 <span className={styles.spinner}></span>
                             ) : 'Verify'}
@@ -409,41 +431,23 @@ const Register_NewAlumni = ({ closeModal }) => {
                             </div>
                         )}
 
-                         {/* Recovery password section */}
                         {recoveryStep === 'verified' && (
                             <div>
                                 <p>Enter your new password:</p>
-
-                                <div className={styles.passwordWrapper}>
-                                    <input
-                                        type={showRecoveredPassword ? "text" : "password"}
-                                        placeholder="New Password"
-                                        value={newRecoveredPassword}
-                                        onChange={(e) => setNewRecoveredPassword(e.target.value)}
-                                        className={styles.inputFieldNewAlumni}
-                                    />
-                                    <FontAwesomeIcon 
-                                        icon={showRecoveredPassword ? faEyeSlash : faEye} 
-                                        onClick={() => setShowRecoveredPassword(!showRecoveredPassword)} 
-                                        className={styles.eyeToggle}
-                                    />
-                                </div>
-
-                                <div className={styles.passwordWrapper}>
-                                    <input
-                                        type={showConfirmRecoveredPassword ? "text" : "password"}
-                                        placeholder="Confirm New Password"
-                                        value={confirmRecoveredPassword}
-                                        onChange={(e) => setConfirmRecoveredPassword(e.target.value)}
-                                        className={styles.inputFieldNewAlumni}
-                                    />
-                                    <FontAwesomeIcon 
-                                        icon={showConfirmRecoveredPassword ? faEyeSlash : faEye} 
-                                        onClick={() => setShowConfirmRecoveredPassword(!showConfirmRecoveredPassword)} 
-                                        className={styles.eyeToggle}
-                                    />
-                                </div>
-
+                                <input
+                                    type="password"
+                                    placeholder="New Password"
+                                    value={newRecoveredPassword}
+                                    onChange={(e) => setNewRecoveredPassword(e.target.value)}
+                                    className={styles.inputFieldNewAlumni}
+                                />
+                                <input
+                                    type="password"
+                                    placeholder="Confirm New Password"
+                                    value={confirmRecoveredPassword}
+                                    onChange={(e) => setConfirmRecoveredPassword(e.target.value)}
+                                    className={styles.inputFieldNewAlumni}
+                                />
                                 <button onClick={resetRecoveredPassword} className={styles.primaryButton}>
                                     Reset Password
                                 </button>
@@ -453,45 +457,27 @@ const Register_NewAlumni = ({ closeModal }) => {
                 )}
 
 
-                 {/* Step 2c: Verified, show registration form */}
-                 {verificationStatus === 'verified' && !generatedID && (
+                {/* Step 2c: Verified, show registration form */}
+                {verificationStatus === 'verified' && !generatedID && (
                     <form onSubmit={handleSubmit} className={styles.verificationResult}>
                         <h3>Complete Registration</h3>
                         <p className={styles.verifyName}><strong>Verified: {firstName} {lastName} ({gradyear})</strong></p>
-                        
-                        {/* Password input with eye toggle */}
-                        <div className={styles.passwordWrapper}>
-                            <input 
-                                type={showPassword ? "text" : "password"} 
-                                placeholder="Password" 
-                                value={password} 
-                                onChange={(e) => setPassword(e.target.value)} 
-                                required 
-                                className={styles.inputFieldNewAlumni} 
-                            />
-                            <FontAwesomeIcon 
-                                icon={showPassword ? faEyeSlash : faEye} 
-                                onClick={() => setShowPassword(!showPassword)} 
-                                className={styles.eyeToggle} 
-                            />
-                        </div>
-
-                        <div className={styles.passwordWrapper}>
-                            <input 
-                                type={showConfirmPassword ? "text" : "password"} 
-                                placeholder="Confirm Password" 
-                                value={confirmPassword} 
-                                onChange={(e) => setConfirmPassword(e.target.value)} 
-                                required 
-                                className={styles.inputFieldNewAlumni} 
-                            />
-                            <FontAwesomeIcon 
-                                icon={showConfirmPassword ? faEyeSlash : faEye} 
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)} 
-                                className={styles.eyeToggle} 
-                            />
-                        </div>
-
+                        <input 
+                            type="password" 
+                            placeholder="Password" 
+                            value={password} 
+                            onChange={(e) => setPassword(e.target.value)} 
+                            required 
+                            className={styles.inputFieldNewAlumni} 
+                        />
+                        <input 
+                            type="password" 
+                            placeholder="Confirm Password" 
+                            value={confirmPassword} 
+                            onChange={(e) => setConfirmPassword(e.target.value)} 
+                            required 
+                            className={styles.inputFieldNewAlumni} 
+                        />
                         <button 
                             type="submit" 
                             className={styles.primaryButton}
@@ -502,8 +488,8 @@ const Register_NewAlumni = ({ closeModal }) => {
                     </form>
                 )}
 
-                 {/* Step 3: Registration success */}
-                 {showDataPrivacy ? (
+                {/* Step 3: Registration success */}
+                {showDataPrivacy ? (
                 <div className={styles.fullScreenWrapper}>
                     <DataPrivacyConsent 
                     onComplete={() => {

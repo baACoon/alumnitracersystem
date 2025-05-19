@@ -511,12 +511,13 @@ export function GraduatesList() {
                     <th className={styles.tableHeader}>College</th>
                     <th className={styles.tableHeader}>Course</th>
                     <th className={styles.tableHeader}>Year Graduated</th>
+                    <th className={styles.tableHeader}>Grad Month</th> {/* Add Grad Month column */}
                   </tr>
                 </thead>
                 <tbody>
                   {isLoading ? (
                     <tr>
-                      <td colSpan="6" className={styles.loadingCell}>Loading...</td>
+                      <td colSpan="7" className={styles.loadingCell}>Loading...</td>
                     </tr>
                   ) : currentGraduates.length > 0 ? (
                     currentGraduates.map((grad, index) => (
@@ -531,6 +532,7 @@ export function GraduatesList() {
                         <td>{grad.college}</td>
                         <td className={styles.courseCell}>{grad.course}</td>
                         <td>{grad.gradYear}</td>
+                        <td>{grad.gradMonth || "N/A"}</td> {/* Display Grad Month */}
                       </tr>
                     ))
                   ) : (

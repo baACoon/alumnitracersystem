@@ -22,6 +22,7 @@ import SurveyForm from '../src/client/components/SurveyForm/SurveyForm';
 import RecoverAccount from './client/components/Register_NewAlumni/recover_account';
 import ProtectedRoute from './client/components/ProtectedRoute';
 import DataPrivacyConsent from './client/components/Security/dataprivacy';
+import UpdateEmployment from './client/components/Surveys/UpdateEmployment';
 
 // ADD THIS
 import SessionChecker from './client/components/SessionChecker'; // create mo rin to, simple lang mamaya
@@ -51,6 +52,7 @@ function App() {
                 fullPage={true}
               />} 
             />
+             <Route path="/UpdateEmployment" element={<UpdateEmployment />} />
 
             {/* Protected routes */}
             <Route path="/Home" element={<ProtectedRoute><Home /></ProtectedRoute>} />

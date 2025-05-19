@@ -1,3 +1,6 @@
+/* ====================== */
+/* LAYOUT & CONTAINERS */
+/* ====================== */
 .comparisonDashboard {
   display: flex;
   flex-direction: column;
@@ -7,9 +10,23 @@
   margin: 0 auto;
 }
 
+.sectionContent {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .sectionContent {
+    flex-direction: row;
+  }
+}
+
+/* ====================== */
+/* HEADER & TYPOGRAPHY */
+/* ====================== */
 .dashboardHeader {
   text-align: center;
-  margin-bottom: 16px;
+
 }
 
 .dashboardTitle {
@@ -26,13 +43,10 @@
   margin: 0 auto;
 }
 
-.overallSummary {
-  background-color: #ffffff;
-  border-left: 4px solid #c31d3c;
-  padding: 16px 24px;
-  border-radius: 4px;
-  margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+.sectionTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
 }
 
 .summaryTitle {
@@ -42,12 +56,46 @@
   margin-bottom: 8px;
 }
 
-.summaryText {
-  font-size: 16px;
-  line-height: 1.6;
-  color: #444;
+.conclusionTitle {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16px;
 }
 
+.insightTitle {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+/* Add to your module.css */
+.insightList {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+
+.insightList li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.contextNote {
+  font-style: italic;
+  color: #666;
+  margin-top: 12px;
+}
+
+.filterNote {
+  color: #7f8c8d;
+  font-size: 0.9em;
+  margin-top: 10px;
+}
+
+/* ====================== */
+/* CARDS & SECTIONS */
+/* ====================== */
 .comparisonSection {
   display: flex;
   flex-direction: column;
@@ -64,27 +112,31 @@
   color: white;
 }
 
-.sectionTitle {
-  font-size: 20px;
-  font-weight: bold;
-  margin: 0;
+.overallSummary {
+  background-color: #ffffff;
+  border-left: 4px solid #c31d3c;
+  padding: 16px 24px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
-.sectionContent {
-  display: flex;
-  flex-direction: column;
+.conclusionSection {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 1, 0.4);
 }
 
-@media (min-width: 768px) {
-  .sectionContent {
-    flex-direction: row;
-  }
-}
-
+/* ====================== */
+/* CHART CONTAINERS */
+/* ====================== */
 .chartContainer {
   flex: 2;
   padding: 16px;
   min-height: 400px;
+  position: relative;
 }
 
 .summaryContainer {
@@ -94,35 +146,22 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  border-radius: 8px;
 }
 
-.insightTitle {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 12px;
+/* ====================== */
+/* TEXT CONTENT */
+/* ====================== */
+.summaryText {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #444;
 }
 
 .insightText {
   font-size: 15px;
   line-height: 1.6;
   color: #444;
-}
-
-.conclusionSection {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 24px;
-  margin-top: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 1, 0.4);
-
-}
-
-.conclusionTitle {
-  font-size: 22px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 16px;
 }
 
 .conclusionText {
@@ -147,12 +186,86 @@
   color: #c31d3c;
 }
 
-.customTooltip {
-  background-color: #fff;
-  border: 1px solid #ccc;
+/* Add to your module.css */
+.alignmentBreakdown {
+  margin: 12px 0;
+  padding-left: 10px;
+}
+
+.alignmentBreakdown ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.alignmentBreakdown li {
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+}
+
+.alignmentLabel {
+  font-weight: 500;
+  min-width: 160px;
+  display: inline-block;
+}
+
+.warningNote {
+  color: #e74c3c;
+  font-size: 0.9em;
+  margin-left: 8px;
+}
+
+.recommendation {
+  background-color: #f8f9fa;
   padding: 10px;
+  border-left: 3px solid #4CC3C8;
+  font-size: 0.95em;
+}
+
+.warningNote {
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+.monitorNote {
+  color: #f39c12;
+}
+
+.successNote {
+  color: #2ecc71;
+}
+/* ====================== */
+/* TOOLTIPS */
+/* ====================== */
+.customTooltip {
+  background: white;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tooltipHeader {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 6px;
+}
+
+.tooltipItem {
+  display: flex;
+  align-items: center;
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+.tooltipBullet {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
 }
 
 .label {
@@ -160,7 +273,9 @@
   font-weight: 500;
 }
 
-/* Loading state styles */
+/* ====================== */
+/* LOADING & ERROR STATES */
+/* ====================== */
 .loadingContainer {
   display: flex;
   flex-direction: column;
@@ -188,7 +303,6 @@
   }
 }
 
-/* Error state styles */
 .errorContainer {
   display: flex;
   flex-direction: column;
@@ -217,178 +331,289 @@
   background-color: #98172f;
 }
 
+.noData {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
 
-/* Filter styles */
+.errorText {
+  color: #e74c3c;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+/* ====================== */
+/* FILTER COMPONENTS - UPDATED */
+/* ====================== */
 .filterSection {
-margin-bottom: 20px;
-display: flex;
-justify-content: flex-end;
+  width: 100%;
+  margin-bottom: 24px;
 }
 
-.filterButtonWrapper {
-position: relative;
+.filterContainer {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-.filterButton {
-display: flex;
-align-items: center;
-gap: 8px;
-background-color: white;
-border: 1px solid #ddd;
-border-radius: 4px;
-padding: 8px 16px;
-font-size: 14px;
-cursor: pointer;
-transition: background-color 0.2s;
-}
-
-.filterButton:hover {
-background-color: #f8f9fa;
-}
-
-.filterIcon {
-display: flex;
-align-items: center;
-}
-
-.filterPopover {
-position: absolute;
-right: 36px;
-top: 47%;
-width: 280px;
-background-color: white;
-border-radius: 6px;
-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-padding: 16px;
-z-index: 10;
-margin-top: 4px;
+.filterHeader {
+  background-color: #580808;
+  padding: 16px 20px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .filterTitle {
-font-size: 16px;
-font-weight: 600;
-margin-bottom: 12px;
-color: #333;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: white;
 }
 
-.filterDivider {
-height: 1px;
-background-color: #e1e5eb;
-margin-bottom: 16px;
+.filterContent {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  background-color: #f9f9f9;
 }
 
 .filterGroup {
-margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .filterLabel {
-display: block;
-font-size: 14px;
-font-weight: 500;
-margin-bottom: 6px;
-color: #555;
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 4px;
 }
 
 .filterSelect {
-width: 100%;
-padding: 8px 12px;
-border: 1px solid #ddd;
-border-radius: 4px;
-font-size: 14px;
-color: #333;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: white;
+  font-size: 14px;
+  color: #333;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
 }
 
+.filterSelect:hover {
+  border-color: #c31d3c;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: #c31d3c;
+  box-shadow: 0 0 0 3px rgba(195, 29, 60, 0.1);
+}
+
+.filterSelect:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
 
 .filterActions {
-display: flex;
-justify-content: space-between;
-margin-top: 16px;
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
 }
 
-.resetButton, .applyButton {
-padding: 8px 16px;
-border-radius: 4px;
-font-size: 14px;
-cursor: pointer;
-transition: background-color 0.2s;
+.resetButton,
+.applyButton {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .resetButton {
-background-color: white;
-border: 1px solid #ddd;
-color: #555;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  color: #666;
 }
 
 .resetButton:hover {
-background-color: #f8f9fa;
+  background-color: #f1f3f5;
+  border-color: #ccc;
 }
 
 .applyButton {
-background-color: #4CC3C8;
-border: none;
-color: white;
+  background-color: #c31d3c;
+  border: none;
+  color: white;
 }
 
 .applyButton:hover {
-background-color: #3dafb4;
+  background-color: #a71933;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(195, 29, 60, 0.2);
 }
 
-/* Active filters bar */
 .activeFiltersBar {
-background-color: #f8f9fa;
-border-radius: 6px;
-padding: 12px 16px;
-margin-bottom: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  border: 1px solid #eee;
 }
 
 .activeFiltersList {
-display: flex;
-flex-wrap: wrap;
-gap: 8px;
-align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
 }
 
 .filterBadgeOutline {
-display: inline-flex; /* Changed from flex */
-align-items: center;
-gap: 4px;
-padding: 4px 12px; /* Slightly larger padding */
-background-color: #fff;
-border: 1px solid #d1d5db;
-border-radius: 9999px;
-font-size: 0.75rem;
-white-space: nowrap; /* Keep text in single line */
-max-width: 100%; /* Allow to take needed space */
-flex-shrink: 0; /* Prevent shrinking */
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #fff;
+  border: 1px solid #e1e5eb;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
+
 .filterBadgeOutline:hover {
-background-color: #f8f9fa;
+  border-color: #c31d3c;
 }
+
 .removeFilterButton {
-display: flex;
-align-items: center;
-justify-content: center;
-background: none;
-border: none;
-cursor: pointer;
-font-size: 1rem;
-padding: 0 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #999;
+  padding: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  transition: all 0.2s;
 }
 
 .removeFilterButton:hover {
-background-color: #f3f4f6;
-border-radius: 50%;
+  background-color: rgba(195, 29, 60, 0.1);
+  color: #c31d3c;
 }
 
 .clearAllButton {
-background: none;
-border: none;
-color: #6b7280;
-font-size: 0.75rem;
-cursor: pointer;
-padding: 2px 8px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: all 0.2s;
 }
 
 .clearAllButton:hover {
-text-decoration: underline;
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #c31d3c;
 }
+
+/* ====================== */
+/* CHART SPECIFIC STYLES */
+/* ====================== */
+.recharts-cartesian-axis-line {
+  stroke: #e0e0e0;
+}
+
+.recharts-line-curve {
+  stroke-linecap: round;
+}
+
+.recharts-tooltip-cursor {
+  fill: rgba(200, 200, 200, 0.2);
+}
+
+.recharts-dot {
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.1));
+}
+
+/* ====================== */
+/* DUMP DATA STYLES */
+/* ====================== */
+/* Add to your GeneralTracer.module.css */
+
+/* Dual-axis chart styling */
+.dummyDataNotice {
+  margin-top: 16px;
+  padding: 8px 12px;
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #856404;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.noticeIcon {
+  font-size: 18px;
+}
+
+/* Bar chart specific styles */
+.comboChartContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.comboChartLegend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 12px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.legendColor {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+} 

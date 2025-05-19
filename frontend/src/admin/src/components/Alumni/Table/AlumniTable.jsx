@@ -177,10 +177,16 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
 
               // Pull gradyear directly from the student schema (student object in the response)
               const gradYear = alumni.student?.gradyear || 'N/A'; // Adjust based on actual field name in your schema
-              return { ...alumni, tracerStatus: tracerStatusText, gradYear };
+              const employmentInfo = {
+                job_status: alumni.employmentInfo?.job_status === 'Unemployed' 
+                  ? 'Unemployed' 
+                  : 'Employed'
+              };
+
+              return { ...alumni, tracerStatus: tracerStatusText, gradYear, employmentInfo };
             } catch (error) {
               console.error(`Failed to fetch status for ${alumni.userId}`, error);
-              return { ...alumni, tracerStatus: 'Unknown', gradYear: 'N/A' };
+              return { ...alumni, tracerStatus: 'Unknown', gradYear: 'N/A', employmentInfo: { job_status: 'Unknown' } };
             }
           }));
     
@@ -460,6 +466,7 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
                     <th scope="col">Course</th>
                     <th scope="col">Year Graduated</th>
                     <th scope="col">Tracer Status</th>
+                    <th scope="col">Employment Status</th>
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
@@ -477,6 +484,15 @@ export function AlumniTable({ batch, college, course, searchQuery, filterApplied
                             alumni.tracerStatus?.includes('&') ? styles.tracerStatusMultiple : styles.tracerStatusSingle
                           }`}>
                             {alumni.tracerStatus || 'No tracer'}
+                          </span>
+                        </td>
+                        <td>
+                          <span className={`${styles.employmentStatus} ${
+                            alumni.employmentInfo?.job_status === 'Unemployed' 
+                              ? styles.unemployedStatus 
+                              : styles.employedStatus
+                          }`}>
+                            {alumni.employmentInfo?.job_status === 'Unemployed' ? 'Unemployed' : 'Employed'}
                           </span>
                         </td>
                         <td>

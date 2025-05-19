@@ -8,9 +8,10 @@ const router = express.Router();
 
 // Student Schema
 const studentSchema = new mongoose.Schema({
-  surveys: [{type: mongoose.Schema.Types.ObjectId, ref: 'Survey'}],
+  surveys: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Survey' }],
   gradyear: { type: Number, required: true },
-  firstName: { type: String, required: true }, // Added firstName field which was missing
+  gradMonth: { type: String, required: true }, // Add gradMonth field
+  firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   generatedID: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -23,17 +24,18 @@ const Student = mongoose.model("Student", studentSchema);
 router.post("/register", async (req, res) => {
   const {
     gradyear,
+    gradMonth, // Accept gradMonth from the request body
     firstName,
     lastName,
     password,
     confirmPassword,
   } = req.body;
 
-  console.log("Received registration data:", { gradyear, firstName, lastName });
+  console.log("Received registration data:", { gradyear, gradMonth, firstName, lastName });
 
   try {
     // Validate input fields
-    if (!gradyear || !firstName || !lastName || !password || !confirmPassword) {
+    if (!gradyear || !gradMonth || !firstName || !lastName || !password || !confirmPassword) {
       console.log("Error: Missing fields");
       return res.status(400).json({ error: "All fields are required." });
     }
@@ -49,6 +51,15 @@ router.post("/register", async (req, res) => {
     if (isNaN(parsedGradYear)) {
       console.log("Error: Invalid graduation year");
       return res.status(400).json({ error: "Invalid graduation year." });
+    }
+
+    // Validate gradMonth
+    const monthNames = [
+      "january", "february", "march", "april", "may", "june",
+      "july", "august", "september", "october", "november", "december"
+    ];
+    if (!gradMonth || !monthNames.includes(gradMonth.toLowerCase())) {
+      return res.status(400).json({ error: "Invalid graduation month." });
     }
 
     // Trim and normalize names
@@ -110,6 +121,7 @@ router.post("/register", async (req, res) => {
     // Create and save the new user
     const newUser = new Student({
       gradyear: parsedGradYear,
+      gradMonth: gradMonth.toLowerCase(), // Store gradMonth in lowercase
       firstName: normalizedFirstName,  // Store first name too
       lastName: normalizedLastName,
       generatedID,

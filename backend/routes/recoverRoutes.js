@@ -26,25 +26,21 @@ router.post('/send-reset-code', async (req, res) => {
     const student = await Student.findOne({ generatedID: alumniID });
     if (!student) return res.status(404).json({ message: 'Student not found' });
 
-    const graduate = await Graduate.findOne({
-      firstName: new RegExp(`^${student.firstName}$`, 'i'),
-      lastName: new RegExp(`^${student.lastName}$`, 'i'),
-      gradYear: student.gradyear
-    });
-
-    if (!graduate || !graduate.email) {
-      return res.status(404).json({ message: 'Email not found for this user' });
+    // Get the email from personalInfo instead of Graduate collection
+    const email = student.personalInfo?.email_address;
+    if (!email) {
+      return res.status(404).json({ message: 'Email not found in student record' });
     }
 
     const code = Math.floor(100000 + Math.random() * 900000);
-    recoveryCodes[graduate.email] = { code, expires: Date.now() + 15 * 60 * 1000 };
+    recoveryCodes[email] = { code, expires: Date.now() + 15 * 60 * 1000 };
 
     await transporter.sendMail({
       from: `"Alumni Security Bot" <${process.env.EMAIL_USER}>`,
-      to: graduate.email,
+      to: email,
       subject: '[Secure Code] Password Reset Request',
       text: `
-      Hey ${graduate.firstName || 'Alumni'},
+      Hey ${student.personalInfo?.first_name || 'Alumni'},
 
       Your temporary reset code is:
 
@@ -52,15 +48,15 @@ router.post('/send-reset-code', async (req, res) => {
 
       This code is valid for 15 minutes.
 
-      If you didn’t request a password reset, no worries—just ignore this message. 
+      If you didn't request a password reset, no worries—just ignore this message. 
       But if you did, enter the code to complete the process and regain access.
 
       Stay safe,  
       – DevOps Security // Alumni Tracer System
             `.trim()
-          });
+    });
 
-    return res.json({ email: graduate.email, message: 'Reset code sent successfully' });
+    return res.json({ email: email, message: 'Reset code sent successfully' });
   } catch (err) {
     console.error("Send reset code error:", err);
     return res.status(500).json({ message: 'Server error while sending reset code' });
@@ -72,21 +68,21 @@ router.post('/send-reset-code', async (req, res) => {
 router.post('/request-code', async (req, res) => {
   const { email } = req.body;
   try {
-    // First check in Graduate model with correct field name
-    const graduate = await Graduate.findOne({ email: email });
-    if (!graduate) return res.status(404).json({ message: 'Email not found in graduate records.' });
+    // Find student by email in personalInfo
+    const student = await Student.findOne({ 'personalInfo.email_address': email });
+    if (!student) return res.status(404).json({ message: 'Email not found in student records.' });
 
     // Generate a 6-digit code
     const code = Math.floor(100000 + Math.random() * 900000);
     recoveryCodes[email] = { code, expires: Date.now() + 15 * 60 * 1000 };
 
-    // Send email with recovery code in tech-style format
+    // Send email with recovery code
     await transporter.sendMail({
       from: `"Alumni Recovery Team" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: '[Secure Code Inside]',
       text: `
-      Hey ${graduate.firstName || 'User'},
+      Hey ${student.personalInfo?.first_name || 'User'},
 
       Your temporary access code is:
 
@@ -100,7 +96,7 @@ router.post('/request-code', async (req, res) => {
             `.trim(),
     });
 
-    res.json({ message: 'Recovery code sent to graduate email.' });
+    res.json({ message: 'Recovery code sent to your email.' });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ message: 'Error sending code.', error });
@@ -126,26 +122,12 @@ router.post('/reset-password', async (req, res) => {
   try {
     const { email } = jwt.verify(token, process.env.JWT_SECRET);
 
-    const graduate = await Graduate.findOne({ email });
-    if (!graduate) {
-      return res.status(404).json({ message: 'Graduate record not found.' });
-    }
-
-    console.log(" Graduate found during reset:", graduate);
-
-    const fullName = `${graduate.firstName} ${graduate.lastName}`;
-    const gradYear = graduate.gradYear;
-
-    const student = await Student.findOne({
-      firstName: new RegExp(`^${graduate.firstName}$`, 'i'),
-      lastName: new RegExp(`^${graduate.lastName}$`, 'i'),
-      gradyear: graduate.gradYear
-    });     
-
+    // Find student by email in personalInfo
+    const student = await Student.findOne({ 'personalInfo.email_address': email });
     if (!student) {
-      return res.status(404).json({ message: 'User not found. Cannot reset password.' });
+      return res.status(404).json({ message: 'Student record not found.' });
     }
-    
+
     student.password = await bcrypt.hash(newPassword, 10);
     await student.save();    
 
@@ -157,35 +139,5 @@ router.post('/reset-password', async (req, res) => {
     res.status(401).json({ message: 'Invalid or expired token.' });
   }
 });
-
-
-
-// Endpoint to get graduate's email
-router.post('/get-graduate-email', async (req, res) => {
-  const { firstName, lastName, gradYear } = req.body;
-
-  console.log(" get-graduate-email called with:", req.body);
-
-  try {
-    const graduate = await Graduate.findOne({ 
-      firstName: new RegExp(`^${firstName}$`, 'i'),
-      lastName: new RegExp(`^${lastName}$`, 'i'),
-      gradYear: Number(gradYear)
-    });
-
-    if (!graduate) {
-      console.log(" No match in Graduate");
-      return res.status(404).json({ message: 'Graduate not found' });
-    }
-
-    console.log(" Graduate found:", graduate);
-
-    return res.json({ email: graduate.email });
-  } catch (error) {
-    console.error(" Server error:", error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
 
 export default router;
